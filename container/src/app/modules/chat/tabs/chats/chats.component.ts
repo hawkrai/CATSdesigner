@@ -1,4 +1,11 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, AfterViewInit } from '@angular/core'
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core'
 import { OwlOptions } from 'ngx-owl-carousel-o'
 import { PerfectScrollbarComponent } from 'ngx-perfect-scrollbar'
 import { Subject, Subscription } from 'rxjs'
@@ -26,7 +33,8 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
   private loadMoreTimer: any = null
   private searchTerms = new Subject<string>()
   private searchSubscription: Subscription
-  @ViewChild(PerfectScrollbarComponent) perfectScrollbar: PerfectScrollbarComponent
+  @ViewChild(PerfectScrollbarComponent)
+  perfectScrollbar: PerfectScrollbarComponent
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -65,26 +73,25 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     })
 
-    this.contactService.contacts.subscribe(contacts => {
+    this.contactService.contacts.subscribe((contacts) => {
       if (contacts && contacts.length > 0 && this.isSearching) {
         this.updateSearchResults(contacts)
         this.cdr.detectChanges()
       }
     })
 
-    this.contactService.loadingStatus.subscribe(isLoading => {
+    this.contactService.loadingStatus.subscribe((isLoading) => {
       this.cdr.detectChanges()
     })
 
-    this.searchSubscription = this.searchTerms.pipe(
-      debounceTime(600),
-      distinctUntilChanged()
-    ).subscribe(term => {
-      this.performSearch(term)
-    })
+    this.searchSubscription = this.searchTerms
+      .pipe(debounceTime(600), distinctUntilChanged())
+      .subscribe((term) => {
+        this.performSearch(term)
+      })
 
     if (!this.contactService.isChatOpen) {
-      this.dataService.LoadChats()
+      this.dataService.loadChats()
     } else {
       this.contactService.isChatOpen = false
     }
@@ -93,7 +100,8 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       if (this.perfectScrollbar && this.perfectScrollbar.directiveRef) {
-        const element = this.perfectScrollbar.directiveRef.elementRef.nativeElement
+        const element =
+          this.perfectScrollbar.directiveRef.elementRef.nativeElement
         element.addEventListener('scroll', this.handleScroll.bind(this))
       }
     }, 500)
@@ -102,7 +110,7 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
   handleScroll(event) {
     if (!this.isSearching || this.contactService.loadingMore) {
       return
-    }    
+    }
     const element = event.target
     const scrollPosition = element.scrollTop
     const scrollHeight = element.scrollHeight
@@ -112,7 +120,7 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
     if (scrollHeight - scrollPosition - clientHeight < threshold) {
       this.loadMoreContactsWithDebounce()
     }
-  } 
+  }
 
   loadMoreContactsWithDebounce() {
     if (this.contactService.loadingMore) return
@@ -120,7 +128,7 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.loadMoreTimer) {
       clearTimeout(this.loadMoreTimer)
     }
-    
+
     this.loadMoreTimer = setTimeout(() => {
       this.contactService.loadMoreContacts()
     }, 300)
@@ -130,8 +138,10 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!contacts || contacts.length === 0) return
 
     const dataChats = this.dataService.chats.getValue()
-    this.chats = contacts.map(contact => {
-      const existingChat = dataChats.find(c => c.userId === contact.userId || c.name === contact.name)
+    this.chats = contacts.map((contact) => {
+      const existingChat = dataChats.find(
+        (c) => c.userId === contact.userId || c.name === contact.name
+      )
       if (existingChat) {
         return {
           ...contact,
@@ -139,7 +149,7 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
           unread: existingChat.unread,
           time: existingChat.time,
           lastMessage: existingChat.lastMessage,
-          isOnline: contact.isOnline || existingChat.isOnline
+          isOnline: contact.isOnline || existingChat.isOnline,
         }
       }
       return contact
@@ -166,7 +176,7 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.subscriptionContact) {
       this.subscriptionContact.unsubscribe()
     }
-    
+
     if (this.subscription) {
       this.subscription.unsubscribe()
     }
@@ -176,7 +186,8 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (this.perfectScrollbar && this.perfectScrollbar.directiveRef) {
-      const element = this.perfectScrollbar.directiveRef.elementRef.nativeElement
+      const element =
+        this.perfectScrollbar.directiveRef.elementRef.nativeElement
       element.removeEventListener('scroll', this.handleScroll.bind(this))
     }
 

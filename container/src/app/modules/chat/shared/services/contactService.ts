@@ -5,7 +5,7 @@ import { DataService } from '@chat/shared/services/dataService'
 import { ChatCto } from '@chat/shared/models/dto/chatCto'
 import { SubjectGroups } from '@chat/shared/models/entities/subject.groups.model'
 import { NgZone } from '@angular/core'
-import { ChatApiService } from '@chat/shared/api/chat-api.service';
+import { ChatApiService } from '@chat/shared/api/chat-api.service'
 
 @Injectable({
   providedIn: 'root',
@@ -13,15 +13,19 @@ import { ChatApiService } from '@chat/shared/api/chat-api.service';
 export class ContactService {
   public user: any
   public isLecturer: boolean
-  public contacts: BehaviorSubject<Chat[]> = new BehaviorSubject<Array<Chat>>([])
+  public contacts: BehaviorSubject<Chat[]> = new BehaviorSubject<Array<Chat>>(
+    []
+  )
   public openChatComand: BehaviorSubject<Chat> = new BehaviorSubject<Chat>(null)
   public isChatOpen: boolean
   public hasMoreLecturers: boolean = true
-  public hasMoreStudents: boolean = true
+  public hasMoreSecondaryContacts: boolean = true
   public loadingMore: boolean = false
-  public loadingStatus: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+  public loadingStatus: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  )
   private lecturersOffset: number = 0
-  private studentsOffset: number = 0
+  private secondaryContactsOffset: number = 0
   private readonly pageSize: number = 20
   private currentFilter: string = ''
   private loadingTimer: any = null
@@ -42,7 +46,7 @@ export class ContactService {
 
   public CreateChat(userId: number) {
     var chatCto = new ChatCto(userId, this.user.id)
-    return this.chatApiService.createChat(chatCto);
+    return this.chatApiService.createChat(chatCto)
   }
 
   public updateChats(fUserId, sUserId, chatId) {
@@ -67,9 +71,9 @@ export class ContactService {
   private resetContactState() {
     this.contacts.next([])
     this.lecturersOffset = 0
-    this.studentsOffset = 0
+    this.secondaryContactsOffset = 0
     this.hasMoreLecturers = true
-    this.hasMoreStudents = true
+    this.hasMoreSecondaryContacts = true
     this.setLoadingState(false)
     if (this.loadingTimer) {
       clearTimeout(this.loadingTimer)
@@ -82,16 +86,16 @@ export class ContactService {
       this.resetContactState()
       this.currentFilter = filter
     }
-    
+
     if (this.loadingMore) {
       if (this.loadingTimer) {
         clearTimeout(this.loadingTimer)
       }
-      
+
       this.loadingTimer = setTimeout(() => {
         this.loadContacts(filter)
       }, 500)
-      
+
       return
     }
 
@@ -100,7 +104,7 @@ export class ContactService {
     if (this.isLecturer) {
       this.loadLecturers(filter)
     } else {
-      this.loadStudents(filter, [])
+      this.loadStudentLecturers(filter)
     }
   }
 
@@ -117,8 +121,9 @@ export class ContactService {
         this.setLoadingState(false)
       }
     }, 5000)
-    
-    this.chatApiService.getAllLecturers(filter, this.pageSize, this.lecturersOffset)
+
+    this.chatApiService
+      .getAllLecturers(filter, this.pageSize, this.lecturersOffset)
       .subscribe({
         next: (res) => {
           clearTimeout(loadingTimeout)
@@ -129,10 +134,10 @@ export class ContactService {
 
           if (res.length === 0 && this.lecturersOffset === 0) {
             this.hasMoreLecturers = false
-            
+
             if (this.isLecturer) {
-              if (this.hasMoreStudents) {
-                this.loadStudents(filter, contacts)
+              if (this.hasMoreSecondaryContacts) {
+                this.loadLecturerStudents(filter, contacts)
               } else {
                 this.contacts.next(contacts)
                 this.setLoadingState(false)
@@ -144,7 +149,7 @@ export class ContactService {
             }
             return
           }
-          
+
           res.forEach((element) => {
             if (element.userId != this.user.id) {
               var chat = new Chat()
@@ -155,11 +160,11 @@ export class ContactService {
               contacts.push(chat)
             }
           })
-          
+
           this.lecturersOffset += res.length
-          
-          if (this.hasMoreStudents) {
-            this.loadStudents(filter, contacts)
+
+          if (this.hasMoreSecondaryContacts) {
+            this.loadLecturerStudents(filter, contacts)
           } else {
             this.contacts.next(contacts)
             this.setLoadingState(false)
@@ -168,12 +173,12 @@ export class ContactService {
         error: (err) => {
           clearTimeout(loadingTimeout)
           this.setLoadingState(false)
-        }
+        },
       })
   }
-  
-  private loadStudents(filter: string, contacts: Chat[]) {
-    if (!this.hasMoreStudents) {
+
+  private loadLecturerStudents(filter: string, contacts: Chat[]) {
+    if (!this.hasMoreSecondaryContacts) {
       this.contacts.next(contacts)
       this.setLoadingState(false)
       return
@@ -187,25 +192,31 @@ export class ContactService {
       }
     }, 5000)
 
-    this.chatApiService.getAllStudents(filter, this.pageSize, this.studentsOffset)
+    this.chatApiService
+      .getLecturerStudents(
+        this.user.id,
+        filter,
+        this.pageSize,
+        this.secondaryContactsOffset
+      )
       .subscribe({
         next: (res) => {
           clearTimeout(loadingTimeout)
 
           if (res.length < this.pageSize) {
-            this.hasMoreStudents = false
+            this.hasMoreSecondaryContacts = false
             this.updateLoadingState()
           }
 
-          if (res.length === 0 && this.studentsOffset === 0) {
-            this.hasMoreStudents = false
+          if (res.length === 0 && this.secondaryContactsOffset === 0) {
+            this.hasMoreSecondaryContacts = false
             this.updateLoadingState()
-            
+
             if (contacts.length === 0) {
               this.setLoadingState(false)
             }
           }
-          
+
           res.forEach((element) => {
             if (element.userId != this.user.id) {
               var chat = new Chat()
@@ -217,50 +228,106 @@ export class ContactService {
               contacts.push(chat)
             }
           })
-          
-          this.studentsOffset += res.length
-          
+
+          this.secondaryContactsOffset += res.length
+
           this.contacts.next(contacts)
           this.setLoadingState(false)
         },
         error: (err) => {
           clearTimeout(loadingTimeout)
           this.setLoadingState(false)
-        }
+        },
       })
   }
-  
+
+  private loadStudentLecturers(filter: string) {
+    if (!this.hasMoreSecondaryContacts) {
+      this.setLoadingState(false)
+      return
+    }
+
+    this.setLoadingState(true)
+
+    const loadingTimeout = setTimeout(() => {
+      if (this.loadingMore) {
+        this.setLoadingState(false)
+      }
+    }, 5000)
+
+    this.chatApiService
+      .getStudentLecturers(
+        this.user.id,
+        filter,
+        this.pageSize,
+        this.secondaryContactsOffset
+      )
+      .subscribe({
+        next: (res) => {
+          clearTimeout(loadingTimeout)
+          var contacts = this.contacts.getValue()
+
+          if (res.length < this.pageSize) {
+            this.hasMoreSecondaryContacts = false
+            this.updateLoadingState()
+          }
+
+          if (res.length === 0 && this.secondaryContactsOffset === 0) {
+            this.hasMoreSecondaryContacts = false
+            this.updateLoadingState()
+            this.setLoadingState(false)
+          }
+
+          res.forEach((element) => {
+            if (element.userId != this.user.id) {
+              var chat = new Chat()
+              chat.name = element.fullName
+              chat.profilePicture = element.profile
+              chat.userId = element.userId
+              chat.isOnline = element.isOnline
+              contacts.push(chat)
+            }
+          })
+
+          this.secondaryContactsOffset += res.length
+
+          this.contacts.next(contacts)
+          this.setLoadingState(false)
+        },
+        error: (err) => {
+          clearTimeout(loadingTimeout)
+          this.setLoadingState(false)
+        },
+      })
+  }
+
   public loadMoreContacts() {
     if (this.isLecturer) {
-      if (!this.hasMoreLecturers && !this.hasMoreStudents) {
+      if (!this.hasMoreLecturers && !this.hasMoreSecondaryContacts) {
         this.setLoadingState(false)
         return
       }
     } else {
-      if (!this.hasMoreStudents) {
+      if (!this.hasMoreSecondaryContacts) {
         this.setLoadingState(false)
         return
       }
     }
 
     if (this.loadingMore) return
-    
+
     if (this.isLecturer) {
       if (this.hasMoreLecturers) {
         this.loadLecturers(this.currentFilter)
-      } 
-      else if (this.hasMoreStudents) {
+      } else if (this.hasMoreSecondaryContacts) {
         const currentContacts = this.contacts.getValue()
-        this.loadStudents(this.currentFilter, currentContacts)
-      }
-      else {
+        this.loadLecturerStudents(this.currentFilter, currentContacts)
+      } else {
         this.setLoadingState(false)
       }
-      
     } else {
-      if (this.hasMoreStudents) {
-        const currentContacts = this.contacts.getValue()
-        this.loadStudents(this.currentFilter, currentContacts)
+      if (this.hasMoreSecondaryContacts) {
+        this.loadStudentLecturers(this.currentFilter)
       } else {
         this.setLoadingState(false)
       }
@@ -268,16 +335,16 @@ export class ContactService {
   }
 
   public loadGroups(): Observable<SubjectGroups[]> {
-    return this.chatApiService.getAllGroups(this.user.id, this.user.role);
+    return this.chatApiService.getAllGroups(this.user.id, this.user.role)
   }
 
   private updateLoadingState() {
     if (this.isLecturer) {
-      if (!this.hasMoreLecturers && !this.hasMoreStudents) {
+      if (!this.hasMoreLecturers && !this.hasMoreSecondaryContacts) {
         this.setLoadingState(false)
       }
     } else {
-      if (!this.hasMoreStudents) {
+      if (!this.hasMoreSecondaryContacts) {
         this.setLoadingState(false)
       }
     }

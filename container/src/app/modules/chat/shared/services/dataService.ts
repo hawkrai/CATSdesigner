@@ -6,9 +6,9 @@ import { Groups } from '@chat/shared/models/entities/groups.model'
 import { finalize } from 'rxjs/operators'
 import { SubjectGroups } from '@chat/shared/models/entities/subject.groups.model'
 import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
-import { ChatApiService } from '@chat/shared/api/chat-api.service';
-import { MessageApiService } from '@chat/shared/api/message-api.service';
-import { FileApiService } from '@chat/shared/api/file-api.service';
+import { ChatApiService } from '@chat/shared/api/chat-api.service'
+import { MessageApiService } from '@chat/shared/api/message-api.service'
+import { FileApiService } from '@chat/shared/api/file-api.service'
 
 @Injectable({
   providedIn: 'root',
@@ -17,25 +17,33 @@ export class DataService {
   public files: any[] = []
   public activChat: any
   public activChatId: number
-  public readMessageGroupCount: BehaviorSubject<number> = new BehaviorSubject<number>(0)
-  public readMessageCount: BehaviorSubject<number> = new BehaviorSubject<number>(0)
-  public readMessageChatCount: BehaviorSubject<number> = new BehaviorSubject<number>(0)
+  public readMessageGroupCount: BehaviorSubject<number> =
+    new BehaviorSubject<number>(0)
+  public readMessageCount: BehaviorSubject<number> =
+    new BehaviorSubject<number>(0)
+  public readMessageChatCount: BehaviorSubject<number> =
+    new BehaviorSubject<number>(0)
   public activGroup: Groups
   public activeSubject: SubjectGroups
   public chats: BehaviorSubject<Chat[]> = new BehaviorSubject<Array<Chat>>([])
-  public groups: BehaviorSubject<SubjectGroups[]> = new BehaviorSubject<Array<SubjectGroups>>([])
-  public messages: BehaviorSubject<Message[]> = new BehaviorSubject<Array<Message>>([])
+  public groups: BehaviorSubject<SubjectGroups[]> = new BehaviorSubject<
+    Array<SubjectGroups>
+  >([])
+  public messages: BehaviorSubject<Message[]> = new BehaviorSubject<
+    Array<Message>
+  >([])
   public isGroupChat: boolean = false
 
   public user: any
   public isLecturer: boolean
   public hasMoreMessages: boolean = true
   public loadingMoreMessages: boolean = false
-  public loadingMessagesStatus: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+  public loadingMessagesStatus: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false)
   public loadMessagesTimer: any = null
   private loadingTimeout: any = null
-  private readonly defaultPageSize: number = 20;
-  private messageOffset: number = 0;
+  private readonly defaultPageSize: number = 20
+  private messageOffset: number = 0
 
   constructor(
     private chatApiService: ChatApiService,
@@ -47,37 +55,45 @@ export class DataService {
     this.isLecturer = this.user?.role === 'lector'
   }
 
-  public LoadChats(): void {
-    this.chatApiService.getAllChats(this.user.id).subscribe((result: Chat[]) => {
-      var unread = 0
-      result.forEach((elem) => {
-        if (elem.unread) unread += elem.unread
+  public loadChats(): void {
+    this.chatApiService
+      .getAllChats(this.user.id)
+      .subscribe((result: Chat[]) => {
+        var unread = 0
+        result.forEach((elem) => {
+          if (elem.unread) unread += elem.unread
+        })
+        this.readMessageChatCount.next(unread)
+        this.chats.next(result)
       })
-      this.readMessageChatCount.next(unread)
-      this.chats.next(result)
-    })
   }
 
-  public LoadGroup(): void {
-    this.chatApiService.getAllGroups(this.user.id, this.user.role).subscribe((result: SubjectGroups[]) => {
-      var unread = 0
-      result.forEach((elem) => {
-        if (elem.unread) unread += elem.unread
-        elem.groups.forEach((element) => {
-          if (elem.unread) unread += element.unread
+  public loadGroups(): void {
+    this.chatApiService
+      .getAllGroups(this.user.id, this.user.role)
+      .subscribe((result: SubjectGroups[]) => {
+        var unread = 0
+        result.forEach((elem) => {
+          if (elem.unread) unread += elem.unread
+          elem.groups.forEach((element) => {
+            if (elem.unread) unread += element.unread
+          })
         })
+        this.readMessageGroupCount.next(unread)
+        this.groups.next(result)
       })
-      this.readMessageGroupCount.next(unread)
-      this.groups.next(result)
-    })
   }
 
   public updateRead() {
-    this.chatApiService.updateReadChat(this.user.id, this.activChatId).subscribe();
+    this.chatApiService
+      .updateReadChat(this.user.id, this.activChatId)
+      .subscribe()
   }
 
   public groupRead() {
-    this.chatApiService.updateReadGroupChat(this.user.id, this.activChatId).subscribe();
+    this.chatApiService
+      .updateReadGroupChat(this.user.id, this.activChatId)
+      .subscribe()
   }
 
   public SetStatus(id: number, isOnline: boolean): void {
@@ -104,12 +120,15 @@ export class DataService {
         this.groups.next(subjects)
       } else {
         var groupNum
-        [subjectNum, groupNum] = this.getNumGroupById(this.activChatId)
+        ;[subjectNum, groupNum] = this.getNumGroupById(this.activChatId)
         if (subjectNum > -1 && groupNum > -1) {
           const subjects = this.groups.getValue()
-          this.readMessageCount.next(subjects[subjectNum].groups[groupNum].unread)
+          this.readMessageCount.next(
+            subjects[subjectNum].groups[groupNum].unread
+          )
           this.readMessageGroupCount.next(
-            this.readMessageGroupCount.getValue() - subjects[subjectNum].groups[groupNum].unread
+            this.readMessageGroupCount.getValue() -
+              subjects[subjectNum].groups[groupNum].unread
           )
           subjects[subjectNum].groups[groupNum].unread = 0
           this.groups.next(subjects)
@@ -123,32 +142,34 @@ export class DataService {
       this.setLoadingMessagesState(false)
     }, 5000)
 
-    this.messageApiService.getGroupMessages(this.user.id, this.activChatId, this.defaultPageSize, 0)
-    .subscribe({
-      next: (msgs: Message[]) => {
-        clearTimeout(loadingTimeout)
-        this.processLoadedMessages(msgs)
-      },
-      error: (error) => {
-        clearTimeout(loadingTimeout)
-        console.error('Error loading group messages:', error)
-        this.hasMoreMessages = false
-        this.messages.next([])
-        this.setLoadingMessagesState(false)
-      }
-    })
+    this.messageApiService
+      .getGroupMessages(this.user.id, this.activChatId, this.defaultPageSize, 0)
+      .subscribe({
+        next: (msgs: Message[]) => {
+          clearTimeout(loadingTimeout)
+          this.processLoadedMessages(msgs)
+        },
+        error: (error) => {
+          clearTimeout(loadingTimeout)
+          console.error('Error loading group messages:', error)
+          this.hasMoreMessages = false
+          this.messages.next([])
+          this.setLoadingMessagesState(false)
+        },
+      })
   }
 
   public LoadChatMsg() {
     this.resetMessageState()
-    
+
     this.setLoadingMessagesState(true)
 
     const loadingTimeout = setTimeout(() => {
       this.setLoadingMessagesState(false)
     }, 5000)
 
-    this.messageApiService.getChatMessages(this.user.id, this.activChatId, this.defaultPageSize, 0)
+    this.messageApiService
+      .getChatMessages(this.user.id, this.activChatId, this.defaultPageSize, 0)
       .subscribe({
         next: (msgs: Message[]) => {
           clearTimeout(loadingTimeout)
@@ -160,7 +181,7 @@ export class DataService {
           this.hasMoreMessages = false
           this.messages.next([])
           this.setLoadingMessagesState(false)
-        }
+        },
       })
   }
 
@@ -168,19 +189,19 @@ export class DataService {
     if (msgs.length < this.defaultPageSize) {
       this.hasMoreMessages = false
     }
-    
+
     if (msgs.length === 0) {
       this.hasMoreMessages = false
       this.messages.next([])
     } else {
       this.messages.next([...msgs].reverse())
     }
-    
+
     this.setLoadingMessagesState(false)
   }
 
   private resetMessageState() {
-    this.messageOffset = 0;
+    this.messageOffset = 0
     this.hasMoreMessages = true
     this.messages.next([])
   }
@@ -193,20 +214,30 @@ export class DataService {
     if (this.loadMessagesTimer) {
       clearTimeout(this.loadMessagesTimer)
     }
-    
+
     this.loadingMoreMessages = true
-    
+
     const currentMessages = this.messages.getValue()
     const currentMessagesCount = currentMessages.length
-    
+
     return from(
       new Promise<ILoadMessagesResult>((resolve, reject) => {
         this.loadMessagesTimer = setTimeout(() => {
-          this.messageOffset += this.defaultPageSize;
+          this.messageOffset += this.defaultPageSize
 
           const apiCall = this.isGroupChat
-            ? this.messageApiService.getGroupMessages(this.user.id, this.activChatId, this.defaultPageSize, this.messageOffset)
-            : this.messageApiService.getChatMessages(this.user.id, this.activChatId, this.defaultPageSize, this.messageOffset);
+            ? this.messageApiService.getGroupMessages(
+                this.user.id,
+                this.activChatId,
+                this.defaultPageSize,
+                this.messageOffset
+              )
+            : this.messageApiService.getChatMessages(
+                this.user.id,
+                this.activChatId,
+                this.defaultPageSize,
+                this.messageOffset
+              )
 
           apiCall
             .pipe(
@@ -219,19 +250,19 @@ export class DataService {
                 if (msgs.length === 0 || msgs.length < this.defaultPageSize) {
                   this.hasMoreMessages = false
                 }
-                
+
                 if (msgs.length > 0) {
                   const newMessages = [...msgs.reverse(), ...currentMessages]
                   this.messages.next(newMessages)
-                  
+
                   resolve({
                     addedCount: msgs.length,
-                    totalCount: newMessages.length
+                    totalCount: newMessages.length,
                   })
                 } else {
                   resolve({
                     addedCount: 0,
-                    totalCount: currentMessagesCount
+                    totalCount: currentMessagesCount,
                   })
                 }
               },
@@ -239,9 +270,9 @@ export class DataService {
                 console.error('Error loading more messages:', error)
                 this.hasMoreMessages = false
                 this.loadingMoreMessages = false
-                
+
                 reject(error)
-              }
+              },
             })
         }, 100)
       })
@@ -286,7 +317,7 @@ export class DataService {
           this.groups.next(subjects)
         } else {
           let groupNum
-          [subjectNum, groupNum] = this.getNumGroupById(msg.chatId)
+          ;[subjectNum, groupNum] = this.getNumGroupById(msg.chatId)
           if (subjectNum > -1 && groupNum > -1) {
             const subjects = this.groups.getValue()
             subjects[subjectNum].groups[groupNum].unread++
@@ -309,7 +340,7 @@ export class DataService {
   }
 
   public SendImg(formData: FormData) {
-    return this.fileApiService.uploadFile(formData);
+    return this.fileApiService.uploadFile(formData)
   }
 
   private getNumChatById(id: number): number {
@@ -339,7 +370,7 @@ export class DataService {
     this.zone.run(() => {
       this.loadingMoreMessages = isLoading
       this.loadingMessagesStatus.next(isLoading)
-      
+
       if (isLoading && !this.loadingTimeout) {
         this.loadingTimeout = setTimeout(() => {
           this.setLoadingMessagesState(false)

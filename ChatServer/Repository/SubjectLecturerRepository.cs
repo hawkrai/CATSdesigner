@@ -23,5 +23,10 @@ namespace Repository
             .OrderBy(c => c.Subject.ShortName)
             .ToListAsync();
 
+        public async Task<IEnumerable<SubjectLecturer>> GetLecturersBySubjectIds(IEnumerable<int> subjectIds) =>
+            await FindByCondition(sl => subjectIds.Contains(sl.SubjectId), false)
+            .Include(sl => sl.Subject)
+            .Where(sl => !sl.Subject.IsArchive)
+            .ToListAsync();
     }
 }

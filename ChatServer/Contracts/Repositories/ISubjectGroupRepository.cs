@@ -11,5 +11,6 @@ namespace Contracts.Repositories
     {
         Task<IEnumerable<SubjectGroup>> GetSubjects(int groupId);
         Task<IEnumerable<SubjectGroup>> GetGroups(int subjectId);
+        Task<IEnumerable<SubjectGroup>> GetGroupsBySubjectIds(IEnumerable<int> subjectIds);
     }
 }

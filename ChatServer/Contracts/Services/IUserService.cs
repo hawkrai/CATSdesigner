@@ -15,9 +15,11 @@ namespace Contracts.Services
         Task<User> GetUser(int userId, bool track=false);
         Task<Lecturer> GetLecturer(int userId);
         Task<Student> GetStudent(int userId);
-        Task<IEnumerable<Student>> GetStudetsByGroup(int groupId);
+        Task<IEnumerable<Student>> GetStudentsByGroup(int groupId);
         Task<IEnumerable<UserDto>> GetLecturersAsync(bool trackChanges, int limit, int offset, string filter);
         Task<IEnumerable<UserDto>> GetStudentsAsync(bool trackChanges, int limit, int offset, string filter);
+        Task<IEnumerable<UserDto>> GetLecturerStudentsAsync(int lecturerId, bool trackChanges, int limit, int offset, string filter);
+        Task<IEnumerable<UserDto>> GetStudentLecturersAsync(int studentId, bool trackChanges, int limit, int offset, string filter);
         Task UpdateLastLogin(int userId);
     }
 }

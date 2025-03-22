@@ -16,7 +16,6 @@ import { ChatService } from '@chat/shared/services/chatService'
 import { DataService } from '@chat/shared/services/dataService'
 import { ContactService } from '@chat/shared/services/contactService'
 import { FileService } from '@chat/shared/services/files.service'
-import { MsgService } from '@chat/shared/services/msgService'
 import { SignalRService } from '@chat/shared/services/signalRSerivce'
 
 @NgModule({
@@ -26,7 +25,6 @@ import { SignalRService } from '@chat/shared/services/signalRSerivce'
     ContactService,
     DataService,
     FileService,
-    MsgService,
     SignalRService,
   ],
 })

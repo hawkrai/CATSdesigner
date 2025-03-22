@@ -6,7 +6,7 @@ import { Chat } from '@chat/shared/models/entities/chats.model'
 @Component({
   selector: 'app-group-list',
   templateUrl: './groupList.component.html',
-  styleUrls: ['./groupList.component.scss']
+  styleUrls: ['./groupList.component.scss'],
 })
 export class GroupListComponent {
   public users: Chat[]

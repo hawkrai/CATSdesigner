@@ -124,9 +124,7 @@
                       >
                         {{
                           dataService.activChat.name.split(' ')[0].charAt(0) +
-                            dataService.activChat.name
-                              .split(' ')[1]
-                              .charAt(0)
+                            dataService.activChat.name.split(' ')[1].charAt(0)
                         }}
                       </span>
                     </div>
@@ -213,29 +211,59 @@
         <!-- end chat user head -->
 
         <!-- start chat conversation -->
-        <perfect-scrollbar id="scroll" class="msgs chat-conversation p-3 p-lg-4">
-          <div #loadTrigger class="load-trigger" style="height: 1px; width: 100%;"></div>
+        <perfect-scrollbar
+          id="scroll"
+          class="msgs chat-conversation p-3 p-lg-4"
+        >
+          <div
+            #loadTrigger
+            class="load-trigger"
+            style="height: 1px; width: 100%"
+          ></div>
           <ul class="list-unstyled mb-0" style="height: 90% !important">
-            <li *ngIf="dataService.loadingMoreMessages" class="text-center mb-3 loading-messages-indicator">
+            <li
+              *ngIf="dataService.loadingMoreMessages"
+              class="text-center mb-3 loading-messages-indicator"
+            >
               <div class="spinner-border text-primary" role="status">
-                <span class="sr-only">{{ 'chat.loading' | translate: 'Загрузка...' }}</span>
+                <span class="sr-only">{{
+                  'chat.loading' | translate: 'Загрузка...'
+                }}</span>
               </div>
             </li>
-            <li *ngIf="!dataService.loadingMoreMessages && !dataService.hasMoreMessages && messages && messages.length > 0" 
-              class="text-center mb-3 beginning-indicator">
-              <span class="text-muted">{{ 'chat.noMoreMessages' | translate: 'Начало переписки' }}</span>
+            <li
+              *ngIf="
+                !dataService.loadingMoreMessages &&
+                !dataService.hasMoreMessages &&
+                messages &&
+                messages.length > 0
+              "
+              class="text-center mb-3 beginning-indicator"
+            >
+              <span class="text-muted">{{
+                'chat.noMoreMessages' | translate: 'Начало переписки'
+              }}</span>
             </li>
-            <li *ngIf="!dataService.loadingMoreMessages && (!messages || messages.length === 0)" 
-                class="text-center empty-chat-indicator">
-              <span class="text-muted">{{ 'chat.emptyChat' | translate: 'Нет сообщений' }}</span>
+            <li
+              *ngIf="
+                !dataService.loadingMoreMessages &&
+                (!messages || messages.length === 0)
+              "
+              class="text-center empty-chat-indicator"
+            >
+              <span class="text-muted">{{
+                'chat.emptyChat' | translate: 'Нет сообщений'
+              }}</span>
             </li>
-            <li *ngFor="let data of messages; let i = index" 
-                [ngClass]="{ 
-                  right: data.align === 'right',
-                  'message-fade-in': i < newMessagesCount 
-                }" 
-                style="height: 90%" 
-                [attr.data-message-id]="data.id">
+            <li
+              *ngFor="let data of messages; let i = index"
+              [ngClass]="{
+                right: data.align === 'right',
+                'message-fade-in': i < newMessagesCount
+              }"
+              style="height: 90%"
+              [attr.data-message-id]="data.id"
+            >
               <div class="conversation-list" *ngIf="!data.isToday">
                 <div class="chat-avatar">
                   <img src="{{ data.profile }}" alt="" />
