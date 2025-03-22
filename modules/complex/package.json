@@ -10,7 +10,7 @@
     "e2e": "ng e2e"
   },
   "engines": {
-    "node": "14.21.3"
+    "node": "14.x"
   },
   "dependencies": {
     "@angular/animations": "^8.1.0",

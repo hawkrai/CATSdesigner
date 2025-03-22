@@ -5,6 +5,6 @@
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": "14.21.3"
+    "node": "14.x"
   }
 }
