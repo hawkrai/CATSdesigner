@@ -4,8 +4,10 @@
       <th mat-header-cell *matHeaderCellDef>
         {{ 'text.subjects.labs' | translate: 'Лабораторная работа' }}
       </th>
-      <td mat-cell *matCellDef="let element" [matTooltip]="element.LabTheme">
-        {{ element.LabShortName }}
+      <td mat-cell *matCellDef="let element">
+        <span [matTooltip]="element.LabTheme">
+          {{ 'prefix.lab' | translate: 'ЛР' }}{{ element.Order }}
+        </span>
       </td>
     </ng-container>
     <ng-container matColumnDef="file">
