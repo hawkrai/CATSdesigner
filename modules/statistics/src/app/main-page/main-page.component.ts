@@ -570,10 +570,16 @@ export class MainPageComponent implements OnInit {
   ngOnInit() {}
 
   public rerouteToSubject(subjectId: any) {
-    const message: Message = new Message()
-    message.Value = '/web/viewer/subject/' + subjectId + '#news'
-    message.Type = 'Route'
-    this.sendMessage(message)
+    const subjectMessage: Message = new Message()
+    subjectMessage.Value = subjectId
+    subjectMessage.Type = 'SubjectId'
+
+    const routeMessage: Message = new Message()
+    routeMessage.Value = '/web/viewer/subject/' + subjectId + '#news'
+    routeMessage.Type = 'Route'
+
+    this.sendMessage(subjectMessage)
+    this.sendMessage(routeMessage)
   }
 
   public sendMessage(message: Message): void {
