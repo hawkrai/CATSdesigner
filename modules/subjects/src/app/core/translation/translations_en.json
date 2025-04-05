@@ -195,6 +195,7 @@
   "results": "Results",
   "works.submission": "Works submission",
   "text.check.plagiarism": "",
+  "no.matches.found": "No matches found",
   "text.check.plagiarism.all": "Check for plagiarism of all works",
   "text.refresh.data": "Refresh data",
   "text.field.optional": "Optional field",
@@ -239,4 +240,5 @@
   "prefix.lab": "Lab",
   "prefix.practical": "WS",
   "prefix.lecture": "L"
+  
 }

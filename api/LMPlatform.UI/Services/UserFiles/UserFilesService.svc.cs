@@ -324,17 +324,34 @@ namespace LMPlatform.UI.Services.UserFiles
 					};
 				}
 
-				foreach (var filesPath in filesPaths)
-				{
-					foreach (var srcPath in Directory.GetFiles(this.FileUploadPath + filesPath))
-					{
-						File.Copy(srcPath, srcPath.Replace(this.FileUploadPath + filesPath, this.PlagiarismTempPath + path), true);
-					}
+                foreach (var filesPath in filesPaths)
+                {
+                    var fullPath = Path.Combine(this.FileUploadPath, filesPath);
 
-					key += filesPath.GetHashCode();
-				}
+                    if (!Directory.Exists(fullPath))
+                    {
+                        Console.WriteLine($"Путь не существует: {fullPath}");
+                        continue;
+                    }
 
-				string firstFileName =
+                    foreach (var srcPath in Directory.GetFiles(fullPath))
+                    {
+                        var destinationPath = srcPath.Replace(this.FileUploadPath + filesPath, this.PlagiarismTempPath + path);
+
+                        var destinationDir = Path.GetDirectoryName(destinationPath);
+                        if (!Directory.Exists(destinationDir))
+                        {
+                            Directory.CreateDirectory(destinationDir);
+                        }
+
+                        File.Copy(srcPath, destinationPath, true);
+                    }
+
+                    key += filesPath.GetHashCode();
+                }
+
+
+                string firstFileName =
 					Directory.GetFiles(FileUploadPath + userFile.Attachments)
 					.Select(fi => fi)
 					.FirstOrDefault();

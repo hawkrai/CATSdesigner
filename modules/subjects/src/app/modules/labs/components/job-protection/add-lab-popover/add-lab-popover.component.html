@@ -12,7 +12,11 @@
               | translate: 'Выберите лабораторную работу'
           "
         >
-          <mat-option *ngFor="let lab of labs$ | async" [value]="lab.LabId">
+          <mat-option
+            *ngFor="let lab of labs$ | async"
+            [value]="lab.LabId"
+            [ngStyle]="{'background-color': lab.RowColor}"
+            [disabled]="lab.RowColor === '#d5fcd5'">
             {{ lab.ShortName }}. {{ lab.Theme }}
           </mat-option>
         </mat-select>

@@ -11,19 +11,18 @@
           [color]="'primary'"
           class="section-method"
         >
-          <mat-radio-button class="example-margin" value="0">{{
-            'vector.method' | translate: 'Векторный метод'
-          }}</mat-radio-button>
-          <mat-radio-button class="example-margin" value="1">{{
-            'shingles.method' | translate: 'Метод шинглов'
-          }}</mat-radio-button>
+          <mat-radio-button class="example-margin" value="0">
+            {{ 'vector.method' | translate: 'Векторный метод' }}
+          </mat-radio-button>
+          <mat-radio-button class="example-margin" value="1">
+            {{ 'shingles.method' | translate: 'Метод шинглов' }}
+          </mat-radio-button>
         </mat-radio-group>
       </section>
       <mat-form-field class="example-full-width">
-        <mat-label
-          >{{ 'similarity.percentage' | translate: 'Процент схожести' }},
-          %</mat-label
-        >
+        <mat-label>
+          {{ 'similarity.percentage' | translate: 'Процент схожести' }}, %
+        </mat-label>
         <input
           name="percent"
           min="50"
@@ -32,6 +31,8 @@
           type="number"
           matInput
           [(ngModel)]="percent"
+          matTooltip="50% - 100%"
+          onkeypress="return false"
         />
       </mat-form-field>
     </form>
@@ -43,53 +44,37 @@
     <div *ngIf="result$ | async as result">
       <div *ngFor="let caster of result; let i = index">
         <p class="mat-typography text">
-          {{ 'custer' | translate: 'Кастер' }} {{ i + 1 }}
+          {{ 'custer' | translate: 'Кластер' }} {{ i + 1 }}
         </p>
-        <table
-          mat-table
-          [dataSource]="caster.correctDocs"
-          class="mat-elevation-z14 example-list"
-        >
-          <ng-container matColumnDef="author">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'author' | translate: 'Автор' }}
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.author }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="group">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'group' | translate: 'Группа' }}
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.groupName }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="subject">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'course' | translate: 'Предмет' }}
-            </th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.subjectName }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="file">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'text.attachments' | translate: 'Файл' }}
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element"
-              class="link"
-              (click)="downloadFile(element)"
-            >
-              {{ element.doc }}
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
+        <div class="table-wrapper">
+          <div class="table-container">
+            <table mat-table [dataSource]="caster.correctDocs" class="mat-elevation-z14 example-list wide-table" style="width: 100%;">
+              <ng-container matColumnDef="author">
+                <th mat-header-cell *matHeaderCellDef style="width: 230px;"> {{ 'author' | translate: 'Автор' }} </th>
+                <td mat-cell *matCellDef="let element" style="width: 230px;">{{ element.author }}</td>
+              </ng-container>
+              <ng-container matColumnDef="group" >
+                <th mat-header-cell *matHeaderCellDef style="width: 80px;"> {{ 'group' | translate: 'Группа' }} </th>
+                <td mat-cell *matCellDef="let element" style="width: 80px;">{{ element.groupName }}</td>
+              </ng-container>
+              <ng-container matColumnDef="subject">
+                <th mat-header-cell *matHeaderCellDef style="width: 80px;"> {{ 'course' | translate: 'Предмет' }} </th>
+                <td mat-cell *matCellDef="let element" matTooltip="{{ element.subjectName }}" style="width: 80px;">
+                  {{ element.subjectName }}
+                </td>
+              </ng-container>
+              
+              <ng-container matColumnDef="file">
+                <th mat-header-cell *matHeaderCellDef> {{ 'text.attachments' | translate: 'Файл' }} </th>
+                <td mat-cell *matCellDef="let element" class="link" (click)="downloadFile(element)">
+                  {{ element.doc }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </ng-container>
