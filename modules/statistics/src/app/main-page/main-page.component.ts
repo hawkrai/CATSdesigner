@@ -1,8 +1,24 @@
 import { Component, OnInit } from '@angular/core'
-
 import { StatisitcsServiceService } from '../service/statisitcs-service.service'
 import { TranslatePipe } from 'educats-translate'
 import { Message } from '../../../../../container/src/app/core/models/message'
+
+function isCyrillic(str: string): boolean {
+  return /[а-яА-ЯЁё]/.test(str)
+}
+
+function compareSubjects(a: string, b: string): number {
+  const aIsCyrillic = isCyrillic(a)
+  const bIsCyrillic = isCyrillic(b)
+
+  if (aIsCyrillic && !bIsCyrillic) {
+    return 1
+  }
+  if (!aIsCyrillic && bIsCyrillic) {
+    return -1
+  }
+  return a.localeCompare(b)
+}
 
 @Component({
   selector: 'app-main-page',
@@ -109,7 +125,7 @@ export class MainPageComponent implements OnInit {
       this.serviceService.getTeacherStatistics().subscribe((res) => {
         let i = 0
         res.SubjectStatistics.sort((a, b) =>
-          a.SubjectName.localeCompare(b.SubjectName)
+          compareSubjects(a.SubjectName, b.SubjectName)
         )
         res.SubjectStatistics.forEach((subject) => {
           this.serviceService
@@ -597,7 +613,7 @@ export class MainPageComponent implements OnInit {
   }
 
   performData(subjects: any, result: any, chartList1: any, isArchive: boolean) {
-    subjects = subjects.sort((a, b) => a.Name.localeCompare(b.Name))
+    subjects = subjects.sort((a, b) => compareSubjects(a.Name, b.Name))
     this.subjectName = []
     this.series = []
     this.practMarks = []
