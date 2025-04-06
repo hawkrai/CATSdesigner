@@ -12,4 +12,5 @@ export class Lab {
   SubGroup: number
   SubjectId: number
   Theme: string
+  IsReceived: boolean // Добавлено свойство
 }
