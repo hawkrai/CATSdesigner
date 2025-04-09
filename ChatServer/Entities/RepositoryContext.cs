@@ -35,6 +35,16 @@ namespace Entities
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<GroupChat>()
+                .HasIndex(gc => gc.SubjectId, "IX_GroupChats_SubjectId_Unique_SubjectGroup")
+                .IsUnique()
+                .HasFilter("[GroupId] IS NULL AND [IsSubjectGroup] = 1");
+
+            modelBuilder.Entity<GroupChat>()
+                .HasIndex(gc => new { gc.SubjectId, gc.GroupId }, "IX_GroupChats_SubjectId_GroupId_Unique_StudentGroup")
+                .IsUnique()
+                .HasFilter("[GroupId] IS NOT NULL AND [IsStudentGroup] = 1");
+
             modelBuilder.Entity<GroupMessage>()
                 .HasOne(gm => gm.GroupChat)
                 .WithMany(gc => gc.GroupMessages)

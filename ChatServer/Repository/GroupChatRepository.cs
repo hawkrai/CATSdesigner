@@ -2,6 +2,7 @@
 using Entities;
 using Entities.Models;
 using Entities.Models.GroupChatModels;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -50,6 +51,12 @@ namespace Repository
                 await Create(chat);
                 await RepositoryContext.SaveChangesAsync();
                 return true;
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && (sqlEx.Number == 2601 || sqlEx.Number == 2627))
+            {
+                Debug.WriteLine($"Attempted to create duplicate chat. SubjectId: {chat.SubjectId}, GroupId: {chat.GroupId}. Error: {sqlEx.Message}");
+                RepositoryContext.ChangeTracker.Clear();
+                return false;
             }
             catch (Exception ex)
             {
