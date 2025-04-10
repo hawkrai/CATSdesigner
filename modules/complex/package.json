@@ -9,9 +9,6 @@
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
-  "engines": {
-    "node": "14.x"
-  },
   "dependencies": {
     "@angular/animations": "^8.1.0",
     "@angular/cdk": "^8.0.2",

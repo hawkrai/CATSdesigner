@@ -9,9 +9,6 @@
     "lint": "../../../lmsNew/node_modules/.bin/ng lint",
     "e2e": "../../../lmsNew/node_modules/.bin/ng e2e"
   },
-  "engines": {
-    "node": "14.x"
-  },
   "private": true,
   "dependencies": {
     "@angular/animations": "~8.2.14",
