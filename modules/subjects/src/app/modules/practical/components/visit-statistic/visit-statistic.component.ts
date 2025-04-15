@@ -26,6 +26,7 @@ import { SubSink } from 'subsink'
 })
 export class VisitStatisticComponent implements OnInit, OnDestroy {
   private subs = new SubSink()
+  private practicalPrefix: string
 
   state$: Observable<{
     practicals: Practical[]
@@ -46,6 +47,8 @@ export class VisitStatisticComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.practicalPrefix = this.translate.transform('prefix.practical', 'ПЗ')
+
     this.state$ = combineLatest([
       this.store.select(practicalsSelectors.selectPracticals),
       this.store.select(practicalsSelectors.selectSchedule),
@@ -88,7 +91,7 @@ export class VisitStatisticComponent implements OnInit, OnDestroy {
     return defaultHeaders.concat(
       practicals.map((p, index) => ({
         head: p.PracticalId.toString(),
-        text: p.ShortName,
+        text: this.practicalPrefix + p.ShortName.match(/\d+/g).join(''),
         length: Math.floor(p.Duration / 2),
         tooltip: p.Theme,
       }))
