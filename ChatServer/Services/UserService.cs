@@ -146,57 +146,62 @@ namespace Services
         public async Task<IEnumerable<ChatDto>> GetUserChats(int userId)
         {
             var user = await _repository.Users.GetUserChats(userId, false);
+
+            if (user == null || user.UserChats == null)
+            {
+                return new List<ChatDto>();
+            }
+
             var chats = user.UserChats.ToList();
-            var chatDTO = _mapper.Map<List<ChatDto>>(chats);
+            var chatsDTO = _mapper.Map<List<ChatDto>>(chats);
+
             for (int i = 0; i < chats.Count; i++)
             {
-                var history = user.UserChatHistory.FirstOrDefault(x => x.ChatId == chats[i].Id);
-                if (history != null)
-                { 
-                    var lastReaded = chats[i].Messages.FindIndex(x => x.Time > history.Date);
-                    if (lastReaded > -1)
-                        chatDTO[i].Unread = chats[i].Messages.Count - lastReaded;
-                    else
-                        chatDTO[i].Unread = 0;
-                }
-                var users = (await _repository.UserChats.GetChatUsers(chatDTO[i].Id)).Users;
-                string fullName = "";
-                string image = "";
-                User secondUser = null;
-                if (users[0].UserId == userId)
+                var currentChat = chats[i];
+                var currentChatDto = chatsDTO[i];
+
+                var chatUsers = (await _repository.UserChats.GetChatUsers(chatsDTO[i].Id)).Users;
+                if (chatUsers == null || chatUsers.Count != 2) continue;
+
+                User secondUser = chatUsers.FirstOrDefault(u => u.UserId != userId);
+                if (secondUser == null) continue;
+
+                currentChatDto.UserId = secondUser.UserId;
+                currentChatDto.IsOnline = secondUser.IsOnline;
+                currentChatDto.Img = secondUser.Avatar;
+                string fullName = secondUser.FullName;
+                Lecturer lecturer = await _repository.Lecturers.GetLecturerAsync(secondUser.UserId, false);
+
+                if (lecturer != null)
                 {
-                    Lecturer lecturer = null;
-                    image = users[1].Avatar;
-                    lecturer = await _repository.Lecturers.GetLecturerAsync(users[1].UserId, false);
-                    if (lecturer == null)
-                    {
-                        var student = await _repository.Students.GetStudentAsync(users[1].UserId, false);
-                        fullName = student.FullName;
-                    }
-                    else
-                        fullName = lecturer.FullName;
-                    secondUser = await _repository.Users.GetUserAsync(users[1].UserId, false);
+                    fullName = lecturer.FullName;
                 }
                 else
                 {
-                    Lecturer lecturer = null;
-                    image = users[0].Avatar;
-                    lecturer = await _repository.Lecturers.GetLecturerAsync(users[0].UserId, false);
-                    if (lecturer == null)
+                    Student student = await _repository.Students.GetStudentAsync(secondUser.UserId, false);
+                    if (student != null)
                     {
-                        var student = await _repository.Students.GetStudentAsync(users[0].UserId, false);
                         fullName = student.FullName;
                     }
-                    else
-                        fullName = lecturer.FullName;
-                    secondUser = await _repository.Users.GetUserAsync(users[0].UserId, false);
                 }
-                chatDTO[i].IsOnline = secondUser.IsOnline;
-                chatDTO[i].UserId = secondUser.UserId;
-                chatDTO[i].Name = fullName;
-                chatDTO[i].Img = image;
+                currentChatDto.Name = fullName;
+
+                var history = user.UserChatHistory.FirstOrDefault(x => x.ChatId == chats[i].Id);
+                var messages = currentChat.Messages ?? new List<ChatMessage>();
+                int unreadCount = 0;
+
+                if (history != null)
+                {
+                    unreadCount = messages.Count(x => x.Time > history.Date);
+                }
+                else
+                {
+                    unreadCount = messages.Count;
+                }
+                currentChatDto.Unread = unreadCount;
             }
-            return chatDTO;
+
+            return chatsDTO;
         }
 
         public async Task UpdateLastLogin(int userId)
@@ -205,6 +210,5 @@ namespace Services
             user.LastLogin = DateTime.Now;
             await _repository.SaveAsync();
         }
-
     }
 }

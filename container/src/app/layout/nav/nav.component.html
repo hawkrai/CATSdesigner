@@ -166,8 +166,8 @@
     matTooltipPosition="below"
   >
     <mat-icon
-      matBadge="{{ unRead }}"
-      [matBadgeHidden]="unRead < 1"
+      matBadge="{{ totalUnreadCount$ | async }}"
+      [matBadgeHidden]="(totalUnreadCount$ | async) === 0"
       matBadgeOverlap="true"
       matBadgePosition="above"
       matBadgeColor="warn"
@@ -417,8 +417,8 @@
         matTooltipPosition="below"
       >
         <mat-icon
-          matBadge="{{ unRead }}"
-          [matBadgeHidden]="unRead < 1"
+          matBadge="{{ totalUnreadCount$ | async }}"
+          [matBadgeHidden]="(totalUnreadCount$ | async) === 0"
           matBadgeOverlap="true"
           matBadgePosition="above"
           matBadgeColor="warn"

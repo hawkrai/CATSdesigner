@@ -26,7 +26,13 @@ import { DataService } from '@chat/shared/services/dataService'
 import { VideoChatService } from '@modules/video-chat/services/video-chat.service'
 import { ToastrService } from 'ngx-toastr'
 import { Subject, Subscription, combineLatest } from 'rxjs'
-import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators'
+import {
+  takeUntil,
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  filter,
+} from 'rxjs/operators'
 import { ScrollUtils } from '@chat/shared/utils/scrollUtils'
 import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
 
@@ -71,6 +77,18 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('searchDropdown') searchDropdown: NgbDropdown
 
   ngOnInit(): void {
+    this.dataService.activChatId$
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((chatId) => chatId !== null && !!this.dataService.activChat)
+      )
+      .subscribe((activeChatId) => {
+        const chatToActivate = { ...this.dataService.activChat }
+        if (chatToActivate && chatToActivate.id === activeChatId) {
+          this.activateChat(chatToActivate)
+        }
+      })
+
     this.contactService.openChatComand
       .pipe(takeUntil(this.destroy$))
       .subscribe((chatToOpen) => {
@@ -184,67 +202,41 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
 
   activateChat(chatData: any) {
     if (!chatData || !chatData.id) return
-    if (this.dataService.activChatId === chatData.id) return
+    if (
+      this.dataService.activChatId === chatData.id &&
+      (!chatData.unread || chatData.unread === 0)
+    )
+      return
 
-    let chatId = chatData.id
+    if (this.dataService.activChatId === chatData.id) {
+      if (chatData.unread > 0) {
+        const isGroup =
+          !!chatData.groups || !!chatData.groupId || !!chatData.shortName
+        if (isGroup) {
+          this.dataService.groupRead().subscribe()
+        } else {
+          this.dataService.updateRead().subscribe()
+        }
+      }
+      return
+    }
+
     let isGroup =
       !!chatData.groups || !!chatData.groupId || !!chatData.shortName
+    const initialUnreadCount = chatData.unread || 0
 
-    this.dataService.setActiveChat(chatId, isGroup, chatData)
-
-    let unreadCountToDecrement = 0
-    if (isGroup) {
-      const [subjIdx, grpIdx] = this.dataService.getNumGroupById(chatId)
-      if (grpIdx > -1) {
-        const subjects = this.dataService.groups.getValue()
-        if (subjects[subjIdx]?.groups[grpIdx]) {
-          unreadCountToDecrement = subjects[subjIdx].groups[grpIdx].unread || 0
-          if (unreadCountToDecrement > 0) {
-            subjects[subjIdx].groups[grpIdx].unread = 0
-            this.dataService.groups.next([...subjects])
-          }
-        }
+    if (initialUnreadCount > 0) {
+      if (isGroup) {
+        this.dataService.groupRead().subscribe()
       } else {
-        const subjIdxById = this.dataService.getNumSubjectById(chatId)
-        if (subjIdxById > -1) {
-          const subjects = this.dataService.groups.getValue()
-          if (subjects[subjIdxById]) {
-            unreadCountToDecrement = subjects[subjIdxById].unread || 0
-            if (unreadCountToDecrement > 0) {
-              subjects[subjIdxById].unread = 0
-              this.dataService.groups.next([...subjects])
-            }
-          }
-        }
+        this.dataService.updateRead().subscribe()
       }
-      if (unreadCountToDecrement > 0) {
-        this.dataService.readMessageGroupCount.next(
-          Math.max(
-            0,
-            this.dataService.readMessageGroupCount.getValue() -
-              unreadCountToDecrement
-          )
-        )
-        this.dataService.groupRead()
-      }
-    } else {
-      const chatIndex = this.dataService.getNumChatById(chatId)
-      if (chatIndex > -1) {
-        const chats = this.dataService.chats.getValue()
-        unreadCountToDecrement = chats[chatIndex].unread || 0
-        if (unreadCountToDecrement > 0) {
-          chats[chatIndex].unread = 0
-          this.dataService.chats.next([...chats])
-          this.dataService.readMessageChatCount.next(
-            Math.max(
-              0,
-              this.dataService.readMessageChatCount.getValue() -
-                unreadCountToDecrement
-            )
-          )
-          this.dataService.updateRead()
-        }
-      }
+    } else if (
+      this.dataService.activChatId === chatData.id &&
+      chatData.unread > 0
+    ) {
+      if (isGroup) this.dataService.groupRead().subscribe()
+      else this.dataService.updateRead().subscribe()
     }
 
     document.getElementById('chat-room')?.classList.add('user-chat-show')

@@ -1,9 +1,9 @@
 import { Injectable, NgZone } from '@angular/core'
 import { Chat } from '@chat/shared/models/entities/chats.model'
 import { Message } from '@chat/shared/models/entities/message.model'
-import { BehaviorSubject, Observable, from, of, Subject, EMPTY } from 'rxjs'
+import { BehaviorSubject, Observable, of, Subject, EMPTY } from 'rxjs'
 import { Groups } from '@chat/shared/models/entities/groups.model'
-import { finalize, catchError, tap } from 'rxjs/operators'
+import { finalize, catchError, tap, take } from 'rxjs/operators'
 import { SubjectGroups } from '@chat/shared/models/entities/subject.groups.model'
 import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
 import { ChatApiService } from '@chat/shared/api/chat-api.service'
@@ -53,8 +53,10 @@ export class DataService {
     new BehaviorSubject<boolean>(false)
   private loadingTimeout: any = null
   public initialMessagesLoaded = new Subject<void>()
+  private activeChatReadTimer: any = null
   public readonly defaultPageSize: number = 20
   public readonly searchPageSize: number = 20
+  private readonly readDebounceTime = 1500
 
   constructor(
     private chatApiService: ChatApiService,
@@ -68,6 +70,10 @@ export class DataService {
 
   public setActiveChat(chatId: number | null, isGroup: boolean, chatInfo: any) {
     if (this.activChatId !== chatId) {
+      if (this.activeChatReadTimer) {
+        clearTimeout(this.activeChatReadTimer)
+        this.activeChatReadTimer = null
+      }
       this.activChatId = chatId
       this.isGroupChat = isGroup
       this.activChat = chatInfo
@@ -78,6 +84,10 @@ export class DataService {
       } else {
         this.messages.next([])
         this.searchResults.next([])
+      }
+    } else {
+      if (chatInfo) {
+        this.activChat = { ...chatInfo }
       }
     }
   }
@@ -111,18 +121,102 @@ export class DataService {
       })
   }
 
-  public updateRead() {
-    if (!this.user?.id || !this.activChatId) return
-    this.chatApiService
-      .updateReadChat(this.user.id, this.activChatId)
-      .subscribe()
+  public updateRead(): Observable<any> {
+    if (!this.user?.id || !this.activChatId) return EMPTY
+    const chatIdToUpdate = this.activChatId
+
+    return this.chatApiService
+      .updateReadChat(this.user.id, chatIdToUpdate)
+      .pipe(
+        take(1),
+        tap(() => {
+          this.zone.run(() => {
+            const currentChats = this.chats.getValue()
+            const chatIndex = currentChats.findIndex(
+              (c) => c.id === chatIdToUpdate
+            )
+            if (chatIndex > -1) {
+              const chat = currentChats[chatIndex]
+              const unreadCount = chat.unread || 0
+              if (unreadCount > 0) {
+                chat.unread = 0
+                this.chats.next([...currentChats])
+
+                this.readMessageChatCount.next(
+                  Math.max(
+                    0,
+                    this.readMessageChatCount.getValue() - unreadCount
+                  )
+                )
+              }
+            }
+          })
+        }),
+        catchError((error) => {
+          console.error(
+            `Failed to update read status for chat ${chatIdToUpdate}:`,
+            error
+          )
+          return EMPTY
+        })
+      )
   }
 
-  public groupRead() {
-    if (!this.user?.id || !this.activChatId) return
-    this.chatApiService
-      .updateReadGroupChat(this.user.id, this.activChatId)
-      .subscribe()
+  public groupRead(): Observable<any> {
+    if (!this.user?.id || !this.activChatId) {
+      return EMPTY
+    }
+
+    const chatIdToUpdate = this.activChatId
+    return this.chatApiService
+      .updateReadGroupChat(this.user.id, chatIdToUpdate)
+      .pipe(
+        take(1),
+        tap(() => {
+          this.zone.run(() => {
+            const currentSubjects = this.groups.getValue()
+            let unreadCountDecremented = 0
+            let updated = false
+
+            for (const subject of currentSubjects) {
+              if (subject.id === chatIdToUpdate && subject.unread > 0) {
+                unreadCountDecremented = subject.unread
+                subject.unread = 0
+                updated = true
+                break
+              }
+              if (subject.groups) {
+                const groupIndex = subject.groups.findIndex(
+                  (g) => g.id === chatIdToUpdate
+                )
+                if (groupIndex > -1 && subject.groups[groupIndex].unread > 0) {
+                  unreadCountDecremented = subject.groups[groupIndex].unread
+                  subject.groups[groupIndex].unread = 0
+                  updated = true
+                  break
+                }
+              }
+            }
+
+            if (updated) {
+              this.groups.next([...currentSubjects])
+              this.readMessageGroupCount.next(
+                Math.max(
+                  0,
+                  this.readMessageGroupCount.getValue() - unreadCountDecremented
+                )
+              )
+            }
+          })
+        }),
+        catchError((error) => {
+          console.error(
+            `Failed to update read status for group chat ${chatIdToUpdate}:`,
+            error
+          )
+          return EMPTY
+        })
+      )
   }
 
   public SetStatus(id: number, isOnline: boolean): void {
@@ -375,21 +469,34 @@ export class DataService {
   }
 
   public AddMsg(msg: Message) {
-    if (msg.chatId == this.activChatId) {
+    if (msg.chatId == this.activChatId && this.activChatId !== null) {
       if (!this.isSearching.getValue()) {
         const currentMessages = this.messages.getValue()
         if (!currentMessages.some((m) => m.id === msg.id)) {
           this.messages.next([...currentMessages, msg])
-          if (this.isGroupChat) {
-            this.groupRead()
-          } else {
-            this.updateRead()
-          }
+          this.scheduleActiveChatRead()
         }
+      } else {
+        this.scheduleActiveChatRead()
       }
     } else {
       this.updateUnreadCounters(msg)
     }
+  }
+
+  private scheduleActiveChatRead(): void {
+    if (this.activeChatReadTimer) {
+      clearTimeout(this.activeChatReadTimer)
+    }
+
+    this.activeChatReadTimer = setTimeout(() => {
+      if (this.isGroupChat) {
+        this.groupRead().subscribe()
+      } else {
+        this.updateRead().subscribe()
+      }
+      this.activeChatReadTimer = null
+    }, this.readDebounceTime)
   }
 
   private updateUnreadCounters(msg: Message): void {

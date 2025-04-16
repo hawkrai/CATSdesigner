@@ -189,6 +189,9 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   showChat(chat: Chat) {
+    if (!chat) {
+      return
+    }
     if (!chat) return
 
     if (!chat.id) {
@@ -198,11 +201,11 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
             chat.id = chatId
             this.dataService.setActiveChat(chat.id, false, chat)
             this.dataService.updateOrAddChat(chat)
-            this.signalRService
-              .addChat(this.dataService.user.id, chat.userId, chatId)
-              .catch((err) => console.error('SignalR addChat failed', err))
-          } else {
-            console.error('Failed to create chat, received invalid ID.')
+            this.signalRService.addChat(
+              this.dataService.user.id,
+              chat.userId,
+              chatId
+            )
           }
         },
         (error) => {

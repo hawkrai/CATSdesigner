@@ -1,9 +1,16 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ChangeDetectorRef,
+} from '@angular/core'
 import { LayoutService } from '../layout.service'
 import { AuthenticationService } from '../../core/services/auth.service'
-import { first, takeUntil, tap } from 'rxjs/operators'
+import { first, takeUntil, tap, map, startWith } from 'rxjs/operators'
 import { CoreService } from '../../core/services/core.service'
-import { Subject, Subscription } from 'rxjs'
+import { Subject, Subscription, Observable, combineLatest } from 'rxjs'
 import {
   Lecturer,
   Student,
@@ -11,8 +18,8 @@ import {
 } from '../../core/models/searchResults/search-results'
 import { SearchService } from '../../core/services/searchResults/search.service'
 import { ProfileService } from '../../core/services/searchResults/profile.service'
-import { DataService } from '../../modules/chat/shared/services/dataService'
-import { ChatService } from 'src/app/modules/chat/shared/services/chatService'
+import { DataService } from '@chat/shared/services/dataService'
+import { ChatService } from '@chat/shared/services/chatService'
 import { MenuService } from 'src/app/core/services/menu.service'
 import { MatDialog } from '@angular/material/dialog'
 import { AboutSystemPopoverComponent } from '../../about-system/about-popover/about-popover.component'
@@ -36,8 +43,8 @@ export class NavComponent implements OnInit, OnDestroy {
   public isLector: boolean
   public isStudent: boolean
   public isAdmin: boolean
-  public unRead = 0
   public unconfirmedStudents = 0
+  public totalUnreadCount$: Observable<number>
   private unsubscribeStream$: Subject<void> = new Subject<void>()
   public locales: DropDownValue[] = [
     { name: 'Ru', value: 'ru' },
@@ -68,7 +75,7 @@ export class NavComponent implements OnInit, OnDestroy {
     private router: Router,
     private coreService: CoreService,
     private chatService: ChatService,
-    private dataService: DataService,
+    public dataService: DataService,
     private autService: AuthenticationService,
     private searchService: SearchService,
     private profileService: ProfileService,
@@ -76,6 +83,7 @@ export class NavComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private confirmationService: ConfirmationService,
     private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -114,24 +122,17 @@ export class NavComponent implements OnInit, OnDestroy {
       ? this.locales.find((locale: DropDownValue) => locale.value === local)
       : this.locales[0]
 
-    this.dataService.readMessageCount.subscribe((count) => {
-      this.unRead -= count
-    })
+    this.totalUnreadCount$ = combineLatest([
+      this.dataService.readMessageChatCount.pipe(startWith(0)),
+      this.dataService.readMessageGroupCount.pipe(startWith(0)),
+    ]).pipe(
+      takeUntil(this.unsubscribeStream$),
+      map(([chatCount, groupCount]) => {
+        const total = (chatCount || 0) + (groupCount || 0)
+        return total
+      })
+    )
 
-    if (this.autService.currentUserValue != undefined) {
-      this.chatService.loadChats().subscribe((chats) =>
-        chats.forEach((chat) => {
-          this.unRead += chat.unread
-        })
-      )
-
-      this.chatService.loadGroups().subscribe((groups) =>
-        groups.forEach((subjectGroup) => {
-          this.unRead += subjectGroup.unread
-          subjectGroup.groups.forEach((group) => (this.unRead += group.unread))
-        })
-      )
-    }
     if (this.isLector) {
       this.confirmationService
         .getUncofirmedStudentsCount()
