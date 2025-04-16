@@ -17,20 +17,12 @@ namespace ChatServer.Controllers
     [ApiController]
     public class MessageController : Controller
     {
-        private readonly ChatService _chatService;
         private readonly IMapper _mapper;
-        private readonly IRepositoryManager _repository;
-        private readonly IUserService _userService;
-        private readonly IGroupChatService _groupService;
         private readonly IGroupMessageService _groupMessageService;
 
-        public MessageController(IGroupMessageService groupMessageService, ChatService channelService, IUserService userService, IGroupChatService groupService, IRepositoryManager repository, IMapper mapper)
+        public MessageController(IGroupMessageService groupMessageService, IMapper mapper)
         {
             _groupMessageService = groupMessageService;
-            _groupService = groupService;
-            _userService = userService;
-            _repository = repository;
-            _chatService = channelService;
             _mapper = mapper;
         }
 
@@ -46,6 +38,32 @@ namespace ChatServer.Controllers
         {
             var msgs = await _groupMessageService.GetChatMessages(userId, chatId, limit, offset);
             return msgs;
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<MessageDto>> SearchMessages(
+            int userId,
+            int chatId,
+            bool isGroupChat,
+            string searchText,
+            int limit = 20,
+            int offset = 0)
+        {
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                return isGroupChat
+                    ? await _groupMessageService.GetGroupMessages(userId, chatId, limit, offset)
+                    : await _groupMessageService.GetChatMessages(userId, chatId, limit, offset);
+            }
+
+            if (isGroupChat)
+            {
+                return await _groupMessageService.SearchGroupMessages(userId, chatId, searchText, limit, offset);
+            }
+            else
+            {
+                return await _groupMessageService.SearchChatMessages(userId, chatId, searchText, limit, offset);
+            }
         }
     }
 }
