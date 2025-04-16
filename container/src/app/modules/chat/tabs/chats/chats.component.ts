@@ -28,8 +28,11 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
   filterValue: string = ''
   chats: Chat[]
   isSearching: boolean = false
-  subscription: Subscription
-  subscriptionContact: Subscription
+  dataSubscription: Subscription
+  contactSubscription: Subscription
+  openChatSubscription: Subscription
+  loadingStatusSubscription: Subscription
+
   private loadMoreTimer: any = null
   private searchTerms = new Subject<string>()
   private searchSubscription: Subscription
@@ -54,35 +57,34 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.dataService.messages.next([])
-    this.dataService.activChat = null
-    this.dataService.activChatId = 0
-    this.dataService.activGroup = null
-    this.dataService.isGroupChat = false
-
-    this.subscriptionContact = this.contactService.openChatComand.subscribe(
-      (x) => this.showChat(x)
+    this.openChatSubscription = this.contactService.openChatComand.subscribe(
+      (chat) => {
+        if (chat) {
+          this.showChat(chat)
+        }
+      }
     )
 
-    this.subscription = this.dataService.chats.subscribe((chats) => {
-      if (chats) {
-        if (!this.isSearching) {
-          this.chats = chats
+    this.contactSubscription = this.contactService.contacts.subscribe(
+      (contacts: Chat[]) => {
+        if (this.isSearching) {
+          this.chats = contacts
+          this.cdr.detectChanges()
         }
+      }
+    )
+
+    this.dataSubscription = this.dataService.chats.subscribe((chats) => {
+      if (!this.isSearching) {
+        this.chats = chats
         this.cdr.detectChanges()
       }
     })
 
-    this.contactService.contacts.subscribe((contacts) => {
-      if (contacts && contacts.length > 0 && this.isSearching) {
-        this.updateSearchResults(contacts)
+    this.loadingStatusSubscription =
+      this.contactService.loadingStatus.subscribe(() => {
         this.cdr.detectChanges()
-      }
-    })
-
-    this.contactService.loadingStatus.subscribe((isLoading) => {
-      this.cdr.detectChanges()
-    })
+      })
 
     this.searchSubscription = this.searchTerms
       .pipe(debounceTime(600), distinctUntilChanged())
@@ -92,16 +94,17 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (!this.contactService.isChatOpen) {
       this.dataService.loadChats()
-    } else {
-      this.contactService.isChatOpen = false
     }
+
+    this.contactService.isChatOpen = false
   }
 
   ngAfterViewInit() {
     setTimeout(() => {
-      if (this.perfectScrollbar && this.perfectScrollbar.directiveRef) {
+      if (this.perfectScrollbar?.directiveRef) {
         const element =
           this.perfectScrollbar.directiveRef.elementRef.nativeElement
+        element.removeEventListener('scroll', this.handleScroll.bind(this))
         element.addEventListener('scroll', this.handleScroll.bind(this))
       }
     }, 500)
@@ -139,25 +142,21 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const dataChats = this.dataService.chats.getValue()
     this.chats = contacts.map((contact) => {
-      const existingChat = dataChats.find(
-        (c) => c.userId === contact.userId || c.name === contact.name
-      )
-      if (existingChat) {
-        return {
-          ...contact,
-          id: existingChat.id,
-          unread: existingChat.unread,
-          time: existingChat.time,
-          lastMessage: existingChat.lastMessage,
-          isOnline: contact.isOnline || existingChat.isOnline,
-        }
+      const existingChat = dataChats.find((c) => c.userId === contact.userId)
+      return {
+        ...contact,
+        id: existingChat?.id,
+        unread: existingChat?.unread ?? 0,
+        time: existingChat?.time,
+        lastMessage: existingChat?.lastMessage,
+        isOnline: contact.isOnline || existingChat.isOnline,
       }
-      return contact
     })
+    this.cdr.detectChanges()
   }
 
   filter(): void {
-    this.searchTerms.next(this.filterValue)
+    this.searchTerms.next(this.filterValue || '')
   }
 
   private performSearch(term: string): void {
@@ -173,67 +172,49 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    if (this.subscriptionContact) {
-      this.subscriptionContact.unsubscribe()
-    }
+    this.openChatSubscription?.unsubscribe()
+    this.dataSubscription?.unsubscribe()
+    this.contactSubscription?.unsubscribe()
+    this.loadingStatusSubscription?.unsubscribe()
+    this.searchSubscription?.unsubscribe()
 
-    if (this.subscription) {
-      this.subscription.unsubscribe()
-    }
-
-    if (this.searchSubscription) {
-      this.searchSubscription.unsubscribe()
-    }
-
-    if (this.perfectScrollbar && this.perfectScrollbar.directiveRef) {
+    if (this.perfectScrollbar?.directiveRef) {
       const element =
         this.perfectScrollbar.directiveRef.elementRef.nativeElement
       element.removeEventListener('scroll', this.handleScroll.bind(this))
     }
-
     if (this.loadMoreTimer) {
       clearTimeout(this.loadMoreTimer)
     }
   }
 
   showChat(chat: Chat) {
-    if (chat != null) {
-      if (!chat.id) {
-        this.contactService.CreateChat(chat.userId).subscribe((res) => {
-          chat.id = res
-          this.dataService.activChat = chat
-          this.dataService.activChatId = chat.id
-          this.dataService.isGroupChat = false
-          this.dataService.chats.next(
-            this.dataService.chats.getValue().concat(chat)
-          )
-          this.filterValue = ''
-          this.isSearching = false
-          this.dataService.LoadChatMsg()
-          this.signalRService.addChat(
-            Number.parseInt(this.dataService.user.id),
-            chat.userId,
-            res
-          )
-          document.getElementById('chat-room').classList.add('user-chat-show')
-        })
-      } else {
-        this.dataService.readMessageChatCount.next(
-          this.dataService.readMessageChatCount.getValue() - chat.unread
-        )
-        this.dataService.readMessageCount.next(chat.unread)
-        chat.unread = 0
-        this.dataService.activChat = chat
-        this.dataService.activChatId = chat.id
-        this.dataService.isGroupChat = false
-        this.dataService.updateRead()
-        this.dataService.LoadChatMsg()
-        document.getElementById('chat-room').classList.add('user-chat-show')
-      }
+    if (!chat) return
 
-      this.filterValue = ''
-      this.searchTerms.next('')
-      this.isSearching = false
+    if (!chat.id) {
+      this.contactService.CreateChat(chat.userId).subscribe(
+        (chatId) => {
+          if (chatId) {
+            chat.id = chatId
+            this.dataService.setActiveChat(chat.id, false, chat)
+            this.dataService.updateOrAddChat(chat)
+            this.signalRService
+              .addChat(this.dataService.user.id, chat.userId, chatId)
+              .catch((err) => console.error('SignalR addChat failed', err))
+          } else {
+            console.error('Failed to create chat, received invalid ID.')
+          }
+        },
+        (error) => {
+          console.error('Error creating chat:', error)
+        }
+      )
+    } else {
+      this.dataService.setActiveChat(chat.id, false, chat)
     }
+
+    this.filterValue = ''
+    this.searchTerms.next('')
+    this.isSearching = false
   }
 }
