@@ -85,6 +85,7 @@
       <!-- start chat conversation section -->
       <div class="w-100">
         <div
+          *ngIf="dataService.activChatId !== null"
           class="p-3 p-lg-4 border-bottom"
           style="padding: 0.72rem !important"
         >
@@ -222,6 +223,14 @@
             </div>
           </div>
         </div>
+        <div
+          *ngIf="dataService.activChatId === null"
+          class="no-chat-selected-placeholder d-flex justify-content-center align-items-center h-100"
+        >
+          <p class="text-muted h4">
+            {{ 'chat.noChatSelected' | translate: 'Чат не выбран' }}
+          </p>
+        </div>
         <!-- end chat user head -->
 
         <!-- start chat conversation -->
@@ -234,7 +243,7 @@
             class="load-trigger"
             style="height: 1px; width: 100%"
           ></div>
-          <ul class="list-unstyled mb-0" style="height: 90% !important">
+          <ul class="list-unstyled mb-0" style="min-height: 100% !important">
             <li
               *ngIf="dataService.loadingMoreMessages"
               class="text-center my-2 loading-messages-indicator"
@@ -259,7 +268,8 @@
               *ngIf="
                 !dataService.loadingMessagesStatus.getValue() &&
                 !dataService.loadingMoreMessages &&
-                displayedMessages.length === 0
+                displayedMessages.length === 0 &&
+                dataService.activChatId !== null
               "
               class="text-center empty-chat-indicator"
             >
@@ -454,6 +464,7 @@
 
         <!-- start chat input section -->
         <div
+          *ngIf="dataService.activChatId !== null"
           class="p-3 p-lg-4 mb-0"
           style="
             padding-left: 0px !important;

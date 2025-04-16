@@ -15,8 +15,8 @@ import { FileApiService } from '@chat/shared/api/file-api.service'
 })
 export class DataService {
   public files: any[] = []
-  public activChat: any
-  public activChatId: number
+  public activChat: any = null
+  public activChatId: number | null = null
   private _activChatIdSubject = new BehaviorSubject<number | null>(null)
   public activChatId$ = this._activChatIdSubject.asObservable()
   public readMessageGroupCount: BehaviorSubject<number> =
