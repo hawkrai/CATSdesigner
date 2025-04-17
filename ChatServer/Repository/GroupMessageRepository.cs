@@ -39,5 +39,13 @@ namespace Repository
             .Skip(offset)
             .Take(limit)
             .ToListAsync();
+
+        public async Task<IEnumerable<GroupMessage>> SearchGroupMessagesAsync(int chatId, string searchText, bool trackChanges, int limit, int offset)
+        {
+            return await FindByCondition(c => c.GroupChatId.Equals(chatId), trackChanges)
+                 .Include(x => x.User)
+                 .OrderByDescending(c => c.Time)
+                 .ToListAsync();
+        }
     }
 }

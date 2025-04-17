@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { DataService } from '@chat/shared/services/dataService'
 import { Subscription } from 'rxjs'
 import { SubjectGroups } from '@chat/shared/models/entities/subject.groups.model'
+import { IndexComponent } from '@chat/tabs/index/index.component'
 
 @Component({
   selector: 'app-groups',
@@ -25,17 +26,11 @@ export class GroupsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.dataService.messages.next([])
-    this.dataService.activChat = null
-    this.dataService.activChatId = 0
-    this.dataService.activGroup = null
-    this.dataService.isGroupChat = false
     this.subscription = this.dataService.groups.subscribe((groups) => {
       this.groups = groups
       this.oldGroups = groups
       this.cdr.detectChanges()
     })
-    this.dataService.loadGroups()
   }
 
   openGroupModal(content: any) {
@@ -43,26 +38,34 @@ export class GroupsComponent implements OnInit, OnDestroy {
   }
 
   filter() {
-    var groups = new Array<SubjectGroups>()
+    if (!this.searchGroup || this.searchGroup.trim() === '') {
+      this.groups = this.oldGroups
+      return
+    }
+    const searchTerm = this.searchGroup.toLowerCase()
+    const filteredGroups = new Array<SubjectGroups>()
     this.oldGroups.forEach((element) => {
-      var subjectGroup = Object.create(element)
-      var child = subjectGroup.groups.filter((x) =>
-        x.name.includes(this.searchGroup)
-      )
-      if (child.length != 0) {
-        subjectGroup.groups = child
-        groups.push(subjectGroup)
+      const filteredChildGroups =
+        element.groups?.filter((x) =>
+          x.name.toLowerCase().includes(searchTerm)
+        ) ?? []
+
+      const subjectMatches =
+        element.name.toLowerCase().includes(searchTerm) ||
+        element.shortName.toLowerCase().includes(searchTerm)
+
+      if (subjectMatches || filteredChildGroups.length > 0) {
+        const subjectGroupClone = { ...element }
+        subjectGroupClone.groups =
+          filteredChildGroups.length > 0 ? filteredChildGroups : element.groups
+        filteredGroups.push(subjectGroupClone)
       }
     })
-    this.groups = groups
+    this.groups = filteredGroups
   }
 
   async showChat(value: any) {
-    this.dataService.activChat = value
-    this.dataService.activChatId = value.id
-    this.dataService.isGroupChat = true
-    this.dataService.groupRead()
-    this.dataService.LoadGroupMsg()
-    document.getElementById('chat-room').classList.add('user-chat-show')
+    if (!value || !value.id) return
+    this.dataService.setActiveChat(value.id, true, value)
   }
 }

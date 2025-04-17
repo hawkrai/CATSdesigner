@@ -16,7 +16,8 @@ namespace Contracts.Services
         Task DeleteGroupMsg(int msgId);
         Task<MessageDto[]> GetGroupMessages(int userId, int chatId, int limit, int offset);
         Task<MessageDto[]> GetChatMessages(int userId, int chatId, int limit, int offset);
-
+        Task<MessageDto[]> SearchGroupMessages(int userId, int chatId, string searchText, int limit, int offset);
+        Task<MessageDto[]> SearchChatMessages(int userId, int chatId, string searchText, int limit, int offset);
         Task<GroupMessage> GetMessage(int id);
         Task UpdateMsg(GroupMessage msg, string text);
     }

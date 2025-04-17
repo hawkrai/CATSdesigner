@@ -1,9 +1,9 @@
 import { Injectable, NgZone } from '@angular/core'
 import { Chat } from '@chat/shared/models/entities/chats.model'
 import { Message } from '@chat/shared/models/entities/message.model'
-import { BehaviorSubject, Observable, from, of } from 'rxjs'
+import { BehaviorSubject, Observable, of, Subject, EMPTY } from 'rxjs'
 import { Groups } from '@chat/shared/models/entities/groups.model'
-import { finalize } from 'rxjs/operators'
+import { finalize, catchError, tap, take } from 'rxjs/operators'
 import { SubjectGroups } from '@chat/shared/models/entities/subject.groups.model'
 import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
 import { ChatApiService } from '@chat/shared/api/chat-api.service'
@@ -15,8 +15,10 @@ import { FileApiService } from '@chat/shared/api/file-api.service'
 })
 export class DataService {
   public files: any[] = []
-  public activChat: any
-  public activChatId: number
+  public activChat: any = null
+  public activChatId: number | null = null
+  private _activChatIdSubject = new BehaviorSubject<number | null>(null)
+  public activChatId$ = this._activChatIdSubject.asObservable()
   public readMessageGroupCount: BehaviorSubject<number> =
     new BehaviorSubject<number>(0)
   public readMessageCount: BehaviorSubject<number> =
@@ -32,18 +34,29 @@ export class DataService {
   public messages: BehaviorSubject<Message[]> = new BehaviorSubject<
     Array<Message>
   >([])
+  public searchResults: BehaviorSubject<Message[]> = new BehaviorSubject<
+    Array<Message>
+  >([])
+  private messageOffset: number = 0
+  private searchOffset: number = 0
+  public isSearching: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  )
+  public currentSearchText: string = ''
   public isGroupChat: boolean = false
-
   public user: any
   public isLecturer: boolean
   public hasMoreMessages: boolean = true
+  public hasMoreSearchResults: boolean = true
   public loadingMoreMessages: boolean = false
   public loadingMessagesStatus: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(false)
-  public loadMessagesTimer: any = null
   private loadingTimeout: any = null
-  private readonly defaultPageSize: number = 20
-  private messageOffset: number = 0
+  public initialMessagesLoaded = new Subject<void>()
+  private activeChatReadTimer: any = null
+  public readonly defaultPageSize: number = 20
+  public readonly searchPageSize: number = 20
+  private readonly readDebounceTime = 1500
 
   constructor(
     private chatApiService: ChatApiService,
@@ -53,6 +66,30 @@ export class DataService {
   ) {
     this.user = JSON.parse(localStorage.getItem('currentUser'))
     this.isLecturer = this.user?.role === 'lector'
+  }
+
+  public setActiveChat(chatId: number | null, isGroup: boolean, chatInfo: any) {
+    if (this.activChatId !== chatId) {
+      if (this.activeChatReadTimer) {
+        clearTimeout(this.activeChatReadTimer)
+        this.activeChatReadTimer = null
+      }
+      this.activChatId = chatId
+      this.isGroupChat = isGroup
+      this.activChat = chatInfo
+      this._activChatIdSubject.next(chatId)
+      this.resetMessageState(true)
+      if (chatId !== null) {
+        this.loadInitialMessages()
+      } else {
+        this.messages.next([])
+        this.searchResults.next([])
+      }
+    } else {
+      if (chatInfo) {
+        this.activChat = { ...chatInfo }
+      }
+    }
   }
 
   public loadChats(): void {
@@ -76,7 +113,7 @@ export class DataService {
         result.forEach((elem) => {
           if (elem.unread) unread += elem.unread
           elem.groups.forEach((element) => {
-            if (elem.unread) unread += element.unread
+            if (element.unread) unread += element.unread
           })
         })
         this.readMessageGroupCount.next(unread)
@@ -84,16 +121,102 @@ export class DataService {
       })
   }
 
-  public updateRead() {
-    this.chatApiService
-      .updateReadChat(this.user.id, this.activChatId)
-      .subscribe()
+  public updateRead(): Observable<any> {
+    if (!this.user?.id || !this.activChatId) return EMPTY
+    const chatIdToUpdate = this.activChatId
+
+    return this.chatApiService
+      .updateReadChat(this.user.id, chatIdToUpdate)
+      .pipe(
+        take(1),
+        tap(() => {
+          this.zone.run(() => {
+            const currentChats = this.chats.getValue()
+            const chatIndex = currentChats.findIndex(
+              (c) => c.id === chatIdToUpdate
+            )
+            if (chatIndex > -1) {
+              const chat = currentChats[chatIndex]
+              const unreadCount = chat.unread || 0
+              if (unreadCount > 0) {
+                chat.unread = 0
+                this.chats.next([...currentChats])
+
+                this.readMessageChatCount.next(
+                  Math.max(
+                    0,
+                    this.readMessageChatCount.getValue() - unreadCount
+                  )
+                )
+              }
+            }
+          })
+        }),
+        catchError((error) => {
+          console.error(
+            `Failed to update read status for chat ${chatIdToUpdate}:`,
+            error
+          )
+          return EMPTY
+        })
+      )
   }
 
-  public groupRead() {
-    this.chatApiService
-      .updateReadGroupChat(this.user.id, this.activChatId)
-      .subscribe()
+  public groupRead(): Observable<any> {
+    if (!this.user?.id || !this.activChatId) {
+      return EMPTY
+    }
+
+    const chatIdToUpdate = this.activChatId
+    return this.chatApiService
+      .updateReadGroupChat(this.user.id, chatIdToUpdate)
+      .pipe(
+        take(1),
+        tap(() => {
+          this.zone.run(() => {
+            const currentSubjects = this.groups.getValue()
+            let unreadCountDecremented = 0
+            let updated = false
+
+            for (const subject of currentSubjects) {
+              if (subject.id === chatIdToUpdate && subject.unread > 0) {
+                unreadCountDecremented = subject.unread
+                subject.unread = 0
+                updated = true
+                break
+              }
+              if (subject.groups) {
+                const groupIndex = subject.groups.findIndex(
+                  (g) => g.id === chatIdToUpdate
+                )
+                if (groupIndex > -1 && subject.groups[groupIndex].unread > 0) {
+                  unreadCountDecremented = subject.groups[groupIndex].unread
+                  subject.groups[groupIndex].unread = 0
+                  updated = true
+                  break
+                }
+              }
+            }
+
+            if (updated) {
+              this.groups.next([...currentSubjects])
+              this.readMessageGroupCount.next(
+                Math.max(
+                  0,
+                  this.readMessageGroupCount.getValue() - unreadCountDecremented
+                )
+              )
+            }
+          })
+        }),
+        catchError((error) => {
+          console.error(
+            `Failed to update read status for group chat ${chatIdToUpdate}:`,
+            error
+          )
+          return EMPTY
+        })
+      )
   }
 
   public SetStatus(id: number, isOnline: boolean): void {
@@ -101,241 +224,341 @@ export class DataService {
     var chatNum = chats.findIndex((x) => x.userId == id)
     if (chatNum > -1) {
       chats[chatNum].isOnline = isOnline
-      this.chats.next(chats)
+      this.chats.next([...chats])
     }
   }
 
-  public LoadGroupMsg() {
-    this.resetMessageState()
-
-    if (this.activChatId) {
-      var subjectNum = this.getNumSubjectById(this.activChatId)
-      if (subjectNum > -1) {
-        const subjects = this.groups.getValue()
-        this.readMessageCount.next(subjects[subjectNum].unread)
-        this.readMessageGroupCount.next(
-          this.readMessageGroupCount.getValue() - subjects[subjectNum].unread
-        )
-        subjects[subjectNum].unread = 0
-        this.groups.next(subjects)
-      } else {
-        var groupNum
-        ;[subjectNum, groupNum] = this.getNumGroupById(this.activChatId)
-        if (subjectNum > -1 && groupNum > -1) {
-          const subjects = this.groups.getValue()
-          this.readMessageCount.next(
-            subjects[subjectNum].groups[groupNum].unread
-          )
-          this.readMessageGroupCount.next(
-            this.readMessageGroupCount.getValue() -
-              subjects[subjectNum].groups[groupNum].unread
-          )
-          subjects[subjectNum].groups[groupNum].unread = 0
-          this.groups.next(subjects)
-        }
-      }
-    }
-
-    this.setLoadingMessagesState(true)
-
-    const loadingTimeout = setTimeout(() => {
-      this.setLoadingMessagesState(false)
-    }, 5000)
-
-    this.messageApiService
-      .getGroupMessages(this.user.id, this.activChatId, this.defaultPageSize, 0)
-      .subscribe({
-        next: (msgs: Message[]) => {
-          clearTimeout(loadingTimeout)
-          this.processLoadedMessages(msgs)
-        },
-        error: (error) => {
-          clearTimeout(loadingTimeout)
-          console.error('Error loading group messages:', error)
-          this.hasMoreMessages = false
-          this.messages.next([])
-          this.setLoadingMessagesState(false)
-        },
-      })
-  }
-
-  public LoadChatMsg() {
-    this.resetMessageState()
-
-    this.setLoadingMessagesState(true)
-
-    const loadingTimeout = setTimeout(() => {
-      this.setLoadingMessagesState(false)
-    }, 5000)
-
-    this.messageApiService
-      .getChatMessages(this.user.id, this.activChatId, this.defaultPageSize, 0)
-      .subscribe({
-        next: (msgs: Message[]) => {
-          clearTimeout(loadingTimeout)
-          this.processLoadedMessages(msgs)
-        },
-        error: (error) => {
-          clearTimeout(loadingTimeout)
-          console.error('Error loading chat messages:', error)
-          this.hasMoreMessages = false
-          this.messages.next([])
-          this.setLoadingMessagesState(false)
-        },
-      })
-  }
-
-  private processLoadedMessages(msgs: Message[]) {
-    if (msgs.length < this.defaultPageSize) {
-      this.hasMoreMessages = false
-    }
-
-    if (msgs.length === 0) {
-      this.hasMoreMessages = false
-      this.messages.next([])
-    } else {
-      this.messages.next([...msgs].reverse())
-    }
-
-    this.setLoadingMessagesState(false)
-  }
-
-  private resetMessageState() {
+  private resetMessageState(clearSearch: boolean = true) {
     this.messageOffset = 0
     this.hasMoreMessages = true
     this.messages.next([])
+    this.setLoadingMessagesState(false)
+    this.loadingMoreMessages = false
+
+    if (clearSearch) {
+      this.searchOffset = 0
+      this.hasMoreSearchResults = true
+      this.searchResults.next([])
+      this.isSearching.next(false)
+      this.currentSearchText = ''
+    }
+  }
+
+  public loadInitialMessages(): void {
+    if (
+      !this.user?.id ||
+      this.activChatId === null ||
+      this.activChatId === undefined
+    ) {
+      this.messages.next([])
+      this.setLoadingMessagesState(false)
+      return
+    }
+
+    this.setLoadingMessagesState(true)
+
+    const apiCall = this.isGroupChat
+      ? this.messageApiService.getGroupMessages(
+          this.user.id,
+          this.activChatId,
+          this.defaultPageSize,
+          0
+        )
+      : this.messageApiService.getChatMessages(
+          this.user.id,
+          this.activChatId,
+          this.defaultPageSize,
+          0
+        )
+
+    apiCall
+      .pipe(
+        finalize(() => this.setLoadingMessagesState(false)),
+        catchError((error) => {
+          console.error('Error loading initial messages:', error)
+          this.hasMoreMessages = false
+          this.messages.next([])
+          return EMPTY
+        })
+      )
+      .subscribe((msgs: Message[]) => {
+        this.hasMoreMessages = msgs.length === this.defaultPageSize
+        this.messages.next([...msgs].reverse())
+        this.messageOffset = msgs.length
+        this.initialMessagesLoaded.next()
+      })
   }
 
   public loadMoreMessages(): Observable<ILoadMessagesResult> {
-    if (this.loadingMoreMessages || !this.hasMoreMessages) {
+    if (
+      this.loadingMoreMessages ||
+      !this.hasMoreMessages ||
+      this.isSearching.getValue() ||
+      !this.user?.id ||
+      this.activChatId === null ||
+      this.activChatId === undefined
+    ) {
       return of({ addedCount: 0, totalCount: this.messages.getValue().length })
     }
 
-    if (this.loadMessagesTimer) {
-      clearTimeout(this.loadMessagesTimer)
+    this.loadingMoreMessages = true
+    this.setLoadingMessagesState(true)
+
+    const apiCall = this.isGroupChat
+      ? this.messageApiService.getGroupMessages(
+          this.user.id,
+          this.activChatId,
+          this.defaultPageSize,
+          this.messageOffset
+        )
+      : this.messageApiService.getChatMessages(
+          this.user.id,
+          this.activChatId,
+          this.defaultPageSize,
+          this.messageOffset
+        )
+
+    return apiCall.pipe(
+      tap((msgs: Message[]) => {
+        this.hasMoreMessages = msgs.length === this.defaultPageSize
+        if (msgs.length > 0) {
+          const currentMessages = this.messages.getValue()
+          this.messages.next([...msgs.reverse(), ...currentMessages])
+          this.messageOffset += msgs.length
+        }
+      }),
+      finalize(() => {
+        this.loadingMoreMessages = false
+        this.setLoadingMessagesState(false)
+      }),
+      catchError((error) => {
+        console.error('Error loading more messages:', error)
+        this.hasMoreMessages = false
+        return of([])
+      }),
+      (source) =>
+        new Observable<ILoadMessagesResult>((subscriber) => {
+          source.subscribe({
+            next: (msgs) =>
+              subscriber.next({
+                addedCount: msgs.length,
+                totalCount: this.messages.getValue().length,
+              }),
+            error: (err) => subscriber.error(err),
+            complete: () => subscriber.complete(),
+          })
+        })
+    )
+  }
+
+  public searchMessages(searchText: string): void {
+    if (
+      !this.user?.id ||
+      this.activChatId === null ||
+      this.activChatId === undefined
+    )
+      return
+
+    this.currentSearchText = searchText.trim()
+    this.resetMessageState(false)
+    this.isSearching.next(this.currentSearchText.length > 0)
+
+    if (!this.isSearching.getValue()) {
+      this.loadInitialMessages()
+      return
+    }
+
+    this.setLoadingMessagesState(true)
+
+    this.messageApiService
+      .searchMessages(
+        this.user.id,
+        this.activChatId,
+        this.isGroupChat,
+        this.currentSearchText,
+        this.searchPageSize,
+        0
+      )
+      .pipe(
+        finalize(() => this.setLoadingMessagesState(false)),
+        catchError((error) => {
+          console.error('Error searching messages:', error)
+          this.hasMoreSearchResults = false
+          this.searchResults.next([])
+          return EMPTY
+        })
+      )
+      .subscribe((results: Message[]) => {
+        this.hasMoreSearchResults = results.length === this.searchPageSize
+        this.searchResults.next([...results].reverse())
+        this.searchOffset = results.length
+      })
+  }
+
+  public loadMoreSearchResults(): Observable<ILoadMessagesResult> {
+    if (
+      this.loadingMoreMessages ||
+      !this.hasMoreSearchResults ||
+      !this.isSearching.getValue() ||
+      !this.user?.id ||
+      this.activChatId === null ||
+      this.activChatId === undefined
+    ) {
+      return of({
+        addedCount: 0,
+        totalCount: this.searchResults.getValue().length,
+      })
     }
 
     this.loadingMoreMessages = true
+    this.setLoadingMessagesState(true)
 
-    const currentMessages = this.messages.getValue()
-    const currentMessagesCount = currentMessages.length
+    const apiCall = this.messageApiService.searchMessages(
+      this.user.id,
+      this.activChatId,
+      this.isGroupChat,
+      this.currentSearchText,
+      this.searchPageSize,
+      this.searchOffset
+    )
 
-    return from(
-      new Promise<ILoadMessagesResult>((resolve, reject) => {
-        this.loadMessagesTimer = setTimeout(() => {
-          this.messageOffset += this.defaultPageSize
-
-          const apiCall = this.isGroupChat
-            ? this.messageApiService.getGroupMessages(
-                this.user.id,
-                this.activChatId,
-                this.defaultPageSize,
-                this.messageOffset
-              )
-            : this.messageApiService.getChatMessages(
-                this.user.id,
-                this.activChatId,
-                this.defaultPageSize,
-                this.messageOffset
-              )
-
-          apiCall
-            .pipe(
-              finalize(() => {
-                this.loadingMoreMessages = false
-              })
-            )
-            .subscribe({
-              next: (msgs: Message[]) => {
-                if (msgs.length === 0 || msgs.length < this.defaultPageSize) {
-                  this.hasMoreMessages = false
-                }
-
-                if (msgs.length > 0) {
-                  const newMessages = [...msgs.reverse(), ...currentMessages]
-                  this.messages.next(newMessages)
-
-                  resolve({
-                    addedCount: msgs.length,
-                    totalCount: newMessages.length,
-                  })
-                } else {
-                  resolve({
-                    addedCount: 0,
-                    totalCount: currentMessagesCount,
-                  })
-                }
-              },
-              error: (error) => {
-                console.error('Error loading more messages:', error)
-                this.hasMoreMessages = false
-                this.loadingMoreMessages = false
-
-                reject(error)
-              },
-            })
-        }, 100)
-      })
+    return apiCall.pipe(
+      tap((results: Message[]) => {
+        this.hasMoreSearchResults = results.length === this.searchPageSize
+        if (results.length > 0) {
+          const currentResults = this.searchResults.getValue()
+          this.searchResults.next([...results.reverse(), ...currentResults])
+          this.searchOffset += results.length
+        }
+      }),
+      finalize(() => {
+        this.loadingMoreMessages = false
+        this.setLoadingMessagesState(false)
+      }),
+      catchError((error) => {
+        console.error('Error loading more search results:', error)
+        this.hasMoreSearchResults = false
+        return of([])
+      }),
+      (source) =>
+        new Observable<ILoadMessagesResult>((subscriber) => {
+          source.subscribe({
+            next: (results) =>
+              subscriber.next({
+                addedCount: results.length,
+                totalCount: this.searchResults.getValue().length,
+              }),
+            error: (err) => subscriber.error(err),
+            complete: () => subscriber.complete(),
+          })
+        })
     )
   }
 
   public updateMsg(chatId: number, msgId: number, text: string) {
     if (chatId == this.activChatId) {
-      var messages = this.messages.getValue()
-      var msgNum = messages.findIndex((x) => x.id == msgId)
-      if (msgNum !== -1) {
-        messages[msgNum].text = text
-        this.messages.next(messages)
+      const updateFn = (msg: Message) => {
+        if (msg.id === msgId) {
+          return { ...msg, text: text }
+        }
+        return msg
       }
+      this.messages.next(this.messages.getValue().map(updateFn))
+      this.searchResults.next(this.searchResults.getValue().map(updateFn))
     }
   }
 
-  public updateChats(chat, chatId) {
-    chat.id = chatId
-    this.chats.next(this.chats.getValue().concat(chat))
+  public AddMsg(msg: Message) {
+    if (msg.chatId == this.activChatId && this.activChatId !== null) {
+      if (!this.isSearching.getValue()) {
+        const currentMessages = this.messages.getValue()
+        if (!currentMessages.some((m) => m.id === msg.id)) {
+          this.messages.next([...currentMessages, msg])
+          this.scheduleActiveChatRead()
+        }
+      } else {
+        this.scheduleActiveChatRead()
+      }
+    } else {
+      this.updateUnreadCounters(msg)
+    }
   }
 
-  public AddMsg(msg: Message) {
-    if (msg.chatId == this.activChatId) {
-      this.messages.next([...this.messages.getValue(), msg])
-    } else {
-      const chatNum = this.getNumChatById(msg.chatId)
-      this.readMessageCount.next(-1)
-      if (chatNum > -1) {
-        const chats = this.chats.getValue()
-        chats[chatNum].unread++
-        this.chats.next(chats)
-        this.readMessageChatCount.next(this.readMessageChatCount.getValue() + 1)
+  private scheduleActiveChatRead(): void {
+    if (this.activeChatReadTimer) {
+      clearTimeout(this.activeChatReadTimer)
+    }
+
+    this.activeChatReadTimer = setTimeout(() => {
+      if (this.isGroupChat) {
+        this.groupRead().subscribe()
       } else {
-        var subjectNum = this.getNumSubjectById(msg.chatId)
+        this.updateRead().subscribe()
+      }
+      this.activeChatReadTimer = null
+    }, this.readDebounceTime)
+  }
+
+  private updateUnreadCounters(msg: Message): void {
+    const chatNum = this.getNumChatById(msg.chatId)
+    if (chatNum > -1) {
+      const chats = this.chats.getValue()
+      chats[chatNum].unread = (chats[chatNum].unread || 0) + 1
+      chats[chatNum].lastMessage = msg.text
+      chats[chatNum].time = msg.time
+      this.chats.next([...chats])
+      this.readMessageChatCount.next(this.readMessageChatCount.getValue() + 1)
+    } else {
+      let subjectNum = this.getNumSubjectById(msg.chatId)
+      let groupNum = -1
+      if (subjectNum === -1) {
+        ;[subjectNum, groupNum] = this.getNumGroupById(msg.chatId)
+      }
+
+      if (subjectNum > -1) {
         this.readMessageGroupCount.next(
           this.readMessageGroupCount.getValue() + 1
         )
-        if (subjectNum > -1) {
-          const subjects = this.groups.getValue()
-          subjects[subjectNum].unread++
-          this.groups.next(subjects)
+        const subjects = this.groups.getValue()
+        const subject = subjects[subjectNum]
+        if (groupNum > -1 && subject.groups) {
+          subject.groups[groupNum].unread =
+            (subject.groups[groupNum].unread || 0) + 1
         } else {
-          let groupNum
-          ;[subjectNum, groupNum] = this.getNumGroupById(msg.chatId)
-          if (subjectNum > -1 && groupNum > -1) {
-            const subjects = this.groups.getValue()
-            subjects[subjectNum].groups[groupNum].unread++
-            this.groups.next(subjects)
-          }
+          subject.unread = (subject.unread || 0) + 1
         }
+        this.groups.next([...subjects])
       }
     }
   }
 
   public RemoveMsg(chatId: any, msgId: any) {
     if (chatId == this.activChatId) {
-      const num = this.getNumMsgById(msgId)
-      if (num > -1) {
-        const msg = this.messages.getValue()
-        msg.splice(num, 1)
-        this.messages.next(msg)
+      this.messages.next(this.messages.getValue().filter((m) => m.id != msgId))
+      this.searchResults.next(
+        this.searchResults.getValue().filter((m) => m.id != msgId)
+      )
+    }
+  }
+
+  public updateOrAddChat(chat: Chat, chatId?: number) {
+    if (!chat) return
+    if (chatId) {
+      chat.id = chatId
+    }
+    const currentChats = this.chats.getValue()
+    const existingChatIndex = currentChats.findIndex(
+      (c) => c.id === chat.id || c.userId === chat.userId
+    )
+
+    if (existingChatIndex > -1) {
+      currentChats[existingChatIndex] = {
+        ...currentChats[existingChatIndex],
+        ...chat,
       }
+      this.chats.next([...currentChats])
+    } else if (chat.id) {
+      this.chats.next([...currentChats, chat])
     }
   }
 
@@ -343,18 +566,18 @@ export class DataService {
     return this.fileApiService.uploadFile(formData)
   }
 
-  private getNumChatById(id: number): number {
+  public getNumChatById(id: number): number {
     return this.chats.getValue().findIndex((x) => x.id == id)
   }
 
-  private getNumSubjectById(id: number): number {
+  public getNumSubjectById(id: number): number {
     return this.groups.getValue().findIndex((x) => x.id == id)
   }
 
-  private getNumGroupById(id: number): [number, number] {
+  public getNumGroupById(id: number): [number, number] {
     const subjects = this.groups.getValue()
     for (let i = 0; i < subjects.length; i++) {
-      const num = subjects[i].groups.findIndex((x) => x.id == id)
+      const num = subjects[i].groups?.findIndex((x) => x.id == id) ?? -1
       if (num > -1) {
         return [i, num]
       }
@@ -362,19 +585,16 @@ export class DataService {
     return [-1, -1]
   }
 
-  private getNumMsgById(id: number): number {
-    return this.messages.getValue().findIndex((x) => x.id == id)
-  }
-
   private setLoadingMessagesState(isLoading: boolean): void {
     this.zone.run(() => {
-      this.loadingMoreMessages = isLoading
       this.loadingMessagesStatus.next(isLoading)
-
       if (isLoading && !this.loadingTimeout) {
         this.loadingTimeout = setTimeout(() => {
-          this.setLoadingMessagesState(false)
-        }, 5000)
+          if (this.loadingMessagesStatus.getValue()) {
+            this.setLoadingMessagesState(false)
+            this.loadingMoreMessages = false
+          }
+        }, 10000)
       } else if (!isLoading && this.loadingTimeout) {
         clearTimeout(this.loadingTimeout)
         this.loadingTimeout = null

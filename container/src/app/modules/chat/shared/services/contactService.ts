@@ -50,11 +50,11 @@ export class ContactService {
   }
 
   public updateChats(fUserId, sUserId, chatId) {
-    if (this.dataService.user.id == sUserId) {
+    if (this.user && this.user.id == sUserId) {
       var contact = this.contacts.getValue().find((x) => x.userId == fUserId)
       if (contact) {
         contact.id = chatId
-        this.dataService.updateChats(contact, chatId)
+        this.dataService.updateOrAddChat(contact, chatId)
       }
     }
   }

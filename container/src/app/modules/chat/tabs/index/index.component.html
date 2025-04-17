@@ -85,6 +85,7 @@
       <!-- start chat conversation section -->
       <div class="w-100">
         <div
+          *ngIf="dataService.activChatId !== null"
           class="p-3 p-lg-4 border-bottom"
           style="padding: 0.72rem !important"
         >
@@ -156,8 +157,12 @@
             </div>
             <div class="col-sm-8 col-4">
               <ul class="list-inline user-chat-nav text-right mb-0">
-                <li class="liųt-inline-item">
-                  <div class="dropdown" ngbDropdown>
+                <li class="list-inline-item">
+                  <div
+                    class="dropdown"
+                    ngbDropdown
+                    #searchDropdown="ngbDropdown"
+                  >
                     <button
                       *ngIf="dataService.isLecturer && dataService.isGroupChat"
                       class="btn nav-btn dropdown-toggle"
@@ -177,14 +182,11 @@
                       data-toggle="dropdown"
                       aria-haspopup="true"
                       aria-expanded="false"
-                      (click)="openFilter()"
+                      matTooltip="{{
+                        'chat.filter' | translate: 'Поиск сообщений'
+                      }}"
                     >
-                      <mat-icon
-                        matTooltip="{{
-                          'chat.filter' | translate: 'Поиск сообщений'
-                        }}"
-                        >search</mat-icon
-                      >
+                      <mat-icon>search</mat-icon>
                     </button>
                     <div
                       class="dropdown-menu p-0 dropdown-menu-right dropdown-menu-md"
@@ -192,6 +194,7 @@
                     >
                       <div class="search-box p-2">
                         <input
+                          #searchInput
                           type="text"
                           class="form-control bg-light border-0"
                           placeholder="{{
@@ -199,7 +202,19 @@
                           }}"
                           [(ngModel)]="filterValue"
                           (ngModelChange)="filter()"
+                          (keyup.enter)="filter()"
+                          (click)="$event.stopPropagation()"
+                          autocomplete="off"
                         />
+                        <button
+                          *ngIf="filterValue"
+                          class="btn btn-sm btn-light clear-search-btn"
+                          (click)="
+                            filterValue = ''; filter(); searchDropdown.close()
+                          "
+                        >
+                          <mat-icon style="font-size: 18px">close</mat-icon>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -207,6 +222,14 @@
               </ul>
             </div>
           </div>
+        </div>
+        <div
+          *ngIf="dataService.activChatId === null"
+          class="no-chat-selected-placeholder d-flex justify-content-center align-items-center h-100"
+        >
+          <p class="text-muted h4">
+            {{ 'chat.noChatSelected' | translate: 'Чат не выбран' }}
+          </p>
         </div>
         <!-- end chat user head -->
 
@@ -220,10 +243,10 @@
             class="load-trigger"
             style="height: 1px; width: 100%"
           ></div>
-          <ul class="list-unstyled mb-0" style="height: 90% !important">
+          <ul class="list-unstyled mb-0" style="min-height: 100% !important">
             <li
               *ngIf="dataService.loadingMoreMessages"
-              class="text-center mb-3 loading-messages-indicator"
+              class="text-center my-2 loading-messages-indicator"
             >
               <div class="spinner-border text-primary" role="status">
                 <span class="sr-only">{{
@@ -232,36 +255,33 @@
               </div>
             </li>
             <li
-              *ngIf="
-                !dataService.loadingMoreMessages &&
-                !dataService.hasMoreMessages &&
-                messages &&
-                messages.length > 0
-              "
-              class="text-center mb-3 beginning-indicator"
+              *ngIf="!hasMoreMessagesToLoad && displayedMessages.length > 0"
+              class="text-center my-3 beginning-indicator"
             >
               <span class="text-muted">{{
-                'chat.noMoreMessages' | translate: 'Начало переписки'
+                dataService.isSearching.getValue()
+                  ? ('chat.noMoreResults' | translate: 'Больше результатов нет')
+                  : ('chat.noMoreMessages' | translate: 'Начало переписки')
               }}</span>
             </li>
             <li
               *ngIf="
+                !dataService.loadingMessagesStatus.getValue() &&
                 !dataService.loadingMoreMessages &&
-                (!messages || messages.length === 0)
+                displayedMessages.length === 0 &&
+                dataService.activChatId !== null
               "
               class="text-center empty-chat-indicator"
             >
               <span class="text-muted">{{
-                'chat.emptyChat' | translate: 'Нет сообщений'
+                dataService.isSearching.getValue()
+                  ? ('chat.noResults' | translate: 'Ничего не найдено')
+                  : ('chat.emptyChat' | translate: 'Нет сообщений')
               }}</span>
             </li>
             <li
-              *ngFor="let data of messages; let i = index"
-              [ngClass]="{
-                right: data.align === 'right',
-                'message-fade-in': i < newMessagesCount
-              }"
-              style="height: 90%"
+              *ngFor="let data of displayedMessages; let i = index"
+              [ngClass]="{ right: data.align === 'right' }"
               [attr.data-message-id]="data.id"
             >
               <div class="conversation-list" *ngIf="!data.isToday">
@@ -444,6 +464,7 @@
 
         <!-- start chat input section -->
         <div
+          *ngIf="dataService.activChatId !== null"
           class="p-3 p-lg-4 mb-0"
           style="
             padding-left: 0px !important;

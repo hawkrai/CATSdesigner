@@ -10,6 +10,7 @@ namespace Contracts.Repositories
     public interface IUserChatMessageRepository
     {
         Task<IEnumerable<ChatMessage>> GetUserChatMessagesAsync(int chatId, bool trackChanges, int limit, int offset);
+        Task<IEnumerable<ChatMessage>> SearchUserChatMessagesAsync(int chatId, string searchText, bool trackChanges, int limit, int offset);
         Task<ChatMessage> GetUserChatMessageAsync(int msgId, bool trackChanges);
         public Task Save(ChatMessage msg);
         void Remove(ChatMessage msg);
