@@ -1,9 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { Store } from '@ngrx/store'
-import { combineLatest, Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { Observable } from 'rxjs'
 import { GroupJobProtection } from 'src/app/models/job-protection/group-job-protection.model'
-import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode'
 import { UserLabFile } from 'src/app/models/user-lab-file.model'
 import { IAppState } from 'src/app/store/state/app.state'
 
@@ -52,6 +50,7 @@ export class TeacherJobProtectionComponent implements OnInit {
   cancelLab(userFileId: number, userId: number): void {
     this.store.dispatch(labsActions.cancelLabFile({ userFileId, userId }))
   }
+
   onSelectStudent(userId: number): void {
     if (userId) {
       this.selectedStudentId = userId
@@ -67,5 +66,13 @@ export class TeacherJobProtectionComponent implements OnInit {
       )
       this.selectedStudentId = 0
     }
+  }
+
+  hasWordFile(attachments: { FileName: string }[]): boolean {
+    return attachments.some(
+      a =>
+        a.FileName.toLowerCase().endsWith('.doc') ||
+        a.FileName.toLowerCase().endsWith('.docx')
+    )
   }
 }
