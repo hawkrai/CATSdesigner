@@ -25,7 +25,7 @@ namespace LMPlatform.PlagiarismNet.Services
             Dictionary<string, List<string>> doc2Terms = GetDocumentShingle(docs, termCount);
             Dictionary<string, int> doc2Similarity = new Dictionary<string, int>();
             //на случай, если ключевых слов меньше, чем задано
-            int minSize = doc2Terms.Values.Min(x => x.Count);
+            int minSize = doc2Terms.Values.Any() ? doc2Terms.Values.Min(x => x.Count) : 0;
 
             //if (minSize < termCount)
             //{

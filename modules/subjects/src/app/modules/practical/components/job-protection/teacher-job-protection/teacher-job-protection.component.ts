@@ -49,6 +49,7 @@ export class TeacherJobProtectionComponent implements OnInit {
   cancelPractical(userFileId: number, userId: number): void {
     this.store.dispatch(practicalsActions.cancelFile({ userFileId, userId }))
   }
+
   onSelectStudent(userId: number): void {
     if (userId) {
       this.selectedStudentId = userId
@@ -65,5 +66,13 @@ export class TeacherJobProtectionComponent implements OnInit {
       )
       this.selectedStudentId = 0
     }
+  }
+
+  hasWordFile(attachments: { FileName: string }[]): boolean {
+    return attachments.some(
+      a =>
+        a.FileName.toLowerCase().endsWith('.doc') ||
+        a.FileName.toLowerCase().endsWith('.docx')
+    )
   }
 }

@@ -22,20 +22,20 @@
                     | translate: 'Имеются непроверенные практические работы'
                 "
                 matTooltipPosition="below"
-                >priority_high</mat-icon
-              >
+              >priority_high</mat-icon>
             </mat-panel-title>
           </mat-expansion-panel-header>
+
           <app-job-protection-content
             [practicalFiles]="practicalFiles$ | async"
             [actionsTemplate]="actionsTemplate"
-          >
-          </app-job-protection-content>
+          ></app-job-protection-content>
+
           <ng-template let-file="file" #actionsTemplate>
             <button
               mat-icon-button
               color="primary"
-              *ngIf="file.Attachments.length"
+              *ngIf="file.Attachments.length && hasWordFile(file.Attachments)"
               [matTooltip]="
                 'text.subjects.plagiarism.check'
                   | translate: 'Проверить на плагиат'
@@ -44,6 +44,7 @@
             >
               <mat-icon>visibility</mat-icon>
             </button>
+
             <ng-container *ngIf="!file.IsReturned && !file.IsReceived">
               <button
                 mat-icon-button
@@ -66,6 +67,7 @@
                 <mat-icon>arrow_forward</mat-icon>
               </button>
             </ng-container>
+
             <button
               *ngIf="file.IsReceived"
               mat-icon-button
@@ -78,6 +80,7 @@
               <mat-icon>thumb_down_alt</mat-icon>
             </button>
           </ng-template>
+
         </mat-expansion-panel>
       </mat-accordion>
     </div>
