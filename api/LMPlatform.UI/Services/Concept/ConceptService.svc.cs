@@ -73,12 +73,10 @@ namespace LMPlatform.UI.Services.Concept
         {
             try
             {
-                //var authorId = UserContext.CurrentUserId;
-                //var concepts = CurrentUserIsLector()  ?
-                //    ConceptManagementService.GetRootElements(authorId) :
-                //    ConceptManagementService.GetRootElementsBySubject(subjectId).Where(c => c.Published);
-
-                var concepts = ConceptManagementService.GetRootElementsBySubject(subjectId);//.Where(c => c.Published);
+                var concepts = CurrentUserIsLector() ?
+                    ConceptManagementService.GetRootElementsBySubject(subjectId) :
+                    ConceptManagementService.GetRootElementsBySubject(subjectId).Where(c => c.Published);
+                
                 concepts = concepts.Where(c => c.SubjectId == subjectId);
                 var subj = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == subjectId));
 
