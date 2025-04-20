@@ -62,11 +62,11 @@ export class GridMenuComponent {
         isNew: false,
         name: res.Name,
         subjectName: res.SubjectName,
-        isPublished: Boolean(res.Published),
-        includeLabs: Boolean(res.IncludeLabs),
-        includeLectures: Boolean(res.IncludeLectures),
-        includeWorkshops: Boolean(res.IncludeWorkshops),
-        includeTests: Boolean(res.IncludeTests),
+        isPublished: res.Published,
+        includeLabs: res.IncludeLabs,
+        includeLectures: res.IncludeLectures,
+        includeWorkshops: res.IncludeWorkshops,
+        includeTests: res.IncludeTests,
       }
 
       const dialogRef = this.openDialog(
@@ -80,11 +80,11 @@ export class GridMenuComponent {
           const complex: Complex = {
             elementId: +this.complexId,
             name: result.name,
-            isPublished: Boolean(result.isPublished),
-            includeLabs: Boolean(result.includeLabs),
-            includeLectures: Boolean(result.includeLectures),
-            includeWorkshops: Boolean(result.includeWorkshops),
-            includeTests: Boolean(result.includeTests),
+            isPublished: result.isPublished,
+            includeLabs: result.includeLabs,
+            includeLectures: result.includeLectures,
+            includeWorkshops: result.includeWorkshops,
+            includeTests: result.includeTests,
           }
           this.complexService.editRootConcept(complex).subscribe((result) => {
             if (result['Code'] === '200') {
