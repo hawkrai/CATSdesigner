@@ -1,4 +1,4 @@
-<div mat-dialog-actions *ngIf="!needToGetInitialTest">
+<div mat-dialog-actions *ngIf="!needToGetInitialTest && !isTest">
   <button
     *ngIf="zoomInButtonVisible"
     mat-raised-button
@@ -60,7 +60,7 @@
   >
     {{ 'common.finishTest' | translate: 'Завершить тест' }}
   </button>
-  <div class="cancel-button">
+  <div class="cancel-button" *ngIf="!isTest">
     <button mat-icon-button (click)="onNoClick()">
       <mat-icon>clear</mat-icon>
     </button>
