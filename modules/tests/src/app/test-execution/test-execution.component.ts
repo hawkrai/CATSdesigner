@@ -61,14 +61,18 @@ export class TestExecutionComponent
         ),
         tap((question: TestQuestion) => {
           this.question = question
+///////////////////////////////////////////////////////////////////////////////////////////////
+          const threeHoursInSeconds = 3 * 60 * 60
+          this.question.Seconds = this.question.Seconds - threeHoursInSeconds
+          if (this.question.Seconds < 0) {
+            this.question.Seconds = 0
+          }
+///////////////////////////////////////////////////////////////////////////////////////////////
           if (!this.question.Seconds && this.question.Seconds === 0) {
             this.router.navigate(['/test-result'], {
               queryParams: { testId: this.test.Id },
             })
           }
-          const timezoneOffsetInSeconds = new Date().getTimezoneOffset() * 60
-          const adjustedSeconds = this.question.Seconds + timezoneOffsetInSeconds
-          this.question.Seconds = adjustedSeconds > 0 ? adjustedSeconds : 0
           this.questionNumber = question && question.Number.toString()
           this.allAnswersArray = question && question.IncompleteQuestionsNumbers
           this.counter$ = timer(0, 1000).pipe(

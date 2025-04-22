@@ -61,14 +61,18 @@ export class TestExecutionComponent implements OnInit {
         ),
         tap((question: TestQuestion) => {
           this.question = question
+///////////////////////////////////////////////////////////////////////////////////////////////
+          const threeHoursInSeconds = 3 * 60 * 60
+          this.question.Seconds = this.question.Seconds - threeHoursInSeconds
+          if (this.question.Seconds < 0) {
+            this.question.Seconds = 0
+          }
+///////////////////////////////////////////////////////////////////////////////////////////////
           if (!this.question.Seconds && this.question.Seconds === 0) {
             this.showTest = false
           }
           this.questionNumber = question && question.Number.toString()
           this.allAnswersArray = question && question.IncompleteQuestionsNumbers
-          const timezoneOffsetInSeconds = new Date().getTimezoneOffset() * 60;
-          const adjustedSeconds = this.question.Seconds + timezoneOffsetInSeconds;
-          this.question.Seconds = adjustedSeconds > 0 ? adjustedSeconds : 0;
           this.counter$ = timer(0, 1000).pipe(
             take(this.question.Seconds),
             map(() => {
