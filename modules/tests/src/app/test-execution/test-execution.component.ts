@@ -61,13 +61,11 @@ export class TestExecutionComponent
         ),
         tap((question: TestQuestion) => {
           this.question = question
-///////////////////////////////////////////////////////////////////////////////////////////////
           const threeHoursInSeconds = 3 * 60 * 60
           this.question.Seconds = this.question.Seconds - threeHoursInSeconds
           if (this.question.Seconds < 0) {
             this.question.Seconds = 0
           }
-///////////////////////////////////////////////////////////////////////////////////////////////
           if (!this.question.Seconds && this.question.Seconds === 0) {
             this.router.navigate(['/test-result'], {
               queryParams: { testId: this.test.Id },
