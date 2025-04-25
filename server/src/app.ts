@@ -142,6 +142,7 @@ const proxySignalROptions = {
     '^/chatSignalR': '/chat',
   },
   secure: false,
+  ws: true,
 }
 
 const socketProxy = createProxyMiddleware(proxySignalROptions)
