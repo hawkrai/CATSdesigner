@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Contracts;
 using Contracts.Services;
-using DocumentFormat.OpenXml.Math;
 using Entities.CTO;
 using Entities.DTO;
 using Entities.Models;
@@ -31,7 +30,7 @@ namespace Services
         {
             var names = new Dictionary<int, string>();
             var newMsg = _mapper.Map<GroupMessage>(messageCto);
-            newMsg.Time = DateTime.Now;
+            newMsg.Time = DateTime.UtcNow;
             newMsg.Text = _encryptionService.Encrypt(newMsg.Text);
             newMsg.UserId = userId;
 
@@ -62,7 +61,6 @@ namespace Services
         {
             var names = new Dictionary<int, string>();
             var msgs = await _repository.GroupMessages.GetGroupMessagesAsync(chatId, false, limit, offset);
-            var groupId = await _repository.GroupChats.GetGroupId(chatId);
 
             foreach (var msg in msgs)
             {

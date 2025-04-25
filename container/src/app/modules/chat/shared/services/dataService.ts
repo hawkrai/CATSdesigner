@@ -3,7 +3,7 @@ import { Chat } from '@chat/shared/models/entities/chats.model'
 import { Message } from '@chat/shared/models/entities/message.model'
 import { BehaviorSubject, Observable, of, Subject, EMPTY } from 'rxjs'
 import { Groups } from '@chat/shared/models/entities/groups.model'
-import { finalize, catchError, tap, take } from 'rxjs/operators'
+import { finalize, catchError, tap, take, map } from 'rxjs/operators'
 import { SubjectGroups } from '@chat/shared/models/entities/subject.groups.model'
 import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
 import { ChatApiService } from '@chat/shared/api/chat-api.service'
@@ -273,6 +273,7 @@ export class DataService {
 
     apiCall
       .pipe(
+        map((msgs) => this.convertMessagesTime(msgs)),
         finalize(() => this.setLoadingMessagesState(false)),
         catchError((error) => {
           console.error('Error loading initial messages:', error)
@@ -319,6 +320,7 @@ export class DataService {
         )
 
     return apiCall.pipe(
+      map((msgs) => this.convertMessagesTime(msgs)),
       tap((msgs: Message[]) => {
         this.hasMoreMessages = msgs.length === this.defaultPageSize
         if (msgs.length > 0) {
@@ -334,20 +336,12 @@ export class DataService {
       catchError((error) => {
         console.error('Error loading more messages:', error)
         this.hasMoreMessages = false
-        return of([])
+        return of<Message[]>([])
       }),
-      (source) =>
-        new Observable<ILoadMessagesResult>((subscriber) => {
-          source.subscribe({
-            next: (msgs) =>
-              subscriber.next({
-                addedCount: msgs.length,
-                totalCount: this.messages.getValue().length,
-              }),
-            error: (err) => subscriber.error(err),
-            complete: () => subscriber.complete(),
-          })
-        })
+      map((msgs) => ({
+        addedCount: msgs.length,
+        totalCount: this.messages.getValue().length,
+      }))
     )
   }
 
@@ -380,6 +374,7 @@ export class DataService {
         0
       )
       .pipe(
+        map((results) => this.convertMessagesTime(results)),
         finalize(() => this.setLoadingMessagesState(false)),
         catchError((error) => {
           console.error('Error searching messages:', error)
@@ -423,6 +418,7 @@ export class DataService {
     )
 
     return apiCall.pipe(
+      map((results) => this.convertMessagesTime(results)),
       tap((results: Message[]) => {
         this.hasMoreSearchResults = results.length === this.searchPageSize
         if (results.length > 0) {
@@ -438,20 +434,12 @@ export class DataService {
       catchError((error) => {
         console.error('Error loading more search results:', error)
         this.hasMoreSearchResults = false
-        return of([])
+        return of<Message[]>([])
       }),
-      (source) =>
-        new Observable<ILoadMessagesResult>((subscriber) => {
-          source.subscribe({
-            next: (results) =>
-              subscriber.next({
-                addedCount: results.length,
-                totalCount: this.searchResults.getValue().length,
-              }),
-            error: (err) => subscriber.error(err),
-            complete: () => subscriber.complete(),
-          })
-        })
+      map((results) => ({
+        addedCount: results.length,
+        totalCount: this.searchResults.getValue().length,
+      }))
     )
   }
 
@@ -469,11 +457,19 @@ export class DataService {
   }
 
   public AddMsg(msg: Message) {
-    if (msg.chatId == this.activChatId && this.activChatId !== null) {
+    const messageWithDate = {
+      ...msg,
+      time: msg.time ? new Date(msg.time) : undefined,
+    }
+
+    if (
+      messageWithDate.chatId == this.activChatId &&
+      this.activChatId !== null
+    ) {
       if (!this.isSearching.getValue()) {
         const currentMessages = this.messages.getValue()
-        if (!currentMessages.some((m) => m.id === msg.id)) {
-          this.messages.next([...currentMessages, msg])
+        if (!currentMessages.some((m) => m.id === messageWithDate.id)) {
+          this.messages.next([...currentMessages, messageWithDate])
           this.scheduleActiveChatRead()
         }
       } else {
@@ -600,5 +596,12 @@ export class DataService {
         this.loadingTimeout = null
       }
     })
+  }
+
+  private convertMessagesTime(messages: Message[]): Message[] {
+    return messages.map((msg) => ({
+      ...msg,
+      time: msg.time ? new Date(msg.time) : undefined,
+    }))
   }
 }

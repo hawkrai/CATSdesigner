@@ -305,7 +305,9 @@
                       </p>
                       <p class="chat-time mb-0">
                         <i class="ri-time-line align-middle"></i>
-                        <span class="align-middle">{{ data.time }}</span>
+                        <span class="align-middle" *ngIf="data.time">{{
+                          data.time | date: 'dd.MM.yyyy HH:mm:ss'
+                        }}</span>
                       </p>
 
                       <ul
@@ -415,7 +417,9 @@
                       </p>
                       <p class="chat-time mb-0">
                         <i class="ri-time-line align-middle"></i>
-                        <span class="align-middle">{{ data.time }}</span>
+                        <span class="align-middle" *ngIf="data.time">{{
+                          data.time | date: 'dd.MM.yyyy HH:mm:ss'
+                        }}</span>
                       </p>
                     </div>
                     <div class="dropdown align-self-start" ngbDropdown>

@@ -29,7 +29,7 @@ namespace Services
         public async Task<MessageDto> Save(int userId, MessageCto messageCto)
         {
             var newMsg = _mapper.Map<ChatMessage>(messageCto);
-            newMsg.Time = DateTime.Now;
+            newMsg.Time = DateTime.UtcNow;
             newMsg.Text = _encryptionService.Encrypt(newMsg.Text);
             await _repository.UserChatMessages.Save(newMsg);
 
@@ -56,21 +56,30 @@ namespace Services
         public async Task DeleteChatMsg(int msgId)
         {
             var msg = await _repository.UserChatMessages.GetUserChatMessageAsync(msgId, true);
-            _repository.UserChatMessages.Remove(msg);
-            await _repository.SaveAsync();
+            if (msg != null)
+            {
+                _repository.UserChatMessages.Remove(msg);
+                await _repository.SaveAsync();
+            }
         }
 
         public async Task<ChatMessage> GetMessage(int id)
         {
             var msg= await _repository.UserChatMessages.GetUserChatMessageAsync(id, true);
-            msg.Text = _encryptionService.Decrypt(msg.Text);
+            if (msg != null)
+            {
+                msg.Text = _encryptionService.Decrypt(msg.Text);
+            }
             return msg;
         }
 
         public async Task UpdateMsg(ChatMessage msg, string text)
         {
-            msg.Text = _encryptionService.Encrypt(text);
-            await _repository.SaveAsync();
+            if (msg != null)
+            {
+                msg.Text = _encryptionService.Encrypt(text);
+                await _repository.SaveAsync();
+            }
         }
     }
 }

@@ -38,7 +38,6 @@ namespace ChatServer.services
             var msg = await _repository.ChatMessages.Where(x => x.Id == msgId).Include(x => x.User).FirstOrDefaultAsync();
             var dto=_mapper.Map<MessageDto>(msg);
      
-            dto.Time = msg.Time.ToString("MM/dd/yyyy H:mm");
             if (msg.UserId == userId)
                 dto.Align = "right";
             dto.Profile = msg.User.Avatar;
