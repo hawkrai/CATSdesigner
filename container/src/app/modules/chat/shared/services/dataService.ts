@@ -46,7 +46,7 @@ export class DataService {
   public isGroupChat: boolean = false
   public user: any
   public isLecturer: boolean
-  public hasMoreMessages: boolean = true
+  public hasMoreMessages: boolean = false
   public hasMoreSearchResults: boolean = true
   public loadingMoreMessages: boolean = false
   public loadingMessagesStatus: BehaviorSubject<boolean> =
@@ -230,14 +230,14 @@ export class DataService {
 
   private resetMessageState(clearSearch: boolean = true) {
     this.messageOffset = 0
-    this.hasMoreMessages = true
+    this.hasMoreMessages = false
     this.messages.next([])
     this.setLoadingMessagesState(false)
     this.loadingMoreMessages = false
 
     if (clearSearch) {
       this.searchOffset = 0
-      this.hasMoreSearchResults = true
+      this.hasMoreSearchResults = false
       this.searchResults.next([])
       this.isSearching.next(false)
       this.currentSearchText = ''
@@ -292,6 +292,7 @@ export class DataService {
 
   public loadMoreMessages(): Observable<ILoadMessagesResult> {
     if (
+      this.messageOffset === 0 ||
       this.loadingMoreMessages ||
       !this.hasMoreMessages ||
       this.isSearching.getValue() ||
@@ -392,6 +393,7 @@ export class DataService {
 
   public loadMoreSearchResults(): Observable<ILoadMessagesResult> {
     if (
+      this.searchOffset === 0 ||
       this.loadingMoreMessages ||
       !this.hasMoreSearchResults ||
       !this.isSearching.getValue() ||
