@@ -8,7 +8,7 @@ namespace Entities.DTO
     {
         public int Id { get; set; }
         public string Text { get; set; }
-        public string Time { get; set; }
+        public DateTime Time { get; set; }
         public string[] ImageContent { get; set; }
         public bool? Isimage { get; set; }
         public bool? Isfile { get; set; }

@@ -3,7 +3,7 @@ import { Chat } from '@chat/shared/models/entities/chats.model'
 import { Message } from '@chat/shared/models/entities/message.model'
 import { BehaviorSubject, Observable, of, Subject, EMPTY } from 'rxjs'
 import { Groups } from '@chat/shared/models/entities/groups.model'
-import { finalize, catchError, tap, take } from 'rxjs/operators'
+import { finalize, catchError, tap, take, map } from 'rxjs/operators'
 import { SubjectGroups } from '@chat/shared/models/entities/subject.groups.model'
 import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
 import { ChatApiService } from '@chat/shared/api/chat-api.service'
@@ -46,7 +46,7 @@ export class DataService {
   public isGroupChat: boolean = false
   public user: any
   public isLecturer: boolean
-  public hasMoreMessages: boolean = true
+  public hasMoreMessages: boolean = false
   public hasMoreSearchResults: boolean = true
   public loadingMoreMessages: boolean = false
   public loadingMessagesStatus: BehaviorSubject<boolean> =
@@ -230,14 +230,14 @@ export class DataService {
 
   private resetMessageState(clearSearch: boolean = true) {
     this.messageOffset = 0
-    this.hasMoreMessages = true
+    this.hasMoreMessages = false
     this.messages.next([])
     this.setLoadingMessagesState(false)
     this.loadingMoreMessages = false
 
     if (clearSearch) {
       this.searchOffset = 0
-      this.hasMoreSearchResults = true
+      this.hasMoreSearchResults = false
       this.searchResults.next([])
       this.isSearching.next(false)
       this.currentSearchText = ''
@@ -273,6 +273,7 @@ export class DataService {
 
     apiCall
       .pipe(
+        map((msgs) => this.convertMessagesTime(msgs)),
         finalize(() => this.setLoadingMessagesState(false)),
         catchError((error) => {
           console.error('Error loading initial messages:', error)
@@ -291,6 +292,7 @@ export class DataService {
 
   public loadMoreMessages(): Observable<ILoadMessagesResult> {
     if (
+      this.messageOffset === 0 ||
       this.loadingMoreMessages ||
       !this.hasMoreMessages ||
       this.isSearching.getValue() ||
@@ -319,6 +321,7 @@ export class DataService {
         )
 
     return apiCall.pipe(
+      map((msgs) => this.convertMessagesTime(msgs)),
       tap((msgs: Message[]) => {
         this.hasMoreMessages = msgs.length === this.defaultPageSize
         if (msgs.length > 0) {
@@ -334,20 +337,12 @@ export class DataService {
       catchError((error) => {
         console.error('Error loading more messages:', error)
         this.hasMoreMessages = false
-        return of([])
+        return of<Message[]>([])
       }),
-      (source) =>
-        new Observable<ILoadMessagesResult>((subscriber) => {
-          source.subscribe({
-            next: (msgs) =>
-              subscriber.next({
-                addedCount: msgs.length,
-                totalCount: this.messages.getValue().length,
-              }),
-            error: (err) => subscriber.error(err),
-            complete: () => subscriber.complete(),
-          })
-        })
+      map((msgs) => ({
+        addedCount: msgs.length,
+        totalCount: this.messages.getValue().length,
+      }))
     )
   }
 
@@ -380,6 +375,7 @@ export class DataService {
         0
       )
       .pipe(
+        map((results) => this.convertMessagesTime(results)),
         finalize(() => this.setLoadingMessagesState(false)),
         catchError((error) => {
           console.error('Error searching messages:', error)
@@ -397,6 +393,7 @@ export class DataService {
 
   public loadMoreSearchResults(): Observable<ILoadMessagesResult> {
     if (
+      this.searchOffset === 0 ||
       this.loadingMoreMessages ||
       !this.hasMoreSearchResults ||
       !this.isSearching.getValue() ||
@@ -423,6 +420,7 @@ export class DataService {
     )
 
     return apiCall.pipe(
+      map((results) => this.convertMessagesTime(results)),
       tap((results: Message[]) => {
         this.hasMoreSearchResults = results.length === this.searchPageSize
         if (results.length > 0) {
@@ -438,20 +436,12 @@ export class DataService {
       catchError((error) => {
         console.error('Error loading more search results:', error)
         this.hasMoreSearchResults = false
-        return of([])
+        return of<Message[]>([])
       }),
-      (source) =>
-        new Observable<ILoadMessagesResult>((subscriber) => {
-          source.subscribe({
-            next: (results) =>
-              subscriber.next({
-                addedCount: results.length,
-                totalCount: this.searchResults.getValue().length,
-              }),
-            error: (err) => subscriber.error(err),
-            complete: () => subscriber.complete(),
-          })
-        })
+      map((results) => ({
+        addedCount: results.length,
+        totalCount: this.searchResults.getValue().length,
+      }))
     )
   }
 
@@ -469,11 +459,19 @@ export class DataService {
   }
 
   public AddMsg(msg: Message) {
-    if (msg.chatId == this.activChatId && this.activChatId !== null) {
+    const messageWithDate = {
+      ...msg,
+      time: msg.time ? new Date(msg.time) : undefined,
+    }
+
+    if (
+      messageWithDate.chatId == this.activChatId &&
+      this.activChatId !== null
+    ) {
       if (!this.isSearching.getValue()) {
         const currentMessages = this.messages.getValue()
-        if (!currentMessages.some((m) => m.id === msg.id)) {
-          this.messages.next([...currentMessages, msg])
+        if (!currentMessages.some((m) => m.id === messageWithDate.id)) {
+          this.messages.next([...currentMessages, messageWithDate])
           this.scheduleActiveChatRead()
         }
       } else {
@@ -600,5 +598,12 @@ export class DataService {
         this.loadingTimeout = null
       }
     })
+  }
+
+  private convertMessagesTime(messages: Message[]): Message[] {
+    return messages.map((msg) => ({
+      ...msg,
+      time: msg.time ? new Date(msg.time) : undefined,
+    }))
   }
 }

@@ -6,7 +6,7 @@ export class Chat {
   status?: string
   lastMessage?: string
   groupId: number
-  time: string
+  time?: Date
   unread: number = 0
   isOnline?: boolean
   isTyping?: boolean

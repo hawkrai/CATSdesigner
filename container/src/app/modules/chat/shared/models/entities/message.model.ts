@@ -4,7 +4,7 @@ export interface Message {
   text?: string
   name?: string
   profile?: string
-  time?: string
+  time?: Date
   isToday?: boolean
   align?: string
   imageContent?: Array<{}>

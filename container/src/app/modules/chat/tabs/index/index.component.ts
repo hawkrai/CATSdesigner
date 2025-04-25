@@ -35,6 +35,7 @@ import {
 } from 'rxjs/operators'
 import { ScrollUtils } from '@chat/shared/utils/scrollUtils'
 import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
+import { TranslatePipe } from 'educats-translate'
 
 @Component({
   selector: 'app-index',
@@ -68,7 +69,8 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     public fileService: FileService,
     public videoChatService: VideoChatService,
     private toastr: ToastrService,
-    private zone: NgZone
+    private zone: NgZone,
+    private translatePipe: TranslatePipe
   ) {}
 
   @ViewChild(PerfectScrollbarComponent) componentRef?: PerfectScrollbarComponent
@@ -339,7 +341,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
 
   copyText(text: string) {
     this.clipboardApi.copyFromContent(text)
-    this.toastr.info('Текст скопирован')
+    this.toastr.info(
+      this.translatePipe.transform('chat.textCopied', 'Текст скопирован')
+    )
   }
 
   edit(msg: Message) {
@@ -366,7 +370,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
 
   attachFileClick(fileInput: any) {
     if (!this.dataService.activChat) {
-      this.toastr.warning('Не выбран чат!')
+      this.toastr.warning(
+        this.translatePipe.transform('chat.noChatWarning', 'Не выбран чат!')
+      )
       return false
     }
     fileInput.value = null
@@ -375,7 +381,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
 
   uploadFiles(event) {
     if (!this.dataService.activChat) {
-      this.toastr.warning('Не выбран чат!')
+      this.toastr.warning(
+        this.translatePipe.transform('chat.noChatWarning', 'Не выбран чат!')
+      )
       return false
     }
     if (event.files) this.fileService.UploadFile(event.files)
@@ -392,7 +400,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
 
   sendMsg() {
     if (!this.dataService.activChat) {
-      this.toastr.warning('Не выбран чат!')
+      this.toastr.warning(
+        this.translatePipe.transform('chat.noChatWarning', 'Не выбран чат!')
+      )
       return false
     }
 
@@ -401,7 +411,12 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       this.currentMsg.text === '' ||
       this.currentMsg.text.length > 25000
     ) {
-      this.toastr.warning('Сообщение пустое или превышает разрешенный размер!')
+      this.toastr.warning(
+        this.translatePipe.transform(
+          'chat.messageSizeWarning',
+          'Сообщение пустое или превышает разрешенный размер!'
+        )
+      )
       return
     }
 
@@ -423,10 +438,20 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
           this.currentMsg.text = ''
           this.stopEdit()
           this.cdr.detectChanges()
-          this.toastr.info('Сообщение изменено')
+          this.toastr.info(
+            this.translatePipe.transform(
+              'chat.messageEdited',
+              'Сообщение изменено'
+            )
+          )
         },
         () => {
-          this.toastr.error('Ошибка отправки')
+          this.toastr.error(
+            this.translatePipe.transform(
+              'chat.messageSentError',
+              'Ошибка отправки сообщения'
+            )
+          )
           this.signalRService.connect()
         }
       )
@@ -445,7 +470,12 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
           setTimeout(() => this.scrollToBottom(true), 300)
         },
         () => {
-          this.toastr.error('Ошибка отправки')
+          this.toastr.error(
+            this.translatePipe.transform(
+              'chat.messageSentError',
+              'Ошибка отправки сообщения'
+            )
+          )
           this.signalRService.connect()
         }
       )
@@ -464,7 +494,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
 
   startCall() {
     if (!this.dataService.activChat) {
-      this.toastr.warning('Не выбран чат!')
+      this.toastr.warning(
+        this.translatePipe.transform('chat.noChatWarning', 'Не выбран чат!')
+      )
       return false
     }
     this.signalRService.sendCallRequest(this.dataService.activChatId)
@@ -472,7 +504,12 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
 
   isAllowedForUser() {
     if (!this.videoChatService.isSecureConnection()) {
-      this.toastr.error('Видео-чат не доступен в небезопасном режиме')
+      this.toastr.error(
+        this.translatePipe.transform(
+          'videochat.unsafeError',
+          'Видеочат не доступен в небезопасном режиме!'
+        )
+      )
       return false
     }
 

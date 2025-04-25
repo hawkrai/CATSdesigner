@@ -147,9 +147,9 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
         ...contact,
         id: existingChat?.id,
         unread: existingChat?.unread ?? 0,
-        time: existingChat?.time,
+        time: existingChat?.time ? new Date(existingChat.time) : undefined,
         lastMessage: existingChat?.lastMessage,
-        isOnline: contact.isOnline || existingChat.isOnline,
+        isOnline: contact.isOnline ?? existingChat?.isOnline ?? false,
       }
     })
     this.cdr.detectChanges()
@@ -162,7 +162,10 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
   private performSearch(term: string): void {
     if (!term || term.trim() === '') {
       this.isSearching = false
-      this.chats = this.dataService.chats.getValue()
+      this.chats = this.dataService.chats.getValue().map((chat) => ({
+        ...chat,
+        time: chat.time ? new Date(chat.time) : undefined,
+      }))
     } else {
       this.isSearching = true
       this.chats = []
