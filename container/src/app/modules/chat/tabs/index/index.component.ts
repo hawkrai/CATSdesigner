@@ -493,16 +493,6 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   startCall() {
-    if (!this.dataService.activChat) {
-      this.toastr.warning(
-        this.translatePipe.transform('chat.noChatWarning', 'Не выбран чат!')
-      )
-      return false
-    }
-    this.signalRService.sendCallRequest(this.dataService.activChatId)
-  }
-
-  isAllowedForUser() {
     if (!this.videoChatService.isSecureConnection()) {
       this.toastr.error(
         this.translatePipe.transform(
@@ -513,6 +503,16 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       return false
     }
 
+    if (!this.dataService.activChat) {
+      this.toastr.warning(
+        this.translatePipe.transform('chat.noChatWarning', 'Не выбран чат!')
+      )
+      return false
+    }
+    this.signalRService.sendCallRequest(this.dataService.activChatId)
+  }
+
+  isAllowedForUser() {
     return (
       !this.dataService?.activChat?.groupId &&
       this.dataService.user.role === 'lector'
