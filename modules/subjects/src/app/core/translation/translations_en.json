@@ -102,6 +102,9 @@
   "text.subject.createdBy": "Course created by",
   "text.download": "Downlaod",
   "text.download.archive": "Download as archive",
+  "warningKB1": "For a more accurate calculation of the similarity percentage",
+  "warningKB2": "the size of the file being checked must be at least 20 KB",
+  "fileSize": "File size",
 
   "text.action": "Action",
   "text.number.hours": "Number of hours",

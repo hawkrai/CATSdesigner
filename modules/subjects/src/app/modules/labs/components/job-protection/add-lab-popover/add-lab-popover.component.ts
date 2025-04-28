@@ -73,8 +73,6 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
       )
     );
     
-
-    console.log('Список позиций лабораторных работ ADD:', this.labPositionsService.labPositions);
     this.observeAttachments(this.filesArray);
   }
 

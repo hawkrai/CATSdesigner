@@ -30,7 +30,7 @@ namespace LMPlatform.UI.Services.UserFiles
         public string FileUploadPath => ConfigurationManager.AppSettings["FileUploadPath"];
 
 
-		private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
+        private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
 
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
 
@@ -43,7 +43,7 @@ namespace LMPlatform.UI.Services.UserFiles
 
         public IStudentManagementService StudentManagementService => studentManagementService.Value;
 
-		public UserLabFileViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, bool isCp = false, bool isRet = false, int? labId = null, int? practicalId = null)
+        public UserLabFileViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, bool isCp = false, bool isRet = false, int? labId = null, int? practicalId = null)
         {
             try
             {
@@ -63,7 +63,6 @@ namespace LMPlatform.UI.Services.UserFiles
                     IsReceived = false,
                     IsReturned = isRet
                 }, attachmentsModel);
-
                 return new UserLabFileViewData()
                 {
                     Message = "Файл(ы) успешно отправлен(ы)",
@@ -81,9 +80,9 @@ namespace LMPlatform.UI.Services.UserFiles
                     Attachments = FilesManagementService.GetAttachments(userLabFile.Attachments).ToList(),
                     UserId = userLabFile.UserId,
                     Order = userLabFile.Lab?.Order,
-					PracticalId = practicalId,
-					PracticalTheme = userLabFile.Practical?.Theme,
-					PracticalShortName = userLabFile.Practical?.ShortName,
+                    PracticalId = practicalId,
+                    PracticalTheme = userLabFile.Practical?.Theme,
+                    PracticalShortName = userLabFile.Practical?.ShortName,
                 };
             }
             catch
@@ -180,149 +179,175 @@ namespace LMPlatform.UI.Services.UserFiles
             }
         }
 
-		public ResultPSubjectViewData CheckPlagiarismSubjects(string subjectId, int type, int threshold, bool isCp = false, bool isLab = false, bool isPractical = false)
-		{
-			var path = Guid.NewGuid().ToString("N");
+        public ResultPSubjectViewData CheckPlagiarismSubjects(string subjectId, int type, int threshold, bool isCp = false, bool isLab = false, bool isPractical = false)
+        {
+            var path = Guid.NewGuid().ToString("N");
 
-			try
-			{
-				ClearCache();
+            try
+            {
+                ClearCache();
 
-				var subjectName = this.SubjectManagementService.GetSubject(int.Parse(subjectId)).ShortName;
+                var subjectName = this.SubjectManagementService.GetSubject(int.Parse(subjectId)).ShortName;
+                var Name = this.SubjectManagementService.GetSubject(int.Parse(subjectId)).Name;
+                var Thememin = SubjectManagementService.GetLabs(int.Parse(subjectId));
 
-				Directory.CreateDirectory(this.PlagiarismTempPath + path);
+                Directory.CreateDirectory(this.PlagiarismTempPath + path);
 
-				var usersFiles = this.SubjectManagementService.GetUserFiles(0, int.Parse(subjectId)).Where(e => e.IsReceived && (e.IsCoursProject == isCp || (isLab && (e.LabId.HasValue || !e.LabId.HasValue && !e.PracticalId.HasValue)) || (isPractical && e.PracticalId.HasValue)));
+                var usersFiles = this.SubjectManagementService.GetUserFiles(0, int.Parse(subjectId))
+                    .Where(e => e.IsReceived &&
+                        (e.IsCoursProject == isCp ||
+                        (isLab && (e.LabId.HasValue || (!e.LabId.HasValue && !e.PracticalId.HasValue))) ||
+                        (isPractical && e.PracticalId.HasValue))
+                    );
 
-				var filesPaths = usersFiles.Select(e => e.Attachments);
+                var filesPaths = usersFiles.Select(e => e.Attachments);
 
-				var key = 0;
+                var key = 0;
 
-				if (filesPaths.Count() == 0)
-				{
-					return new ResultPSubjectViewData
-					{
-						Message = "Отсутствуют принятые работы для проверки на плагиат",
-						Code = "500"
-					};
-				}
+                if (!filesPaths.Any())
+                {
+                    return new ResultPSubjectViewData
+                    {
+                        Message = "Отсутствуют принятые работы для проверки на плагиат",
+                        Code = "500"
+                    };
+                }
 
-				foreach (var filesPath in filesPaths)
-				{
-					if (Directory.Exists(this.FileUploadPath + filesPath))
-					{
-						foreach (var srcPath in Directory.GetFiles(this.FileUploadPath + filesPath))
-						{
-							File.Copy(srcPath,
-								srcPath.Replace(this.FileUploadPath + filesPath, this.PlagiarismTempPath + path), true);
-						}
-					}
-					key += filesPath.GetHashCode();
-				}
+                foreach (var filesPath in filesPaths)
+                {
+                    if (Directory.Exists(this.FileUploadPath + filesPath))
+                    {
+                        foreach (var srcPath in Directory.GetFiles(this.FileUploadPath + filesPath))
+                        {
+                            File.Copy(
+                                srcPath,
+                                srcPath.Replace(this.FileUploadPath + filesPath, this.PlagiarismTempPath + path),
+                                true
+                            );
+                        }
+                    }
+                    key += filesPath.GetHashCode();
+                }
 
-				var plagiarismController = new PlagiarismController();
-				var result = plagiarismController.CheckByDirectory(new[] { PlagiarismTempPath + path }.ToList(), threshold, 10, type);
+                var plagiarismController = new PlagiarismController();
+                var result = plagiarismController.CheckByDirectory(new[] { PlagiarismTempPath + path }.ToList(), threshold, 10, type);
 
-				var data = new ResultPlagSubjectClu
-				{
-					clusters = new ResultPlagSubject[result.Count]
-				};
+                var data = new ResultPlagSubjectClu
+                {
+                    clusters = new ResultPlagSubject[result.Count]
+                };
 
-				for (int i = 0; i < result.Count; ++i)
-				{
-					data.clusters[i] = new ResultPlagSubject();
+                for (int i = 0; i < result.Count; ++i)
+                {
+                    data.clusters[i] = new ResultPlagSubject();
 
-					var correctDocs = new List<ResultPlag>();
+                    var correctDocs = new List<ResultPlag>();
 
-					foreach (var doc in result[i].Docs)
-					{
-						var resultS = new ResultPlag();
+                    foreach (var doc in result[i].Docs)
+                    {
+                        var resultS = new ResultPlag();
 
-						var fileName = Path.GetFileName(doc);
+                        var fileName = Path.GetFileName(doc);
+                        var fileNameWithoutExt = Path.GetFileNameWithoutExtension(doc);
 
-						resultS.DocFileName = fileName;
+                        resultS.DocFileName = fileName;
+                        resultS.Name = Name;
 
-						var name = this.FilesManagementService.GetFileDisplayName(fileName);
+                        var name = this.FilesManagementService.GetFileDisplayName(fileName);
+                        resultS.subjectName = subjectName;
+                        resultS.doc = name;
+                        resultS.Theme = Thememin.Theme;
 
-						resultS.subjectName = subjectName;
+                        var pathName = this.FilesManagementService.GetPathName(fileName);
+                        resultS.DocPathName = pathName;
 
-						resultS.doc = name;
+                        var userFileT = this.SubjectManagementService.GetUserLabFile(pathName);
+                        var userId = userFileT.UserId;
+                        var user = this.StudentManagementService.GetStudent(userId);
 
-						var pathName = this.FilesManagementService.GetPathName(fileName);
+                        resultS.author = user.FullName;
+                        resultS.groupName = user.Group.Name;
+                        resultS.shortName = Thememin.ShortName;
 
-						resultS.DocPathName = pathName;
+                        var attachment = new Attachment
+                        {
+                            PathName = pathName,
+                            FileName = fileName
+                        };
+                        var fileSizeBytes = this.FilesManagementService.GetFileSize(attachment) ?? 0;
+                        resultS.sizeFile = Math.Round(fileSizeBytes / 1024.0, 2).ToString() + " КБ";
 
-						var userFileT = this.SubjectManagementService.GetUserLabFile(pathName);
+                        correctDocs.Add(resultS);
+                    }
 
-						var userId = userFileT.UserId;
+                    data.clusters[i].correctDocs = correctDocs
+                        .OrderBy(x => x.groupName)
+                        .ThenBy(x => x.author)
+                        .ToList();
+                }
 
-						var user = this.StudentManagementService.GetStudent(userId);
+                Directory.Delete(this.PlagiarismTempPath + path, true);
 
-						resultS.author = user.FullName;
+                HttpContext.Current.Session.Add(key.ToString(), data.clusters.ToList());
 
-						resultS.groupName = user.Group.Name;
+                return new ResultPSubjectViewData
+                {
+                    DataD = data.clusters.ToList(),
+                    Message = "Проверка успешно завершена",
+                    Code = "200"
+                };
+            }
+            catch (Exception e)
+            {
+                return new ResultPSubjectViewData
+                {
+                    Message = e.Message + "   " + e,
+                    Code = "500"
+                };
+            }
+            finally
+            {
+                var fullPath = this.PlagiarismTempPath + path;
+                if (Directory.Exists(fullPath))
+                {
+                    Directory.Delete(fullPath, true);
+                }
+            }
+        }
 
-						correctDocs.Add(resultS);
-					}
-					data.clusters[i].correctDocs = correctDocs.OrderBy(x => x.groupName).ThenBy(x => x.author).ToList();
-				}
-				Directory.Delete(this.PlagiarismTempPath + path, true);
 
-				HttpContext.Current.Session.Add(key.ToString(), data.clusters.ToList());
+        public ResultViewData CheckPlagiarism(int userFileId, int subjectId, bool isCp = false, bool isLab = false, bool isPractical = false)
+        {
+            var path = Guid.NewGuid().ToString("N");
+            try
+            {
+                ClearCache();
 
-				return new ResultPSubjectViewData
-				{
-					DataD = data.clusters.ToList(),
-					Message = "Проверка успешно завершена",
-					Code = "200"
-				};
-			}
-			catch (Exception e)
-			{
-				return new ResultPSubjectViewData
-				{
-					Message = e.Message + "   " + e,
-					Code = "500"
-				};
-			}
-			finally
-			{
-				var fullPath = this.PlagiarismTempPath + path;
-				if (Directory.Exists(fullPath))
-				{
-					Directory.Delete(fullPath, true);
-				}
-			}
-		}
+                var subjectName = this.SubjectManagementService.GetSubject(new Query<Subject>(e => e.Id == subjectId)).ShortName;
 
-		public ResultViewData CheckPlagiarism(int userFileId, int subjectId, bool isCp = false, bool isLab = false, bool isPractical = false)
-		{
-			var path = Guid.NewGuid().ToString("N");
-			try
-			{
-				ClearCache();
+                var Name = this.SubjectManagementService.GetSubject(new Query<Subject>(e => e.Id == subjectId)).Name;
 
-				var subjectName = this.SubjectManagementService.GetSubject(new Query<Subject>(e => e.Id == subjectId)).ShortName;
+                var shortName = SubjectManagementService.GetLabs(subjectId).ShortName;
 
-				var key = 0;
+                var key = 0;
 
-				Directory.CreateDirectory(this.PlagiarismTempPath + path);
+                Directory.CreateDirectory(this.PlagiarismTempPath + path);
 
-				var userFile = this.SubjectManagementService.GetUserLabFile(userFileId);
+                var userFile = this.SubjectManagementService.GetUserLabFile(userFileId);
 
-				var usersFiles = this.SubjectManagementService.GetUserLabFiles(0, subjectId)
-					.Where(e => e.IsReceived && e.Id != userFile.Id && (e.IsCoursProject == isCp || (isLab && (e.LabId.HasValue || !e.LabId.HasValue && !e.PracticalId.HasValue)) || (isPractical && e.PracticalId.HasValue)));
+                var usersFiles = this.SubjectManagementService.GetUserLabFiles(0, subjectId)
+                    .Where(e => e.IsReceived && e.Id != userFile.Id && (e.IsCoursProject == isCp || (isLab && (e.LabId.HasValue || !e.LabId.HasValue && !e.PracticalId.HasValue)) || (isPractical && e.PracticalId.HasValue)));
 
-				var filesPaths = usersFiles.Select(e => e.Attachments);
+                var filesPaths = usersFiles.Select(e => e.Attachments);
 
-				if (filesPaths.Count() == 0)
-				{
-					return new ResultViewData
-					{
-						Message = "Отсутствуют принятые работы для проверки на плагиат",
-						Code = "200"
-					};
-				}
+                if (filesPaths.Count() == 0)
+                {
+                    return new ResultViewData
+                    {
+                        Message = "Отсутствуют принятые работы для проверки на плагиат",
+                        Code = "200"
+                    };
+                }
 
                 foreach (var filesPath in filesPaths)
                 {
@@ -352,108 +377,120 @@ namespace LMPlatform.UI.Services.UserFiles
 
 
                 string firstFileName =
-					Directory.GetFiles(FileUploadPath + userFile.Attachments)
-					.Select(fi => fi)
-					.FirstOrDefault();
+                    Directory.GetFiles(FileUploadPath + userFile.Attachments)
+                    .Select(fi => fi)
+                    .FirstOrDefault();
 
-				var plagiarismController = new PlagiarismController();
-				var result = plagiarismController.CheckBySingleDoc(firstFileName, new[] { PlagiarismTempPath + path }.ToList(), 10, 10);
+                var plagiarismController = new PlagiarismController();
+                var result = plagiarismController.CheckBySingleDoc(firstFileName, new[] { PlagiarismTempPath + path }.ToList(), 10, 10);
 
-				var data = new List<ResultPlag>();
+                var data = new List<ResultPlag>();
 
-				foreach (var res in result)
-				{
-					var resPlag = new ResultPlag();
+                foreach (var res in result)
+                {
+                    var resPlag = new ResultPlag();
 
-					var fileName = Path.GetFileName(res.Doc);
+                    var fileName = Path.GetFileName(res.Doc);
 
-					resPlag.DocFileName = fileName;
+                    resPlag.DocFileName = fileName;
 
-					var name = FilesManagementService.GetFileDisplayName(fileName);
+                    resPlag.shortName = shortName;
 
-					resPlag.doc = name;
+                    var name = FilesManagementService.GetFileDisplayName(fileName);
 
-					resPlag.subjectName = subjectName;
+                    resPlag.doc = name;
 
-					resPlag.coeff = res.Coeff.ToString();
+                    resPlag.subjectName = subjectName;
 
-					var pathName = FilesManagementService.GetPathName(fileName);
+                    resPlag.coeff = res.Coeff.ToString();
 
-					resPlag.DocPathName = pathName;
+                    resPlag.Name = Name;
 
-					var userFileT = SubjectManagementService.GetUserLabFile(pathName);
+                    var pathName = FilesManagementService.GetPathName(fileName);
 
-					var userId = userFileT.UserId;
+                    resPlag.DocPathName = pathName;
 
-					var user = StudentManagementService.GetStudent(userId);
+                    var userFileT = SubjectManagementService.GetUserLabFile(pathName);
 
-					resPlag.author = user.FullName;
+                    var userId = userFileT.UserId;
 
-					resPlag.groupName = user.Group.Name;
+                    var user = StudentManagementService.GetStudent(userId);
 
-					data.Add(resPlag);
-				}
+                    resPlag.author = user.FullName;
 
-				HttpContext.Current.Session.Add(key.ToString(), data.ToList());
+                    resPlag.groupName = user.Group.Name;
 
-				return new ResultViewData
-				{
-					DataD = data.OrderByDescending(x => int.Parse(x.coeff)).ToList(),
-					Message = "Проверка успешно завершена",
-					Code = "200"
-				};
-			}
-			catch (Exception e)
-			{
-				return new ResultViewData
-				{
-					Message = e.Message + "   " + e,
-					Code = "500"
-				};
-			}
-			finally
-			{
-				var fullPath = PlagiarismTempPath + path;
-				if (Directory.Exists(fullPath))
-				{
-					Directory.Delete(fullPath, true);
-				}
-			}
-		}
+                    var attachment = new Attachment
+                    {
+                        PathName = pathName,
+                        FileName = fileName
+                    };
+                    var fileSizeBytes = this.FilesManagementService.GetFileSize(attachment) ?? 0;
+                    resPlag.sizeFile = Math.Round(fileSizeBytes / 1024.0, 2).ToString() + " КБ";
 
-		private static void ClearCache()
-		{
-			foreach (DictionaryEntry entry_loopVariable in HttpContext.Current.Cache)
-			{
-				var entry = entry_loopVariable;
-				HttpContext.Current.Cache.Remove(entry.Key.ToString());
-			}
+                    data.Add(resPlag);
+                }
 
-			IDictionaryEnumerator enumerator = HttpContext.Current.Cache.GetEnumerator();
+                HttpContext.Current.Session.Add(key.ToString(), data.ToList());
 
-			while (enumerator.MoveNext())
-			{
-				HttpContext.Current.Cache.Remove(enumerator.Key.ToString());
-			}
-			HttpContext.Current.Response.ClearHeaders();
-			HttpContext.Current.Response.Expires = 0;
-			HttpContext.Current.Response.CacheControl = "no-cache";
-			HttpContext.Current.Response.Cache.SetCacheability(HttpCacheability.ServerAndNoCache);
-			HttpContext.Current.Response.Cache.SetNoStore();
-			HttpContext.Current.Response.Buffer = true;
-			HttpContext.Current.Response.ExpiresAbsolute = DateTime.Now.Subtract(new TimeSpan(1, 0, 0, 0));
-			HttpContext.Current.Response.AppendHeader("Pragma", "no-cache");
-			HttpContext.Current.Response.AppendHeader("", "");
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "no-cache"); //HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "private"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "no-store"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "must-revalidate"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "max-stale=0"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "post-check=0"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "pre-check=0"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Pragma", "no-cache"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Keep-Alive", "timeout=3, max=993"); // HTTP 1.1
-		}
+                return new ResultViewData
+                {
+                    DataD = data.OrderByDescending(x => int.Parse(x.coeff)).ToList(),
+                    Message = "Проверка успешно завершена",
+                    Code = "200"
+                };
+            }
+            catch (Exception e)
+            {
+                return new ResultViewData
+                {
+                    Message = e.Message + "   " + e,
+                    Code = "500"
+                };
+            }
+            finally
+            {
+                var fullPath = PlagiarismTempPath + path;
+                if (Directory.Exists(fullPath))
+                {
+                    Directory.Delete(fullPath, true);
+                }
+            }
+        }
 
-	}
+        private static void ClearCache()
+        {
+            foreach (DictionaryEntry entry_loopVariable in HttpContext.Current.Cache)
+            {
+                var entry = entry_loopVariable;
+                HttpContext.Current.Cache.Remove(entry.Key.ToString());
+            }
+
+            IDictionaryEnumerator enumerator = HttpContext.Current.Cache.GetEnumerator();
+
+            while (enumerator.MoveNext())
+            {
+                HttpContext.Current.Cache.Remove(enumerator.Key.ToString());
+            }
+            HttpContext.Current.Response.ClearHeaders();
+            HttpContext.Current.Response.Expires = 0;
+            HttpContext.Current.Response.CacheControl = "no-cache";
+            HttpContext.Current.Response.Cache.SetCacheability(HttpCacheability.ServerAndNoCache);
+            HttpContext.Current.Response.Cache.SetNoStore();
+            HttpContext.Current.Response.Buffer = true;
+            HttpContext.Current.Response.ExpiresAbsolute = DateTime.Now.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Current.Response.AppendHeader("Pragma", "no-cache");
+            HttpContext.Current.Response.AppendHeader("", "");
+            HttpContext.Current.Response.AppendHeader("Cache-Control", "no-cache"); //HTTP 1.1
+            HttpContext.Current.Response.AppendHeader("Cache-Control", "private"); // HTTP 1.1
+            HttpContext.Current.Response.AppendHeader("Cache-Control", "no-store"); // HTTP 1.1
+            HttpContext.Current.Response.AppendHeader("Cache-Control", "must-revalidate"); // HTTP 1.1
+            HttpContext.Current.Response.AppendHeader("Cache-Control", "max-stale=0"); // HTTP 1.1
+            HttpContext.Current.Response.AppendHeader("Cache-Control", "post-check=0"); // HTTP 1.1
+            HttpContext.Current.Response.AppendHeader("Cache-Control", "pre-check=0"); // HTTP 1.1
+            HttpContext.Current.Response.AppendHeader("Pragma", "no-cache"); // HTTP 1.1
+            HttpContext.Current.Response.AppendHeader("Keep-Alive", "timeout=3, max=993"); // HTTP 1.1
+        }
+
+    }
 }

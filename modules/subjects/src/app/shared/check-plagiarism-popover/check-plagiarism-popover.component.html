@@ -1,6 +1,12 @@
 <app-popover-dialog width="600">
   <ng-container title>
     {{ 'plagiarism.check' | translate: 'Проверка на плагиат' }}
+    <div class="added-message">
+      {{ 'warningKB1' | translate: 'Для более точного расчета процента схожести' }}
+    </div>
+    <div class="added-message">
+      {{ 'warningKB2' | translate: 'размер проверяемого файла должен быть не менее 20 KB' }}
+    </div>
   </ng-container>
   <ng-container body>
     <form class="example-form" #formElement>
@@ -59,15 +65,20 @@
               </ng-container>
               <ng-container matColumnDef="subject">
                 <th mat-header-cell *matHeaderCellDef style="width: 80px;"> {{ 'course' | translate: 'Предмет' }} </th>
-                <td mat-cell *matCellDef="let element" matTooltip="{{ element.subjectName }}" style="width: 80px;">
+                <td mat-cell *matCellDef="let element" [matTooltip]="element.Name" style="width: 80px;">
                   {{ element.subjectName }}
                 </td>
               </ng-container>
-              
               <ng-container matColumnDef="file">
                 <th mat-header-cell *matHeaderCellDef> {{ 'text.attachments' | translate: 'Файл' }} </th>
                 <td mat-cell *matCellDef="let element" class="link" (click)="downloadFile(element)">
                   {{ element.doc }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="filesize">
+                <th mat-header-cell *matHeaderCellDef style="width: 80px;"> {{ 'fileSize' | translate: 'Размер файла' }} </th>
+                <td mat-cell *matCellDef="let element" style="width: 80px;">
+                  {{ element.sizeFile }}
                 </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

@@ -1,7 +1,7 @@
 import { finalize, map, switchMap, tap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { PlagiarismResultSubject } from './../../models/plagiarism-result-subject.model'
-import { Component, Inject } from '@angular/core'
+import { Component, Inject} from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { Store } from '@ngrx/store'
 import { IAppState } from 'src/app/store/state/app.state'
@@ -23,7 +23,7 @@ export class CheckPlagiarismPopoverComponent {
   loading = false
   result$: Observable<PlagiarismResultSubject[]>
 
-  displayedColumns = ['author', 'group', 'subject', 'file']
+  displayedColumns = ['author', 'group', 'subject', 'file', 'filesize']
 
   constructor(
     private dialogRef: MatDialogRef<CheckPlagiarismPopoverComponent>,

@@ -138,6 +138,9 @@
   "text.subjects.practicals.protection.edit": "Редактировать практическую работу",
   "text.subjects.practicals.protection.delete": "Удалить практическую работу",
   "text.subjects.practicals.to.protect": "На защиту практической работы",
+  "warningKB1": "Для более точного расчета процента схожести",
+  "warningKB2": "размер проверяемого файла должен быть не менее 20 KB",
+  "fileSize": "Размер файла",
 
   "text.subjects.labs": "Лабораторная работа",
   "text.subjects.labs.plural": "Лабораторные работы",
@@ -219,4 +222,5 @@
   "prefix.lab": "ЛР",
   "prefix.practical": "ПЗ",
   "prefix.lecture": "Л"
+  
 }
