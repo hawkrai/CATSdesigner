@@ -214,6 +214,14 @@
   }
 }
 
+.user-chat.no-chat-selected {
+  overflow: hidden;
+
+  .w-100 {
+    overflow: hidden;
+  }
+}
+
 .no-chat-selected-placeholder {
   flex-grow: 1;
   display: flex;
