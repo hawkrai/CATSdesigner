@@ -3,3 +3,80 @@
 .shortName {
   max-width: 70%;
 }
+
+.avatar-initials {
+  background: transparent;
+  color: #495057;
+}
+
+.chat-user-img {
+  > img.rounded-circle.avatar-xs,
+  > div.avatar-xs {
+    width: $chat-avatar-size;
+    height: $chat-avatar-size;
+    object-fit: cover;
+    border-radius: 50%;
+    background: $chat-avatar-bg;
+    border: $chat-avatar-border;
+    box-shadow: $chat-avatar-box-shadow;
+  }
+
+  > div.avatar-xs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .user-status {
+    width: 10px;
+    height: 10px;
+    border: 2px solid #fff;
+    right: 1px;
+    bottom: 1px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.chat-search-box {
+  padding: 0.4rem 0;
+
+  .input-group.input-group-lg {
+    background: $bubble-bg !important;
+    border-radius: 8px;
+    border: $bubble-border;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s,
+      background-color 0.2s;
+    box-shadow: none;
+    > *,
+    &::before,
+    &::after {
+      border-color: transparent;
+    }
+
+    input.form-control {
+      border: 0;
+      background: transparent;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      height: calc(1.5em + 1rem + 6px);
+      box-shadow: none;
+
+      &::placeholder {
+        color: #868e96;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    &:focus-within {
+      background: $bubble-focus-bg !important;
+      border-color: $bubble-focus-border;
+      box-shadow: $bubble-shadow;
+    }
+  }
+}
