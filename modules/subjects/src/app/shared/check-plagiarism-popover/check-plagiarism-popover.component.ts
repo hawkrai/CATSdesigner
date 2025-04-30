@@ -23,7 +23,7 @@ export class CheckPlagiarismPopoverComponent {
   loading = false
   result$: Observable<PlagiarismResultSubject[]>
 
-  displayedColumns = ['author', 'group', 'subject', 'file', 'filesize']
+  displayedColumns = ['author', 'group', 'subject', 'themelab', 'file', 'filesize']
 
   constructor(
     private dialogRef: MatDialogRef<CheckPlagiarismPopoverComponent>,

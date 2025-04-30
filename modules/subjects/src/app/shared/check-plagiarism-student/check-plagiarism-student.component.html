@@ -50,6 +50,12 @@
                   {{ element.subjectName }}
                 </td>
               </ng-container>
+              <ng-container matColumnDef="themelab">
+                <th mat-header-cell *matHeaderCellDef style="width: 30px;"> {{ 'topic' | translate: 'Тема' }} </th>
+                <td mat-cell *matCellDef="let element" [matTooltip]="element.Theme" style="width: 30px;">
+                  {{ element.shortName }}
+                </td>
+              </ng-container>
               <ng-container matColumnDef="file">
                 <th mat-header-cell *matHeaderCellDef style="width: 150px;">
                   {{ 'text.attachments' | translate: 'Файл' }}

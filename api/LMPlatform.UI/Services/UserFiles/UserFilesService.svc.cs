@@ -11,6 +11,7 @@ using System.Web;
 using Application.Core;
 using Application.Core.Data;
 using Application.Infrastructure.FilesManagement;
+using Application.Infrastructure.LabsManagement;
 using Application.Infrastructure.StudentManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
@@ -42,6 +43,11 @@ namespace LMPlatform.UI.Services.UserFiles
         private readonly LazyDependency<IStudentManagementService> studentManagementService = new LazyDependency<IStudentManagementService>();
 
         public IStudentManagementService StudentManagementService => studentManagementService.Value;
+
+
+        private readonly LazyDependency<ILabsManagementService> labsManagementService = new LazyDependency<ILabsManagementService>();
+
+        public ILabsManagementService LabsManagementService => labsManagementService.Value;
 
         public UserLabFileViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, bool isCp = false, bool isRet = false, int? labId = null, int? practicalId = null)
         {
@@ -277,6 +283,10 @@ namespace LMPlatform.UI.Services.UserFiles
                         var fileSizeBytes = this.FilesManagementService.GetFileSize(attachment) ?? 0;
                         resultS.sizeFile = Math.Round(fileSizeBytes / 1024.0, 2).ToString() + " КБ";
 
+                        var labFiles = this.LabsManagementService.GetUserLabFiles(userId, int.Parse(subjectId));
+                        var matchedLab = labFiles.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
+                        resultS.Theme = matchedLab?.Lab?.Theme ?? "Тема не указана";
+                        resultS.shortName = matchedLab?.Lab?.ShortName ?? "Тема не указана";
                         correctDocs.Add(resultS);
                     }
 
@@ -427,7 +437,10 @@ namespace LMPlatform.UI.Services.UserFiles
                     };
                     var fileSizeBytes = this.FilesManagementService.GetFileSize(attachment) ?? 0;
                     resPlag.sizeFile = Math.Round(fileSizeBytes / 1024.0, 2).ToString() + " КБ";
-
+                    var labFiles = this.LabsManagementService.GetUserLabFiles(userId, subjectId);
+                    var matchedLab = labFiles.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
+                    resPlag.Theme = matchedLab?.Lab?.Theme ?? "Тема не указана";
+                    resPlag.shortName = matchedLab?.Lab?.ShortName ?? "Тема не указана";
                     data.Add(resPlag);
                 }
 

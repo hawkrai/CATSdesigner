@@ -19,7 +19,7 @@ import { DialogData } from 'src/app/models/dialog-data.model';
 })
 export class CheckPlagiarismStudentComponent implements OnInit {
   plagResults$: Observable<CorrectDoc[]>;
-  displayedColumns = ['coeff', 'author', 'group', 'subject', 'file', 'filesize'];
+  displayedColumns = ['coeff', 'author', 'group', 'subject','themelab', 'file', 'filesize'];
   isLoading = true;
   noData = false;
 
