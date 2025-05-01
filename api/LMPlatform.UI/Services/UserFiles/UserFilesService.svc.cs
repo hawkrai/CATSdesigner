@@ -12,6 +12,7 @@ using Application.Core;
 using Application.Core.Data;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.LabsManagement;
+using Application.Infrastructure.PracticalManagement;
 using Application.Infrastructure.StudentManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
@@ -48,6 +49,10 @@ namespace LMPlatform.UI.Services.UserFiles
         private readonly LazyDependency<ILabsManagementService> labsManagementService = new LazyDependency<ILabsManagementService>();
 
         public ILabsManagementService LabsManagementService => labsManagementService.Value;
+
+        private readonly LazyDependency<IPracticalManagementService> practicalManagementService = new LazyDependency<IPracticalManagementService>();
+
+        public IPracticalManagementService PracticalManagementService => practicalManagementService.Value;
 
         public UserLabFileViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, bool isCp = false, bool isRet = false, int? labId = null, int? practicalId = null)
         {
@@ -195,7 +200,6 @@ namespace LMPlatform.UI.Services.UserFiles
 
                 var subjectName = this.SubjectManagementService.GetSubject(int.Parse(subjectId)).ShortName;
                 var Name = this.SubjectManagementService.GetSubject(int.Parse(subjectId)).Name;
-                var Thememin = SubjectManagementService.GetLabs(int.Parse(subjectId));
 
                 Directory.CreateDirectory(this.PlagiarismTempPath + path);
 
@@ -262,7 +266,6 @@ namespace LMPlatform.UI.Services.UserFiles
                         var name = this.FilesManagementService.GetFileDisplayName(fileName);
                         resultS.subjectName = subjectName;
                         resultS.doc = name;
-                        resultS.Theme = Thememin.Theme;
 
                         var pathName = this.FilesManagementService.GetPathName(fileName);
                         resultS.DocPathName = pathName;
@@ -273,7 +276,6 @@ namespace LMPlatform.UI.Services.UserFiles
 
                         resultS.author = user.FullName;
                         resultS.groupName = user.Group.Name;
-                        resultS.shortName = Thememin.ShortName;
 
                         var attachment = new Attachment
                         {
@@ -285,8 +287,12 @@ namespace LMPlatform.UI.Services.UserFiles
 
                         var labFiles = this.LabsManagementService.GetUserLabFiles(userId, int.Parse(subjectId));
                         var matchedLab = labFiles.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
-                        resultS.Theme = matchedLab?.Lab?.Theme ?? "Тема не указана";
-                        resultS.shortName = matchedLab?.Lab?.ShortName ?? "Тема не указана";
+
+                        var labFilesPr = this.PracticalManagementService.GetUserPracticalFiles(userId, int.Parse(subjectId));
+                        var matchedLabPr = labFilesPr.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
+
+                        resultS.Theme = matchedLab?.Lab?.Theme ?? matchedLabPr?.Practical?.Theme ?? "Тема не указана";
+                        resultS.shortName = matchedLab?.Lab?.ShortName ?? matchedLabPr?.Practical?.ShortName ?? "Тема не указана";
                         correctDocs.Add(resultS);
                     }
 

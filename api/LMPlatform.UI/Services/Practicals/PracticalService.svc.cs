@@ -439,23 +439,32 @@ namespace LMPlatform.UI.Services.Practicals
             {
                 var labFiles = PracticalManagementService.GetUserPracticalFiles(userId, subjectId);
                 var model = labFiles
-                    .GroupBy(x => x.Lab?.Order)
+                    .GroupBy(x => x.Practical?.Order)
                     .OrderBy(x => x.Key)
                     .SelectMany(x => x.OrderBy(x => x.Date))
-                    .Select(e => new UserLabFileViewData
-                    {
-                        PracticalShortName = e.Practical?.ShortName,
-                        PracticalTheme = e.Lab?.Theme,
-                        Order = e.Practical?.Order,
-                        Comments = e.Comments,
-                        Id = e.Id,
-                        PathFile = e.Attachments,
-                        IsReceived = e.IsReceived,
-                        IsReturned = e.IsReturned,
-                        PracticalId = e.PracticalId,
-                        UserId = e.UserId,
-                        Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
-                        Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList()
+                    .Select(e => {
+                        var attachments = FilesManagementService.GetAttachments(e.Attachments).ToList();
+                        var firstAttachment = attachments.FirstOrDefault();
+                        long? fileSizeBytes = firstAttachment != null ? FilesManagementService.GetFileSize(firstAttachment) : null;
+
+                        double? fileSizeKb = fileSizeBytes.HasValue ? Math.Round(fileSizeBytes.Value / 1024.0, 2) : (double?)null;
+
+                        return new UserLabFileViewData
+                        {
+                            PracticalShortName = e.Practical?.ShortName,
+                            PracticalTheme = e.Practical?.Theme,
+                            Order = e.Practical?.Order,
+                            Comments = e.Comments,
+                            Id = e.Id,
+                            PathFile = e.Attachments,
+                            IsReceived = e.IsReceived,
+                            IsReturned = e.IsReturned,
+                            PracticalId = e.PracticalId,
+                            UserId = e.UserId,
+                            fileSize = fileSizeKb?.ToString() + " КБ",
+                            Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
+                            Attachments = attachments
+                        };
                     }).ToList();
                 return new UserLabFilesResult
                 {

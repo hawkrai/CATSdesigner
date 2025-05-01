@@ -17,7 +17,7 @@ export class JobProtectionContentComponent implements OnInit {
   @Input() actionsTemplate: TemplateRef<any>
 
   constructor(private store: Store<IAppState>) {}
-  public displayedColumns = ['practical', 'file', 'comments', 'date', 'action']
+  public displayedColumns = ['practical', 'file', 'filesize', 'comments', 'date', 'action']
 
   ngOnInit(): void {}
 
