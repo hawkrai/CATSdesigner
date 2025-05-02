@@ -221,6 +221,9 @@
   "shingles.method": "Метод шинглов",
   "prefix.lab": "ЛР",
   "prefix.practical": "ПЗ",
-  "prefix.lecture": "Л"
+  "prefix.lecture": "Л",
   
+  "text.check.plagiarism.completed": "Проверка прошла успешна",
+  "text.test.check.data.correctness": "Отсутствуют принятые работы для проверки на плагиат",
+  "sending.success": "Файл(ы) успешно отправлен(ы)"
 }

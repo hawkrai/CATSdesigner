@@ -445,8 +445,11 @@ namespace LMPlatform.UI.Services.UserFiles
                     resPlag.sizeFile = Math.Round(fileSizeBytes / 1024.0, 2).ToString() + " КБ";
                     var labFiles = this.LabsManagementService.GetUserLabFiles(userId, subjectId);
                     var matchedLab = labFiles.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
-                    resPlag.Theme = matchedLab?.Lab?.Theme ?? "Тема не указана";
-                    resPlag.shortName = matchedLab?.Lab?.ShortName ?? "Тема не указана";
+                    var labFilesPr = this.PracticalManagementService.GetUserPracticalFiles(userId, subjectId);
+                    var matchedLabPr = labFilesPr.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
+
+                    resPlag.Theme = matchedLab?.Lab?.Theme ?? matchedLabPr?.Practical?.Theme ?? "Тема не указана";
+                    resPlag.shortName = matchedLab?.Lab?.ShortName ?? matchedLabPr?.Practical?.ShortName ?? "Тема не указана";
                     data.Add(resPlag);
                 }
 

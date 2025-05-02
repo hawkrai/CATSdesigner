@@ -11,6 +11,8 @@ import * as catsActions from '../../store/actions/cats.actions'
 import { CorrectDoc } from 'src/app/models/plagiarism-result.model'
 import { UserFilesService } from 'src/app/services/user-files.service'
 import { DialogData } from 'src/app/models/dialog-data.model'
+import { TranslatePipe } from 'educats-translate'
+import { CatsService } from 'src/app/services/cats.service'
 
 @Component({
   selector: 'app-delete-popover',
@@ -22,19 +24,21 @@ export class CheckPlagiarismPopoverComponent {
   percent = 50
   loading = false
   result$: Observable<PlagiarismResultSubject[]>
-
   displayedColumns = ['author', 'group', 'subject', 'themelab', 'file', 'filesize']
 
   constructor(
     private dialogRef: MatDialogRef<CheckPlagiarismPopoverComponent>,
     private store: Store<IAppState>,
     private userFilesService: UserFilesService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private translatePipe: TranslatePipe,
+    private catsService: CatsService 
   ) {}
 
   onClick(): void {
     this.dialogRef.close()
   }
+
   onSave() {
     this.loading = true
     this.result$ = this.store.select(subjectSelectors.getSubjectId).pipe(
@@ -48,8 +52,25 @@ export class CheckPlagiarismPopoverComponent {
         })
       ),
       tap((response) => {
-        this.loading = false
-        this.store.dispatch(catsActions.showMessage({ body: response }))
+        this.loading = false;
+  
+        if (response.Code === '500') {
+          this.catsService.showMessage({
+            Message: this.translatePipe.transform(
+              'text.test.check.data.correctness',
+              'Отсутствуют принятые работы для проверки на плагиат'
+            ),
+            Code: '500',
+          });
+        } else if (response.Code === '200') {
+          this.catsService.showMessage({
+            Message: this.translatePipe.transform(
+              'text.check.plagiarism.completed',
+              'Проверка прошла успешно'
+            ),
+            Code: '200',
+          });
+        }
       }),
       finalize(() => {
         this.loading = false

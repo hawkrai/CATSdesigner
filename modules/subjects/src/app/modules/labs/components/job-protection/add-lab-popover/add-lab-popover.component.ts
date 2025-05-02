@@ -21,6 +21,8 @@ import * as labsSelectors from '../../../../../store/selectors/labs.selectors';
 import { FilesService } from 'src/app/services/files.service';
 import { attchedFileConverter } from '../../../../../utils';
 import { LabPositionsService } from 'src/app/services/lab-positions.service';
+import { TranslatePipe } from 'educats-translate'
+import { CatsService } from 'src/app/services/cats.service'
 
 @Component({
   selector: 'app-lab-work-popover',
@@ -32,6 +34,8 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
   labs$: Observable<Lab[]>;
 
   constructor(
+    private translatePipe: TranslatePipe,
+    private catsService: CatsService,
     private labPositionsService: LabPositionsService,
     private dialogRef: MatDialogRef<AddLabPopoverComponent>,
     store: Store<IAppState>,
@@ -40,6 +44,7 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
   ) {
     super(store, filesService);
     this.setAttachments(this.data.model.attachments);
+    
   }
 
   get filesArray(): FormArray {
@@ -131,8 +136,16 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
       .pipe(take(1))
       .subscribe({
         complete: () => {
+          this.catsService.showMessage({
+            Message: this.translatePipe.transform(
+              'sending.success',
+              'Файл(ы) успешно отправлен(ы)',
+            ),
+            Code: '200',
+          });
           this.dialogRef.close(value);
         },
       });
   }
+  
 }
