@@ -1212,8 +1212,9 @@ $print-body-min-width: map-get($grid-breakpoints, 'lg');
 //Bubble
 
 $bubble-focus-bg: #fff;
-$bubble-focus-border: #ced4da;
+$bubble-focus-border: #f3f5f7;
 $bubble-shadow: 0 0 0 0.15rem rgba(52, 58, 64, 0.15);
 
-$bubble-bg: #f1f3f5;
-$bubble-border: 1px solid #e9ecef;
+$bubble-bg: #f3f5f7;
+$bubble-border: 1px solid rgba(0, 0, 0, 0.1);
+$bubble-border-radius: 10px;

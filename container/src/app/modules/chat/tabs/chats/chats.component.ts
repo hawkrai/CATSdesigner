@@ -118,7 +118,7 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
     const scrollPosition = element.scrollTop
     const scrollHeight = element.scrollHeight
     const clientHeight = element.clientHeight
-    const threshold = 100
+    const threshold = 300
 
     if (scrollHeight - scrollPosition - clientHeight < threshold) {
       this.loadMoreContactsWithDebounce()

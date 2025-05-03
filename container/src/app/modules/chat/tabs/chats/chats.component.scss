@@ -42,7 +42,7 @@
 
   .input-group.input-group-lg {
     background: $bubble-bg !important;
-    border-radius: 8px;
+    border-radius: $bubble-border-radius;
     border: $bubble-border;
     transition:
       border-color 0.2s,
