@@ -320,8 +320,7 @@
                           style="width: -webkit-fill-available"
                           class="ctext-wrap-content"
                         >
-                          <p class="mb-0">
-                            {{ data.text }}
+                          <p class="mb-0" [innerHTML]="data.text | safeHtml">
                             <span class="animate-typing" *ngIf="data.istyping">
                               <span class="dot ml-1"></span>
                               <span class="dot ml-1"></span>
@@ -529,6 +528,8 @@
                         <button
                           type="button"
                           class="btn format-btn"
+                          [ngClass]="{ active: isActive('bold') }"
+                          (click)="applyFormat('bold')"
                           matTooltip="{{
                             'button.format.bold' | translate: 'Жирный'
                           }}"
@@ -538,6 +539,8 @@
                         <button
                           type="button"
                           class="btn format-btn"
+                          [ngClass]="{ active: isActive('italic') }"
+                          (click)="applyFormat('italic')"
                           matTooltip="{{
                             'button.format.italic' | translate: 'Курсив'
                           }}"
@@ -547,6 +550,8 @@
                         <button
                           type="button"
                           class="btn format-btn"
+                          [ngClass]="{ active: isActive('underline') }"
+                          (click)="applyFormat('underline')"
                           matTooltip="{{
                             'button.format.underlined'
                               | translate: 'Подчеркнутый'
@@ -558,6 +563,8 @@
                         <button
                           type="button"
                           class="btn format-btn"
+                          [ngClass]="{ active: isActive('ul') }"
+                          (click)="applyFormat('ul')"
                           matTooltip="{{
                             'button.format.listBulleted'
                               | translate: 'Маркированный список'
@@ -568,6 +575,8 @@
                         <button
                           type="button"
                           class="btn format-btn"
+                          [ngClass]="{ active: isActive('ol') }"
+                          (click)="applyFormat('ol')"
                           matTooltip="{{
                             'button.format.listNumbered'
                               | translate: 'Нумерованный список'
@@ -579,6 +588,8 @@
                         <button
                           type="button"
                           class="btn format-btn"
+                          [ngClass]="{ active: isActive('quote') }"
+                          (click)="applyFormat('quote')"
                           matTooltip="{{
                             'button.format.quote' | translate: 'Цитата'
                           }}"
@@ -588,6 +599,8 @@
                         <button
                           type="button"
                           class="btn format-btn"
+                          [ngClass]="{ active: isActive('code') }"
+                          (click)="applyFormat('code')"
                           matTooltip="{{
                             'button.format.code' | translate: 'Код'
                           }}"
@@ -597,6 +610,8 @@
                         <button
                           type="button"
                           class="btn format-btn"
+                          [ngClass]="{ active: isActive('link') }"
+                          (click)="applyFormat('link')"
                           matTooltip="{{
                             'button.format.link' | translate: 'Вставить ссылку'
                           }}"
@@ -613,6 +628,8 @@
                       <textarea
                         #messageTextarea
                         [(ngModel)]="currentMsg.text"
+                        (select)="onSelectionChange()"
+                        (keyup)="onSelectionChange()"
                         (keyup.enter)="!isFormatPanelOpen && sendMsg()"
                         (input)="
                           !isFormatPanelOpen && autoResize(messageTextarea)
@@ -644,7 +661,10 @@
                             <mat-icon>cancel</mat-icon>
                           </button>
                         </li>
-                        <li *ngIf="!isEdit" class="list-inline-item">
+                        <li
+                          *ngIf="!isEdit && !hasText"
+                          class="list-inline-item"
+                        >
                           <input
                             #fileInput
                             hidden="true"
@@ -667,7 +687,8 @@
                           <button
                             type="submit"
                             (click)="sendMsg()"
-                            class="btn"
+                            class="btn btn-send"
+                            [disabled]="!hasText"
                             matTooltip="{{
                               'chat.send' | translate: 'Отправить'
                             }}"

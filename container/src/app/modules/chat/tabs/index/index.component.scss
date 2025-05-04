@@ -225,6 +225,11 @@
   }
 }
 
+.format-btn.active {
+  background: rgba($primary, 0.2);
+  color: $primary;
+}
+
 .divider {
   width: 1px;
   height: 24px;
@@ -340,6 +345,54 @@ textarea.form-control-lg {
       width: 20px;
       height: 20px;
       line-height: 20px;
+    }
+  }
+
+  .btn-send {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    color: $primary;
+    border: none;
+    box-shadow: 0 1px 3px rgba(#000, 0.07);
+    transition:
+      background 0.2s ease,
+      color 0.2s ease,
+      border 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.15s ease;
+
+    mat-icon {
+      font-size: 20px;
+      line-height: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover,
+    &:focus-visible {
+      border: 1px solid $primary;
+      background: $primary;
+      color: $white;
+      box-shadow: 0 3px 8px rgba($primary, 0.35);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      background: darken($primary, 4%);
+      box-shadow: 0 2px 5px rgba($primary, 0.25);
+      transform: translateY(0);
+    }
+
+    &:disabled,
+    &[disabled] {
+      background: transparent;
+      border: none;
+      color: rgba($primary, 0.5);
+      box-shadow: none;
+      cursor: default;
+      pointer-events: none;
     }
   }
 }
@@ -572,4 +625,11 @@ textarea.form-control-lg {
       justify-content: center;
     }
   }
+}
+
+blockquote:first-child {
+  margin-top: 0;
+}
+blockquote:last-child {
+  margin-bottom: 0;
 }

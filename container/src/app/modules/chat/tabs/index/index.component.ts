@@ -8,6 +8,7 @@ import {
   ViewChild,
   ElementRef,
   NgZone,
+  HostListener,
 } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { Message } from '@chat/shared/models/entities/message.model'
@@ -35,6 +36,14 @@ import {
 import { ScrollUtils } from '@chat/shared/utils/scrollUtils'
 import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
 import { TranslatePipe } from 'educats-translate'
+import { MarkdownService } from '@app/shared/utils/markdown.service'
+import {
+  TextFormatService,
+  FormatTag,
+} from '@app/shared/utils/text-format.service'
+import * as TurndownModule from 'turndown'
+
+const TurndownServiceClass = (TurndownModule as any).default || TurndownModule
 
 @Component({
   selector: 'app-index',
@@ -51,12 +60,14 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   unreadChat: number = 0
   unreadGroup: number = 0
   isFormatPanelOpen: boolean = false
+  activeFormats = new Set<FormatTag>()
   private lastScrollTop: number = 0
   private scrollLock: boolean = false
   private destroy$ = new Subject<void>()
   private searchTerms = new Subject<string>()
   private searchSubscription: Subscription
   private preloadOffset = 120
+  private turndownService = new TurndownServiceClass()
 
   readonly MIN_INPUT_HEIGHT = 48
   readonly MAX_INPUT_HEIGHT = 100
@@ -72,7 +83,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     public videoChatService: VideoChatService,
     private toastr: ToastrService,
     private zone: NgZone,
-    private translatePipe: TranslatePipe
+    private translatePipe: TranslatePipe,
+    private markdownService: MarkdownService,
+    private formatter: TextFormatService
   ) {}
 
   @ViewChild(PerfectScrollbarComponent) componentRef?: PerfectScrollbarComponent
@@ -149,6 +162,18 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
           })
         })
       })
+
+    this.turndownService.addRule('underline', {
+      filter: ['u'],
+      replacement: (content: string) => `<u>${content}</u>`,
+    })
+    this.turndownService.addRule('preCode', {
+      filter: (node) =>
+        node.nodeName === 'PRE' && node.firstChild?.nodeName === 'CODE',
+      replacement: (content, node: HTMLElement) => {
+        return `\n\`\`\`\n${node.textContent}\`\`\`\n`
+      },
+    })
   }
 
   ngAfterViewInit() {}
@@ -362,8 +387,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchTerms.next(this.filterValue || '')
   }
 
-  copyText(text: string) {
-    this.clipboardApi.copyFromContent(text)
+  copyText(html: string) {
+    const md = this.turndownService.turndown(html)
+    this.clipboardApi.copyFromContent(md)
     this.toastr.info(
       this.translatePipe.transform('chat.textCopied', 'Текст скопирован')
     )
@@ -372,7 +398,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   edit(msg: Message) {
     this.isEdit = true
     this.editedMsg = msg
-    this.currentMsg.text = msg.text
+
+    const md = this.turndownService.turndown(msg.text || '')
+    this.currentMsg.text = md
     setTimeout(() => {
       this.autoResize(this.messageTextarea.nativeElement)
     }, 0)
@@ -447,6 +475,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       return
     }
 
+    const rawMd = this.currentMsg.text
+    this.currentMsg.text = this.markdownService.toHtml(rawMd)
+
     if (this.isEdit) {
       const updatePromise = this.dataService.isGroupChat
         ? this.signalRService.updateGroupMessage(
@@ -496,6 +527,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       sendPromise.then(
         () => {
           this.currentMsg.text = ''
+          this.updateActiveFormats()
           if (!this.isFormatPanelOpen) {
             this.resetTextareaHeight()
           }
@@ -575,6 +607,10 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     setTimeout(() => {
       this.messageTextarea?.nativeElement.focus()
 
+      if (!this.isFormatPanelOpen) {
+        this.autoResize(this.messageTextarea.nativeElement)
+      }
+
       if (this.isFormatPanelOpen && scrollWasAtBottom) {
         this.scrollToBottom(false)
       }
@@ -591,5 +627,101 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const element = this.componentRef.directiveRef.elementRef.nativeElement
     return element.scrollHeight - element.scrollTop - element.clientHeight < 100
+  }
+
+  applyFormat(tag: FormatTag) {
+    const textarea: HTMLTextAreaElement = this.messageTextarea.nativeElement
+    const result = this.formatter.format(
+      tag,
+      textarea.value,
+      textarea.selectionStart,
+      textarea.selectionEnd
+    )
+
+    textarea.value = result.value
+    textarea.setSelectionRange(result.start, result.end)
+    this.currentMsg.text = result.value
+
+    textarea.focus()
+    this.autoResize(textarea)
+  }
+
+  get hasText(): boolean {
+    return !!this.currentMsg?.text && this.currentMsg.text.trim().length > 0
+  }
+
+  updateActiveFormats() {
+    const ta = this.messageTextarea.nativeElement as HTMLTextAreaElement
+    this.activeFormats = this.formatter.detect(
+      ta.value,
+      ta.selectionStart,
+      ta.selectionEnd
+    )
+  }
+
+  isActive(tag: FormatTag) {
+    return this.activeFormats.has(tag)
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleHotkeys(e: KeyboardEvent) {
+    const isMac = navigator.platform.toLowerCase().includes('mac')
+    const ctrl = isMac ? e.metaKey : e.ctrlKey
+
+    if (e.key === 'Tab' && !ctrl) {
+      e.preventDefault()
+      this.changeIndent(e.shiftKey ? -1 : 1)
+      this.autoResize(this.messageTextarea.nativeElement)
+      return
+    }
+
+    if (!ctrl) return
+
+    const key = e.key.toLowerCase()
+    const shift = e.shiftKey
+
+    const map: Record<string, FormatTag> = {
+      b: 'bold',
+      i: 'italic',
+      u: 'underline',
+      '`': 'code',
+      '/': 'quote',
+    }
+
+    if (key in map) {
+      e.preventDefault()
+      this.applyFormat(map[key])
+    }
+
+    if (key === 'l' && !shift) {
+      e.preventDefault()
+      this.applyFormat('ul')
+    }
+    if (key === 'l' && shift) {
+      e.preventDefault()
+      this.applyFormat('ol')
+    }
+  }
+
+  onSelectionChange() {
+    this.updateActiveFormats()
+  }
+
+  private changeIndent(delta: number) {
+    const ta: HTMLTextAreaElement = this.messageTextarea.nativeElement
+    const { selectionStart: s, selectionEnd: e, value } = ta
+
+    const lines = value.slice(s, e).split('\n')
+    const indented = lines.map((l) => {
+      if (delta > 0) return '  '.repeat(delta) + l
+      return l.replace(/^ {1,2}/, '')
+    })
+
+    const newVal = value.slice(0, s) + indented.join('\n') + value.slice(e)
+
+    ta.value = newVal
+    const shift = indented.join('\n').length - (e - s)
+    ta.setSelectionRange(s, e + shift)
+    this.currentMsg.text = newVal
   }
 }
