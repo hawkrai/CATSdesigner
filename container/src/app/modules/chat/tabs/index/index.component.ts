@@ -600,6 +600,17 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       : this.dataService.hasMoreMessages
   }
 
+  getInitials(name: string): string {
+    if (!name) return ''
+
+    const nameParts = name.split(' ')
+    if (nameParts.length === 1) {
+      return nameParts[0].charAt(0)
+    }
+
+    return nameParts[0].charAt(0) + nameParts[1].charAt(0)
+  }
+
   toggleFormatPanel(): void {
     this.isFormatPanelOpen = !this.isFormatPanelOpen
     this.cdr.detectChanges()

@@ -119,7 +119,13 @@
                   class="media"
                   style="align-items: center"
                 >
-                  <div class="chat-user-img align-self-center mr-3">
+                  <div
+                    class="chat-user-img align-self-center mr-3"
+                    [ngClass]="{
+                      online: dataService.activChat.isOnline,
+                      away: !dataService.activChat.isOnline
+                    }"
+                  >
                     <img
                       style="height: 36px !important"
                       *ngIf="dataService.activChat.img"
@@ -138,6 +144,7 @@
                         }}
                       </span>
                     </div>
+                    <span class="user-status"></span>
                   </div>
                   <div
                     class="groupName media-body overflow-hidden"
@@ -311,7 +318,19 @@
                 >
                   <div class="conversation-list" *ngIf="!data.isToday">
                     <div class="chat-avatar">
-                      <img src="{{ data.profile }}" alt="" />
+                      <img
+                        *ngIf="data.profile"
+                        src="{{ data.profile }}"
+                        class="rounded-circle avatar-xs"
+                        alt=""
+                      />
+                      <div class="avatar-xs" *ngIf="!data.profile">
+                        <span
+                          class="avatar-title rounded-circle avatar-initials"
+                        >
+                          {{ getInitials(data.name) }}
+                        </span>
+                      </div>
                     </div>
 
                     <div class="user-chat-content">

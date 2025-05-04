@@ -596,6 +596,32 @@ textarea.form-control-lg {
 }
 
 .p-3.p-lg-4.border-bottom .chat-user-img {
+  position: relative;
+
+  .user-status {
+    width: 10px;
+    height: 10px;
+    background-color: $gray-500;
+    border-radius: 50%;
+    border: 2px solid $card-bg;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.35);
+  }
+
+  &.online {
+    .user-status {
+      background-color: $success;
+    }
+  }
+
+  &.away {
+    .user-status {
+      background-color: $warning;
+    }
+  }
+
   > img.rounded-circle.avatar-xs,
   > div.avatar-xs {
     width: $chat-avatar-size;
