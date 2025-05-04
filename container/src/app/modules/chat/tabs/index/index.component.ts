@@ -8,6 +8,7 @@ import {
   ViewChild,
   ElementRef,
   NgZone,
+  HostListener,
 } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { Message } from '@chat/shared/models/entities/message.model'
@@ -30,12 +31,19 @@ import {
   takeUntil,
   debounceTime,
   distinctUntilChanged,
-  switchMap,
   filter,
 } from 'rxjs/operators'
 import { ScrollUtils } from '@chat/shared/utils/scrollUtils'
 import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
 import { TranslatePipe } from 'educats-translate'
+import { MarkdownService } from '@app/shared/utils/markdown.service'
+import {
+  TextFormatService,
+  FormatTag,
+} from '@app/shared/utils/text-format.service'
+import * as TurndownModule from 'turndown'
+
+const TurndownServiceClass = (TurndownModule as any).default || TurndownModule
 
 @Component({
   selector: 'app-index',
@@ -51,13 +59,19 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   editedMsg: Message | null = null
   unreadChat: number = 0
   unreadGroup: number = 0
+  isFormatPanelOpen: boolean = false
+  activeFormats = new Set<FormatTag>()
+  isSearchExpanded = false
   private lastScrollTop: number = 0
   private scrollLock: boolean = false
   private destroy$ = new Subject<void>()
-  private intersectionObserver: IntersectionObserver
-  private loadTriggerElement: HTMLElement
   private searchTerms = new Subject<string>()
   private searchSubscription: Subscription
+  private preloadOffset = 120
+  private turndownService = new TurndownServiceClass()
+
+  readonly MIN_INPUT_HEIGHT = 48
+  readonly MAX_INPUT_HEIGHT = 100
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -70,13 +84,16 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     public videoChatService: VideoChatService,
     private toastr: ToastrService,
     private zone: NgZone,
-    private translatePipe: TranslatePipe
+    private translatePipe: TranslatePipe,
+    private markdownService: MarkdownService,
+    private formatter: TextFormatService
   ) {}
 
   @ViewChild(PerfectScrollbarComponent) componentRef?: PerfectScrollbarComponent
   @ViewChild(PerfectScrollbarDirective) directiveRef?: PerfectScrollbarDirective
-  @ViewChild('loadTrigger', { static: false }) loadTriggerRef: ElementRef
   @ViewChild('searchDropdown') searchDropdown: NgbDropdown
+  @ViewChild('messageTextarea') messageTextarea: ElementRef
+  @ViewChild('searchInput') searchInput: ElementRef
 
   ngOnInit(): void {
     this.dataService.activChatId$
@@ -147,59 +164,92 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
           })
         })
       })
+
+    this.turndownService.addRule('underline', {
+      filter: ['u'],
+      replacement: (content: string) => `<u>${content}</u>`,
+    })
+    this.turndownService.addRule('preCode', {
+      filter: (node) =>
+        node.nodeName === 'PRE' && node.firstChild?.nodeName === 'CODE',
+      replacement: (content, node: HTMLElement) => {
+        return `\n\`\`\`\n${node.textContent}\`\`\`\n`
+      },
+    })
   }
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      if (this.componentRef?.directiveRef) {
-        this.setupIntersectionObserver()
-      }
-    }, 500)
-  }
+  ngAfterViewInit() {}
 
   ngOnDestroy(): void {
     this.destroy$.next()
     this.destroy$.complete()
 
     if (this.searchSubscription) this.searchSubscription.unsubscribe()
-    if (this.intersectionObserver) this.intersectionObserver.disconnect()
   }
 
-  private setupIntersectionObserver() {
-    if (!this.componentRef?.directiveRef) return
-    if (this.intersectionObserver) this.intersectionObserver.disconnect()
-    const messagesContainer =
-      this.componentRef.directiveRef.elementRef.nativeElement
-    if (!this.loadTriggerRef?.nativeElement) return
-    this.loadTriggerElement = this.loadTriggerRef.nativeElement
-
-    const options = {
-      root: messagesContainer,
-      rootMargin: '150px 0px 0px 0px',
-      threshold: 0.01,
+  onScroll(): void {
+    if (this.scrollLock || this.dataService.loadingMoreMessages) {
+      return
     }
 
-    this.intersectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (
-          entry.isIntersecting &&
-          !this.dataService.loadingMoreMessages &&
-          !this.scrollLock
-        ) {
-          if (this.dataService.isSearching.getValue()) {
-            if (this.dataService.hasMoreSearchResults) {
-              this.loadMoreSearchResults()
-            }
-          } else {
-            if (this.dataService.hasMoreMessages) {
-              this.loadMoreMessages()
-            }
-          }
-        }
-      })
-    }, options)
+    const el = this.directiveRef?.elementRef.nativeElement
+    if (!el) {
+      return
+    }
 
-    this.intersectionObserver.observe(this.loadTriggerElement)
+    if (el.scrollTop <= this.preloadOffset) {
+      this.tryLoadMoreMessages()
+    }
+  }
+
+  onReachStart(): void {
+    if (this.scrollLock || this.dataService.loadingMoreMessages) {
+      return
+    }
+    this.tryLoadMoreMessages()
+  }
+
+  autoResize(textarea: HTMLTextAreaElement): void {
+    if (!textarea) {
+      return
+    }
+
+    if (!textarea.value.trim()) {
+      textarea.style.height = this.MIN_INPUT_HEIGHT + 'px'
+      return
+    }
+
+    const newHeight = Math.min(textarea.scrollHeight, this.MAX_INPUT_HEIGHT)
+    textarea.style.height = newHeight + 'px'
+
+    if (
+      newHeight > this.MIN_INPUT_HEIGHT &&
+      newHeight < this.MAX_INPUT_HEIGHT &&
+      this.isScrollAtBottom()
+    ) {
+      setTimeout(() => {
+        this.scrollToBottom(false)
+      }, 100)
+    }
+  }
+
+  private tryLoadMoreMessages(): void {
+    this.scrollLock = true
+
+    const canLoad = this.dataService.isSearching.getValue()
+      ? this.dataService.hasMoreSearchResults
+      : this.dataService.hasMoreMessages
+
+    if (!canLoad) {
+      this.scrollLock = false
+      return
+    }
+
+    if (this.dataService.isSearching.getValue()) {
+      this.loadMoreSearchResults()
+    } else {
+      this.loadMoreMessages()
+    }
   }
 
   activateChat(chatData: any) {
@@ -323,7 +373,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
         ScrollUtils.scrollToBottom(this.componentRef.directiveRef, smooth)
         this.lastScrollTop =
           this.componentRef.directiveRef.elementRef.nativeElement.scrollHeight
-      }, 50)
+      }, 0)
     }
   }
 
@@ -339,8 +389,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchTerms.next(this.filterValue || '')
   }
 
-  copyText(text: string) {
-    this.clipboardApi.copyFromContent(text)
+  copyText(html: string) {
+    const md = this.turndownService.turndown(html)
+    this.clipboardApi.copyFromContent(md)
     this.toastr.info(
       this.translatePipe.transform('chat.textCopied', 'Текст скопирован')
     )
@@ -349,7 +400,12 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   edit(msg: Message) {
     this.isEdit = true
     this.editedMsg = msg
-    this.currentMsg.text = msg.text
+
+    const md = this.turndownService.turndown(msg.text || '')
+    this.currentMsg.text = md
+    setTimeout(() => {
+      this.autoResize(this.messageTextarea.nativeElement)
+    }, 0)
   }
 
   stopEdit() {
@@ -357,6 +413,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     this.currentMsg = new MessageCto()
     this.currentMsg.text = ''
     this.editedMsg = null
+    this.resetTextareaHeight()
   }
 
   openStudentsList() {
@@ -408,7 +465,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (
       !this.currentMsg?.text ||
-      this.currentMsg.text === '' ||
+      this.currentMsg.text.trim().length === 0 ||
       this.currentMsg.text.length > 25000
     ) {
       this.toastr.warning(
@@ -419,6 +476,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       return
     }
+
+    const rawMd = this.currentMsg.text
+    this.currentMsg.text = this.markdownService.toHtml(rawMd)
 
     if (this.isEdit) {
       const updatePromise = this.dataService.isGroupChat
@@ -437,6 +497,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
         () => {
           this.currentMsg.text = ''
           this.stopEdit()
+          if (!this.isFormatPanelOpen) {
+            this.resetTextareaHeight()
+          }
           this.cdr.detectChanges()
           this.toastr.info(
             this.translatePipe.transform(
@@ -466,6 +529,10 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       sendPromise.then(
         () => {
           this.currentMsg.text = ''
+          this.updateActiveFormats()
+          if (!this.isFormatPanelOpen) {
+            this.resetTextareaHeight()
+          }
           this.cdr.detectChanges()
           setTimeout(() => this.scrollToBottom(true), 300)
         },
@@ -490,6 +557,10 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
 
   closeUserChat() {
     document.getElementById('chat-room').classList.remove('user-chat-show')
+    if (this.isFormatPanelOpen) {
+      this.isFormatPanelOpen = false
+      this.cdr.detectChanges()
+    }
   }
 
   startCall() {
@@ -529,5 +600,168 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.dataService.isSearching.getValue()
       ? this.dataService.hasMoreSearchResults
       : this.dataService.hasMoreMessages
+  }
+
+  getInitials(name: string): string {
+    if (!name) return ''
+
+    const nameParts = name.split(' ')
+    if (nameParts.length === 1) {
+      return nameParts[0].charAt(0)
+    }
+
+    return nameParts[0].charAt(0) + nameParts[1].charAt(0)
+  }
+
+  toggleFormatPanel(): void {
+    this.isFormatPanelOpen = !this.isFormatPanelOpen
+    this.cdr.detectChanges()
+    const scrollWasAtBottom = this.isScrollAtBottom()
+    setTimeout(() => {
+      this.messageTextarea?.nativeElement.focus()
+
+      if (!this.isFormatPanelOpen) {
+        this.autoResize(this.messageTextarea.nativeElement)
+      }
+
+      if (this.isFormatPanelOpen && scrollWasAtBottom) {
+        this.scrollToBottom(false)
+      }
+    }, 100)
+  }
+
+  private resetTextareaHeight(): void {
+    const textarea = this.messageTextarea.nativeElement as HTMLTextAreaElement
+    textarea.style.height = this.MIN_INPUT_HEIGHT + 'px'
+  }
+
+  private isScrollAtBottom(): boolean {
+    if (!this.componentRef?.directiveRef) return false
+
+    const element = this.componentRef.directiveRef.elementRef.nativeElement
+    return element.scrollHeight - element.scrollTop - element.clientHeight < 100
+  }
+
+  applyFormat(tag: FormatTag) {
+    const textarea: HTMLTextAreaElement = this.messageTextarea.nativeElement
+    const result = this.formatter.format(
+      tag,
+      textarea.value,
+      textarea.selectionStart,
+      textarea.selectionEnd
+    )
+
+    textarea.value = result.value
+    textarea.setSelectionRange(result.start, result.end)
+    this.currentMsg.text = result.value
+
+    textarea.focus()
+    this.autoResize(textarea)
+  }
+
+  get hasText(): boolean {
+    return !!this.currentMsg?.text && this.currentMsg.text.trim().length > 0
+  }
+
+  updateActiveFormats() {
+    const ta = this.messageTextarea.nativeElement as HTMLTextAreaElement
+    this.activeFormats = this.formatter.detect(
+      ta.value,
+      ta.selectionStart,
+      ta.selectionEnd
+    )
+  }
+
+  isActive(tag: FormatTag) {
+    return this.activeFormats.has(tag)
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleHotkeys(e: KeyboardEvent) {
+    const isMac = navigator.platform.toLowerCase().includes('mac')
+    const ctrl = isMac ? e.metaKey : e.ctrlKey
+
+    if (e.key === 'Tab' && !ctrl) {
+      e.preventDefault()
+      this.changeIndent(e.shiftKey ? -1 : 1)
+      this.autoResize(this.messageTextarea.nativeElement)
+      return
+    }
+
+    if (!ctrl) return
+
+    const key = e.key.toLowerCase()
+    const shift = e.shiftKey
+
+    const map: Record<string, FormatTag> = {
+      b: 'bold',
+      i: 'italic',
+      u: 'underline',
+      '`': 'code',
+      '/': 'quote',
+    }
+
+    if (key in map) {
+      e.preventDefault()
+      this.applyFormat(map[key])
+    }
+
+    if (key === 'l' && !shift) {
+      e.preventDefault()
+      this.applyFormat('ul')
+    }
+    if (key === 'l' && shift) {
+      e.preventDefault()
+      this.applyFormat('ol')
+    }
+  }
+
+  onSelectionChange() {
+    this.updateActiveFormats()
+  }
+
+  private changeIndent(delta: number) {
+    const ta: HTMLTextAreaElement = this.messageTextarea.nativeElement
+    const { selectionStart: s, selectionEnd: e, value } = ta
+
+    const lines = value.slice(s, e).split('\n')
+    const indented = lines.map((l) => {
+      if (delta > 0) return '  '.repeat(delta) + l
+      return l.replace(/^ {1,2}/, '')
+    })
+
+    const newVal = value.slice(0, s) + indented.join('\n') + value.slice(e)
+
+    ta.value = newVal
+    const shift = indented.join('\n').length - (e - s)
+    ta.setSelectionRange(s, e + shift)
+    this.currentMsg.text = newVal
+  }
+
+  toggleSearch(): void {
+    this.isSearchExpanded = !this.isSearchExpanded
+
+    if (this.isSearchExpanded) {
+      setTimeout(() => {
+        this.searchInput?.nativeElement.focus()
+      }, 300)
+    } else {
+      this.clearSearch()
+    }
+  }
+
+  closeSearch(): void {
+    this.isSearchExpanded = false
+    this.clearSearch()
+  }
+
+  clearSearch(): void {
+    this.filterValue = ''
+    this.filter()
+    if (this.isSearchExpanded) {
+      setTimeout(() => {
+        this.searchInput?.nativeElement.focus()
+      }, 0)
+    }
   }
 }

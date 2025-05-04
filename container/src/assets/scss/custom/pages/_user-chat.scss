@@ -45,10 +45,32 @@
   .chat-avatar {
     margin-right: 16px;
 
-    img {
+    img.rounded-circle.avatar-xs,
+    > div.avatar-xs {
       width: 36px;
       height: 36px;
+      object-fit: cover;
       border-radius: 50%;
+      background: $chat-avatar-bg;
+      border: $chat-avatar-border;
+      box-shadow: $chat-avatar-box-shadow;
+    }
+
+    > div.avatar-xs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .avatar-title {
+        background: transparent;
+        color: $primary;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: $font-weight-medium;
+      }
     }
   }
 
@@ -132,7 +154,7 @@
     .chat-time {
       font-size: 12px;
       margin-top: 4px;
-      text-align: right;
+      text-align: left;
       color: rgba($white, 0.5);
     }
 
@@ -176,7 +198,7 @@
     }
 
     .chat-time {
-      text-align: left;
+      text-align: right;
       color: $gray-600;
     }
 
@@ -189,7 +211,7 @@
           order: 2;
           background-color: $chat-secondary-bg;
           color: $dark;
-          text-align: right;
+          text-align: left;
           border-radius: 8px 8px 0px 8px;
 
           &:before {
@@ -249,5 +271,65 @@
 
   30% {
     transform: translateY(-5px);
+  }
+}
+
+::ng-deep .chat-conversation .ctext-wrap-content pre {
+  background: rgba(#000, 0.25);
+  border: 1px solid rgba(#fff, 0.25);
+  border-left: 4px solid rgba(#fff, 0.4);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  font:
+    0.85rem/1.45 Menlo,
+    Consolas,
+    monospace;
+  color: #fff;
+  white-space: pre;
+  overflow-x: auto;
+  tab-size: 4;
+}
+
+::ng-deep .chat-conversation li.right .ctext-wrap-content pre {
+  background: #f6f8fa;
+  border-color: #d0d7de;
+  border-left-color: #6da3ff;
+  color: #24292f;
+}
+
+::ng-deep .chat-conversation .ctext-wrap-content blockquote {
+  margin: 0.75rem 0;
+  padding: 0.6rem 1rem 0.6rem 1.1rem;
+  background: rgba(#fff, 0.1);
+  border-left: 4px solid rgba(#fff, 0.65);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.95em;
+  font-style: italic;
+}
+
+::ng-deep .chat-conversation li.right .ctext-wrap-content blockquote {
+  background: #eef1f6;
+  border-left-color: #3f8cff;
+  color: #343a40;
+  font-style: italic;
+}
+
+::ng-deep .chat-conversation .ctext-wrap-content a {
+  color: #fff;
+  text-decoration: underline;
+
+  &:hover {
+    color: rgba(#fff, 0.85);
+  }
+}
+
+::ng-deep .chat-conversation li.right .ctext-wrap-content a {
+  color: #0d6efd;
+  text-decoration: underline;
+
+  &:hover {
+    color: darken(#0d6efd, 8%);
   }
 }

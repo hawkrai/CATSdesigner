@@ -3,6 +3,9 @@ import { NgModule } from '@angular/core'
 import { TranslateModule, TranslatePipe } from 'educats-translate'
 import * as dataEn from '../core/translations/translations_en.json'
 import * as dataRu from '../core/translations/translations_ru.json'
+import { SafeHtmlPipe } from './pipes/safe-html.pipe'
+import { MarkdownService } from './utils/markdown.service'
+import { TextFormatService } from './utils/text-format.service'
 
 @NgModule({
   imports: [
@@ -14,7 +17,8 @@ import * as dataRu from '../core/translations/translations_ru.json'
       },
     }),
   ],
-  exports: [TranslatePipe],
-  providers: [TranslatePipe],
+  declarations: [SafeHtmlPipe],
+  exports: [TranslatePipe, SafeHtmlPipe],
+  providers: [TranslatePipe, TextFormatService, MarkdownService],
 })
 export class SharedModule {}
