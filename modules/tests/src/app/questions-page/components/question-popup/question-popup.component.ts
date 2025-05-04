@@ -38,6 +38,7 @@ export class QuestionPopupComponent
   public chosenType: any
   public titleQuestionIndex = 'Вопрос '
   public questionIndex = 0
+  isCreatingNewQuestion: boolean = false;
   navItems: NavItem[] = []
 
   public editor = Editor
@@ -102,7 +103,7 @@ export class QuestionPopupComponent
   public concept: any
   public selectedConcept: string
   private unsubscribeStream$: Subject<void> = new Subject<void>()
-  private conceptId: any
+  public conceptId: any
   public showDescription: boolean
 
   constructor(
@@ -124,6 +125,7 @@ export class QuestionPopupComponent
 
   ngOnInit() {
     const subject = JSON.parse(localStorage.getItem('currentSubject'))
+    this.isCreatingNewQuestion = !this.data.event;
 
     this.initForm()
     if (this.data.event) {
@@ -390,6 +392,15 @@ export class QuestionPopupComponent
     this.question.ConceptId = Id
     this.getConceptName()
   }
+
+  hasChild(item: any, conceptId: number): boolean {
+    if (!item.Children) return false;
+  
+    return item.Children.some(child => {
+      return child.Id === conceptId || this.hasChild(child, conceptId);
+    });
+  }
+  
 
   public getChildById(concepts: any, id): any {
     for (const concept of concepts) {
