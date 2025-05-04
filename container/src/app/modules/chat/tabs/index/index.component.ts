@@ -61,6 +61,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   unreadGroup: number = 0
   isFormatPanelOpen: boolean = false
   activeFormats = new Set<FormatTag>()
+  isSearchExpanded = false
   private lastScrollTop: number = 0
   private scrollLock: boolean = false
   private destroy$ = new Subject<void>()
@@ -92,6 +93,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(PerfectScrollbarDirective) directiveRef?: PerfectScrollbarDirective
   @ViewChild('searchDropdown') searchDropdown: NgbDropdown
   @ViewChild('messageTextarea') messageTextarea: ElementRef
+  @ViewChild('searchInput') searchInput: ElementRef
 
   ngOnInit(): void {
     this.dataService.activChatId$
@@ -734,5 +736,32 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     const shift = indented.join('\n').length - (e - s)
     ta.setSelectionRange(s, e + shift)
     this.currentMsg.text = newVal
+  }
+
+  toggleSearch(): void {
+    this.isSearchExpanded = !this.isSearchExpanded
+
+    if (this.isSearchExpanded) {
+      setTimeout(() => {
+        this.searchInput?.nativeElement.focus()
+      }, 300)
+    } else {
+      this.clearSearch()
+    }
+  }
+
+  closeSearch(): void {
+    this.isSearchExpanded = false
+    this.clearSearch()
+  }
+
+  clearSearch(): void {
+    this.filterValue = ''
+    this.filter()
+    if (this.isSearchExpanded) {
+      setTimeout(() => {
+        this.searchInput?.nativeElement.focus()
+      }, 0)
+    }
   }
 }

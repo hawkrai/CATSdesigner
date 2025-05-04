@@ -173,76 +173,73 @@
             </div>
             <div class="col-sm-8 col-4">
               <ul class="list-inline user-chat-nav text-right mb-0">
-                <li class="list-inline-item">
+                <li class="list-inline-item sliding-search-container">
                   <div
-                    class="dropdown"
-                    ngbDropdown
-                    #searchDropdown="ngbDropdown"
+                    class="search-field-wrapper"
+                    [ngClass]="{ expanded: isSearchExpanded }"
                   >
-                    <button
-                      class="btn nav-btn dropdown-toggle"
-                      ngbDropdownToggle
-                      type="button"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      matTooltip="{{
+                    <input
+                      #searchInput
+                      type="text"
+                      class="form-control border-0 search-input"
+                      placeholder="{{
                         'chat.filter' | translate: 'Поиск сообщений'
                       }}"
-                    >
-                      <mat-icon>search</mat-icon>
-                    </button>
+                      [(ngModel)]="filterValue"
+                      (ngModelChange)="filter()"
+                      (keyup.enter)="filter()"
+                      (keyup.escape)="closeSearch()"
+                      autocomplete="off"
+                    />
                     <button
-                      *ngIf="dataService.isLecturer && dataService.isGroupChat"
-                      class="btn nav-btn dropdown-toggle"
-                      (click)="openStudentsList()"
+                      *ngIf="filterValue && isSearchExpanded"
+                      class="btn btn-sm clear-search-btn"
+                      (click)="clearSearch()"
+                      matTooltip="{{ 'button.clear' | translate: 'Очистить' }}"
                     >
-                      <mat-icon
-                        matTooltip="{{
-                          'chat.listStudent' | translate: 'Список студентов'
-                        }}"
-                        >list_alt</mat-icon
-                      >
+                      <mat-icon style="font-size: 18px">close</mat-icon>
                     </button>
-                    <button
-                      *ngIf="isAllowedForUser() && !dataService.isGroupChat"
-                      type="button"
-                      (click)="startCall()"
-                      class="btn nav-btn"
-                      matTooltip="{{ 'chat.call' | translate: 'Позвонить' }}"
-                    >
-                      <mat-icon>phone</mat-icon>
-                    </button>
-                    <div
-                      class="dropdown-menu p-0 dropdown-menu-right dropdown-menu-md"
-                      ngbDropdownMenu
-                    >
-                      <div class="search-box">
-                        <input
-                          #searchInput
-                          type="text"
-                          class="form-control border-0"
-                          placeholder="{{
-                            'chat.filter' | translate: 'Поиск сообщений'
-                          }}"
-                          [(ngModel)]="filterValue"
-                          (ngModelChange)="filter()"
-                          (keyup.enter)="filter()"
-                          (click)="$event.stopPropagation()"
-                          autocomplete="off"
-                        />
-                        <button
-                          *ngIf="filterValue"
-                          class="btn btn-sm btn-light clear-search-btn"
-                          (click)="
-                            filterValue = ''; filter(); searchDropdown.close()
-                          "
-                        >
-                          <mat-icon style="font-size: 18px">close</mat-icon>
-                        </button>
-                      </div>
-                    </div>
                   </div>
+                  <button
+                    class="btn nav-btn search-toggle-btn"
+                    (click)="toggleSearch()"
+                    matTooltip="{{
+                      isSearchExpanded
+                        ? ('chat.closeSearch' | translate: 'Закрыть поиск')
+                        : ('chat.filter' | translate: 'Поиск сообщений')
+                    }}"
+                  >
+                    <mat-icon>{{
+                      isSearchExpanded ? 'arrow_forward' : 'search'
+                    }}</mat-icon>
+                  </button>
+                </li>
+                <li
+                  class="list-inline-item"
+                  *ngIf="dataService.isLecturer && dataService.isGroupChat"
+                >
+                  <button
+                    class="btn nav-btn"
+                    (click)="openStudentsList()"
+                    matTooltip="{{
+                      'chat.listStudent' | translate: 'Список студентов'
+                    }}"
+                  >
+                    <mat-icon>list_alt</mat-icon>
+                  </button>
+                </li>
+                <li
+                  class="list-inline-item"
+                  *ngIf="isAllowedForUser() && !dataService.isGroupChat"
+                >
+                  <button
+                    type="button"
+                    (click)="startCall()"
+                    class="btn nav-btn"
+                    matTooltip="{{ 'chat.call' | translate: 'Позвонить' }}"
+                  >
+                    <mat-icon>phone</mat-icon>
+                  </button>
                 </li>
               </ul>
             </div>
