@@ -15,97 +15,97 @@ export tests_path=$modules_path'/tests'
 
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
+npm_config_ignore_scripts=true pnpm i --force
 
 cd $server_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
+npm_config_ignore_scripts=true pnpm i --force
 cd $base_path
 
 cd $container_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
-npm run build -- --configuration=stage
+npm_config_ignore_scripts=true pnpm i --force
+pnpm run build --configuration=stage
 cd $base_path
 
 cd $admin_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
-npm run build -- --configuration=stage
+npm_config_ignore_scripts=true pnpm i --force
+pnpm run build --configuration=stage
 cd $base_path
 cd $base_path
 
 cd $complex_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
-npm run build -- --configuration=stage
+npm_config_ignore_scripts=true pnpm i --force
+pnpm run build --configuration=stage
 cd $base_path
 cd $base_path
 
 cd $confirmation_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
-npm run build -- --configuration=stage
+npm_config_ignore_scripts=true pnpm i --force
+pnpm run build --configuration=stage
 cd $base_path
 cd $base_path
 
 cd $cp_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
-npm run build -- --configuration=stage
+npm_config_ignore_scripts=true pnpm i --force
+pnpm run build --configuration=stage
 cd $base_path
 cd $base_path
 
 cd $dp_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
-npm run build -- --configuration=stage
+npm_config_ignore_scripts=true pnpm i --force
+pnpm run build --configuration=stage
 cd $base_path
 cd $base_path
 
 cd $editor_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
-npm run build -- --configuration=stage
+npm_config_ignore_scripts=true pnpm i --force
+pnpm run build --configuration=stage
 cd $base_path
 cd $base_path
 
 cd $schedule_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
-npm run build -- --configuration=stage
+npm_config_ignore_scripts=true pnpm i --force
+pnpm run build --configuration=stage
 cd $base_path
 cd $base_path
 
 cd $statistics_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
-npm run build -- --configuration=stage
+npm_config_ignore_scripts=true pnpm i --force
+pnpm run build --configuration=stage
 cd $base_path
 cd $base_path
 
 cd $subjects_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
-npm run build -- --configuration=stage
+npm_config_ignore_scripts=true pnpm i --force
+pnpm run build --configuration=stage
 cd $base_path
 cd $base_path
 
 cd $tests_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
-npm i --force
-npm run build -- --configuration=stage
+npm_config_ignore_scripts=true pnpm i --force
+pnpm run build --configuration=stage
 cd $base_path
 cd $base_path
