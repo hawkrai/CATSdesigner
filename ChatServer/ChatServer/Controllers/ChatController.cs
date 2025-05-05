@@ -132,5 +132,27 @@ namespace ChatServer.Controllers
             bool isLector = role.ToLower().Equals("lector");
             return await _groupService.GetGroups(userId, isLector);
         }
+
+        [HttpGet]
+        public async Task<IEnumerable<UserDto>> GetStudentsByGroupId(int groupId)
+        {
+            var students = await _userService.GetStudentsByGroup(groupId);
+
+            var userDtos = new List<UserDto>();
+            foreach (var student in students)
+            {
+                var user = await _userService.GetUser(student.UserId, false);
+                userDtos.Add(new UserDto
+                {
+                    UserId = student.UserId,
+                    GroupId = student.GroupId,
+                    isOnline = user?.IsOnline ?? false,
+                    FullName = student.FullName,
+                    Profile = user?.Avatar
+                });
+            }
+
+            return userDtos;
+        }
     }
 }

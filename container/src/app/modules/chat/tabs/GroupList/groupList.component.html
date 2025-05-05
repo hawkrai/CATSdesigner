@@ -4,6 +4,13 @@
   </h2>
   <perfect-scrollbar class="chat-message-list" style="height: 90%">
     <ul class="list-unstyled chat-list chat-user-list" style="max-height: 60vh">
+      <li *ngIf="loadingStudents" class="text-center p-2">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">{{
+            'chat.loading' | translate: 'Загрузка...'
+          }}</span>
+        </div>
+      </li>
       <li
         *ngFor="let user of users"
         [ngClass]="{ typing: user.isTyping, active: user.isActive }"
@@ -38,6 +45,14 @@
             </div>
           </div>
         </a>
+      </li>
+      <li
+        *ngIf="!loadingStudents && users.length === 0"
+        class="text-center p-2"
+      >
+        <span class="text-muted">{{
+          'chat.noStudents' | translate: 'Не удалось найти студентов'
+        }}</span>
       </li>
     </ul>
   </perfect-scrollbar>

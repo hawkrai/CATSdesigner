@@ -87,4 +87,10 @@ export class ChatApiService {
       `${this.baseUrl}/GetStudentLecturers?studentId=${studentId}&filter=${filter}&limit=${pageSize}&offset=${offset}`
     )
   }
+
+  getStudentsByGroupId(groupId: number): Observable<User[]> {
+    return this.http.get<User[]>(
+      `${this.baseUrl}/GetStudentsByGroupId?groupId=${groupId}`
+    )
+  }
 }
