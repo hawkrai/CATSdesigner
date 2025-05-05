@@ -40,8 +40,31 @@ export class ContactService {
   }
 
   public openChat(chat: Chat) {
-    this.isChatOpen = true
-    this.openChatComand.next(chat)
+    if (chat.id) {
+      this.zone.run(() => {
+        this.isChatOpen = true
+        this.openChatComand.next(chat)
+      })
+      return
+    }
+
+    const existing = this.dataService.chats
+      .getValue()
+      .find((c) => c.userId === chat.userId)
+
+    if (existing) {
+      chat.id = existing.id
+      this.zone.run(() => {
+        this.isChatOpen = true
+        this.openChatComand.next(chat)
+      })
+      return
+    }
+
+    this.zone.run(() => {
+      this.isChatOpen = true
+      this.openChatComand.next(chat)
+    })
   }
 
   public CreateChat(userId: number) {

@@ -10,7 +10,8 @@ import {
   NgZone,
   HostListener,
 } from '@angular/core'
-import { MatDialog } from '@angular/material/dialog'
+import { MatDialog, MatDialogRef } from '@angular/material/dialog'
+import { Router, NavigationStart } from '@angular/router'
 import { Message } from '@chat/shared/models/entities/message.model'
 import { SignalRService } from '@chat/shared/services/signalRSerivce'
 import {
@@ -24,6 +25,7 @@ import { GroupListComponent } from '@chat/tabs/GroupList/groupList.component'
 import { ClipboardService } from 'ngx-clipboard'
 import { MessageCto } from '@chat/shared/models/dto/messageCto'
 import { DataService } from '@chat/shared/services/dataService'
+import { Chat } from '@chat/shared/models/entities/chats.model'
 import { VideoChatService } from '@modules/video-chat/services/video-chat.service'
 import { ToastrService } from 'ngx-toastr'
 import { Subject, Subscription, combineLatest } from 'rxjs'
@@ -69,6 +71,8 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   private searchSubscription: Subscription
   private preloadOffset = 120
   private turndownService = new TurndownServiceClass()
+  private studentListDialogRef: MatDialogRef<GroupListComponent> | null = null
+  private routerSubscription: Subscription
 
   readonly MIN_INPUT_HEIGHT = 48
   readonly MAX_INPUT_HEIGHT = 100
@@ -78,6 +82,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     private clipboardApi: ClipboardService,
     private contactService: ContactService,
     public dialog: MatDialog,
+    private router: Router,
     public signalRService: SignalRService,
     public dataService: DataService,
     public fileService: FileService,
@@ -176,6 +181,15 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
         return `\n\`\`\`\n${node.textContent}\`\`\`\n`
       },
     })
+
+    this.routerSubscription = this.router.events
+      .pipe(filter((evt) => evt instanceof NavigationStart))
+      .subscribe(() => {
+        if (this.studentListDialogRef) {
+          this.studentListDialogRef.close()
+          this.studentListDialogRef = null
+        }
+      })
   }
 
   ngAfterViewInit() {}
@@ -185,6 +199,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     this.destroy$.complete()
 
     if (this.searchSubscription) this.searchSubscription.unsubscribe()
+    if (this.routerSubscription) this.routerSubscription.unsubscribe()
   }
 
   onScroll(): void {
@@ -418,10 +433,24 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
 
   openStudentsList() {
     if (this.dataService.isGroupChat && this.dataService.activChat.groupId) {
-      const dialogRef = this.dialog.open(GroupListComponent, {
-        width: '700px',
+      this.studentListDialogRef = this.dialog.open(GroupListComponent, {
+        width: '450px',
+        height: 'calc(100vh - 64px)',
+        maxHeight: 'calc(100vh - 64px)',
+        position: { top: '64px' },
+        backdropClass: 'headerless-backdrop',
         data: this.dataService.activChat.groupId,
+        autoFocus: false,
+        disableClose: true,
       })
+
+      this.studentListDialogRef
+        .afterClosed()
+        .pipe(filter((selectedChat): selectedChat is Chat => !!selectedChat))
+        .subscribe((selectedChat) => {
+          this.contactService.openChat(selectedChat)
+          this.cdr.markForCheck()
+        })
     }
   }
 
