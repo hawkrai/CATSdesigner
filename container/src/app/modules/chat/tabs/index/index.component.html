@@ -216,7 +216,11 @@
                 </li>
                 <li
                   class="list-inline-item"
-                  *ngIf="dataService.isLecturer && dataService.isGroupChat"
+                  *ngIf="
+                    dataService.isLecturer &&
+                    dataService.isGroupChat &&
+                    dataService.activChat.groupId
+                  "
                 >
                   <button
                     class="btn nav-btn"

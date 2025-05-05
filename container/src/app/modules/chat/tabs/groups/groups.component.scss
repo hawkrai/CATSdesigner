@@ -15,3 +15,61 @@
 .shortName {
   max-width: 70%;
 }
+
+.chat-search-box {
+  padding: 0.4rem 0;
+
+  .input-group.input-group-lg {
+    background: $bubble-bg;
+    border-radius: $bubble-border-radius;
+    border: $bubble-border;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s,
+      background-color 0.2s;
+    box-shadow: none;
+    > *,
+    &::before,
+    &::after {
+      border-color: transparent;
+    }
+
+    input.form-control {
+      border: 0;
+      background: transparent;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      height: calc(1.5em + 1rem + 6px);
+      box-shadow: none;
+
+      &::placeholder {
+        color: #868e96;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    &:focus-within {
+      background: $bubble-focus-bg;
+      border-color: $bubble-focus-border;
+      box-shadow: $bubble-shadow;
+    }
+  }
+}
+
+.chat-user-img {
+  margin-top: -2.5px;
+
+  .avatar-xs {
+    height: 0.5rem;
+    width: 0.5rem;
+
+    .avatar-title {
+      min-height: 100%;
+      min-width: 100%;
+    }
+  }
+}

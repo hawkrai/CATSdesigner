@@ -31,6 +31,7 @@
   "chat.messageEdited": "Message edited",
   "chat.showFormat": "Show formatting",
   "chat.hideFormat": "Hide formatting",
+  "chat.noStudents": "The students could not be found",
   "videochat.unsafeError": "Video chat is not available in unsafe mode!",
   "subject": "Courses",
   "graduation.project": "Graduation project",

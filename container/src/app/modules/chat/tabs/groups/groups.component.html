@@ -3,18 +3,16 @@
   <div class="p-4" style="padding-top: 1.5rem !important">
     <h4 class="mb-4">{{ 'chat.groups' | translate: 'Группы' }}</h4>
     <div class="search-box chat-search-box">
-      <div class="input-group bg-light input-group-lg rounded-lg">
-        <div class="input-group-prepend"></div>
+      <div class="input-group input-group-lg">
         <input
           type="text"
           [(ngModel)]="searchGroup"
           (ngModelChange)="filter()"
-          class="form-control bg-light"
+          class="form-control"
           placeholder="{{ 'chat.groupName' | translate: 'Название группы' }}"
         />
       </div>
     </div>
-    <!-- end search-box -->
   </div>
 
   <!-- Start chat-group-list -->

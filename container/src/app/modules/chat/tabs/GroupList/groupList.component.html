@@ -1,37 +1,52 @@
-<div class="px-2" style="height: 100%">
-  <h2 style="text-align: center">
-    {{ 'chat.listStudent' | translate: 'Список студентов' }}
-  </h2>
-  <perfect-scrollbar class="chat-message-list" style="height: 90%">
-    <ul class="list-unstyled chat-list chat-user-list" style="max-height: 60vh">
-      <li
-        *ngFor="let user of users"
-        [ngClass]="{ typing: user.isTyping, active: user.isActive }"
-      >
+<div class="student-list-container">
+  <div class="student-list-header">
+    <h4 class="list-title">
+      {{ 'chat.listStudent' | translate: 'Список студентов' }}
+    </h4>
+    <button
+      class="close-btn"
+      (click)="onCloseClick()"
+      matTooltip="{{ 'chat.close' | translate: 'Закрыть' }}"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <perfect-scrollbar
+    class="student-list-content"
+    [config]="{ suppressScrollX: true, suppressScrollY: false }"
+  >
+    <ul class="list-unstyled chat-list chat-user-list">
+      <li *ngIf="loadingStudents" class="text-center p-3">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">{{
+            'chat.loading' | translate: 'Загрузка...'
+          }}</span>
+        </div>
+      </li>
+
+      <li *ngFor="let user of users" class="student-item">
         <a (click)="openChat(user)">
-          <div class="media" style="align-items: center">
+          <div class="media">
             <div
               class="chat-user-img align-self-center mr-3"
-              [ngClass]="{
-                online: user.status === 'online',
-                away: user.status === 'away'
-              }"
+              [ngClass]="{ online: user.isOnline, away: !user.isOnline }"
             >
               <img
-                *ngIf="user.img"
-                src="{{ user.img }}"
+                *ngIf="user.profilePicture"
+                src="{{ user.profilePicture }}"
                 class="rounded-circle avatar-xs"
                 alt=""
               />
-              <div class="avatar-xs" *ngIf="!user.img">
-                <span class="avatar-title rounded-circle">
+              <div class="avatar-xs" *ngIf="!user.profilePicture">
+                <span class="avatar-title rounded-circle avatar-initials">
                   {{
                     user.name.split(' ')[0].charAt(0) +
                       user.name.split(' ')[1].charAt(0)
                   }}
                 </span>
               </div>
-              <span *ngIf="user.status" class="user-status"></span>
+              <span class="user-status"></span>
             </div>
             <div class="media-body overflow-hidden">
               <h5 class="text-truncate font-size-15 mb-1">{{ user.name }}</h5>
@@ -39,15 +54,22 @@
           </div>
         </a>
       </li>
+
+      <li
+        *ngIf="!loadingStudents && users.length === 0"
+        class="text-center empty-list-message"
+      >
+        <mat-icon class="empty-icon">people_outline</mat-icon>
+        <span class="text-muted">{{
+          'chat.noStudents' | translate: 'Не удалось найти студентов'
+        }}</span>
+      </li>
     </ul>
   </perfect-scrollbar>
-  <div style="text-align: center">
-    <button
-      (click)="onCloseClick()"
-      class="mat-raised-button"
-      style="font-size: 14px"
-    >
-      {{ 'chat.cancel' | translate: 'Отмена' }}
+
+  <div class="student-list-footer">
+    <button class="action-button" (click)="onCloseClick()">
+      {{ 'chat.close' | translate: 'Закрыть' }}
     </button>
   </div>
 </div>
