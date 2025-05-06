@@ -13,6 +13,7 @@ import { UserFilesService } from 'src/app/services/user-files.service'
 import { DialogData } from 'src/app/models/dialog-data.model'
 import { TranslatePipe } from 'educats-translate'
 import { CatsService } from 'src/app/services/cats.service'
+import { ErrorCode } from 'src/app/services/ErrorCode'
 
 @Component({
   selector: 'app-delete-popover',
@@ -53,24 +54,24 @@ export class CheckPlagiarismPopoverComponent {
       ),
       tap((response) => {
         this.loading = false;
-  
-        if (response.Code === '500') {
+
+        if (response.Code === ErrorCode.NoAcceptedWorks) {
           this.catsService.showMessage({
             Message: this.translatePipe.transform(
-              'text.test.check.data.correctness',
+              'plagiarismCheck.noAcceptedWorks',
               'Отсутствуют принятые работы для проверки на плагиат'
             ),
-            Code: '500',
+            Code: ErrorCode.NoAcceptedWorks,
           });
-        } else if (response.Code === '200') {
+        } else if (response.Code === ErrorCode.Success) {
           this.catsService.showMessage({
             Message: this.translatePipe.transform(
-              'text.check.plagiarism.completed',
+              'plagiarismCheck.success',
               'Проверка прошла успешно'
             ),
-            Code: '200',
+            Code: ErrorCode.Success,
           });
-        }
+        }        
       }),
       finalize(() => {
         this.loading = false

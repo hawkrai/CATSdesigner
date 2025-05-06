@@ -51,5 +51,8 @@ namespace LMPlatform.UI.Services.Modules.Labs
 
         [DataMember]
         public string PracticalTheme { get; set; }
+
+        [DataMember]
+        public bool ShowMessage { get; set; }
     }
 }

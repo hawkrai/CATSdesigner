@@ -102,9 +102,9 @@
   "text.subject.createdBy": "Course created by",
   "text.download": "Downlaod",
   "text.download.archive": "Download as archive",
-  "warningKB1": "For a more accurate calculation of the similarity percentage",
-  "warningKB2": "the size of the file being checked must be at least 20 KB",
-  "fileSize": "File size",
+  "plagiarism.warning.intro": "For a more accurate calculation of the similarity percentage",
+  "plagiarism.warning.minFileSize": "the size of the file being checked must be at least 20 KB",
+  "common.fileSize": "File size",
 
   "text.action": "Action",
   "text.number.hours": "Number of hours",
@@ -245,8 +245,8 @@
   "prefix.practical": "WS",
   "prefix.lecture": "L",
 
-  "text.check.plagiarism.completed": "The check was successful",
-  "text.test.check.data.correctness": "There are no accepted works to check for plagiarism",
-  "sending.success": "The file(s) has been successfully sent(s)"
+  "plagiarismCheck.success": "The check was successful",
+  "plagiarismCheck.noAcceptedWorks": "There are no accepted works to check for plagiarism",
+  "fileUpload.success": "The file(s) has been successfully sent(s)"
   
 }

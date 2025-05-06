@@ -2,10 +2,10 @@
   <ng-container title>
     {{ 'plagiarism.check' | translate: 'Проверка на плагиат' }}
     <div class="added-message">
-      {{ 'warningKB1' | translate: 'Для более точного расчета процента схожести' }}
+      {{ 'plagiarism.warning.intro' | translate: 'Для более точного расчета процента схожести' }}
     </div>
     <div class="added-message">
-      {{ 'warningKB2' | translate: 'размер проверяемого файла должен быть не менее 20 KB' }}
+      {{ 'plagiarism.warning.minFileSize' | translate: 'размер проверяемого файла должен быть не менее 20 KB' }}
     </div>
   </ng-container>
   <ng-container body>
@@ -56,34 +56,34 @@
           <div class="table-container">
             <table mat-table [dataSource]="caster.correctDocs" class="mat-elevation-z14 example-list wide-table" style="width: 100%;">
               <ng-container matColumnDef="author">
-                <th mat-header-cell *matHeaderCellDef style="width: 230px;"> {{ 'author' | translate: 'Автор' }} </th>
-                <td mat-cell *matCellDef="let element" style="width: 230px;">{{ element.author }}</td>
+                <th mat-header-cell *matHeaderCellDef class="col col-author"> {{ 'author' | translate: 'Автор' }} </th>
+                <td mat-cell *matCellDef="let element" class="col col-author">{{ element.author }}</td>
               </ng-container>
               <ng-container matColumnDef="group" >
-                <th mat-header-cell *matHeaderCellDef style="width: 70px;"> {{ 'group' | translate: 'Группа' }} </th>
-                <td mat-cell *matCellDef="let element" style="width: 70px;">{{ element.groupName }}</td>
+                <th mat-header-cell *matHeaderCellDef class="col col-group"> {{ 'group' | translate: 'Группа' }} </th>
+                <td mat-cell *matCellDef="let element" class="col col-group">{{ element.groupName }}</td>
               </ng-container>
               <ng-container matColumnDef="subject">
-                <th mat-header-cell *matHeaderCellDef style="width: 60px;"> {{ 'course' | translate: 'Предмет' }} </th>
-                <td mat-cell *matCellDef="let element" [matTooltip]="element.Name" style="width: 60px;">
+                <th mat-header-cell *matHeaderCellDef class="col col-course"> {{ 'course' | translate: 'Предмет' }} </th>
+                <td mat-cell *matCellDef="let element" [matTooltip]="element.Name" class="col col-course">
                   {{ element.subjectName }}
                 </td>
               </ng-container>
               <ng-container matColumnDef="themelab">
-                <th mat-header-cell *matHeaderCellDef style="width: 30px;"> {{ 'topic' | translate: 'Тема' }} </th>
-                <td mat-cell *matCellDef="let element" [matTooltip]="element.Theme" style="width: 50px;">
+                <th mat-header-cell *matHeaderCellDef class="col col-topic"> {{ 'topic' | translate: 'Тема' }} </th>
+                <td mat-cell *matCellDef="let element" [matTooltip]="element.Theme" class="col col-topic">
                   {{ element.shortName }}
                 </td>
               </ng-container>
               <ng-container matColumnDef="file">
-                <th mat-header-cell *matHeaderCellDef> {{ 'text.attachments' | translate: 'Файл' }} </th>
-                <td mat-cell *matCellDef="let element" class="link" (click)="downloadFile(element)">
+                <th mat-header-cell *matHeaderCellDef  class="col col-file"> {{ 'text.attachments' | translate: 'Файл' }} </th>
+                <td mat-cell *matCellDef="let element" class="link col col-file" (click)="downloadFile(element)">
                   {{ element.doc }}
                 </td>
               </ng-container>
               <ng-container matColumnDef="filesize">
-                <th mat-header-cell *matHeaderCellDef style="width: 80px;"> {{ 'fileSize' | translate: 'Размер файла' }} </th>
-                <td mat-cell *matCellDef="let element" style="width: 80px;">
+                <th mat-header-cell *matHeaderCellDef class="col col-fileSize"> {{ 'common.fileSize' | translate: 'Размер файла' }} </th>
+                <td mat-cell *matCellDef="let element" class="col col-fileSize">
                   {{ element.sizeFile }}
                 </td>
               </ng-container>

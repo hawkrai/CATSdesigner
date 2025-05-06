@@ -138,9 +138,9 @@
   "text.subjects.practicals.protection.edit": "Редактировать практическую работу",
   "text.subjects.practicals.protection.delete": "Удалить практическую работу",
   "text.subjects.practicals.to.protect": "На защиту практической работы",
-  "warningKB1": "Для более точного расчета процента схожести",
-  "warningKB2": "размер проверяемого файла должен быть не менее 20 KB",
-  "fileSize": "Размер файла",
+  "plagiarism.warning.intro": "Для более точного расчета процента схожести",
+  "plagiarism.warning.minFileSize": "размер проверяемого файла должен быть не менее 20 KB",
+  "common.fileSize": "Размер файла",
 
   "text.subjects.labs": "Лабораторная работа",
   "text.subjects.labs.plural": "Лабораторные работы",
@@ -223,7 +223,7 @@
   "prefix.practical": "ПЗ",
   "prefix.lecture": "Л",
   
-  "text.check.plagiarism.completed": "Проверка прошла успешна",
-  "text.test.check.data.correctness": "Отсутствуют принятые работы для проверки на плагиат",
-  "sending.success": "Файл(ы) успешно отправлен(ы)"
+  "plagiarismCheck.success": "Проверка прошла успешна",
+  "plagiarismCheck.noAcceptedWorks": "Отсутствуют принятые работы для проверки на плагиат",
+  "fileUpload.success": "Файл(ы) успешно отправлен(ы)"
 }

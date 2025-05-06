@@ -44,7 +44,6 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
   ) {
     super(store, filesService);
     this.setAttachments(this.data.model.attachments);
-    
   }
 
   get filesArray(): FormArray {
@@ -69,15 +68,15 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
       map((labs) =>
         labs.map((lab, index) => ({
           ...lab,
-          RowColor: this.labPositionsService.labPositions.includes(index + 1) 
-            ? '#d5fcd5' 
-            : lab.IsReceived 
-              ? '#d5fcd5' 
+          RowColor: this.labPositionsService.labPositions.includes(index + 1)
+            ? '#d5fcd5'
+            : lab.IsReceived
+              ? '#d5fcd5'
               : '#ffffff',
         }))
       )
     );
-    
+
     this.observeAttachments(this.filesArray);
   }
 
@@ -136,16 +135,8 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
       .pipe(take(1))
       .subscribe({
         complete: () => {
-          this.catsService.showMessage({
-            Message: this.translatePipe.transform(
-              'sending.success',
-              'Файл(ы) успешно отправлен(ы)',
-            ),
-            Code: '200',
-          });
           this.dialogRef.close(value);
         },
       });
   }
-  
 }
