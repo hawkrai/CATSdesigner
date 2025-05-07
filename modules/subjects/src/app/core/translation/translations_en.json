@@ -102,6 +102,9 @@
   "text.subject.createdBy": "Course created by",
   "text.download": "Downlaod",
   "text.download.archive": "Download as archive",
+  "plagiarism.warning.intro": "For a more accurate calculation of the similarity percentage",
+  "plagiarism.warning.minFileSize": "the size of the file being checked must be at least 20 KB",
+  "common.fileSize": "File size",
 
   "text.action": "Action",
   "text.number.hours": "Number of hours",
@@ -240,6 +243,10 @@
   "shingles.method": "Shingles method",
   "prefix.lab": "Lab",
   "prefix.practical": "WS",
-  "prefix.lecture": "L"
+  "prefix.lecture": "L",
+
+  "plagiarismCheck.success": "The check was successful",
+  "plagiarismCheck.noAcceptedWorks": "There are no accepted works to check for plagiarism",
+  "fileUpload.success": "The file(s) has been successfully sent(s)"
   
 }

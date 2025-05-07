@@ -138,6 +138,9 @@
   "text.subjects.practicals.protection.edit": "Редактировать практическую работу",
   "text.subjects.practicals.protection.delete": "Удалить практическую работу",
   "text.subjects.practicals.to.protect": "На защиту практической работы",
+  "plagiarism.warning.intro": "Для более точного расчета процента схожести",
+  "plagiarism.warning.minFileSize": "размер проверяемого файла должен быть не менее 20 KB",
+  "common.fileSize": "Размер файла",
 
   "text.subjects.labs": "Лабораторная работа",
   "text.subjects.labs.plural": "Лабораторные работы",
@@ -218,5 +221,9 @@
   "shingles.method": "Метод шинглов",
   "prefix.lab": "ЛР",
   "prefix.practical": "ПЗ",
-  "prefix.lecture": "Л"
+  "prefix.lecture": "Л",
+  
+  "plagiarismCheck.success": "Проверка прошла успешна",
+  "plagiarismCheck.noAcceptedWorks": "Отсутствуют принятые работы для проверки на плагиат",
+  "fileUpload.success": "Файл(ы) успешно отправлен(ы)"
 }

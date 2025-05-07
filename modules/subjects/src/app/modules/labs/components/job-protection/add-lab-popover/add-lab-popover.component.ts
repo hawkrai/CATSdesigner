@@ -21,6 +21,8 @@ import * as labsSelectors from '../../../../../store/selectors/labs.selectors';
 import { FilesService } from 'src/app/services/files.service';
 import { attchedFileConverter } from '../../../../../utils';
 import { LabPositionsService } from 'src/app/services/lab-positions.service';
+import { TranslatePipe } from 'educats-translate'
+import { CatsService } from 'src/app/services/cats.service'
 
 @Component({
   selector: 'app-lab-work-popover',
@@ -32,6 +34,8 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
   labs$: Observable<Lab[]>;
 
   constructor(
+    private translatePipe: TranslatePipe,
+    private catsService: CatsService,
     private labPositionsService: LabPositionsService,
     private dialogRef: MatDialogRef<AddLabPopoverComponent>,
     store: Store<IAppState>,
@@ -64,17 +68,15 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
       map((labs) =>
         labs.map((lab, index) => ({
           ...lab,
-          RowColor: this.labPositionsService.labPositions.includes(index + 1) 
-            ? '#d5fcd5' 
-            : lab.IsReceived 
-              ? '#d5fcd5' 
+          RowColor: this.labPositionsService.labPositions.includes(index + 1)
+            ? '#d5fcd5'
+            : lab.IsReceived
+              ? '#d5fcd5'
               : '#ffffff',
         }))
       )
     );
-    
 
-    console.log('Список позиций лабораторных работ ADD:', this.labPositionsService.labPositions);
     this.observeAttachments(this.filesArray);
   }
 
