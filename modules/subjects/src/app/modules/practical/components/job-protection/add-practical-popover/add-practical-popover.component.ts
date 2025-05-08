@@ -139,13 +139,6 @@ export class AddPracticalPopoverComponent extends BaseFileManagementComponent im
       .pipe(take(1))
       .subscribe({
         complete: () => {
-          this.catsService.showMessage({
-            Message: this.translatePipe.transform(
-              'sending.success',
-              'Файл(ы) успешно отправлен(ы)',
-            ),
-            Code: '200',
-          });
           this.dialogRef.close(value);
         },
       });
