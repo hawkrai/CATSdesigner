@@ -247,6 +247,14 @@
 
   "plagiarismCheck.success": "The check was successful",
   "plagiarismCheck.noAcceptedWorks": "There are no accepted works to check for plagiarism",
-  "fileUpload.success": "The file(s) has been successfully sent(s)"
+  "fileUpload.success": "The file(s) has been successfully sent(s)",
+  "general.error": "An error has occurred",                         
+  "workDeletion.success": "Job deleted",                    
+  "workDeletion.error": "An error occurred while deleting a job",   
+  "fileArchive.success": "File(s) moved(s) to the archive",        
+  "fileArchive.error": "An error occurred in transferring the file to the archive",
+  "fileRevision.success": "The file has been sent for revision",           
+  "fileRevision.error": "Couldn't send file for revision",   
+  "fileUnarchive.success": "File(s) moved from archive"
   
 }

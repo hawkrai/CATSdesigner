@@ -225,5 +225,13 @@
   
   "plagiarismCheck.success": "Проверка прошла успешна",
   "plagiarismCheck.noAcceptedWorks": "Отсутствуют принятые работы для проверки на плагиат",
-  "fileUpload.success": "Файл(ы) успешно отправлен(ы)"
+  "fileUpload.success": "Файл(ы) успешно отправлен(ы)",
+  "general.error": "Произошла ошибка",                         
+  "workDeletion.success": "Работа удалена",                    
+  "workDeletion.error": "Произошла ошибка при удалении работы",   
+  "fileArchive.success": "Файл(ы) перемещен(ы) в архив",         
+  "fileArchive.error": "Произошла ошибка переноса файла в архив",
+  "fileRevision.success": "Файл отправлен на доработку",           
+  "fileRevision.error": "Не удалось отправить файл на доработку",   
+  "fileUnarchive.success": "Файл(ы) перемещен(ы) из архива"
 }
