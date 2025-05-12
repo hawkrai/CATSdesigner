@@ -529,7 +529,10 @@ namespace Application.Infrastructure.ConceptManagement
 	        var subject = repositoriesContainer.SubjectRepository.GetBy(new Query<Subject>().AddFilterClause(s => s.Id == subjectId));
 	        var concept = new Concept(name, author, subject, true, isPublished);
 
-            var existingConcept = repositoriesContainer.ConceptRepository.GetBy(new Query<Concept>().AddFilterClause(c => c.Name == name));
+            var existingConcept = repositoriesContainer.ConceptRepository.GetBy(
+                new Query<Concept>().AddFilterClause(c => c.Name == name).AddFilterClause(c => c.Subject.Id == subjectId) 
+            );
+
             if (existingConcept != null)
             {
                 throw new Exception("Name already exist");
