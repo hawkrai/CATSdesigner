@@ -505,7 +505,7 @@ namespace LMPlatform.UI.Services.Practicals
             var studentJobProtection = new List<StudentJobProtectionViewData>();
             var studentsLabFiles = PracticalManagementService.GetGroupPracticalFiles(subjectId, groupId);
 
-            foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed.HasValue && e.Student.Confirmed.Value).OrderBy(e => e.Student.FullName))
+            foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed.HasValue && e.Student.Confirmed.Value && e.Student.IsActive != false).OrderBy(e => e.Student.FullName))
             {
                 studentJobProtection.Add(new StudentJobProtectionViewData
                 {

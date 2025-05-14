@@ -21,8 +21,6 @@ import { FilesService } from 'src/app/services/files.service';
 import { attchedFileConverter } from '../../../../../utils';
 import { Practical } from 'src/app/models/practical.model';
 import { PracticalPositionsService } from 'src/app/services/PracticalPositionsService';
-import { TranslatePipe } from 'educats-translate';
-import { CatsService } from 'src/app/services/cats.service';
 
 @Component({
   selector: 'app-practical-popover',
@@ -34,8 +32,6 @@ export class AddPracticalPopoverComponent extends BaseFileManagementComponent im
   practicals$: Observable<Practical[]>;
 
   constructor(
-    private translatePipe: TranslatePipe,
-    private catsService: CatsService,
     private practicalPositionsService: PracticalPositionsService,
     private dialogRef: MatDialogRef<AddPracticalPopoverComponent>,
     store: Store<IAppState>,
@@ -139,13 +135,6 @@ export class AddPracticalPopoverComponent extends BaseFileManagementComponent im
       .pipe(take(1))
       .subscribe({
         complete: () => {
-          this.catsService.showMessage({
-            Message: this.translatePipe.transform(
-              'sending.success',
-              'Файл(ы) успешно отправлен(ы)',
-            ),
-            Code: '200',
-          });
           this.dialogRef.close(value);
         },
       });
