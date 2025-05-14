@@ -13,6 +13,7 @@ export statistics_path=$modules_path'/statistics'
 export subjects_path=$modules_path'/subjects'
 export tests_path=$modules_path'/tests'
 
+npx rimraf ./.temp
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i --force
