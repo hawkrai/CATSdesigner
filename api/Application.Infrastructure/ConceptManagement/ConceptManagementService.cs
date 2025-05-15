@@ -21,7 +21,8 @@ namespace Application.Infrastructure.ConceptManagement
         private const string TitlePageSectionName = "Титульный экран";
         private const string ProgramSectionName = "Программа курса";
         private const string LectSectionName = "Теоретический раздел";
-        private const string LabSectionName = "Практический раздел";
+        private const string PracticalSectionName = "Практический раздел";
+        private const string LabsSectionName = "Лабораторные работы";
         private const string TestSectionName = "Блок контроля знаний";
 
 
@@ -291,7 +292,7 @@ namespace Application.Infrastructure.ConceptManagement
                             }
                             break;
 
-                        case LabSectionName:
+                        case PracticalSectionName:
                             if (conceptChild.Published != labSectionPublished)
                             {
                                 conceptChild.Published = labSectionPublished;
@@ -512,9 +513,14 @@ namespace Application.Infrastructure.ConceptManagement
             AttachFolderToSection(folderName, userId, subjectId, LectSectionName);
         }
 
-        public void AttachFolderToLabSection(string folderName, int userId, int subjectId)
+        public void AttachFolderToPracticalSection(string folderName, int userId, int subjectId)
         {
-            AttachFolderToSection(folderName, userId, subjectId, LabSectionName);
+            AttachFolderToSection(folderName, userId, subjectId, PracticalSectionName);
+        }
+
+        public void AttachFolderToLabsSection(string folderName, int userId, int subjectId)
+        {
+            AttachFolderToSection(folderName, userId, subjectId, LabsSectionName);
         }
 
         private string GetGuidFileName()
@@ -571,25 +577,38 @@ namespace Application.Infrastructure.ConceptManagement
             concept2.NextConcept = concept3.Id;
             concept3.PrevConcept = concept2.Id;
 
-            var concept4 = new Concept(LabSectionName, parent.Author, parent.Subject, true, includeLabs || includeWorkshops)
+            var concept4 = new Concept(LabsSectionName, parent.Author, parent.Subject, true, includeLabs)
             {
 	            ParentId = parent.Id, ReadOnly = true
             };
             repositoriesContainer.ConceptRepository.Save(concept4);
-            InitPractChild(concept4, repositoriesContainer, includeLabs, includeWorkshops);
+
+            InitLabsChild(concept4, repositoriesContainer);
 
             concept3.NextConcept = concept4.Id;
             concept4.PrevConcept = concept3.Id;
 
-            var concept5 = new Concept(TestSectionName, parent.Author, parent.Subject, true, includeTests)
+            var concept5 = new Concept(PracticalSectionName, parent.Author, parent.Subject, true, includeWorkshops)
             {
                 ParentId = parent.Id,
                 ReadOnly = true
             };
             repositoriesContainer.ConceptRepository.Save(concept5);
 
-            concept5.PrevConcept = concept4.Id;
+            InitPracticalChild(concept5, repositoriesContainer);
+
             concept4.NextConcept = concept5.Id;
+            concept5.PrevConcept = concept4.Id;
+
+            var concept6 = new Concept(TestSectionName, parent.Author, parent.Subject, true, includeTests)
+            {
+                ParentId = parent.Id,
+                ReadOnly = true
+            };
+            repositoriesContainer.ConceptRepository.Save(concept6);
+
+            concept6.PrevConcept = concept5.Id;
+            concept5.NextConcept = concept6.Id;
             
             repositoriesContainer.ApplyChanges();
         }
@@ -643,61 +662,74 @@ namespace Application.Infrastructure.ConceptManagement
             repositoriesContainer.ConceptRepository.Save(itemsToUpdate);
         }
 
-        private void InitPractChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLabs, bool includeWorkshops)
+        private void InitLabsChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer)
         {
             Concept prev = null;
+
             var sub = SubjectManagementService.GetSubject(
-	            new Query<Subject>(s => s.Id == parent.SubjectId)
-		            .Include(e => e.SubjectModules.Select(x => x.Module))
-                    .Include(s => s.Labs)
-		            .Include(s => s.Practicals));
+                new Query<Subject>(s => s.Id == parent.SubjectId)
+                    .Include(e => e.SubjectModules.Select(x => x.Module))
+                    .Include(s => s.Labs));
+
+            if (sub.SubjectModules.All(m => m.Module.ModuleType != ModuleType.Labs))
+                return;
+
+            foreach (var item in sub.Labs.OrderBy(s => s.Order))
+            {
+                var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, true)
+                {
+                    ParentId = parent.Id,
+                    LabId = item.Id
+                };
+                repositoriesContainer.ConceptRepository.Save(concept);
+                if (prev != null)
+                {
+                    concept.PrevConcept = prev.Id;
+                    prev.NextConcept = concept.Id;
+                    repositoriesContainer.ConceptRepository.Save(prev);
+                    repositoriesContainer.ConceptRepository.Save(concept);
+                }
+
+                prev = concept;
+
+                InitLabsFiles(concept, item.Id);
+            }
+
+        }
+
+        private void InitPracticalChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer)
+        {
+            Concept prev = null;
+
+            var sub = SubjectManagementService.GetSubject(
+                new Query<Subject>(s => s.Id == parent.SubjectId)
+                    .Include(e => e.SubjectModules.Select(x => x.Module))
+                    .Include(s => s.Practicals));
+
             if (sub.SubjectModules.All(m => m.Module.ModuleType != ModuleType.Practical))
+                return;
+
+            foreach (var item in sub.Practicals.OrderBy(s => s.Order))
             {
-	            if (sub.SubjectModules.All(m => m.Module.ModuleType != ModuleType.Labs)) return;
-
-	            foreach (var item in sub.Labs.OrderBy(s => s.Order))
-	            {
-		            var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, includeLabs)
-		            {
-			            ParentId = parent.Id, LabId = item.Id
-		            };
-		            repositoriesContainer.ConceptRepository.Save(concept);
-		            if (prev != null)
-		            {
-			            concept.PrevConcept = prev.Id;
-			            prev.NextConcept = concept.Id;
-			            repositoriesContainer.ConceptRepository.Save(prev);
-			            repositoriesContainer.ConceptRepository.Save(concept);
-		            }
-
-		            prev = concept;
-
-                    InitLabsFiles(concept, item.Id);
-
+                var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, true)
+                {
+                    ParentId = parent.Id,
+                    PracticalId = item.Id
+                };
+                repositoriesContainer.ConceptRepository.Save(concept);
+                if (prev != null)
+                {
+                    concept.PrevConcept = prev.Id;
+                    prev.NextConcept = concept.Id;
+                    repositoriesContainer.ConceptRepository.Save(prev);
+                    repositoriesContainer.ConceptRepository.Save(concept);
                 }
-            }
-            else
-            {
-	            foreach (var item in sub.Practicals.OrderBy(s => s.Order))
-	            {
-		            var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, includeWorkshops)
-		            {
-			            ParentId = parent.Id, PracticalId = item.Id
-		            };
-		            repositoriesContainer.ConceptRepository.Save(concept);
-		            if (prev != null)
-		            {
-			            concept.PrevConcept = prev.Id;
-			            prev.NextConcept = concept.Id;
-			            repositoriesContainer.ConceptRepository.Save(prev);
-			            repositoriesContainer.ConceptRepository.Save(concept);
-		            }
 
-		            prev = concept;
+                prev = concept;
 
-                    InitPractFiles(concept, item.Id);
-                }
+                InitPractFiles(concept, item.Id);
             }
+
         }
 
         private void InitLabsFiles(Concept parent, int labId)

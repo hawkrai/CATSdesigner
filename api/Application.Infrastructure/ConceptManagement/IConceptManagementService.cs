@@ -22,7 +22,8 @@ namespace Application.Infrastructure.ConceptManagement
         void Remove(int id, bool removeChildren);
         Concept AttachSiblings(int sourceId, int rightId, int leftId);
         void AttachFolderToLectSection(string folderName, int userId, int subjectId);
-        void AttachFolderToLabSection(string folderName, int userId, int subjectId);
+        void AttachFolderToPracticalSection(string folderName, int userId, int subjectId);
+        void AttachFolderToLabsSection(string folderName, int userId, int subjectId);
         bool IsTestModule(string moduleName);
     }
 }
