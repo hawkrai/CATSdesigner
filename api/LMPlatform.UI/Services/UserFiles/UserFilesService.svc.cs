@@ -291,8 +291,8 @@ namespace LMPlatform.UI.Services.UserFiles
                         var labFilesPr = this.PracticalManagementService.GetUserPracticalFiles(userId, int.Parse(subjectId));
                         var matchedLabPr = labFilesPr.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
 
-                        resultS.Theme = matchedLab?.Lab?.Theme ?? matchedLabPr?.Practical?.Theme ?? "Тема не указана";
-                        resultS.shortName = matchedLab?.Lab?.ShortName ?? matchedLabPr?.Practical?.ShortName ?? "Тема не указана";
+                        resultS.Theme = matchedLab?.Lab?.Theme ?? matchedLabPr?.Practical?.Theme ?? " ";
+                        resultS.shortName = matchedLab?.Lab?.ShortName ?? matchedLabPr?.Practical?.ShortName ?? " ";
                         correctDocs.Add(resultS);
                     }
 
@@ -343,7 +343,9 @@ namespace LMPlatform.UI.Services.UserFiles
 
                 var Name = this.SubjectManagementService.GetSubject(new Query<Subject>(e => e.Id == subjectId)).Name;
 
-                var shortName = SubjectManagementService.GetLabs(subjectId).ShortName;
+                var labs = SubjectManagementService.GetLabs(subjectId);
+                var shortName = labs != null ? labs.ShortName : " ";
+
 
                 var key = 0;
 
