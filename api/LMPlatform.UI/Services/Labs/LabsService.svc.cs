@@ -311,46 +311,58 @@ namespace LMPlatform.UI.Services.Labs
         }
         public UserLabFilesResult GetUserLabFiles(int userId, int subjectId)
         {
-			try
-			{
-				var labFiles = LabsManagementService.GetUserLabFiles(userId, subjectId);
-				var model = labFiles
-					.GroupBy(x => x.Lab?.Order)
-					.OrderBy(x => x.Key)
-					.SelectMany(x => x.OrderBy(x => x.Date))
-					.Select(e => new UserLabFileViewData
-				{
-					LabShortName = e.Lab?.ShortName,
-					LabTheme = e.Lab?.Theme,
-					Order = e.Lab?.Order,
-					Comments = e.Comments,
-					Id = e.Id,
-					PathFile = e.Attachments,
-					IsReceived = e.IsReceived,
-					IsReturned = e.IsReturned,
-					LabId = e.LabId,
-					UserId = e.UserId,
-					Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
-					Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList()
-				}).ToList();
-				return new UserLabFilesResult
-				{
-					UserLabFiles = model,
-					Message = "Данные получены",
-					Code = "200"
-				};
-			}
-			catch
-			{
-				return new UserLabFilesResult
-				{
-					Message = "Произошла ошибка при получении данных",
-					Code = "500"
-				};
-			}
-		}
+            try
+            {
+                var labFiles = LabsManagementService.GetUserLabFiles(userId, subjectId);
+                var model = labFiles
+                    .GroupBy(x => x.Lab?.Order)
+                    .OrderBy(x => x.Key)
+                    .SelectMany(x => x.OrderBy(x => x.Date))
+                    .Select(e => {
+                        var attachments = FilesManagementService.GetAttachments(e.Attachments).ToList();
+                        var firstAttachment = attachments.FirstOrDefault();
+                        long? fileSizeBytes = firstAttachment != null ? FilesManagementService.GetFileSize(firstAttachment) : null;
 
-		public StudentsMarksResult GetMarksV2(int subjectId, int groupId)
+                        double? fileSizeKb = fileSizeBytes.HasValue ? Math.Round(fileSizeBytes.Value / 1024.0, 2) : (double?)null;
+
+                        return new UserLabFileViewData
+                        {
+                            LabShortName = e.Lab?.ShortName,
+                            LabTheme = e.Lab?.Theme,
+                            Order = e.Lab?.Order,
+                            Comments = e.Comments,
+                            Id = e.Id,
+                            PathFile = e.Attachments,
+                            IsReceived = e.IsReceived,
+                            IsReturned = e.IsReturned,
+                            LabId = e.LabId,
+                            UserId = e.UserId,
+                            fileSize = fileSizeKb.ToString() + " КБ",
+                            Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
+                            Attachments = attachments
+                        };
+                    }).ToList();
+
+                return new UserLabFilesResult
+                {
+                    UserLabFiles = model,
+                    Message = "Данные получены",
+                    Code = "200"
+                };
+            }
+            catch
+            {
+                return new UserLabFilesResult
+                {
+                    Message = "Произошла ошибка при получении данных",
+                    Code = "500"
+                };
+            }
+        }
+
+
+
+        public StudentsMarksResult GetMarksV2(int subjectId, int groupId)
 		{
 			try
 			{

@@ -1,13 +1,21 @@
 <app-popover-dialog width="600">
   <ng-container title>
     {{ 'plagiarism.check' | translate: 'Проверка на плагиат' }}
+    <div class="added-message">
+      {{ 'plagiarism.warning.intro' | translate: 'Для более точного расчета процента схожести' }}
+    </div>
+    <div class="added-message">
+      {{ 'plagiarism.warning.minFileSize' | translate: 'размер проверяемого файла должен быть не менее 20 KB' }}
+    </div>
   </ng-container>
+
   <ng-container body>
     <ng-container *ngIf="isLoading">
       <div class="spinner">
         <mat-spinner></mat-spinner>
       </div>
     </ng-container>
+
     <ng-container *ngIf="plagResults$ | async as plagResults">
       <div *ngIf="!noData; else noDataMessage">
         <div class="table-wrapper">
@@ -15,51 +23,73 @@
             <table
               mat-table
               [dataSource]="plagResults"
-              class="mat-elevation-z14 example-list wide-table"
-              style="width: 100%;"
+              class="mat-elevation-z14 example-list wide-table check-plagiarism-table"
             >
               <ng-container matColumnDef="coeff">
-                <th mat-header-cell *matHeaderCellDef style="width: 10px;">
+                <th mat-header-cell *matHeaderCellDef class="col col-coeff">
                   {{ 'similarity.percentage' | translate: 'Процент схожести' }}, %
                 </th>
-                <td mat-cell *matCellDef="let element" style="width: 10px;">{{ element.coeff }}</td>
+                <td mat-cell *matCellDef="let element" class="col col-coeff">
+                  {{ element.coeff }}
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="author">
-                <th mat-header-cell *matHeaderCellDef style="width: 100px;">
+                <th mat-header-cell *matHeaderCellDef class="col col-author">
                   {{ 'author' | translate: 'Автор' }}
                 </th>
-                <td mat-cell *matCellDef="let element" style="width: 100px;">{{ element.author }}</td>
+                <td mat-cell *matCellDef="let element" class="col col-author">
+                  {{ element.author }}
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="group">
-                <th mat-header-cell *matHeaderCellDef style="width: 30px;">
+                <th mat-header-cell *matHeaderCellDef class="col col-group">
                   {{ 'group' | translate: 'Группа' }}
                 </th>
-                <td mat-cell *matCellDef="let element" style="width: 30px;">{{ element.groupName }}</td>
+                <td mat-cell *matCellDef="let element" class="col col-group">
+                  {{ element.groupName }}
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="subject">
-                <th mat-header-cell *matHeaderCellDef style="width: 40px;">
+                <th mat-header-cell *matHeaderCellDef class="col col-subject">
                   {{ 'course' | translate: 'Предмет' }}
                 </th>
-                <td mat-cell *matCellDef="let element" matTooltip="{{ element.subjectName }}" style="width: 40px;">
+                <td mat-cell *matCellDef="let element" class="col col-subject" matTooltip="{{ element.Name }}">
                   {{ element.subjectName }}
                 </td>
               </ng-container>
 
-              <ng-container matColumnDef="file" >
-                <th mat-header-cell *matHeaderCellDef style="width: 120px;">
+              <ng-container matColumnDef="themelab">
+                <th mat-header-cell *matHeaderCellDef class="col col-theme">
+                  {{ 'topic' | translate: 'Тема' }}
+                </th>
+                <td mat-cell *matCellDef="let element" class="col col-theme" [matTooltip]="element.Theme">
+                  {{ element.shortName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="file">
+                <th mat-header-cell *matHeaderCellDef class="col col-file">
                   {{ 'text.attachments' | translate: 'Файл' }}
                 </th>
                 <td
                   mat-cell
                   *matCellDef="let element"
-                  class="link"
+                  class="link col col-file"
                   (click)="downloadFile(element)"
-                  style="width: 120px;"
                 >
                   {{ element.doc }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="filesize">
+                <th mat-header-cell *matHeaderCellDef class="col col-size">
+                  {{ 'common.fileSize' | translate: 'Размер файла' }}
+                </th>
+                <td mat-cell *matCellDef="let element" class="col col-size">
+                  {{ element.sizeFile }}
                 </td>
               </ng-container>
 
@@ -69,6 +99,7 @@
           </div>
         </div>
       </div>
+
       <ng-template #noDataMessage>
         <div class="no-data-message">
           {{ 'no.matches.found' | translate: 'Совпадений не найдено' }}
@@ -76,6 +107,7 @@
       </ng-template>
     </ng-container>
   </ng-container>
+
   <ng-container actions>
     <button mat-raised-button (click)="onClick()">
       {{ 'button.close' | translate: 'Закрыть' }}

@@ -119,7 +119,7 @@ namespace Application.Infrastructure.PracticalManagement
 			repositoriesContainer.ApplyChanges();
 
 			if (practical.IsNew && practical.Subject.SubjectModules.Any(m => m.Module.ModuleType == ModuleType.Practical))
-				ConceptManagementService.AttachFolderToLabSection(practical.Theme, userId, practical.SubjectId);
+				ConceptManagementService.AttachFolderToPracticalSection(practical.Theme, userId, practical.SubjectId);
 
 			return practical;
 		}

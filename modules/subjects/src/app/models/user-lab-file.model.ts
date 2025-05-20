@@ -16,4 +16,5 @@ export class UserLabFile {
   PracticalId?: number
   PracticalShortName?: string
   PracticalTheme?: string
+  fileSize: string
 }
