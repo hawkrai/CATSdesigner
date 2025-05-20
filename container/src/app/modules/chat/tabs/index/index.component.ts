@@ -34,6 +34,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  take,
 } from 'rxjs/operators'
 import { ScrollUtils } from '@chat/shared/utils/scrollUtils'
 import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
@@ -73,6 +74,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   private turndownService = new TurndownServiceClass()
   private studentListDialogRef: MatDialogRef<GroupListComponent> | null = null
   private routerSubscription: Subscription
+  private restoreDone = false
 
   readonly MIN_INPUT_HEIGHT = 48
   readonly MAX_INPUT_HEIGHT = 100
@@ -190,6 +192,8 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
           this.studentListDialogRef = null
         }
       })
+
+    this.tryRestoreChat()
   }
 
   ngAfterViewInit() {}
@@ -245,6 +249,51 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       setTimeout(() => {
         this.scrollToBottom(false)
       }, 100)
+    }
+  }
+
+  private tryRestoreChat(): void {
+    const savedRaw = localStorage.getItem('activeChat')
+    const saved = savedRaw ? JSON.parse(savedRaw) : null
+    if (!saved || this.restoreDone) {
+      return
+    }
+
+    if (saved.isGroup) {
+      this.dataService.groups
+        .pipe(
+          filter((g) => g.length > 0),
+          take(1)
+        )
+        .subscribe((groups) => {
+          const subject = groups.find((s) => s.id === saved.id)
+          const nested: Chat[] = [].concat(...groups.map((s) => s.groups || []))
+
+          const groupChat = nested.find((g) => g.id === saved.id)
+          const chatInfo = subject || groupChat
+
+          if (chatInfo) {
+            this.activetab = 3
+            this.dataService.setActiveChat(saved.id, true, chatInfo)
+            this.cdr.detectChanges()
+            this.restoreDone = true
+          }
+        })
+    } else {
+      this.dataService.chats
+        .pipe(
+          filter((c) => c.length > 0),
+          take(1)
+        )
+        .subscribe((chats) => {
+          const chat = chats.find((c) => c.id === saved.id)
+          if (chat) {
+            this.activetab = 2
+            this.dataService.setActiveChat(saved.id, false, chat)
+            this.cdr.detectChanges()
+            this.restoreDone = true
+          }
+        })
     }
   }
 

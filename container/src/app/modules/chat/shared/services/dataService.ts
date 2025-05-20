@@ -81,9 +81,14 @@ export class DataService {
       this.resetMessageState(true)
       if (chatId !== null) {
         this.loadInitialMessages()
+        localStorage.setItem(
+          'activeChat',
+          JSON.stringify({ id: chatId, isGroup })
+        )
       } else {
         this.messages.next([])
         this.searchResults.next([])
+        localStorage.removeItem('activeChat')
       }
     } else {
       if (chatInfo) {
