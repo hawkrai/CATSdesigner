@@ -680,6 +680,24 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       : this.dataService.hasMoreMessages
   }
 
+  get groupColor(): string {
+    if (!this.dataService.isGroupChat || !this.dataService.activChat) {
+      return ''
+    }
+
+    if ((this.dataService.activChat as any).color) {
+      return (this.dataService.activChat as any).color
+    }
+
+    const parent = this.dataService.groups
+      .getValue()
+      .find(
+        (s) => s.groups?.some((g) => g.id === this.dataService.activChat.id)
+      )
+
+    return parent?.color || '#6c757d'
+  }
+
   getInitials(name: string): string {
     if (!name) return ''
 
