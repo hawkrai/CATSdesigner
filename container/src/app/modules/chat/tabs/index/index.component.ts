@@ -38,6 +38,7 @@ import {
 } from 'rxjs/operators'
 import { ScrollUtils } from '@chat/shared/utils/scrollUtils'
 import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
+import { IStudentListData } from '@chat/shared/models/interfaces/studentListData.interface'
 import { TranslatePipe } from 'educats-translate'
 import { MarkdownService } from '@app/shared/utils/markdown.service'
 import {
@@ -481,14 +482,23 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   openStudentsList() {
-    if (this.dataService.isGroupChat && this.dataService.activChat.groupId) {
+    if (
+      this.dataService.isGroupChat &&
+      this.dataService.activChat &&
+      this.dataService.activChat.groupId
+    ) {
+      const dialogData: IStudentListData = {
+        groupId: this.dataService.activChat.groupId,
+        groupName: this.dataService.activChat.name,
+      }
+
       this.studentListDialogRef = this.dialog.open(GroupListComponent, {
-        width: '450px',
+        width: '548px',
         height: 'calc(100vh - 64px)',
         maxHeight: 'calc(100vh - 64px)',
         position: { top: '64px' },
         backdropClass: 'headerless-backdrop',
-        data: this.dataService.activChat.groupId,
+        data: dialogData,
         autoFocus: false,
         disableClose: true,
       })
