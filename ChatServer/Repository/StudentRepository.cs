@@ -21,17 +21,20 @@ namespace Repository
             .FirstOrDefaultAsync();
 
         public async Task<IEnumerable<UserDto>> GetStudentsAsync(bool trackChanges, int limit, int offset, string filter) => 
-            await FindByCondition(c => (c.MiddleName + c.FirstName + c.LastName)
-            .Contains(filter) || filter == "*", trackChanges)
+            await FindByCondition(s => 
+                s.IsActive && (s.Confirmed == true || (s.Confirmed == null && s.DeletedOn == null)) && 
+                ((s.MiddleName + s.FirstName + s.LastName).Contains(filter) || filter == "*"),
+                trackChanges)
             .Join(RepositoryContext.Users,
-                x => x.UserId,
-                y => y.UserId,
-                (x, y) => new UserDto()
+                s => s.UserId,
+                u => u.UserId,
+                (s, u) => new UserDto()
                 {
-                    UserId = x.UserId,
-                    GroupId = x.GroupId,
-                    isOnline = y.IsOnline ?? false,
-                    FullName = x.LastName + " " + x.FirstName + " " + x.MiddleName
+                    UserId = s.UserId,
+                    GroupId = s.GroupId,
+                    isOnline = u.IsOnline ?? false,
+                    FullName = s.LastName + " " + s.FirstName + " " + s.MiddleName,
+                    Profile = u.Avatar
                 })
             .OrderBy(user => user.FullName)
             .Skip(offset)
@@ -39,7 +42,11 @@ namespace Repository
             .ToListAsync();
 
         public async Task<IEnumerable<Student>> GetStudentsByGroup(int groupId, bool trackChanges) => 
-            await FindByCondition(student => student.GroupId == groupId, trackChanges)
+            await FindByCondition(s => 
+                s.GroupId == groupId &&
+                s.IsActive && (s.Confirmed == true || (s.Confirmed == null && s.DeletedOn == null)),
+                trackChanges)
+            .OrderBy(s => s.LastName).ThenBy(s => s.FirstName).ThenBy(s => s.MiddleName)
             .ToListAsync();
     }
 }

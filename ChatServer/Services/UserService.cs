@@ -37,41 +37,44 @@ namespace Services
 
         public async Task<IEnumerable<UserDto>> GetLecturerStudentsAsync(int lecturerId, bool trackChanges, int limit, int offset, string filter)
         {
+            var lecturer = await _repository.Lecturers.GetLecturerAsync(lecturerId, false);
+            if (lecturer == null || !lecturer.IsActive)
+            {
+                return new List<UserDto>();
+            }
+
             var subjectLecturers = await _repository.SubjectLecturer.GetSubjects(lecturerId);
             var subjectIds = subjectLecturers.Select(sl => sl.SubjectId).Distinct().ToList();
 
-            if (subjectIds.Count == 0)
+            if (!subjectIds.Any())
                 return new List<UserDto>();
 
-            var groups = new List<SubjectGroup>();
-            foreach (var subjectId in subjectIds)
-            {
-                var subjectGroups = await _repository.SubjectGroup.GetGroups(subjectId);
-                groups.AddRange(subjectGroups);
-            }
+            var subjectGroups = await _repository.SubjectGroup.GetGroupsBySubjectIds(subjectIds);
+            var groupIds = subjectGroups.Select(g => g.GroupId).Distinct().ToList();
 
-            var groupIds = groups.Select(g => g.GroupId).Distinct().ToList();
-
-            if (groupIds.Count == 0)
+            if (!groupIds.Any()) 
                 return new List<UserDto>();
 
-            var students = new List<UserDto>();
+            var studentsResult = new List<UserDto>();
             foreach (var groupId in groupIds)
             {
-                var groupStudents = await _repository.Students.GetStudentsByGroup(groupId, false);
+                var groupStudentEntities = await _repository.Students.GetStudentsByGroup(groupId, false);
 
+                var filteredByName = groupStudentEntities;
                 if (filter != "*")
                 {
-                    groupStudents = groupStudents
-                        .Where(s => (s.MiddleName + s.FirstName + s.LastName).Contains(filter, StringComparison.InvariantCultureIgnoreCase))
+                    filteredByName = groupStudentEntities
+                        .Where(s => (s.MiddleName + " " + s.FirstName + " " + s.LastName).Contains(filter, StringComparison.InvariantCultureIgnoreCase) ||
+                                    (s.FirstName + " " + s.LastName).Contains(filter, StringComparison.InvariantCultureIgnoreCase) ||
+                                    s.LastName.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
                         .ToList();
                 }
 
-                foreach (var student in groupStudents)
+                foreach (var student in filteredByName)
                 {
                     var user = await _repository.Users.GetUserAsync(student.UserId, false);
 
-                    students.Add(new UserDto
+                    studentsResult.Add(new UserDto
                     {
                         UserId = student.UserId,
                         GroupId = student.GroupId,
@@ -82,7 +85,7 @@ namespace Services
                 }
             }
 
-            return students
+            return studentsResult
                 .OrderBy(s => s.FullName)
                 .Skip(offset)
                 .Take(limit)
@@ -92,43 +95,47 @@ namespace Services
         public async Task<IEnumerable<UserDto>> GetStudentLecturersAsync(int studentId, bool trackChanges, int limit, int offset, string filter)
         {
             var student = await _repository.Students.GetStudentAsync(studentId, false);
-            if (student == null)
+            if (student == null || !(student.IsActive && (student.Confirmed == true || (student.Confirmed == null && student.DeletedOn == null))))
+            {
                 return new List<UserDto>();
+            }
 
             var subjectGroups = await _repository.SubjectGroup.GetSubjects(student.GroupId);
             var subjectIds = subjectGroups.Select(sg => sg.SubjectId).Distinct().ToList();
 
-            if (subjectIds.Count == 0)
+            if (!subjectIds.Any()) 
                 return new List<UserDto>();
 
             var subjectLecturers = await _repository.SubjectLecturer.GetLecturersBySubjectIds(subjectIds);
             var lecturerIds = subjectLecturers.Select(sl => sl.LecturerId).Distinct().ToList();
 
-            if (lecturerIds.Count == 0)
+            if (!lecturerIds.Any()) 
                 return new List<UserDto>();
 
-            var lecturers = new List<UserDto>();
+            var lecturersResult = new List<UserDto>();
             foreach (var lecturerId in lecturerIds)
             {
-                var lecturer = await _repository.Lecturers.GetLecturerAsync(lecturerId, false);
-                if (lecturer != null)
+                var lecturerEntity = await _repository.Lecturers.GetLecturerAsync(lecturerId, false);
+                if (lecturerEntity != null && lecturerEntity.IsActive)
                 {
-                    if (filter == "*" || (lecturer.MiddleName + lecturer.FirstName + lecturer.LastName).Contains(filter, StringComparison.InvariantCultureIgnoreCase))
+                    if (filter == "*" || (lecturerEntity.MiddleName + " " + lecturerEntity.FirstName + " " + lecturerEntity.LastName).Contains(filter, StringComparison.InvariantCultureIgnoreCase) ||
+                        (lecturerEntity.FirstName + " " + lecturerEntity.LastName).Contains(filter, StringComparison.InvariantCultureIgnoreCase) ||
+                         lecturerEntity.LastName.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
                     {
                         var user = await _repository.Users.GetUserAsync(lecturerId, false);
 
-                        lecturers.Add(new UserDto
+                        lecturersResult.Add(new UserDto
                         {
                             UserId = lecturerId,
                             isOnline = user?.IsOnline ?? false,
-                            FullName = lecturer.FullName,
+                            FullName = lecturerEntity.FullName,
                             Profile = user?.Avatar
                         });
                     }
                 }
             }
 
-            return lecturers
+            return lecturersResult
                 .OrderBy(l => l.FullName)
                 .Skip(offset)
                 .Take(limit)
