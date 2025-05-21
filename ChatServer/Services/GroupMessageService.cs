@@ -38,6 +38,7 @@ namespace Services
 
             await EnsureUserName(userId, names);
             newMsg.Text = _encryptionService.Decrypt(newMsg.Text);
+            newMsg.User = await _repository.Users.GetUserAsync(userId, false);
 
             var messageDto = _mapper.Map<MessageDto>(newMsg, opts => {
                 opts.Items["UserId"] = userId;
