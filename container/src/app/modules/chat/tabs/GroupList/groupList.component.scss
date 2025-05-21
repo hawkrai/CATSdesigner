@@ -15,15 +15,27 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid $border-color;
-  background-color: #f8f9fa;
   flex-shrink: 0;
+
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
   .list-title {
     margin: 0;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
     color: $gray-800;
+  }
+
+  .group-display-name {
+    font-size: 14px;
+    color: $gray-600;
+    margin: 8px 0 0 0;
+    font-weight: 400;
+    line-height: 1;
   }
 
   .close-btn {
@@ -57,8 +69,6 @@
   flex: 1 1 auto;
   min-height: 0;
   padding: 10px;
-  height: calc(100% - 134px);
-  min-height: calc(100% - 134px);
   overflow: auto;
 
   .list-unstyled {
@@ -159,8 +169,6 @@
   display: flex;
   justify-content: flex-end;
   padding: 16px 20px;
-  border-top: 1px solid $border-color;
-  background-color: #f8f9fa;
 
   .action-button {
     padding: 8px 20px;

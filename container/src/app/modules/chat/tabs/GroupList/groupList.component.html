@@ -1,8 +1,13 @@
 <div class="student-list-container">
   <div class="student-list-header">
-    <h4 class="list-title">
-      {{ 'chat.listStudent' | translate: 'Список студентов' }}
-    </h4>
+    <div class="header-content">
+      <h1 class="list-title">
+        {{ 'chat.listStudent' | translate: 'Список студентов' }}
+      </h1>
+      <span *ngIf="data.groupName" class="group-display-name">
+        {{ data.groupName }}
+      </span>
+    </div>
     <button
       class="close-btn"
       (click)="onCloseClick()"
