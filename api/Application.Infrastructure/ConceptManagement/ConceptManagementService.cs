@@ -111,7 +111,9 @@ namespace Application.Infrastructure.ConceptManagement
             {
                 var tests = testData.Select(t => new Concept(t.Title, root.Author, root.Subject, false, t.Unlocked)
                 {
-                    ParentId = testModule.Id, Test = t
+                    ParentId = testModule.Id,
+                    Test = t,
+                    Id = t.Id
                 }).ToList();
                 tests.ForEach(t => testModule.Children.Add(t));
             }
