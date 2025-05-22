@@ -25,6 +25,15 @@ namespace LMPlatform.UI.Services.Modules.Concept
             Prev = concept.PrevConcept;
             Next = concept.NextConcept;
             SubjectName = concept.Subject.Name;
+
+            if (concept.Test != null)
+            {
+                TestId = concept.Test.Id;
+                if (concept.Test.Questions != null)
+                {
+                    TestQuestionsCount = concept.Test.Questions.Count;
+                }
+            }
         }
 
         public ConceptViewData(Models.Concept concept, bool buildTree, bool isRoot, bool isLector)
@@ -152,6 +161,13 @@ namespace LMPlatform.UI.Services.Modules.Concept
         public bool? IncludeLectures { get; set; }
         [DataMember]
         public bool? IncludeTests { get; set; }
+
+        [DataMember]
+        public int? TestId { get; set; } = null;
+
+        [DataMember]
+
+        public int? TestQuestionsCount { get; set; } = null;
 
 
         [DataMember(Name = "children")]
