@@ -171,17 +171,20 @@ namespace ChatServer.Hubs
             await Clients.Group(chatId.ToString()).SendAsync("NewChat", firstUserId, secondUserId, chatId);
         }
 
+        public async Task UpdateMediaStatus(int chatId, string deviceType, bool newStatus)
+        {
+            var userId = users[Context.ConnectionId];
+
+            await Clients.GroupExcept(chatId.ToString(), Context.ConnectionId)
+                         .SendAsync("RemoteMediaStatusChanged", chatId, userId, deviceType, newStatus);
+        }
+
         public async override Task OnDisconnectedAsync(Exception exception)
         {
             await Clients.All.SendAsync("Status", users[Context.ConnectionId], false);
             await _userService.SetStatus(users[Context.ConnectionId], false);
             users.Remove(Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);
-        }
-
-        public override Task OnConnectedAsync()
-        {
-            return base.OnConnectedAsync();
         }
 
         #region video chat methods
