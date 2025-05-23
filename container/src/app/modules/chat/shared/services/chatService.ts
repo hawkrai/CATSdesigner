@@ -3,6 +3,7 @@ import { Chat } from '@chat/shared/models/entities/chats.model'
 import { Observable } from 'rxjs'
 import { SubjectGroups } from '@chat/shared/models/entities/subject.groups.model'
 import { ChatApiService } from '@chat/shared/api/chat-api.service'
+import { User } from '@chat/shared/models/dto/user'
 
 @Injectable({
   providedIn: 'root',
@@ -31,5 +32,9 @@ export class ChatService {
 
   public LoadChat(chatId: number) {
     return this.chatApiService.getChatById(this.user.id, chatId)
+  }
+
+  public loadCurrentUserInfo(): Observable<User> {
+    return this.chatApiService.getUserInfoById(this.user.id)
   }
 }

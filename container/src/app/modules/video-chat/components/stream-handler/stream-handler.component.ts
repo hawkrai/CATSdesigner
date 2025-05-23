@@ -6,22 +6,19 @@ import {
   Input,
   Output,
   OnDestroy,
+  EventEmitter,
 } from '@angular/core'
 
-import { SignalRService } from 'src/app/modules/chat/shared/services/signalRSerivce'
-import { EventEmitter } from '@angular/core'
-import { VideoChatService } from './../../services/video-chat.service'
+import { SignalRService } from '@chat/shared/services/signalRSerivce'
+import { VideoChatService } from '@app/modules/video-chat/services/video-chat.service'
 
 const configuration = {
   configuration: {
     offerToReceiveAudio: true,
     offerToReceiveVideo: true,
   },
-  // iceServers: [{ urls: 'stun:numb.viagenie.ca:3478' }],
   iceServers: [
-    {
-      urls: 'stun:openrelay.metered.ca:80',
-    },
+    { urls: 'stun:openrelay.metered.ca:80' },
     { urls: 'stun:stun.l.google.com:19302' },
     {
       urls: 'turn:numb.viagenie.ca',
@@ -71,295 +68,282 @@ const options = {
   offerToReceiveVideo: true,
 }
 
-let iceCount = 0
-let iceCountLocal = 0
-
 @Component({
   selector: 'app-stream-handler',
-  templateUrl: './stream-handler.component.html',
-  styleUrls: ['./stream-handler.component.less'],
+  template: '',
 })
 export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
-  @Input() isMicroActive = true
-  @Input() isVideoActive = false
-  @Output() clientDisconnected = new EventEmitter()
-  @Output() clientConnected = new EventEmitter()
+  @Input() initialMicStatus = true
+  @Input() initialVideoStatus = false
+  @Output() selfStreamReady = new EventEmitter<MediaStream>()
+  @Output() remoteStreamReady = new EventEmitter<MediaStream>()
+  @Output() callAcceptedByRemote = new EventEmitter<void>()
+  @Output() remoteUserDisconnected = new EventEmitter<void>()
 
-  private _linkedPeerConnections: Map<string, RTCPeerConnection> = new Map()
-
-  public mediaConstraints = {
-    audio: true,
-    video: true,
-  }
-
-  public remoteAudio: any
-  public selfMedia: any
-
-  public stream: any
+  private peerConnections: Map<string, RTCPeerConnection> = new Map()
+  private localStream: MediaStream | null = null
 
   constructor(
     private signalRService: SignalRService,
     private videoChatService: VideoChatService
   ) {}
 
+  ngOnInit(): void {
+    this.setupSignalRListeners()
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.isMicroActive) {
-      this.changeMicroStatus(changes.isMicroActive.currentValue)
-    }
-    if (changes.isVideoActive) {
-      this.changeVideoStatus(changes.isVideoActive.currentValue)
+    if (this.localStream) {
+      if (changes.initialMicStatus) {
+        const newMicStatus = changes.initialMicStatus.currentValue
+        this.setTrackEnabled('audio', newMicStatus)
+      }
+      if (changes.initialVideoStatus) {
+        const newVideoStatus = changes.initialVideoStatus.currentValue
+        this.setTrackEnabled('video', newVideoStatus)
+      }
     }
   }
 
   ngOnDestroy(): void {
-    this._linkedPeerConnections = new Map()
-    //this.signalRService.hubConnection.off('AddNewcomer');
-    //this.signalRService.hubConnection.off('RegisterOffer');
-    //this.signalRService.hubConnection.off('HandleNewCandidate');
-    this.endChat()
+    this.cleanupConnections()
+    this.removeSignalRListeners()
   }
 
-  ngOnInit(): void {
-    this.mediaConstraints.audio = this.isMicroActive
-    this.mediaConstraints.video = this.isVideoActive
-    iceCount = 0
-    iceCountLocal = 0
-    var peer = new RTCPeerConnection(configuration)
+  public async initializeMedia(): Promise<void> {
+    if (this.localStream) {
+      this.selfStreamReady.emit(this.localStream)
+      return
+    }
+    try {
+      this.localStream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true },
+        video: true,
+      })
 
-    this.signalRService.hubConnection.off('AddNewcomer')
+      this.setTrackEnabled('audio', this.initialMicStatus)
+      this.setTrackEnabled('video', this.initialVideoStatus)
+
+      this.videoChatService.updateLocalStream(this.localStream)
+      this.videoChatService.updateLocalCameraStatus(this.initialVideoStatus)
+      this.videoChatService.updateLocalMicStatus(this.initialMicStatus)
+
+      this.selfStreamReady.emit(this.localStream)
+
+      this.peerConnections.forEach((pc) => {
+        this.localStream?.getTracks().forEach((track) => {
+          if (pc.getSenders().find((s) => s.track === track)) {
+            return
+          }
+          pc.addTrack(track, this.localStream!)
+        })
+      })
+    } catch (e) {
+      this.videoChatService.endCall(this.videoChatService.currentChatId)
+    }
+  }
+
+  private setupSignalRListeners(): void {
     this.signalRService.hubConnection.on(
       'AddNewcomer',
-      async (newcomerConnectionId: string, chatId: any) => {
-        console.log('New call', newcomerConnectionId, chatId)
+      async (newcomerConnectionId: string, chatId: number) => {
+        if (newcomerConnectionId === this.signalRService.selfConnectionId)
+          return
         if (!this.videoChatService.isChatMatch(chatId)) {
-          this.signalRService.sendRejection(chatId, 'Use is in call')
           return
         }
-        this.signalRService.callWasConfirmed(chatId)
-        await this.createRTCPeerConnectionPeer(
-          peer,
-          chatId,
-          newcomerConnectionId
-        )
+        this.callAcceptedByRemote.emit()
+        await this.createPeerConnection(newcomerConnectionId, chatId, true)
       }
     )
 
-    this.signalRService.hubConnection.off('RegisterOffer')
     this.signalRService.hubConnection.on(
       'RegisterOffer',
-      async (chatId, offer, fromClientHubId) => {
-        console.log('New offer', fromClientHubId, chatId)
-        console.log(offer)
-        this.signalRService.callWasConfirmed(chatId)
-        this.createRTCPeerConnectionPeer(peer, chatId, fromClientHubId, offer)
+      async (
+        chatId: number,
+        offer: RTCSessionDescriptionInit,
+        fromClientHubId: string
+      ) => {
+        if (fromClientHubId === this.signalRService.selfConnectionId) return
+        if (!this.videoChatService.isChatMatch(chatId)) {
+          return
+        }
+        this.callAcceptedByRemote.emit()
+        await this.createPeerConnection(fromClientHubId, chatId, false, offer)
       }
     )
 
-    this.signalRService.hubConnection.off('RegisterAnswer')
     this.signalRService.hubConnection.on(
       'RegisterAnswer',
-      async (answer, userConnectionId) => {
-        console.log('New answer', userConnectionId)
-        console.log(answer)
-        await this.registerAnswer(
-          this._linkedPeerConnections.get(userConnectionId)!,
-          answer,
-          userConnectionId
-        )
+      async (answer: RTCSessionDescriptionInit, userConnectionId: string) => {
+        if (userConnectionId === this.signalRService.selfConnectionId) return
+        const pc = this.peerConnections.get(userConnectionId)
+        if (pc) {
+          if (
+            pc.signalingState === 'have-local-offer' ||
+            pc.signalingState === 'stable'
+          ) {
+            try {
+              await pc.setRemoteDescription(new RTCSessionDescription(answer))
+            } catch (e) {}
+          }
+        }
       }
     )
 
-    this.signalRService.hubConnection.off('HandleNewCandidate')
     this.signalRService.hubConnection.on(
       'HandleNewCandidate',
-      async (candidate, userConnectionId) => {
-        // console.log('HandleNewCandidate', ++iceCount);
-        //console.log(candidate);
-        let cand = new RTCIceCandidate(candidate)
-        //console.log('web rtc candidate');
-        //console.log(cand);
-        const peerConnection = this._linkedPeerConnections.get(userConnectionId)
-        peerConnection!.addIceCandidate(cand).catch((e) => console.log(e))
+      async (candidate: RTCIceCandidateInit, userConnectionId: string) => {
+        if (userConnectionId === this.signalRService.selfConnectionId) return
+        const pc = this.peerConnections.get(userConnectionId)
+        if (pc && candidate) {
+          try {
+            await pc.addIceCandidate(new RTCIceCandidate(candidate))
+          } catch (e) {}
+        }
       }
     )
   }
 
-  async createRTCPeerConnection(
+  private async createPeerConnection(
+    peerId: string,
     chatId: number,
-    fromClientConnectionId: string,
-    offer = null
-  ) {
-    await this.createRTCPeerConnectionPeer(
-      new RTCPeerConnection(configuration),
-      chatId,
-      fromClientConnectionId,
-      offer
-    )
-  }
-  async createRTCPeerConnectionPeer(
-    peerConnection: RTCPeerConnection,
-    chatId: number,
-    fromClientConnectionId: string,
-    offer = null
-  ) {
-    this._linkedPeerConnections.set(fromClientConnectionId, peerConnection)
-
-    peerConnection.onicecandidate = async (event) => {
-      //console.log(`candidate: ${++iceCountLocal}`);
-      //console.log(event.candidate);
-      //if (event.candidate == null) return;
-      await this.onIceCandidate(event, peerConnection, fromClientConnectionId)
+    isOfferer: boolean,
+    offer?: RTCSessionDescriptionInit
+  ): Promise<void> {
+    if (this.peerConnections.has(peerId)) {
+      return
     }
 
-    peerConnection.onnegotiationneeded = async (event: any) => {
-      console.log('neg needed')
-      console.log(event)
-      const offer = await peerConnection.createOffer(options)
-      await peerConnection.setLocalDescription(offer)
-      this.signalRService.hubConnection?.invoke(
-        'SendOffer',
-        chatId,
-        offer,
-        fromClientConnectionId
-      )
-    }
-    peerConnection.onconnectionstatechange = (event: any) => {
-      console.log('State Changed')
-      console.log(event?.currentTarget?.connectionState)
-
-      if (event?.currentTarget?.connectionState === 'failed') {
-        console.log('!! Connection failed !!')
-        ;(peerConnection as any).restartIce()
-      }
-      if (event?.currentTarget?.connectionState == 'connected') {
-        this.clientConnected.emit()
-      }
-      if (event?.currentTarget?.connectionState == 'disconnected') {
-        this.clientDisconnected.emit()
-      }
-    }
-    peerConnection.oniceconnectionstatechange = (e) => {
-      console.log('ICE State Changed')
-      console.log(peerConnection.iceConnectionState)
-
-      if (peerConnection.iceConnectionState === 'failed') {
-        console.log('!! Connection failed !!')
-        ;(peerConnection as any).restartIce()
+    if (!this.localStream) {
+      await this.initializeMedia()
+      if (!this.localStream) {
+        return
       }
     }
 
-    await this.createMediaController(peerConnection)
+    const pc = new RTCPeerConnection(configuration)
+    this.peerConnections.set(peerId, pc)
 
-    if (offer != null) {
-      this.mapNewRTCPeerConnection(
-        peerConnection,
-        fromClientConnectionId,
-        offer
-      )
-    } else {
-      // this.createNewRTCPeerConnection(
-      //   chatId,
-      //   peerConnection,
-      //   fromClientConnectionId
-      // );
+    this.localStream?.getTracks().forEach((track) => {
+      if (pc.getSenders().find((s) => s.track === track)) {
+        return
+      }
+      pc.addTrack(track, this.localStream!)
+    })
+
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        this.signalRService.hubConnection?.invoke(
+          'FireCandidate',
+          event.candidate,
+          peerId
+        )
+      }
+    }
+
+    pc.oniceconnectionstatechange = () => {}
+
+    pc.ontrack = (event) => {
+      const stream = event.streams[0]
+      if (stream) {
+        event.track.onunmute = () => {}
+        this.remoteStreamReady.emit(stream)
+        this.videoChatService.updateRemoteStream(stream)
+      } else {
+        let inboundStream = new MediaStream()
+        inboundStream.addTrack(event.track)
+        this.remoteStreamReady.emit(inboundStream)
+        this.videoChatService.updateRemoteStream(inboundStream)
+      }
+    }
+
+    pc.onconnectionstatechange = () => {
+      switch (pc.connectionState) {
+        case 'connected':
+          break
+        case 'disconnected':
+        case 'failed':
+        case 'closed':
+          this.handleDisconnection(peerId)
+          break
+      }
+    }
+
+    if (isOfferer) {
+      try {
+        const createdOffer = await pc.createOffer(options)
+        await pc.setLocalDescription(createdOffer)
+        this.signalRService.hubConnection?.invoke(
+          'SendOffer',
+          chatId,
+          pc.localDescription,
+          peerId
+        )
+      } catch (e) {}
+    } else if (offer) {
+      try {
+        await pc.setRemoteDescription(new RTCSessionDescription(offer))
+        const answer = await pc.createAnswer()
+        await pc.setLocalDescription(answer)
+        this.signalRService.hubConnection?.invoke(
+          'SendAnswer',
+          pc.localDescription,
+          peerId
+        )
+      } catch (e) {}
     }
   }
 
-  async mapNewRTCPeerConnection(
-    peerConnection: RTCPeerConnection,
-    FromClientHubId: string,
-    offer: any
-  ) {
-    const remoteDesc = new RTCSessionDescription(offer)
-    await peerConnection.setRemoteDescription(remoteDesc)
-
-    const answer = await peerConnection.createAnswer()
-    await peerConnection.setLocalDescription(answer)
-    this.signalRService.hubConnection.invoke(
-      'SendAnswer',
-      answer,
-      FromClientHubId
-    )
-  }
-
-  async createNewRTCPeerConnection(
-    chatId: number,
-    peerConnection: RTCPeerConnection,
-    FromClientHubId: string
-  ) {
-    const offer = await peerConnection.createOffer(options)
-    await peerConnection.setLocalDescription(offer)
-    this.signalRService.hubConnection?.invoke(
-      'SendOffer',
-      chatId,
-      offer,
-      FromClientHubId
-    )
-  }
-
-  async createMediaController(peerConnection: RTCPeerConnection | any) {
-    let audioStream: any = null
-
-    audioStream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        echoCancellation: true,
-        noiseSuppression: true,
-      },
-      video: true,
-    })
-    audioStream?.getTracks()?.forEach((track: any) => {
-      peerConnection.addTrack(track, audioStream)
-    })
-
-    this.stream = audioStream
-    this.changeMicroStatus(this.isMicroActive)
-    this.changeVideoStatus(this.isVideoActive)
-
-    peerConnection.ontrack = (event: any) => {
-      this.remoteAudio = event.streams[0]
+  private setTrackEnabled(kind: 'audio' | 'video', enabled: boolean): void {
+    if (!this.localStream) {
+      return
     }
-    this.selfMedia = audioStream
+    this.localStream.getTracks().forEach((track) => {
+      if (track.kind === kind) {
+        track.enabled = enabled
+      }
+    })
   }
 
-  onIceCandidate = async (
-    event: any,
-    peerConnection: RTCPeerConnection,
-    fromClientHubId: string
-  ) => {
-    event.currentTarget
-    if (event.candidate) {
-      this.signalRService.hubConnection?.invoke(
-        'fireCandidate',
-        event.candidate,
-        fromClientHubId
-      )
+  private handleDisconnection(peerId: string): void {
+    const pc = this.peerConnections.get(peerId)
+    if (pc) {
+      pc.close()
+      this.peerConnections.delete(peerId)
+    }
+    if (this.peerConnections.size === 0) {
+      this.remoteUserDisconnected.emit()
+      this.videoChatService.updateRemoteStream(null)
     }
   }
-  async registerAnswer(
-    peerConnection: RTCPeerConnection,
-    answer: any,
-    fromClientConnectionId: string
-  ) {
-    const remoteDesc = new RTCSessionDescription(answer)
-    await peerConnection.setRemoteDescription(remoteDesc)
+
+  public cleanupConnections(): void {
+    this.peerConnections.forEach((pc, peerId) => {
+      pc.close()
+    })
+    this.peerConnections.clear()
+
+    if (this.localStream) {
+      this.localStream.getTracks().forEach((track) => track.stop())
+      this.localStream = null
+    }
+    this.videoChatService.updateLocalStream(null)
+    this.videoChatService.updateRemoteStream(null)
   }
 
-  endChat() {
-    this._linkedPeerConnections.forEach((e) => {
-      e.close()
-    })
-    this.stream?.getTracks()?.forEach((t: any) => t.stop())
+  private removeSignalRListeners(): void {
+    this.signalRService.hubConnection.off('AddNewcomer')
+    this.signalRService.hubConnection.off('RegisterOffer')
+    this.signalRService.hubConnection.off('RegisterAnswer')
+    this.signalRService.hubConnection.off('HandleNewCandidate')
   }
 
-  changeMicroStatus(isEnabled: boolean) {
-    this.stream?.getTracks()?.forEach((t: any) => {
-      if (t.kind == 'audio') t.enabled = isEnabled
-    })
+  public toggleMicrophone(active: boolean): void {
+    this.setTrackEnabled('audio', active)
   }
 
-  changeVideoStatus(isEnabled: boolean) {
-    this.stream?.getTracks()?.forEach((t: any) => {
-      if (t.kind == 'video') t.enabled = isEnabled
-    })
+  public toggleCamera(active: boolean): void {
+    this.setTrackEnabled('video', active)
   }
 }
