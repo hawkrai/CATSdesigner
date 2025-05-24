@@ -163,7 +163,13 @@
                   matTooltip="{{ dataService.activChat.name }}"
                   class="groupName media-body overflow-hidden"
                 >
-                  <h5 class="font-size-16 mb-0 text-truncate">
+                  <h5
+                    class="font-size-16 mb-0 text-truncate d-flex align-items-center"
+                  >
+                    <span
+                      class="subject-color-dot mr-2"
+                      [style.backgroundColor]="groupColor"
+                    ></span>
                     <a class="text-reset user-profile-show">{{
                       dataService.activChat.name
                     }}</a>

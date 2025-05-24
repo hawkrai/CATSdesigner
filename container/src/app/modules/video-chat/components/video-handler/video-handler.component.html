@@ -1,111 +1,276 @@
-<div
-  style="position: absolute; z-index: 100000"
-  *ngIf="IsActiveCall || IsIncomingCall"
->
-  <div
-    ngDraggable
-    [ngResizable]="IsActiveCall"
-    [rzHandles]="'se,sw,ne,nw'"
-    [rzAspectRatio]="1"
-    [rzMinWidth]="250"
-    zIndex="'100000'"
-  >
-    <div *ngIf="IsActiveCall" class="video-call">
-      <div *ngIf="!IsCallAccepted" class="video-call__audio">
+<ng-container *ngIf="callState$ | async as callState">
+  <div class="video-call-overlay" *ngIf="callState.shouldShowOverlay">
+    <div
+      [ngResizable]="callState.isActive"
+      [rzHandles]="'se,sw,ne,nw'"
+      [rzMinWidth]="300"
+      [rzMinHeight]="200"
+      class="video-call-window"
+      [ngClass]="{
+        'active-call': callState.isActive && !callState.isIncoming,
+        'incoming-call': callState.isIncoming,
+        'outgoing-call':
+          !callState.isActive && !callState.isIncoming && callState.isOutgoing
+      }"
+    >
+      <div
+        *ngIf="callState.isActive && !callState.isIncoming"
+        class="video-call-active-content"
+      >
+        <div class="video-grid">
+          <div class="participant-tile remote-participant">
+            <video
+              #remoteVideoElement
+              class="participant-video"
+              [class.hidden]="!remoteParticipant?.cameraOn || !hasRemoteStream"
+              autoplay
+              playsinline
+              (loadedmetadata)="onRemoteVideoMetadataLoaded()"
+            ></video>
+            <div
+              class="avatar-placeholder"
+              *ngIf="
+                remoteParticipant?.avatarUrl &&
+                (!remoteParticipant?.cameraOn || !hasRemoteStream)
+              "
+            >
+              <img [src]="remoteParticipant?.avatarUrl" alt="Remote Avatar" />
+            </div>
+            <div
+              class="avatar-placeholder initials-placeholder"
+              *ngIf="
+                !remoteParticipant?.avatarUrl &&
+                (!remoteParticipant?.cameraOn || !hasRemoteStream)
+              "
+            >
+              <span>{{ remoteParticipant?.initials }}</span>
+            </div>
+            <div class="participant-info-overlay" *ngIf="remoteParticipant">
+              <span
+                class="material-icons status-icon"
+                *ngIf="!remoteParticipant?.micOn"
+                >mic_off</span
+              >
+              <span
+                class="material-icons status-icon"
+                *ngIf="!remoteParticipant?.cameraOn"
+                >videocam_off</span
+              >
+              <span class="participant-name">{{
+                remoteParticipant?.displayName
+              }}</span>
+            </div>
+          </div>
+
+          <div class="participant-tile self-participant" ngDraggable>
+            <video
+              #selfVideoElement
+              class="participant-video"
+              [class.hidden]="
+                !localParticipant?.cameraOn || !localParticipant?.stream
+              "
+              autoplay
+              muted
+              playsinline
+            ></video>
+            <div
+              class="avatar-placeholder"
+              *ngIf="
+                localParticipant?.avatarUrl &&
+                (!localParticipant?.cameraOn || !localParticipant?.stream)
+              "
+            >
+              <img [src]="localParticipant?.avatarUrl" alt="Local Avatar" />
+            </div>
+            <div
+              class="avatar-placeholder initials-placeholder"
+              *ngIf="
+                !localParticipant?.avatarUrl &&
+                (!localParticipant?.cameraOn || !localParticipant?.stream)
+              "
+            >
+              <span>{{ localParticipant?.initials }}</span>
+            </div>
+            <div class="participant-info-overlay" *ngIf="localParticipant">
+              <span
+                class="material-icons status-icon"
+                *ngIf="!localParticipant?.micOn"
+                >mic_off</span
+              >
+              <span
+                class="material-icons status-icon"
+                *ngIf="!localParticipant?.cameraOn"
+                >videocam_off</span
+              >
+              <span class="participant-name"
+                >{{ localParticipant?.displayName }}
+                {{ 'videochat.youSuffix' | translate: '(Вы)' }}</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="call-controls">
+          <button
+            (click)="toggleMicrophone()"
+            [class.active]="isMicActive"
+            class="control-button"
+            matTooltip="{{
+              'videochat.microphoneTooltip' | translate: 'Микрофон'
+            }}"
+          >
+            <mat-icon>{{ isMicActive ? 'mic' : 'mic_off' }}</mat-icon>
+          </button>
+          <button
+            (click)="toggleCamera()"
+            [class.active]="isCameraActive"
+            class="control-button"
+            matTooltip="{{ 'videochat.cameraTooltip' | translate: 'Камера' }}"
+          >
+            <mat-icon>{{
+              isCameraActive ? 'videocam' : 'videocam_off'
+            }}</mat-icon>
+          </button>
+          <button
+            (click)="endCall()"
+            class="control-button end-call-button"
+            matTooltip="{{
+              'videochat.endCallTooltip' | translate: 'Завершить звонок'
+            }}"
+          >
+            <mat-icon>call_end</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div
+        *ngIf="
+          callState.isOutgoing && !callState.isActive && !callState.isIncoming
+        "
+        class="video-call-outgoing-content"
+      >
         <audio
           id="outgoingCallSound"
           src="/assets/audios/outgoing_call_sound.mp3"
           autoplay
           loop
         ></audio>
-      </div>
-      <div class="video-call__videos">
-        <app-stream-handler
-          #child
-          (clientDisconnected)="this.clientDisconnected()"
-          (clientConnected)="this.stopCallSound('outgoingCallSound')"
-          [isMicroActive]="this.IsMicroActive"
-          [isVideoActive]="this.isVideoActive"
-        ></app-stream-handler>
+        <div class="call-icon-container">
+          <mat-icon class="call-icon">call</mat-icon>
+        </div>
+        <h2 class="call-title">
+          {{ 'videochat.callingUserTitle' | translate: 'Вызов абонента' }}
+        </h2>
+        <p class="call-subtitle">
+          {{
+            'videochat.waitingForResponseFrom' | translate: 'Ожидание ответа от'
+          }}
+          <span class="caller-name-highlight">{{
+            remoteParticipant?.displayName ||
+              ('videochat.unknownUser' | translate: 'Неизвестный абонент')
+          }}</span>
+        </p>
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div
+              class="progress-fill"
+              [class.animating]="isOutgoingCallAnimating"
+              [style.animation-duration]="
+                outgoingCallAnimationDurationMs + 'ms'
+              "
+            ></div>
+          </div>
+          <p class="progress-text">
+            {{ 'videochat.callingProgress' | translate: 'Вызов...' }}
+          </p>
+        </div>
+        <button
+          (click)="cancelOutgoingCall()"
+          class="control-button cancel-button"
+          matTooltip="{{
+            'videochat.cancelCallTooltip' | translate: 'Отменить вызов'
+          }}"
+        >
+          <mat-icon>call_end</mat-icon>
+          <span>{{
+            'videochat.cancelCallButton' | translate: 'Отменить'
+          }}</span>
+        </button>
       </div>
 
-      <div class="video-call__controls">
-        <div class="video-call__control" (click)="this.switchMicro()">
-          <mat-icon
-            class="control-icon"
-            *ngIf="IsMicroActive"
-            [ngStyle]="{ color: 'white' }"
-            >mic</mat-icon
-          >
-          <mat-icon
-            class="control-icon"
-            *ngIf="!IsMicroActive"
-            [ngStyle]="{ color: 'white' }"
-            >mic_off</mat-icon
-          >
+      <div *ngIf="callState.isIncoming" class="video-call-incoming-content">
+        <audio
+          id="incomingCallSound"
+          src="/assets/audios/incoming_call_sound.mp3"
+          autoplay
+          loop
+        ></audio>
+        <div class="caller-info">
+          <div class="incoming-avatar-container">
+            <div
+              class="avatar-placeholder large-avatar"
+              *ngIf="remoteParticipant?.avatarUrl"
+            >
+              <img [src]="remoteParticipant?.avatarUrl" alt="Caller Avatar" />
+            </div>
+            <div
+              class="avatar-placeholder large-avatar initials-placeholder"
+              *ngIf="!remoteParticipant?.avatarUrl"
+            >
+              <span>{{ remoteParticipant?.initials }}</span>
+            </div>
+          </div>
+          <div class="caller-name">
+            {{
+              remoteParticipant?.displayName ||
+                ('videochat.unknownUser' | translate: 'Неизвестный абонент')
+            }}
+          </div>
+          <div class="call-status">
+            {{
+              'videochat.incomingCallStatus' | translate: 'Входящий звонок...'
+            }}
+          </div>
         </div>
-        <div class="video-call__control" (click)="this.switchVideo()">
-          <mat-icon
-            class="control-icon"
-            *ngIf="isVideoActive"
-            [ngStyle]="{ color: 'white' }"
-            >videocam</mat-icon
+        <div class="call-controls incoming-controls">
+          <button
+            (click)="rejectCall()"
+            class="control-button reject-button"
+            matTooltip="{{
+              'videochat.rejectCallTooltip' | translate: 'Отклонить'
+            }}"
           >
-          <mat-icon
-            class="control-icon"
-            *ngIf="!isVideoActive"
-            [ngStyle]="{ color: 'white' }"
-            >videocam_off</mat-icon
+            <mat-icon>call_end</mat-icon>
+            <span>{{
+              'videochat.rejectCallButton' | translate: 'Отклонить'
+            }}</span>
+          </button>
+          <button
+            (click)="answerCall()"
+            class="control-button answer-button"
+            matTooltip="{{
+              'videochat.answerCallTooltip' | translate: 'Ответить'
+            }}"
           >
+            <mat-icon>call</mat-icon>
+            <span>{{
+              'videochat.answerCallButton' | translate: 'Ответить'
+            }}</span>
+          </button>
         </div>
+      </div>
 
-        <mat-icon
-          class="control-icon"
-          (click)="endCall()"
-          [ngStyle]="{ color: 'red' }"
-        >
-          call_end</mat-icon
-        >
-      </div>
-    </div>
-    <div *ngIf="IsIncomingCall">
-      <audio
-        id="incomingCallSound"
-        src="/assets/audios/incoming_call_sound.mp3"
-        autoplay
-        loop
-      ></audio>
-      <div class="caller-information" *ngIf="this.videoChatService.chat">
-        <img
-          style="height: 36px !important"
-          *ngIf="this.videoChatService.chat?.img"
-          src="{{ this.videoChatService.chat.img }}"
-          class="rounded-circle avatar-xs"
-          alt=""
-        />
-        <div
-          class="caller-information__name"
-          *ngIf="this.videoChatService?.chat"
-        >
-          {{ this.videoChatService.chat?.name }}
-        </div>
-      </div>
-      <div class="video-call__controls">
-        <mat-icon
-          class="control-icon"
-          (click)="answerCall()"
-          [ngStyle]="{ color: 'green' }"
-        >
-          call</mat-icon
-        >
-        <mat-icon
-          class="control-icon"
-          (click)="endCall()"
-          [ngStyle]="{ color: 'red' }"
-        >
-          call_end</mat-icon
-        >
-      </div>
+      <app-stream-handler
+        #streamHandlerRef
+        *ngIf="shouldInitStreamHandler"
+        [initialMicStatus]="isMicActive"
+        [initialVideoStatus]="isCameraActive"
+        (selfStreamReady)="onSelfStreamReady($event)"
+        (remoteStreamReady)="onRemoteStreamReady($event)"
+        (callAcceptedByRemote)="onCallAcceptedByRemote()"
+        (remoteUserDisconnected)="onRemoteUserDisconnected()"
+      >
+      </app-stream-handler>
     </div>
   </div>
-</div>
+</ng-container>

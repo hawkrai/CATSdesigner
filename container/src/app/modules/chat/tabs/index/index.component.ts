@@ -34,9 +34,11 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  take,
 } from 'rxjs/operators'
 import { ScrollUtils } from '@chat/shared/utils/scrollUtils'
 import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
+import { IStudentListData } from '@chat/shared/models/interfaces/studentListData.interface'
 import { TranslatePipe } from 'educats-translate'
 import { MarkdownService } from '@app/shared/utils/markdown.service'
 import {
@@ -73,6 +75,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   private turndownService = new TurndownServiceClass()
   private studentListDialogRef: MatDialogRef<GroupListComponent> | null = null
   private routerSubscription: Subscription
+  private restoreDone = false
 
   readonly MIN_INPUT_HEIGHT = 48
   readonly MAX_INPUT_HEIGHT = 100
@@ -190,6 +193,8 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
           this.studentListDialogRef = null
         }
       })
+
+    this.tryRestoreChat()
   }
 
   ngAfterViewInit() {}
@@ -245,6 +250,51 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       setTimeout(() => {
         this.scrollToBottom(false)
       }, 100)
+    }
+  }
+
+  private tryRestoreChat(): void {
+    const savedRaw = localStorage.getItem('activeChat')
+    const saved = savedRaw ? JSON.parse(savedRaw) : null
+    if (!saved || this.restoreDone) {
+      return
+    }
+
+    if (saved.isGroup) {
+      this.dataService.groups
+        .pipe(
+          filter((g) => g.length > 0),
+          take(1)
+        )
+        .subscribe((groups) => {
+          const subject = groups.find((s) => s.id === saved.id)
+          const nested: Chat[] = [].concat(...groups.map((s) => s.groups || []))
+
+          const groupChat = nested.find((g) => g.id === saved.id)
+          const chatInfo = subject || groupChat
+
+          if (chatInfo) {
+            this.activetab = 3
+            this.dataService.setActiveChat(saved.id, true, chatInfo)
+            this.cdr.detectChanges()
+            this.restoreDone = true
+          }
+        })
+    } else {
+      this.dataService.chats
+        .pipe(
+          filter((c) => c.length > 0),
+          take(1)
+        )
+        .subscribe((chats) => {
+          const chat = chats.find((c) => c.id === saved.id)
+          if (chat) {
+            this.activetab = 2
+            this.dataService.setActiveChat(saved.id, false, chat)
+            this.cdr.detectChanges()
+            this.restoreDone = true
+          }
+        })
     }
   }
 
@@ -432,14 +482,23 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   openStudentsList() {
-    if (this.dataService.isGroupChat && this.dataService.activChat.groupId) {
+    if (
+      this.dataService.isGroupChat &&
+      this.dataService.activChat &&
+      this.dataService.activChat.groupId
+    ) {
+      const dialogData: IStudentListData = {
+        groupId: this.dataService.activChat.groupId,
+        groupName: this.dataService.activChat.name,
+      }
+
       this.studentListDialogRef = this.dialog.open(GroupListComponent, {
-        width: '450px',
+        width: '548px',
         height: 'calc(100vh - 64px)',
         maxHeight: 'calc(100vh - 64px)',
         position: { top: '64px' },
         backdropClass: 'headerless-backdrop',
-        data: this.dataService.activChat.groupId,
+        data: dialogData,
         autoFocus: false,
         disableClose: true,
       })
@@ -629,6 +688,24 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.dataService.isSearching.getValue()
       ? this.dataService.hasMoreSearchResults
       : this.dataService.hasMoreMessages
+  }
+
+  get groupColor(): string {
+    if (!this.dataService.isGroupChat || !this.dataService.activChat) {
+      return ''
+    }
+
+    if ((this.dataService.activChat as any).color) {
+      return (this.dataService.activChat as any).color
+    }
+
+    const parent = this.dataService.groups
+      .getValue()
+      .find(
+        (s) => s.groups?.some((g) => g.id === this.dataService.activChat.id)
+      )
+
+    return parent?.color || '#6c757d'
   }
 
   getInitials(name: string): string {

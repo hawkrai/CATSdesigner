@@ -25,7 +25,7 @@ namespace ChatServer.Controllers
         private readonly IUserChatHistoryService _userChatHistoryService;
         private readonly IGroupChatHistoryService _groupChatHistoryService;
 
-        public ChatController(IGroupChatHistoryService groupChatHistoryService,IUserChatService userChatService, IUserChatHistoryService userChatHistoryService, IUserService userService, IGroupChatService groupService)
+        public ChatController(IGroupChatHistoryService groupChatHistoryService, IUserChatService userChatService, IUserChatHistoryService userChatHistoryService, IUserService userService, IGroupChatService groupService)
         {
             _groupChatHistoryService = groupChatHistoryService;
             _userChatService = userChatService;
@@ -59,7 +59,7 @@ namespace ChatServer.Controllers
             chatHistory.UserId = user.FirstId;
             chatHistory.Date = DateTime.Now;
             await _userChatHistoryService.Create(chatHistory);
-            
+
             chatHistory = new UserChatHistory();
             chatHistory.ChatId = chat.Id;
             chatHistory.UserId = user.SecondId;
@@ -95,9 +95,9 @@ namespace ChatServer.Controllers
         }
 
         [HttpGet]
-        public async Task UpdateReadChat(int userId,int chatId)
+        public async Task UpdateReadChat(int userId, int chatId)
         {
-            await _userChatHistoryService.UpdateLastRead(userId,chatId);
+            await _userChatHistoryService.UpdateLastRead(userId, chatId);
         }
 
         [HttpGet]
@@ -153,6 +153,38 @@ namespace ChatServer.Controllers
             }
 
             return userDtos;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<UserDto>> GetUserInfo(int userId)
+        {
+            var user = await _userService.GetUser(userId, false);
+            if (user == null) return NotFound();
+
+            string fullName = user.UserName;
+            string profileUrl = user.Avatar;
+
+            var lecturer = await _userService.GetLecturer(userId);
+            if (lecturer != null)
+            {
+                fullName = lecturer.FullName;
+            }
+            else
+            {
+                var student = await _userService.GetStudent(userId);
+                if (student != null)
+                {
+                    fullName = student.FullName;
+                }
+            }
+
+            return Ok(new UserDto
+            {
+                UserId = userId,
+                FullName = fullName,
+                Profile = profileUrl,
+                isOnline = user.IsOnline ?? false
+            });
         }
     }
 }

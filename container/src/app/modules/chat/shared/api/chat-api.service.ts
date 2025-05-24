@@ -93,4 +93,8 @@ export class ChatApiService {
       `${this.baseUrl}/GetStudentsByGroupId?groupId=${groupId}`
     )
   }
+
+  getUserInfoById(userId: number): Observable<User> {
+    return this.http.get<User>(`${this.baseUrl}/GetUserInfo?userId=${userId}`)
+  }
 }

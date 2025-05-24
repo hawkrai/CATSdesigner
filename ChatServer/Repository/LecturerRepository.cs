@@ -16,19 +16,23 @@ namespace Repository
         {
         }
 
-        public async Task<Lecturer> GetLecturerAsync(int lecturerId, bool trackChanges) => await FindByCondition(c => c.Id.Equals(lecturerId), trackChanges).FirstOrDefaultAsync();
+        public async Task<Lecturer> GetLecturerAsync(int lecturerId, bool trackChanges) => 
+            await FindByCondition(c => c.Id.Equals(lecturerId), trackChanges).FirstOrDefaultAsync();
 
         public async Task<IEnumerable<UserDto>> GetLecturersAsync(bool trackChanges, int limit, int offset, string filter) => 
-            await FindByCondition(c => (c.MiddleName + c.FirstName + c.LastName)
-            .Contains(filter) || filter == "*", trackChanges)
+            await FindByCondition(l =>
+                l.IsActive &&
+                ((l.MiddleName + l.FirstName + l.LastName).Contains(filter) || filter == "*"),
+                trackChanges)
             .Join(RepositoryContext.Users,
-                x => x.Id,
-                y => y.UserId,
-                (x, y) => new UserDto()
+                l => l.Id,
+                u => u.UserId,
+                (l, u) => new UserDto()
                 {
-                    isOnline = y.IsOnline ?? false,
-                    UserId = x.Id,
-                    FullName = x.LastName + " " + x.FirstName + " " + x.MiddleName
+                    isOnline = u.IsOnline ?? false,
+                    UserId = l.Id,
+                    FullName = l.LastName + " " + l.FirstName + " " + l.MiddleName,
+                    Profile = u.Avatar
                 })
             .OrderBy(_ => _.FullName)
             .Skip(offset)
