@@ -155,11 +155,12 @@ namespace LMPlatform.UI.Services.Concept
             }
         }
 
-        public ConceptResult EditRootConcept(int elementId, string name, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshops, bool isPublished)
+        public ConceptResult EditRootConcept(int elementId, string name, bool? includeLabs, bool? includeLectures, bool? includeTests, bool? includeWorkshops, bool isPublished)
         {
             try
             {
-                ConceptManagementService.UpdateRootConcept(elementId, name, isPublished, includeLabs, includeLectures, includeTests, includeWorkshops);
+
+                ConceptManagementService.UpdateRootConcept(elementId, name, isPublished, includeLabs ?? false, includeLectures ?? false, includeTests ?? false, includeWorkshops ?? false);
 
                 return new ConceptResult
                 {
