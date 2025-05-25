@@ -569,7 +569,7 @@ namespace Application.Infrastructure.SubjectManagement
 
 			if (labs.IsNew && labs.Subject.SubjectModules.All(m => m.Module.ModuleType != ModuleType.Practical) &&
 			    labs.Subject.SubjectModules.Any(m => m.Module.ModuleType == ModuleType.Labs))
-				ConceptManagementService.AttachFolderToLabsSection(labs.Theme, userId, labs.SubjectId);
+				ConceptManagementService.AttachFolderToPracticalSection(labs.Theme, userId, labs.SubjectId);
 
 			return labs;
 		}

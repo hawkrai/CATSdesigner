@@ -23,7 +23,6 @@ namespace Application.Infrastructure.ConceptManagement
         Concept AttachSiblings(int sourceId, int rightId, int leftId);
         void AttachFolderToLectSection(string folderName, int userId, int subjectId);
         void AttachFolderToPracticalSection(string folderName, int userId, int subjectId);
-        void AttachFolderToLabsSection(string folderName, int userId, int subjectId);
         bool IsTestModule(string moduleName);
     }
 }
