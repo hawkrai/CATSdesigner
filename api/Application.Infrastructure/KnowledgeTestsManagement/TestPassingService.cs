@@ -293,10 +293,15 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-				students = repositoriesContainer.StudentsRepository.GetAll(new Core.Data.Query<Student>(student => student.GroupId == groupId && (student.Confirmed == null || student.Confirmed.Value))
+                students = repositoriesContainer.StudentsRepository.GetAll(
+                    new Core.Data.Query<Student>(student =>
+                        student.GroupId == groupId &&
+                        (student.Confirmed == null || student.Confirmed.Value)
+                    )
                     .Include(student => student.User)
-                    .Include(student => student.User.TestPassResults))
-                    .ToList();
+                    .Include(student => student.User.TestPassResults)
+                ).ToList()
+                .Where(student => !student.IsDeleted);
 
                 subjectTestIds =
                     repositoriesContainer.SubjectRepository.GetBy(

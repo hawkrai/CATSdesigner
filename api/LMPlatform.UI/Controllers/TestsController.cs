@@ -402,7 +402,8 @@ namespace LMPlatform.UI.Controllers
             {
                 subGroup.Name,
                 Students = subGroup.SubjectStudents.Where(e =>
-                    e.Student.GroupId == groupId && (e.Student.Confirmed == null || e.Student.Confirmed.Value)).Select(
+                    e.Student.GroupId == groupId && !e.Student.IsDeleted
+                    ).Select(
                     student => new
                     {
                         Id = student.StudentId,
@@ -534,6 +535,7 @@ namespace LMPlatform.UI.Controllers
 
         public IConceptManagementService ConceptManagementService =>
             this.ApplicationService<ConceptManagementService>();
+
 
         #endregion
     }

@@ -64,5 +64,17 @@ namespace LMPlatform.Models
         public bool? IsActive { get; set; }
 
         public DateTime? DeletedOn { get; set; }
+
+        public bool IsDeleted
+        {
+            get
+            {
+                var isNotDeleted = this.IsActive != false
+                        && ((this.Confirmed == null && this.DeletedOn == null)
+                        || (this.Confirmed != null && this.Confirmed.Value));
+
+                return !isNotDeleted;
+            }
+        }
     }
 }
