@@ -17,6 +17,7 @@ using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.ComplexMaterialsViewModel;
 using Newtonsoft.Json;
 using LMPlatform.UI.Services.Modules.CoreModels;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace LMPlatform.UI.Services.Concept
 {
@@ -33,7 +34,7 @@ namespace LMPlatform.UI.Services.Concept
         private readonly LazyDependency<IWatchingTimeService> _watchingTimeService = new LazyDependency<IWatchingTimeService>();
         private readonly LazyDependency<IUsersManagementService> _usersManagementService = new LazyDependency<IUsersManagementService>();
         private readonly LazyDependency<IFilesManagementService> _filesManagementService = new LazyDependency<IFilesManagementService>();
-
+        private readonly LazyDependency<IModulesManagementService> _modulesManagementService = new LazyDependency<IModulesManagementService>();
 
         public IConceptManagementService ConceptManagementService => _conceptManagementService.Value;
         public IStudentManagementService StudentManagementService => _studentManagementService.Value;
@@ -41,6 +42,8 @@ namespace LMPlatform.UI.Services.Concept
         public IUsersManagementService UsersManagementService => _usersManagementService.Value;
         public IFilesManagementService FilesManagementService => _filesManagementService.Value;
         public ISubjectManagementService SubjectManagementService => _subjectManagementService.Value;
+
+        public IModulesManagementService ModulesManagementService => _modulesManagementService.Value;
 
         #region Used by complex module
         
@@ -155,11 +158,12 @@ namespace LMPlatform.UI.Services.Concept
             }
         }
 
-        public ConceptResult EditRootConcept(int elementId, string name, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshops, bool isPublished)
+        public ConceptResult EditRootConcept(int elementId, string name, bool? includeLabs, bool? includeLectures, bool? includeTests, bool? includeWorkshops, bool isPublished)
         {
             try
             {
-                ConceptManagementService.UpdateRootConcept(elementId, name, isPublished, includeLabs, includeLectures, includeTests, includeWorkshops);
+
+                ConceptManagementService.UpdateRootConcept(elementId, name, isPublished, includeLabs ?? false, includeLectures ?? false, includeTests ?? false, includeWorkshops ?? false);
 
                 return new ConceptResult
                 {
@@ -533,5 +537,20 @@ namespace LMPlatform.UI.Services.Concept
 	        return UsersManagementService.CurrentUser.Membership.Roles.Any(r => r.RoleName.Equals("lector"));
         }
 		#endregion 
+
+        public ConceptAvailableModules GetAvailableModules(int subjectId) 
+        {
+            var modules = ModulesManagementService.GetModules(subjectId).Select(module => module.ModuleType).ToList();
+
+            var availableModules = new ConceptAvailableModules()
+            {
+                Lectures = modules.Contains(ModuleType.Lectures),
+                Workshops = modules.Contains(ModuleType.Practical),
+                Labs = modules.Contains(ModuleType.Labs),
+                Tests = modules.Contains(ModuleType.SmartTest)
+            };
+
+            return availableModules;
+        }
 	}
 }

@@ -280,7 +280,7 @@ namespace Application.Infrastructure.ConceptManagement
                 repositoriesContainer.ConceptRepository.Save(concept);
 
                 IEnumerable<Concept> tempConcepts = GetElementsByParentId(concept.Id).Where(c => c.ReadOnly == true);
-                Boolean labSectionPublished = includeLabs || includeWorkshops;
+                Boolean practialSectionPublished = includeLabs || includeWorkshops;
                 foreach (Concept conceptChild in tempConcepts)
                 {
                     switch (conceptChild.Name)
@@ -294,9 +294,9 @@ namespace Application.Infrastructure.ConceptManagement
                             break;
 
                         case PracticalSectionName:
-                            if (conceptChild.Published != labSectionPublished)
+                            if (conceptChild.Published != practialSectionPublished)
                             {
-                                conceptChild.Published = labSectionPublished;
+                                conceptChild.Published = practialSectionPublished;
                                 repositoriesContainer.ConceptRepository.Save(conceptChild);
                             }
                             foreach (var item in conceptChild?.Children)

@@ -16,7 +16,7 @@ namespace LMPlatform.UI.Services.Concept
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/EditRootConcept")]
-        ConceptResult EditRootConcept(int elementId, string name, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshops, bool isPublished);
+        ConceptResult EditRootConcept(int elementId, string name, bool? includeLabs, bool? includeLectures, bool? includeTests, bool? includeWorkshops, bool isPublished);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/AttachSiblings")]
@@ -88,5 +88,10 @@ namespace LMPlatform.UI.Services.Concept
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveMonitoringResult")]
         void SaveMonitoringResult(int userId, int conceptId, int timeInSeconds);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetAvailableModules?subjectId={subjectId}")]
+        ConceptAvailableModules GetAvailableModules(int subjectId);
+
     }
 }
