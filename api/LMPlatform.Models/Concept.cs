@@ -1,6 +1,7 @@
 ﻿using Application.Core.Data;
 using LMPlatform.Models.KnowledgeTesting;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LMPlatform.Models
 {
@@ -68,6 +69,9 @@ namespace LMPlatform.Models
         public virtual int? LabId { get; set; }
 
         public ICollection<Question> Questions { get; set; }
+
+        [NotMapped]
+        public Test Test { get; set; } = null;
 
         public List<Concept> GetAllChildren()
         {
