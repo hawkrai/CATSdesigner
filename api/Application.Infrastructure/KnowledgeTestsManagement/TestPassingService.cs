@@ -56,22 +56,25 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             var test = GetTest(testId);
             TestPassResult testPassResult = GetTestPassResult(testId, userId);
 
+            TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Russian Standard Time");
+            DateTime dateTimeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneInfo);
+
             double seconds = 0;
 
             if (test.SetTimeForAllTest)
             {
-                seconds = (test.TimeForCompleting * 60) - (DateTime.UtcNow - testPassResult.StartTime).TotalSeconds;
+                seconds = (test.TimeForCompleting * 60) - (dateTimeNow - testPassResult.StartTime).TotalSeconds;
             }
             else
             {
                 if (testPassResult.Comment == questionId.ToString())
                 {
-                    seconds = test.TimeForCompleting - ((DateTime.UtcNow.Ticks - testPassResult.StartTime.Ticks) / TimeSpan.TicksPerSecond);
+                    seconds = test.TimeForCompleting - ((dateTimeNow.Ticks - testPassResult.StartTime.Ticks) / TimeSpan.TicksPerSecond);
                 }
                 else
                 {
                     seconds = test.TimeForCompleting;
-                    testPassResult.StartTime = DateTime.UtcNow;
+                    testPassResult.StartTime = dateTimeNow;
                     testPassResult.Comment = questionId.ToString();
                 }
 
