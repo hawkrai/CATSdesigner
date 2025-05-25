@@ -84,7 +84,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
         {
 	        if (ch != null && ch.Any())
 	        {
-                Children = ch.Select(c => new ConceptViewData(c, true, false, false)).ToList();
+                Children = ch.Where(c => c.Published).Select(c => new ConceptViewData(c, true, false, false)).ToList();
 	        }
         }
 
@@ -92,7 +92,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
         {
             if (ch != null && ch.Any())
             {
-                Children = ch.Select(c => new ConceptViewData(c, true, filesManagementService, false, false)).ToList();
+                Children = ch.Where(c => c.Published).Select(c => new ConceptViewData(c, true, filesManagementService, false, false)).ToList();
             }
         }
 
