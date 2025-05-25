@@ -1,10 +1,9 @@
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, TemplateRef } from '@angular/core';
 import { Store } from '@ngrx/store';
-
-import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import { IAppState } from 'src/app/store/state/app.state';
 import * as filesActions from '../../../../../store/actions/files.actions';
 import { Attachment } from 'src/app/models/file/attachment.model';
+import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import { PracticalPositionsService } from 'src/app/services/PracticalPositionsService';
 
 @Component({
@@ -12,7 +11,7 @@ import { PracticalPositionsService } from 'src/app/services/PracticalPositionsSe
   templateUrl: './job-protection-content.component.html',
   styleUrls: ['./job-protection-content.component.less'],
 })
-export class JobProtectionContentComponent implements OnInit {
+export class JobProtectionContentComponent implements OnChanges {
   @Input() practicalFiles: UserLabFile[] = [];
   @Input() actionsTemplate: TemplateRef<any>;
 
@@ -24,11 +23,13 @@ export class JobProtectionContentComponent implements OnInit {
     private practicalPositionsService: PracticalPositionsService
   ) {}
 
-  ngOnInit(): void {
-    if (this.practicalFiles && this.practicalFiles.length) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['practicalFiles']) {
       this.practicalPositionsService.clear();
-      this.filterReceivedPracticals();
-      this.storePracticalPositions();
+      if (this.practicalFiles && this.practicalFiles.length) {
+        this.filterReceivedPracticals();
+        this.storePracticalPositions();
+      }
     }
   }
 
