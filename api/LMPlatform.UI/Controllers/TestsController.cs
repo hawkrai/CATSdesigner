@@ -404,8 +404,8 @@ namespace LMPlatform.UI.Controllers
                 Students = subGroup.SubjectStudents.Where(e =>
                     e.Student.GroupId == groupId
                     && (e.Student.IsActive != false)
-                    && ((e.Student.Confirmed != null && e.Student.DeletedOn == null)
-                    || e.Student.Confirmed.Value)).Select(
+                    && ((e.Student.Confirmed == null && e.Student.DeletedOn == null)
+                    || e.Student.Confirmed != null && e.Student.Confirmed.Value)).Select(
                     student => new
                     {
                         Id = student.StudentId,
