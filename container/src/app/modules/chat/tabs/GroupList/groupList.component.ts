@@ -5,6 +5,7 @@ import { DataService } from '@chat/shared/services/dataService'
 import { ChatApiService } from '@chat/shared/api/chat-api.service'
 import { Chat } from '@chat/shared/models/entities/chats.model'
 import { User } from '@chat/shared/models/dto/user'
+import { IStudentListData } from '@chat/shared/models/interfaces/studentListData.interface'
 
 @Component({
   selector: 'app-group-list',
@@ -20,7 +21,7 @@ export class GroupListComponent {
     private chatApiService: ChatApiService,
     private dataService: DataService,
     public dialogRef: MatDialogRef<GroupListComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: number
+    @Inject(MAT_DIALOG_DATA) public data: IStudentListData
   ) {}
 
   ngOnInit() {
@@ -31,13 +32,17 @@ export class GroupListComponent {
 
   loadStudents() {
     this.loadingStudents = true
-    this.chatApiService.getStudentsByGroupId(this.data).subscribe({
-      next: (students) => {
+    this.chatApiService.getStudentsByGroupId(this.data.groupId).subscribe({
+      next: (students: User[]) => {
         this.users = students.map((s) => this.mapStudentToChat(s))
+        this.users.sort((a, b) => {
+          return (a.name || '').localeCompare(b.name || '')
+        })
         this.loadingStudents = false
       },
       error: (err) => {
         console.error('Error loading students list:', err)
+        this.users = []
         this.loadingStudents = false
       },
     })

@@ -12,19 +12,22 @@ import { FileApiService } from '@chat/shared/api/file-api.service'
 const SendCallRequest = 'SendCallRequest'
 const DisconnectFromChat = 'DisconnectFromChat'
 const SendRejection = 'Reject'
+const UpdateMediaStatus = 'UpdateMediaStatus'
 //handlers
 const IncomeCall = 'HandleIncomeCall'
 const DisconnectUser = 'HandleDisconnection'
 const HandleRejection = 'HandleRejection'
-const ChatTimeOut = 45000
+const RemoteMediaStatusChanged = 'RemoteMediaStatusChanged'
 
 @Injectable({
   providedIn: 'root',
 })
 export class SignalRService {
   public hubConnection: HubConnection
+  public selfConnectionId: string | null = null
   public user: any
   private timer: any
+  public readonly chatTimeOut: number = 45000
 
   constructor(
     private dataService: DataService,
@@ -46,6 +49,9 @@ export class SignalRService {
     this.hubConnection
       .start()
       .then(() => {
+        this.selfConnectionId = (
+          this.hubConnection as any
+        ).connection.connectionId
         this.join(this.user.id, this.user.role)
         this.addChatListener()
       })
@@ -80,23 +86,47 @@ export class SignalRService {
       }
     )
 
-    this.hubConnection.on(IncomeCall, (chatId: any) => {
-      this.setEndChatTimer(chatId, ChatTimeOut)
+    this.hubConnection.on(IncomeCall, (chatId: number) => {
+      this.setEndChatTimer(chatId, this.chatTimeOut)
       if (!this.videoChatService.NotifyIncomeCall(chatId)) {
         this.sendRejection(chatId, 'unable to connect')
       }
     })
 
-    this.hubConnection.on(DisconnectUser, (chatId: any, userId: any) => {
+    this.hubConnection.on(DisconnectUser, (chatId: number, userId: number) => {
       this.videoChatService.DisconnectUser(chatId, userId)
     })
 
-    this.hubConnection.on(HandleRejection, (chatId: any, message: string) => {
-      if (this.videoChatService.currentChatId == chatId) {
-        this.reject(message)
-        this.videoChatService.endCall(chatId)
+    this.hubConnection.on(
+      HandleRejection,
+      (chatId: number, message: string) => {
+        if (this.videoChatService.currentChatId == chatId) {
+          this.reject(message)
+          this.videoChatService.endCall(chatId)
+        }
       }
-    })
+    )
+
+    this.hubConnection.on(
+      RemoteMediaStatusChanged,
+      (
+        chatId: number,
+        userId: number,
+        deviceType: 'microphone' | 'camera',
+        newStatus: boolean
+      ) => {
+        if (
+          this.user.id !== userId &&
+          this.videoChatService.isChatMatch(chatId)
+        ) {
+          if (deviceType === 'microphone') {
+            this.videoChatService.updateRemoteMicStatus(newStatus)
+          } else if (deviceType === 'camera') {
+            this.videoChatService.updateRemoteCameraStatus(newStatus)
+          }
+        }
+      }
+    )
   }
 
   public addChat(firstId: number, secondId: number, chatId: number) {
@@ -133,7 +163,7 @@ export class SignalRService {
   }
 
   public sendCallRequest(chatId: number) {
-    this.setEndChatTimer(chatId, ChatTimeOut)
+    this.setEndChatTimer(chatId, this.chatTimeOut)
     this.videoChatService.SetActiveCall(chatId)
     return this.hubConnection.invoke(SendCallRequest, this.user.id, chatId)
   }
@@ -176,6 +206,22 @@ export class SignalRService {
   }
 
   public callWasConfirmed = (chatId: any) => {}
+
+  public sendMediaStatusUpdate(
+    chatId: number,
+    deviceType: 'microphone' | 'camera',
+    newStatus: boolean
+  ) {
+    if (this.hubConnection?.state === 'Connected') {
+      return this.hubConnection.invoke(
+        UpdateMediaStatus,
+        chatId,
+        deviceType,
+        newStatus
+      )
+    }
+    return Promise.resolve()
+  }
 
   public SendGroupFiles(files) {
     const k = 1024

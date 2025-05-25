@@ -21,7 +21,6 @@ namespace Repository
         public async Task<User> GetUserChats(int userId, bool trackChanges) => 
             await FindByCondition(c => c.UserId.Equals(userId), trackChanges)
             .Include(x => x.UserChats)
-            .ThenInclude(x => x.Messages)
             .Include(x => x.UserChatHistory)
             .SingleOrDefaultAsync();
         
