@@ -64,17 +64,15 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
       map((labs) =>
         labs.map((lab, index) => ({
           ...lab,
-          RowColor: this.labPositionsService.labPositions.includes(index + 1) 
-            ? '#d5fcd5' 
-            : lab.IsReceived 
-              ? '#d5fcd5' 
+          RowColor: this.labPositionsService.labPositions.includes(index + 1)
+            ? '#d5fcd5'
+            : lab.IsReceived
+              ? '#d5fcd5'
               : '#ffffff',
         }))
       )
     );
-    
 
-    console.log('Список позиций лабораторных работ ADD:', this.labPositionsService.labPositions);
     this.observeAttachments(this.filesArray);
   }
 

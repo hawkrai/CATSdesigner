@@ -1,7 +1,7 @@
 import { finalize, map, switchMap, tap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { PlagiarismResultSubject } from './../../models/plagiarism-result-subject.model'
-import { Component, Inject } from '@angular/core'
+import { Component, Inject} from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { Store } from '@ngrx/store'
 import { IAppState } from 'src/app/store/state/app.state'
@@ -11,6 +11,9 @@ import * as catsActions from '../../store/actions/cats.actions'
 import { CorrectDoc } from 'src/app/models/plagiarism-result.model'
 import { UserFilesService } from 'src/app/services/user-files.service'
 import { DialogData } from 'src/app/models/dialog-data.model'
+import { TranslatePipe } from 'educats-translate'
+import { CatsService } from 'src/app/services/cats.service'
+import { ErrorCode } from 'src/app/services/ErrorCode'
 
 @Component({
   selector: 'app-delete-popover',
@@ -22,19 +25,21 @@ export class CheckPlagiarismPopoverComponent {
   percent = 50
   loading = false
   result$: Observable<PlagiarismResultSubject[]>
-
-  displayedColumns = ['author', 'group', 'subject', 'file']
+  displayedColumns = ['author', 'group', 'subject', 'themelab', 'file', 'filesize']
 
   constructor(
     private dialogRef: MatDialogRef<CheckPlagiarismPopoverComponent>,
     private store: Store<IAppState>,
     private userFilesService: UserFilesService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private translatePipe: TranslatePipe,
+    private catsService: CatsService 
   ) {}
 
   onClick(): void {
     this.dialogRef.close()
   }
+
   onSave() {
     this.loading = true
     this.result$ = this.store.select(subjectSelectors.getSubjectId).pipe(
@@ -48,8 +53,25 @@ export class CheckPlagiarismPopoverComponent {
         })
       ),
       tap((response) => {
-        this.loading = false
-        this.store.dispatch(catsActions.showMessage({ body: response }))
+        this.loading = false;
+
+        if (response.Code === ErrorCode.NoAcceptedWorks) {
+          this.catsService.showMessage({
+            Message: this.translatePipe.transform(
+              'plagiarismCheck.noAcceptedWorks',
+              'Отсутствуют принятые работы для проверки на плагиат'
+            ),
+            Code: ErrorCode.NoAcceptedWorks,
+          });
+        } else if (response.Code === ErrorCode.Success) {
+          this.catsService.showMessage({
+            Message: this.translatePipe.transform(
+              'plagiarismCheck.success',
+              'Проверка прошла успешно'
+            ),
+            Code: ErrorCode.Success,
+          });
+        }        
       }),
       finalize(() => {
         this.loading = false

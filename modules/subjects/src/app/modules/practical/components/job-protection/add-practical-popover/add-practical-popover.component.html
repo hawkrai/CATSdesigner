@@ -7,19 +7,19 @@
       <mat-form-field class="example-full-width" *ngIf="!data.body.isTeacher">
         <mat-select
           formControlName="practicalId"
-          [placeholder]="
-            'text.subjects.practicals.choose.practical'
-              | translate: 'Выберите практическое занятие'
-          "
+          [placeholder]="'text.subjects.practicals.choose.practical' | translate: 'Выберите практическое занятие'"
         >
           <mat-option
             *ngFor="let practical of practicals$ | async"
             [value]="practical.PracticalId"
+            [disabled]="practical.Disabled"
+            [ngStyle]="{ 'background-color': practical.RowColor }"
           >
             {{ practical.ShortName }}. {{ practical.Theme }}
           </mat-option>
         </mat-select>
       </mat-form-field>
+
       <mat-form-field class="example-full-width">
         <mat-label>{{ 'comment' | translate: 'Комментарий' }}</mat-label>
         <textarea
@@ -27,9 +27,9 @@
           matInput
           formControlName="comments"
           (paste)="onPaste($event.clipboardData)"
-        >
-        </textarea>
+        ></textarea>
       </mat-form-field>
+
       <app-file-uploader
         [disabled]="filesArray.length > 0"
         [header]="
@@ -46,6 +46,7 @@
       ></app-file-uploader>
     </form>
   </ng-container>
+
   <ng-container actions>
     <button mat-raised-button (click)="onClose(false)">
       {{ 'button.cancel' | translate: 'Отмена' }}

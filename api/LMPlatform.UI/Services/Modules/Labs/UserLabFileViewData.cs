@@ -38,6 +38,9 @@ namespace LMPlatform.UI.Services.Modules.Labs
         public string LabTheme { get; set; }
 
         [DataMember]
+        public string fileSize { get; set; }
+
+        [DataMember]
         public int? Order { get; set; }
 
         [DataMember]
@@ -48,5 +51,8 @@ namespace LMPlatform.UI.Services.Modules.Labs
 
         [DataMember]
         public string PracticalTheme { get; set; }
+
+        [DataMember]
+        public bool ShowMessage { get; set; }
     }
 }
