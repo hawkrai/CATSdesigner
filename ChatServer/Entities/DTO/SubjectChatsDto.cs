@@ -12,5 +12,7 @@ namespace Entities.DTO
         public string Color { get; set; }
         public int Unread { get; set; }
         public List<GroupChatDto> Groups { get; set; }
+        public bool IsArchived { get; set; }
+        public bool IsCompletedForUser { get; set; }
     }
 }
