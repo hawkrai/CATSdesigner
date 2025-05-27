@@ -40,9 +40,13 @@ export class ChatApiService {
     )
   }
 
-  getAllGroups(userId: number, role: string): Observable<SubjectGroups[]> {
+  getAllGroups(
+    userId: number,
+    role: string,
+    completed: boolean
+  ): Observable<SubjectGroups[]> {
     return this.http.get<SubjectGroups[]>(
-      `${this.baseUrl}/GetAllGroups?userId=${userId}&role=${role}`
+      `${this.baseUrl}/GetAllGroups?userId=${userId}&role=${role}&completed=${completed}`
     )
   }
 
