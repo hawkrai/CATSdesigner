@@ -1,31 +1,60 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Spire.Doc;
-using Spire.Doc.Documents;
+ using System.Configuration;
 using System.IO;
-using System.Configuration;
-
+using Microsoft.Office.Interop.Word;
 
 namespace Application.Core.PdfConvertor
 {
     public class WordToPdfConvertor
     {
         private readonly string _storageRootTemp = ConfigurationManager.AppSettings["FileUploadPathTemp"];
+        private Microsoft.Office.Interop.Word.Application wordApplication;
 
-        public String Convert(String sourceFile)
+        public WordToPdfConvertor()
         {
-            Document document = new Document();
-            document.LoadFromFile(sourceFile);
+            wordApplication = new Microsoft.Office.Interop.Word.Application
+            {
+                Visible = false,
+            };
+        }
 
-            var fileName = String.Format("{0}.pdf",Path.GetFileNameWithoutExtension(sourceFile));
-            var fullPath = String.Format("{0}{1}", _storageRootTemp, fileName);
+        public string Convert(string sourceFile)
+        {
+            Document doc = null;
+            try
+            {
+                doc = wordApplication.Documents.Open(sourceFile);
 
-            document.SaveToFile(fullPath, FileFormat.PDF);
+                var fileName = $"{Path.GetFileNameWithoutExtension(sourceFile)}.pdf";
+                var fullPath = Path.Combine(_storageRootTemp, fileName);
 
-            return fileName;
+                doc.ExportAsFixedFormat(
+                    fullPath,
+                    WdExportFormat.wdExportFormatPDF,
+                    OptimizeFor: WdExportOptimizeFor.wdExportOptimizeForPrint,
+                    Range: WdExportRange.wdExportAllDocument
+                );
+
+                return fileName;
+            }
+            finally
+            {
+                if (doc != null)
+                {
+                    doc.Close(false);
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(doc);
+                }
+            }
+        }
+        public void Dispose()
+        {
+            if (wordApplication != null)
+            {
+                wordApplication.Quit(false);
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(wordApplication);
+                wordApplication = null;
+            }
+            GC.SuppressFinalize(this);
         }
     }
 }

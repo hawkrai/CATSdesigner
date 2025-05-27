@@ -26,7 +26,7 @@ namespace Application.Infrastructure.ConceptManagement
         private const string TestSectionName = "Блок контроля знаний";
 
 
-
+        private readonly WordToPdfConvertor wordToPdfConvertor = new WordToPdfConvertor();
         private readonly string _storageRoot = ConfigurationManager.AppSettings["FileUploadPath"];
         private readonly string _storageRootTemp = ConfigurationManager.AppSettings["FileUploadPathTemp"];
 
@@ -394,7 +394,6 @@ namespace Application.Infrastructure.ConceptManagement
         private IList<Attachment> ProcessWordAttachmentsIfExist(IList<Attachment> attachments)
         {
             var res = new List<Attachment>();
-            var convertor = new WordToPdfConvertor();
 
             foreach (var attach in attachments)
             {
@@ -408,7 +407,7 @@ namespace Application.Infrastructure.ConceptManagement
                         AttachmentType = AttachmentType.Document,
                         Id = 0,
                         Name = string.Format("{0}.pdf", friendlyFileName),
-                        FileName = convertor.Convert(sourceFilePath)
+                        FileName = wordToPdfConvertor.Convert(sourceFilePath)
                     });
                 }
                 else
@@ -796,8 +795,6 @@ namespace Application.Infrastructure.ConceptManagement
 
             if (readableNonPdfFiles.Any())
             {
-                var convertor = new WordToPdfConvertor();
-
                 var itemsToAdd = new List<Attachment>();
 
                 foreach (var file in readableNonPdfFiles)
@@ -811,7 +808,7 @@ namespace Application.Infrastructure.ConceptManagement
                             AttachmentType = AttachmentType.Document,
                             Name = string.Format("{0}.pdf", friendlyFileName),
                             PathName = GetGuidFileName(),
-                            FileName = convertor.Convert(sourceFilePath),
+                            FileName = wordToPdfConvertor.Convert(sourceFilePath),
                             UserId = UserContext.CurrentUserId,
                             CreationDate = DateTime.UtcNow
                         });
