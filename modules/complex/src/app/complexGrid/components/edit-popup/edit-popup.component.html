@@ -1,10 +1,10 @@
 <div class="title">
-<h1 mat-dialog-title>{{ data.title }}</h1>
-<div class="cancel-button">
-  <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>clear</mat-icon>
-  </button>
-</div>
+  <h1 mat-dialog-title>{{ data.title }}</h1>
+  <div class="cancel-button">
+    <button mat-icon-button (click)="onNoClick()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
 </div>
 <div mat-dialog-content class="complex-grid-component__popover" #popoverContent>
   <form class="example-form" #formElement>
@@ -43,7 +43,10 @@
         }}</mat-checkbox
       >
       <mat-checkbox
-        [disabled]="data?.includeLectures === null"
+        [disabled]="
+          data?.includeLectures === null ||
+          data?.availableModules?.Lectures === false
+        "
         name="includeLectures"
         matInput
         [(ngModel)]="data.includeLectures"
@@ -54,7 +57,10 @@
         }}</mat-checkbox
       >
       <mat-checkbox
-        [disabled]="data?.includeWorkshops === null"
+        [disabled]="
+          data?.includeWorkshops === null ||
+          data?.availableModules?.Workshops === false
+        "
         name="includeWorkshops"
         matInput
         [(ngModel)]="data.includeWorkshops"
@@ -65,7 +71,9 @@
         }}</mat-checkbox
       >
       <mat-checkbox
-        [disabled]="data?.includeLabs === null"
+        [disabled]="
+          data?.includeLabs === null || data?.availableModules?.Labs === false
+        "
         name="includeLabs"
         matInput
         [(ngModel)]="data.includeLabs"
@@ -76,7 +84,9 @@
         }}</mat-checkbox
       >
       <mat-checkbox
-        [disabled]="data?.includeTests === null"
+        [disabled]="
+          data?.includeTests === null || data?.availableModules?.Tests === false
+        "
         name="includeTests"
         matInput
         [(ngModel)]="data.includeTests"
@@ -102,4 +112,3 @@
     {{ 'common.save' | translate: 'Сохранить' }}
   </button>
 </div>
-

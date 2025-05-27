@@ -157,4 +157,11 @@ export class ComplexService {
       timeInSeconds: time,
     })
   }
+
+  public getAvailableModules() {
+    const currentSubject = localStorage.getItem('currentSubject')
+    const subject = JSON.parse(currentSubject)
+
+    return this.http.get<any>(this.path + 'GetAvailableModules?subjectId=' + subject.id)
+  }
 }
