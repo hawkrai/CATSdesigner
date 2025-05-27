@@ -24,76 +24,182 @@ namespace Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<SubjectChatsDto>> GetGroups(int userId, bool isLector)
+        public async Task<IEnumerable<SubjectChatsDto>> GetGroups(int userId, bool isLector, bool completedFilter)
         {
-            List<SubjectChatsDto> subjectChats = new List<SubjectChatsDto>();
-            List<GroupChat> groupChats = new List<GroupChat>();
+            var subjectChatsResult = new List<SubjectChatsDto>();
+            var allUserAccessibleSubjects = new List<Subject>();
 
             if (isLector)
             {
-                var subjects = (await _repository.SubjectLecturer.GetSubjects(userId)).GroupBy(s => s.SubjectId).Select(g => g.First());
-                foreach (var subject in subjects)
-                {
-                    await CreateChatsIfNotExist(subject.Subject);
-                    groupChats.AddRange(await _repository.GroupChats.GetForLecturer(subject.SubjectId));
-                }
+                var lecturerSubjects = await _repository.SubjectLecturer.GetSubjects(userId);
+                allUserAccessibleSubjects.AddRange(lecturerSubjects.Select(sl => sl.Subject).Where(s => s != null).DistinctBy(s => s.Id));
             }
             else
             {
                 var student = await _repository.Students.GetStudentAsync(userId, false);
-                var subjects = (await _repository.SubjectGroup.GetSubjects(student.GroupId)).GroupBy(s => s.SubjectId).Select(g => g.First());
-                foreach (var subject in subjects)
-                {
-                    await CreateChatsIfNotExist(subject.Subject);
-                    groupChats.AddRange(await _repository.GroupChats.GetForStudents(student.GroupId, subject.SubjectId));
-                }
+                if (student == null) return subjectChatsResult;
+
+                var studentSubjectGroups = await _repository.SubjectGroup.GetSubjects(student.GroupId);
+                allUserAccessibleSubjects.AddRange(studentSubjectGroups.Select(sg => sg.Subject).Where(s => s != null).DistinctBy(s => s.Id));
             }
-            foreach (var groupChat in groupChats)
+
+            var allSubjectGroupInfos = new List<SubjectGroup>();
+            var subjectIdsForLookup = allUserAccessibleSubjects.Select(s => s.Id).ToList();
+            if (subjectIdsForLookup.Any())
             {
-                if (groupChat.IsSubjectGroup)
+                allSubjectGroupInfos = (await _repository.SubjectGroup.GetGroupsBySubjectIds(subjectIdsForLookup)).ToList();
+            }
+
+
+            var allGroupChatsDb = new List<GroupChat>();
+            if (subjectIdsForLookup.Any())
+            {
+                var groupChatsTasks = subjectIdsForLookup.Select(async subjId =>
                 {
-                    var lastReadSubject = await _repository.GroupChatHistoryRepository.GetGroupChatHistoryAsync(userId, groupChat.Id, false);
+                    var student = !isLector ? await _repository.Students.GetStudentAsync(userId, false) : null;
+                    return isLector
+                        ? await _repository.GroupChats.GetForLecturer(subjId)
+                        : await _repository.GroupChats.GetForStudents(student?.GroupId ?? 0, subjId);
+                });
+                var groupChatsCollections = await Task.WhenAll(groupChatsTasks);
+                allGroupChatsDb = groupChatsCollections.SelectMany(gc => gc).ToList();
+            }
 
-                    var subjectDto = new SubjectChatsDto() { Id = groupChat.Id, Name = groupChat.GroupName, ShortName = groupChat.ShortName, Color = groupChat.Subject.Color };
 
-                    GroupChat[] groupsModel = groupChats.FindAll(x => !x.IsSubjectGroup && x.SubjectId == groupChat.SubjectId).ToArray();
-                    List<GroupChatDto> groupChatsDto = new List<GroupChatDto>();
+            foreach (var subject in allUserAccessibleSubjects.OrderBy(s => s.ShortName))
+            {
+                var subjectRelatedChats = allGroupChatsDb
+                    .Where(gc => gc.SubjectId == subject.Id)
+                    .ToList();
 
-                    if (lastReadSubject != null)
-                        subjectDto.Unread = groupChat.GroupMessages.Count(x => x.Time > lastReadSubject.Date);
-                    else
-                        subjectDto.Unread = groupChat.GroupMessages.Count;
+                var subjectChatEntity = subjectRelatedChats.FirstOrDefault(gc => gc.IsSubjectGroup);
+                if (subjectChatEntity == null)
+                {
+                    await CreateChatsIfNotExist(subject, isLector ? null : (await _repository.Students.GetStudentAsync(userId, false))?.GroupId);
+                    var studentForRetry = !isLector ? await _repository.Students.GetStudentAsync(userId, false) : null;
+                    subjectRelatedChats = (isLector
+                        ? await _repository.GroupChats.GetForLecturer(subject.Id)
+                        : await _repository.GroupChats.GetForStudents(studentForRetry?.GroupId ?? 0, subject.Id))
+                        .ToList();
+                    subjectChatEntity = subjectRelatedChats.FirstOrDefault(gc => gc.IsSubjectGroup);
+                    if (subjectChatEntity == null) continue;
+                }
 
-                    for (int i = 0; i < groupsModel.Length; i++)
+                var currentSubjectGroupInfos = allSubjectGroupInfos.Where(sgi => sgi.SubjectId == subject.Id).ToList();
+
+                var subjectDto = new SubjectChatsDto
+                {
+                    Id = subjectChatEntity.Id,
+                    Name = subject.Name,
+                    ShortName = subject.ShortName,
+                    Color = subject.Color,
+                    IsArchived = subject.IsArchive,
+                    Groups = new List<GroupChatDto>()
+                };
+
+                if (isLector)
+                {
+                    bool hasAnyDetachedGroupForSubject = currentSubjectGroupInfos
+                        .Exists(sgi => !(sgi.IsActiveOnCurrentGroup ?? false));
+
+                    subjectDto.IsCompletedForUser = subject.IsArchive || (completedFilter && !subject.IsArchive && hasAnyDetachedGroupForSubject);
+                }
+                else
+                {
+                    var student = await _repository.Students.GetStudentAsync(userId, false);
+                    var studentSubjGroupInfo = currentSubjectGroupInfos.FirstOrDefault(sgi => sgi.GroupId == student.GroupId);
+                    subjectDto.IsCompletedForUser = subject.IsArchive || !(studentSubjGroupInfo?.IsActiveOnCurrentGroup ?? false);
+                }
+
+                bool shouldDisplaySubject;
+                if (completedFilter)
+                {
+                    if (isLector)
                     {
-                        var groupChatDto = _mapper.Map<GroupChatDto>(groupsModel[i]);
+                        bool hasAnyDetachedGroupToShow = currentSubjectGroupInfos.Exists(sgi => !(sgi.IsActiveOnCurrentGroup ?? false));
+                        shouldDisplaySubject = subjectDto.IsArchived || (!subjectDto.IsArchived && hasAnyDetachedGroupToShow);
+                    }
+                    else
+                    {
+                        shouldDisplaySubject = subjectDto.IsCompletedForUser;
+                    }
+                }
+                else
+                {
+                    if (isLector)
+                    {
+                        shouldDisplaySubject = !subjectDto.IsArchived;
+                    }
+                    else
+                    {
+                        shouldDisplaySubject = !subjectDto.IsCompletedForUser;
+                    }
+                }
 
-                        lastReadSubject = await _repository.GroupChatHistoryRepository.GetGroupChatHistoryAsync(userId, groupsModel[i].Id, false);
+                if (!shouldDisplaySubject) continue;
 
-                        if (lastReadSubject != null)
-                            groupChatDto.Unread = groupsModel[i].GroupMessages.Count(x => x.Time > lastReadSubject.Date);
-                        else
-                            groupChatDto.Unread = groupsModel[i].GroupMessages.Count;
+                var studentGroupChatEntities = subjectRelatedChats.Where(gc => gc.IsStudentGroup).ToList();
+                foreach (var groupChatEntity in studentGroupChatEntities.OrderBy(gc => gc.GroupName))
+                {
+                    var sgInfoForCurrentGroupChat = currentSubjectGroupInfos.FirstOrDefault(sgi => sgi.GroupId == groupChatEntity.GroupId);
+                    bool isActiveOnCurrentGroupForChat = sgInfoForCurrentGroupChat?.IsActiveOnCurrentGroup ?? false;
 
-                        groupChatsDto.Add(groupChatDto);
+                    var groupChatDto = new GroupChatDto
+                    {
+                        Id = groupChatEntity.Id,
+                        Name = groupChatEntity.GroupName,
+                        GroupId = groupChatEntity.GroupId ?? 0,
+                        IsActiveOnCurrentGroup = isActiveOnCurrentGroupForChat
+                    };
+
+                    if (isLector)
+                    {
+                        groupChatDto.IsCompletedForUser = subject.IsArchive || !isActiveOnCurrentGroupForChat;
+                    }
+                    else
+                    {
+                        groupChatDto.IsCompletedForUser = subjectDto.IsCompletedForUser;
+                        var student = await _repository.Students.GetStudentAsync(userId, false);
+                        if (groupChatEntity.GroupId != student.GroupId) continue;
                     }
 
-                    subjectDto.Groups = groupChatsDto;
-                    subjectChats.Add(subjectDto);
+                    if (isLector && completedFilter && !subject.IsArchive && isActiveOnCurrentGroupForChat)
+                    {
+                        continue;
+                    }
+                    if (isLector && !completedFilter && !isActiveOnCurrentGroupForChat)
+                    {
+                        continue;
+                    }
+
+                    var lastReadGroup = await _repository.GroupChatHistoryRepository.GetGroupChatHistoryAsync(userId, groupChatEntity.Id, false);
+                    var groupMessages = await _repository.GroupMessages.GetGroupMessagesAsync(groupChatEntity.Id, false, int.MaxValue, 0);
+                    groupChatDto.Unread = groupMessages.Count(gm => lastReadGroup == null || gm.Time > lastReadGroup.Date);
+
+                    subjectDto.Groups.Add(groupChatDto);
                 }
+
+                if (isLector && completedFilter && !subjectDto.IsArchived && !subjectDto.Groups.Any())
+                {
+                    continue;
+                }
+
+                var lastReadSubjectChat = await _repository.GroupChatHistoryRepository.GetGroupChatHistoryAsync(userId, subjectChatEntity.Id, false);
+                var subjectChatMessages = await _repository.GroupMessages.GetGroupMessagesAsync(subjectChatEntity.Id, false, int.MaxValue, 0);
+                subjectDto.Unread = subjectChatMessages.Count(gm => lastReadSubjectChat == null || gm.Time > lastReadSubjectChat.Date);
+
+                subjectChatsResult.Add(subjectDto);
             }
-            return subjectChats;
+
+            return subjectChatsResult;
         }
 
-        private async Task CreateChatsIfNotExist(Subject subject)
+        private async Task CreateChatsIfNotExist(Subject subject, int? studentGroupId)
         {
-            if (subject == null)
-                return;
+            if (subject == null) return;
 
-            bool subjectChatExists = await _repository.GroupChats.SubjectChatExists(subject.Id);
-            if (!subjectChatExists)
+            if (!await _repository.GroupChats.SubjectChatExists(subject.Id))
             {
-                // Create shared chat
                 await _repository.GroupChats.CreateChat(new GroupChat()
                 {
                     SubjectId = subject.Id,
@@ -104,20 +210,23 @@ namespace Services
                 });
             }
 
-            var subjectGroups = await _repository.SubjectGroup.GetGroups(subject.Id);
+            var subjectGroupsInfo = await _repository.SubjectGroup.GetGroups(subject.Id);
 
-            foreach (var sg in subjectGroups)
+            foreach (var sgInfo in subjectGroupsInfo)
             {
-                bool groupChatExists = await _repository.GroupChats.GroupChatExists(subject.Id, sg.GroupId);
-                if (!groupChatExists)
+                if (studentGroupId.HasValue && sgInfo.GroupId != studentGroupId.Value)
                 {
-                    // Create group chat
-                    string groupName = $"{sg.Group.Name}";
-                    string shortName = $"{subject.ShortName} ({sg.Group.Name})";
+                    continue;
+                }
+
+                if (!await _repository.GroupChats.GroupChatExists(subject.Id, sgInfo.GroupId))
+                {
+                    string groupName = $"{sgInfo.Group.Name}";
+                    string shortName = $"{subject.ShortName} ({sgInfo.Group.Name})";
                     await _repository.GroupChats.CreateChat(new GroupChat()
                     {
                         SubjectId = subject.Id,
-                        GroupId = sg.GroupId,
+                        GroupId = sgInfo.GroupId,
                         GroupName = groupName,
                         ShortName = shortName,
                         IsStudentGroup = true,
