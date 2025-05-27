@@ -120,17 +120,10 @@ namespace ChatServer.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<SubjectChatsDto>> GetAllGroups(int userId, string role)
+        public async Task<IEnumerable<SubjectChatsDto>> GetAllGroups(int userId, string role, bool completed = false)
         {
             bool isLector = role.ToLower().Equals("lector");
-            return await _groupService.GetGroups(userId, isLector);
-        }
-
-        [HttpGet]
-        public async Task<IEnumerable<SubjectChatsDto>> GetGroupId(int userId, string role)
-        {
-            bool isLector = role.ToLower().Equals("lector");
-            return await _groupService.GetGroups(userId, isLector);
+            return await _groupService.GetGroups(userId, isLector, completed);
         }
 
         [HttpGet]
