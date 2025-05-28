@@ -15,7 +15,7 @@
   "chat.groupCompletedTooltip": "Группа откреплена",
   "chat.noGroupChatsFound": "Групповые чаты не найдены",
   "chat.readOnlyBadge": "Только чтение",
-  "chatIsReadOnly": "Чат только для чтения",
+  "chat.chatIsReadOnly": "Чат только для чтения",
   "chat.cannotAttachToCompletedChat": "Нельзя прикреплять файлы к завершенному чату",
   "chat.cannotSendToCompletedChat": "Нельзя отправлять сообщения в завершенный чат",
   "chat.enterMsg": "Введите сообщение",
