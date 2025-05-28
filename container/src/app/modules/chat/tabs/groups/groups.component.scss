@@ -73,3 +73,24 @@
     }
   }
 }
+
+.chat-item-stub {
+  opacity: 0.6;
+  background-color: #e9ecef;
+  cursor: default;
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+}
+
+.active-chat-item {
+  background-color: #f5f7fb;
+}
+
+.chat-item-readonly {
+  opacity: 0.8;
+  a:hover {
+    background-color: #f8f9fa;
+  }
+}
