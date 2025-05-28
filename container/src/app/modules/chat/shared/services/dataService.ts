@@ -31,6 +31,7 @@ export class DataService {
   public groups: BehaviorSubject<SubjectGroups[]> = new BehaviorSubject<
     Array<SubjectGroups>
   >([])
+  public showCompletedFilterState = new BehaviorSubject<boolean>(false)
   public messages: BehaviorSubject<Message[]> = new BehaviorSubject<
     Array<Message>
   >([])
@@ -77,13 +78,29 @@ export class DataService {
       this.activChatId = chatId
       this.isGroupChat = isGroup
       this.activChat = chatInfo
+        ? { ...chatInfo, isCompletedForUser: chatInfo.isCompletedForUser }
+        : null
       this._activChatIdSubject.next(chatId)
       this.resetMessageState(true)
       if (chatId !== null) {
-        this.loadInitialMessages()
+        const isSubjectChat = chatInfo && chatInfo.hasOwnProperty('groups')
+        const isChatStub =
+          isSubjectChat &&
+          chatInfo.isCompletedForUser &&
+          this.showCompletedFilterState.getValue()
+        if (!isChatStub) {
+          this.loadInitialMessages()
+        } else {
+          this.messages.next([])
+          this.searchResults.next([])
+        }
         localStorage.setItem(
           'activeChat',
-          JSON.stringify({ id: chatId, isGroup })
+          JSON.stringify({
+            id: chatId,
+            isGroup,
+            isCompletedForUser: chatInfo?.isCompletedForUser,
+          })
         )
       } else {
         this.messages.next([])
@@ -92,7 +109,10 @@ export class DataService {
       }
     } else {
       if (chatInfo) {
-        this.activChat = { ...chatInfo }
+        this.activChat = {
+          ...chatInfo,
+          isCompletedForUser: chatInfo.isCompletedForUser,
+        }
       }
     }
   }
@@ -111,17 +131,23 @@ export class DataService {
   }
 
   public loadGroups(): void {
+    const completed = this.showCompletedFilterState.getValue()
     this.chatApiService
-      .getAllGroups(this.user.id, this.user.role)
+      .getAllGroups(this.user.id, this.user.role, completed)
       .subscribe((result: SubjectGroups[]) => {
-        var unread = 0
-        result.forEach((elem) => {
-          if (elem.unread) unread += elem.unread
-          elem.groups.forEach((element) => {
-            if (element.unread) unread += element.unread
+        var totalUnreadInActiveOrVisibleCompleted = 0
+        result.forEach((subject) => {
+          const isSubjectChatStub = completed && subject.isCompletedForUser
+          if (subject.unread && !isSubjectChatStub) {
+            totalUnreadInActiveOrVisibleCompleted += subject.unread
+          }
+          subject.groups?.forEach((group) => {
+            if (group.unread && !group.isCompletedForUser) {
+              totalUnreadInActiveOrVisibleCompleted += group.unread
+            }
           })
         })
-        this.readMessageGroupCount.next(unread)
+        this.readMessageGroupCount.next(totalUnreadInActiveOrVisibleCompleted)
         this.groups.next(result)
       })
   }
@@ -469,6 +495,25 @@ export class DataService {
       time: msg.time ? new Date(msg.time) : undefined,
     }
 
+    let isChatCompletedForCurrentUser = false
+    if (this.isGroupChat && msg.chatId) {
+      const subjects = this.groups.getValue()
+      outerLoop: for (const subject of subjects) {
+        if (subject.id === msg.chatId) {
+          isChatCompletedForCurrentUser = !!subject.isCompletedForUser
+          break outerLoop
+        }
+        if (subject.groups) {
+          for (const group of subject.groups) {
+            if (group.id === msg.chatId) {
+              isChatCompletedForCurrentUser = !!group.isCompletedForUser
+              break outerLoop
+            }
+          }
+        }
+      }
+    }
+
     if (
       messageWithDate.chatId == this.activChatId &&
       this.activChatId !== null
@@ -477,17 +522,29 @@ export class DataService {
         const currentMessages = this.messages.getValue()
         if (!currentMessages.some((m) => m.id === messageWithDate.id)) {
           this.messages.next([...currentMessages, messageWithDate])
-          this.scheduleActiveChatRead()
+          if (!this.activChat?.isCompletedForUser) {
+            this.scheduleActiveChatRead()
+          }
         }
       } else {
-        this.scheduleActiveChatRead()
+        if (!this.activChat?.isCompletedForUser) {
+          this.scheduleActiveChatRead()
+        }
       }
-    } else {
+    } else if (!isChatCompletedForCurrentUser) {
       this.updateUnreadCounters(msg)
     }
   }
 
   private scheduleActiveChatRead(): void {
+    if (this.activChat?.isCompletedForUser) {
+      if (this.activeChatReadTimer) {
+        clearTimeout(this.activeChatReadTimer)
+        this.activeChatReadTimer = null
+      }
+      return
+    }
+
     if (this.activeChatReadTimer) {
       clearTimeout(this.activeChatReadTimer)
     }
@@ -511,27 +568,47 @@ export class DataService {
       chats[chatNum].time = msg.time
       this.chats.next([...chats])
       this.readMessageChatCount.next(this.readMessageChatCount.getValue() + 1)
-    } else {
-      let subjectNum = this.getNumSubjectById(msg.chatId)
-      let groupNum = -1
-      if (subjectNum === -1) {
-        ;[subjectNum, groupNum] = this.getNumGroupById(msg.chatId)
-      }
+      return
+    }
 
-      if (subjectNum > -1) {
-        this.readMessageGroupCount.next(
-          this.readMessageGroupCount.getValue() + 1
-        )
-        const subjects = this.groups.getValue()
-        const subject = subjects[subjectNum]
-        if (groupNum > -1 && subject.groups) {
-          subject.groups[groupNum].unread =
-            (subject.groups[groupNum].unread || 0) + 1
-        } else {
-          subject.unread = (subject.unread || 0) + 1
-        }
-        this.groups.next([...subjects])
+    let subjectNum = -1
+    let groupNum = -1
+    let chatToUpdateIsCompletedForUser = false
+    let isSubjectLevelChat = false
+
+    const subjects = this.groups.getValue()
+    for (let i = 0; i < subjects.length; i++) {
+      if (subjects[i].id === msg.chatId) {
+        subjectNum = i
+        chatToUpdateIsCompletedForUser = !!subjects[i].isCompletedForUser
+        isSubjectLevelChat = true
+        break
       }
+      const gNum =
+        subjects[i].groups?.findIndex((g) => g.id === msg.chatId) ?? -1
+      if (gNum > -1) {
+        subjectNum = i
+        groupNum = gNum
+        chatToUpdateIsCompletedForUser =
+          !!subjects[i].groups[gNum].isCompletedForUser
+        break
+      }
+    }
+
+    if (chatToUpdateIsCompletedForUser) {
+      return
+    }
+
+    if (subjectNum > -1) {
+      this.readMessageGroupCount.next(this.readMessageGroupCount.getValue() + 1)
+      const subjectToUpdate = subjects[subjectNum]
+      if (isSubjectLevelChat) {
+        subjectToUpdate.unread = (subjectToUpdate.unread || 0) + 1
+      } else if (groupNum > -1 && subjectToUpdate.groups) {
+        subjectToUpdate.groups[groupNum].unread =
+          (subjectToUpdate.groups[groupNum].unread || 0) + 1
+      }
+      this.groups.next([...subjects])
     }
   }
 

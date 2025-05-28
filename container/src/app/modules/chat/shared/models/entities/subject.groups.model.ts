@@ -6,4 +6,6 @@ export class SubjectGroups {
   color: string
   unread: number = 0
   groups?: Chat[]
+  isArchived?: boolean
+  isCompletedForUser?: boolean
 }

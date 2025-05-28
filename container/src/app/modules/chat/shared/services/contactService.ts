@@ -358,7 +358,7 @@ export class ContactService {
   }
 
   public loadGroups(): Observable<SubjectGroups[]> {
-    return this.chatApiService.getAllGroups(this.user.id, this.user.role)
+    return this.chatApiService.getAllGroups(this.user.id, this.user.role, false)
   }
 
   private updateLoadingState() {

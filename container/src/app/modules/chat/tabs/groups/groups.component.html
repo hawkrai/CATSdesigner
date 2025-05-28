@@ -1,7 +1,25 @@
 <!-- Start Groups content -->
 <div>
   <div class="p-4" style="padding-top: 1.5rem !important">
-    <h4 class="mb-4">{{ 'chat.groups' | translate: 'Группы' }}</h4>
+    <h4 class="mb-3">
+      {{ 'chat.groupChats' | translate: 'Групповые чаты' }}
+    </h4>
+    <div class="d-flex justify-content-start mb-3">
+      <mat-slide-toggle
+        [checked]="dataService.showCompletedFilterState.getValue()"
+        (change)="onCompletedFilterChange($event.checked)"
+        color="primary"
+        class="mb-0"
+      >
+        <span *ngIf="!dataService.isLecturer">{{
+          'chat.completedSubjects' | translate: 'Завершенные предметы'
+        }}</span>
+        <span *ngIf="dataService.isLecturer">{{
+          'chat.detachedGroups' | translate: 'Открепленные группы'
+        }}</span>
+      </mat-slide-toggle>
+    </div>
+
     <div class="search-box chat-search-box">
       <div class="input-group input-group-lg">
         <input
@@ -9,7 +27,11 @@
           [(ngModel)]="searchGroup"
           (ngModelChange)="filter()"
           class="form-control"
-          placeholder="{{ 'chat.groupName' | translate: 'Название группы' }}"
+          placeholder="{{
+            dataService.isLecturer
+              ? ('chat.groupName' | translate: 'Название группы')
+              : ('chat.subjectName' | translate: 'Название предмета')
+          }}"
         />
       </div>
     </div>
@@ -17,22 +39,38 @@
 
   <!-- Start chat-group-list -->
   <perfect-scrollbar
-    class="p-4 chat-message-list chat-group-list"
-    style="background: white; height: calc(100vh - 280px) !important"
+    class="p-4 pt-0 chat-message-list chat-group-list"
+    style="background: white; height: calc(100vh - 310px) !important"
     data-simplebar
   >
-    <ul class="list-unstyled chat-list" style="max-height: 60vh">
+    <ul class="list-unstyled chat-list" style="max-height: none">
       <li *ngFor="let subject of groups">
-        <div class="chat" *ngIf="subject.groups.length > 0">
+        <div class="chat">
           <a
-            data-container="body"
-            data-placement="top"
-            matTooltip="{{ subject.name }}"
-            [ngStyle]="{
-              'background-color':
-                dataService.activChatId == subject.id ? '#f5f7fb' : ''
+            [attr.data-container]="
+              isSubjectChatEffectivelyAStub(subject) ? null : 'body'
+            "
+            [attr.data-placement]="
+              isSubjectChatEffectivelyAStub(subject) ? null : 'top'
+            "
+            [matTooltip]="
+              isSubjectChatEffectivelyAStub(subject)
+                ? ('chat.subjectCompletedTooltip'
+                  | translate: 'Предмет завершен')
+                : subject.name
+            "
+            [ngClass]="{
+              'chat-item-stub': isSubjectChatEffectivelyAStub(subject),
+              'active-chat-item':
+                !isSubjectChatEffectivelyAStub(subject) &&
+                dataService.activChatId == subject.id
             }"
-            (click)="showChat(subject)"
+            (click)="
+              !isSubjectChatEffectivelyAStub(subject) && showChat(subject)
+            "
+            [style.cursor]="
+              isSubjectChatEffectivelyAStub(subject) ? 'default' : 'pointer'
+            "
           >
             <div class="media" style="align-items: center">
               <div
@@ -51,7 +89,10 @@
                   {{ subject.shortName }}
                   <span
                     style="top: calc(50% - 16px)"
-                    *ngIf="subject.unread != 0"
+                    *ngIf="
+                      !isSubjectChatEffectivelyAStub(subject) &&
+                      subject.unread != 0
+                    "
                     class="badge badge-soft-danger badge-pill float-right"
                     >{{ subject.unread }}</span
                   >
@@ -63,9 +104,19 @@
             <a
               [ngStyle]="{
                 'background-color':
-                  dataService.activChatId == group.id ? '#f5f7fb' : ''
+                  dataService.activChatId == group.id &&
+                  !group.isCompletedForUser
+                    ? '#f5f7fb'
+                    : ''
               }"
+              [ngClass]="{ 'chat-item-readonly': group.isCompletedForUser }"
               (click)="showChat(group)"
+              matTooltip="{{
+                group.isCompletedForUser
+                  ? ('chat.groupCompletedTooltip'
+                    | translate: 'Группа откреплена')
+                  : group.name
+              }}"
             >
               <div
                 style="padding-left: 2.5rem"
@@ -76,7 +127,7 @@
                     {{ group.name }}
                     <span
                       style="top: calc(50% - 16px)"
-                      *ngIf="group.unread > 0"
+                      *ngIf="!group.isCompletedForUser && group.unread > 0"
                       class="badge badge-soft-danger badge-pill float-right"
                       >{{ group.unread }}</span
                     >
@@ -86,6 +137,12 @@
             </a>
           </div>
         </div>
+      </li>
+      <li
+        *ngIf="groups && groups.length === 0"
+        class="text-center p-3 text-muted"
+      >
+        {{ 'chat.noGroupChatsFound' | translate: 'Группы не найдены' }}
       </li>
     </ul>
   </perfect-scrollbar>

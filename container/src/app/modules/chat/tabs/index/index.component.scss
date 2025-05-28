@@ -750,3 +750,16 @@ blockquote:last-child {
   border-radius: 50%;
   flex: 0 0 10px;
 }
+
+.readonly-textarea {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.message-input-wrapper {
+  .format-toggle-btn[disabled],
+  .chat-input-links button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

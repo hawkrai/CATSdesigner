@@ -27,7 +27,7 @@ export class ChatService {
   }
 
   public loadGroups(): Observable<SubjectGroups[]> {
-    return this.chatApiService.getAllGroups(this.user.id, this.user.role)
+    return this.chatApiService.getAllGroups(this.user.id, this.user.role, false)
   }
 
   public LoadChat(chatId: number) {

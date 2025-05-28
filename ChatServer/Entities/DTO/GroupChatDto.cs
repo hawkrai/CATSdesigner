@@ -11,5 +11,7 @@ namespace Entities.DTO
         public string Img { get; set; }
         public int GroupId { get; set; }
         public int Unread { get; set; }
+        public bool IsActiveOnCurrentGroup { get; set; }
+        public bool IsCompletedForUser { get; set; }
     }
 }

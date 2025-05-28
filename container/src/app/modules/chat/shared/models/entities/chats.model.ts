@@ -12,4 +12,6 @@ export class Chat {
   isOnline?: boolean
   isTyping?: boolean
   isGroup?: boolean
+  isActiveOnCurrentGroup?: boolean
+  isCompletedForUser?: boolean
 }

@@ -9,6 +9,6 @@ namespace Contracts.Services
 {
     public interface IGroupChatService
     {
-        Task<IEnumerable<SubjectChatsDto>> GetGroups(int userId, bool isLector);
+        Task<IEnumerable<SubjectChatsDto>> GetGroups(int userId, bool isLector, bool completedFilter);
     }
 }
