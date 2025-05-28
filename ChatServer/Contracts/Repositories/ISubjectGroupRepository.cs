@@ -9,8 +9,8 @@ namespace Contracts.Repositories
 {
     public interface ISubjectGroupRepository
     {
-        Task<IEnumerable<SubjectGroup>> GetSubjects(int groupId);
-        Task<IEnumerable<SubjectGroup>> GetGroups(int subjectId);
-        Task<IEnumerable<SubjectGroup>> GetGroupsBySubjectIds(IEnumerable<int> subjectIds);
+        Task<IEnumerable<SubjectGroup>> GetSubjects(int groupId, bool includeDetachedGroups = false);
+        Task<IEnumerable<SubjectGroup>> GetGroups(int subjectId, bool includeDetachedGroups = false);
+        Task<IEnumerable<SubjectGroup>> GetGroupsBySubjectIds(IEnumerable<int> subjectIds, bool includeDetachedGroups = false);
     }
 }
