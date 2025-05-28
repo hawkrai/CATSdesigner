@@ -514,12 +514,16 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   attachFileClick(fileInput: any) {
-    if (!this.dataService.activChat) {
+    if (this.dataService.activChat?.isCompletedForUser) {
       this.toastr.warning(
-        this.translatePipe.transform('chat.noChatWarning', 'Не выбран чат!')
+        this.translatePipe.transform(
+          'chat.cannotAttachToCompletedChat',
+          'Нельзя прикреплять файлы к завершенному чату.'
+        )
       )
       return false
     }
+
     fileInput.value = null
     fileInput.click()
   }
@@ -544,9 +548,12 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   sendMsg() {
-    if (!this.dataService.activChat) {
+    if (this.dataService.activChat?.isCompletedForUser) {
       this.toastr.warning(
-        this.translatePipe.transform('chat.noChatWarning', 'Не выбран чат!')
+        this.translatePipe.transform(
+          'chat.cannotSendToCompletedChat',
+          'Нельзя отправлять сообщения в завершенный чат.'
+        )
       )
       return false
     }
@@ -720,6 +727,13 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   toggleFormatPanel(): void {
+    if (
+      this.dataService.activChat?.isCompletedForUser &&
+      !this.isFormatPanelOpen
+    ) {
+      return
+    }
+
     this.isFormatPanelOpen = !this.isFormatPanelOpen
     this.cdr.detectChanges()
     const scrollWasAtBottom = this.isScrollAtBottom()
@@ -749,6 +763,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   applyFormat(tag: FormatTag) {
+    if (this.dataService.activChat?.isCompletedForUser) return
     const textarea: HTMLTextAreaElement = this.messageTextarea.nativeElement
     const result = this.formatter.format(
       tag,

@@ -173,6 +173,13 @@
                     <a class="text-reset user-profile-show">{{
                       dataService.activChat.name
                     }}</a>
+                    <span
+                      *ngIf="dataService.activChat?.isCompletedForUser"
+                      class="badge badge-warning ml-2"
+                      >{{
+                        'chat.readOnlyBadge' | translate: 'Только чтение'
+                      }}</span
+                    >
                   </h5>
                 </div>
               </div>
@@ -656,17 +663,27 @@
                         [(ngModel)]="currentMsg.text"
                         (select)="onSelectionChange()"
                         (keyup)="onSelectionChange()"
-                        (keyup.enter)="!isFormatPanelOpen && sendMsg()"
+                        (keyup.enter)="
+                          !isFormatPanelOpen &&
+                            !dataService.activChat?.isCompletedForUser &&
+                            sendMsg()
+                        "
                         (input)="
                           !isFormatPanelOpen && autoResize(messageTextarea)
                         "
                         class="form-control"
+                        [readonly]="dataService.activChat?.isCompletedForUser"
                         [ngClass]="{
                           'form-control-lg': !isFormatPanelOpen,
-                          'expanded-textarea': isFormatPanelOpen
+                          'expanded-textarea': isFormatPanelOpen,
+                          'readonly-textarea':
+                            dataService.activChat?.isCompletedForUser
                         }"
                         placeholder="{{
-                          'chat.enterMsg' | translate: 'Введите сообщение'
+                          dataService.activChat?.isCompletedForUser
+                            ? ('chat.chatIsReadOnly'
+                              | translate: 'Чат только для чтения')
+                            : ('chat.enterMsg' | translate: 'Введите сообщение')
                         }}"
                       ></textarea>
                     </div>
@@ -714,7 +731,10 @@
                             type="submit"
                             (click)="sendMsg()"
                             class="btn btn-send"
-                            [disabled]="!hasText"
+                            [disabled]="
+                              !hasText ||
+                              dataService.activChat?.isCompletedForUser
+                            "
                             matTooltip="{{
                               'chat.send' | translate: 'Отправить'
                             }}"
