@@ -703,7 +703,9 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                     .AddFilterClause(testUnlock => testUnlock.StudentId == userId && testUnlock.TestId == testId))
                     .SingleOrDefault();
 
-                if (!GetTest(testId).ForSelfStudy && savedTestUnlock != null)
+                var test = GetTest(testId);
+
+                if (!(test.ForSelfStudy || test.ForNN) && savedTestUnlock != null)
                 {
                     repositoriesContainer.TestUnlocksRepository.Delete(savedTestUnlock);
                 }
