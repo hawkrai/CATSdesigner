@@ -5,10 +5,10 @@ import {
   FormArray,
   ValidationErrors,
 } from '@angular/forms';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 import { BaseFileManagementComponent } from 'src/app/shared/base-file-management-dialog.component';
@@ -27,9 +27,10 @@ import { PracticalPositionsService } from 'src/app/services/PracticalPositionsSe
   templateUrl: './add-practical-popover.component.html',
   styleUrls: ['./add-practical-popover.component.less'],
 })
-export class AddPracticalPopoverComponent extends BaseFileManagementComponent implements OnInit {
+export class AddPracticalPopoverComponent extends BaseFileManagementComponent implements OnInit, OnDestroy {
   jobProtectionForm: FormGroup;
   practicals$: Observable<Practical[]>;
+  private practicalsSub: Subscription;
 
   constructor(
     private practicalPositionsService: PracticalPositionsService,
@@ -63,7 +64,7 @@ export class AddPracticalPopoverComponent extends BaseFileManagementComponent im
     this.practicalPositionsService.loadFromStorage();
 
     this.practicals$ = this.store.select(practicalsSelectors.selectPracticals).pipe(
-      map((practicals, index) =>
+      map((practicals) =>
         practicals.map((practical, idx) => {
           const order = idx + 1;
           const isReceived = this.practicalPositionsService.practicalPositions.includes(order);
@@ -77,6 +78,12 @@ export class AddPracticalPopoverComponent extends BaseFileManagementComponent im
     );
 
     this.observeAttachments(this.filesArray);
+  }
+
+  ngOnDestroy(): void {
+    if (this.practicalsSub) {
+      this.practicalsSub.unsubscribe();
+    }
   }
 
   validateForm(formGroup: FormGroup): ValidationErrors | null {
