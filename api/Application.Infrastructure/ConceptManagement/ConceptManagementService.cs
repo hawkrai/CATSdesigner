@@ -800,7 +800,8 @@ namespace Application.Infrastructure.ConceptManagement
                 var concept = new Concept(Path.GetFileNameWithoutExtension(attachement.Name), parent.Author, parent.Subject, false, false)
                 {
                     ParentId = parent.Id,
-                    Container = attachement.PathName
+                    Container = attachement.PathName,
+                    Published = true,
                 };
                 try
                 {
