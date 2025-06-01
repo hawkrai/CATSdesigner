@@ -259,7 +259,11 @@ export class DefenseComponent implements OnInit {
 
   approveJob(fileLab: UserLabFile, studentId: string) {
     this.labFilesService.approveJob(fileLab.Id).subscribe(() => {
+     
+      fileLab.IsReceived = true
+      
       this.updateStudentJobs(studentId)
+      
       this.addFlashMessage(
         this.translatePipe.transform(
           'text.course.defence.dialog.approve.success',
@@ -271,7 +275,11 @@ export class DefenseComponent implements OnInit {
 
   restoreFromArchive(fileLab: UserLabFile, studentId: string) {
     this.labFilesService.restoreFromArchive(fileLab.Id).subscribe(() => {
+     
+      fileLab.IsReceived = false
+      
       this.updateStudentJobs(studentId)
+      
       this.addFlashMessage(
         this.translatePipe.transform(
           'text.course.defence.dialog.restore.success',

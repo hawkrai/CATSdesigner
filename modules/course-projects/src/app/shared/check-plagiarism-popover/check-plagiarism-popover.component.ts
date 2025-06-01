@@ -21,7 +21,7 @@ export class CheckPlagiarismPopoverComponent {
   result: any = ''
   isLoad = false
 
-  displayedColumns = ['author', 'group', 'subject', 'file']
+  displayedColumns = ['author', 'group', 'subject', 'theme', 'file', 'filesize']
 
   constructor(
     public dialogRef: MatDialogRef<CheckPlagiarismPopoverComponent>,
@@ -45,11 +45,13 @@ export class CheckPlagiarismPopoverComponent {
         type: this.labelPosition,
       })
       .subscribe((res) => {
-        this.isLoad = false
-        if (res) {
-          this.result = res
-        }
-      })
+  this.isLoad = false
+  console.log(res)
+  if (res) {
+    this.result = res
+  }
+})
+
   }
 
   downloadFile(element) {
