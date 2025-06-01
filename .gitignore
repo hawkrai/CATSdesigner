@@ -343,3 +343,9 @@ ASALocalRun/
 healthchecksdb
 *.json
 /ChatServer/ChatServer/new
+/api/LMPlatform.UI/LMPlatform.UI.csproj
+/.gitignore
+/api/LMPlatform.UI/LMPlatform.UI.sln
+/api/LMPlatform.UI/Web.config
+/modules/course-projects/package.json
+/modules/course-projects/package-lock.json
