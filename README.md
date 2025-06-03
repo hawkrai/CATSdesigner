@@ -9,8 +9,8 @@ git clone https://github.com/hawkrai/CATSdesigner
 
 1) установить [nvm](https://github.com/nvm-sh/nvm), далее установить node:
 ```
-nvm install 14
-nvm use 14
+nvm install 14.16.1
+nvm use 14.16.1
 ```
 
 2) установка и билд модулей (результат - каталог .temp в корне проекта):
