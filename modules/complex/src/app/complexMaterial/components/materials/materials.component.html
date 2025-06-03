@@ -16,7 +16,7 @@
         }"
       >
         <ng-container>
-          {{ node.Container === 'test' ? 'event_available' : 'event_note' }}
+          {{ node.TestId !== null  ? 'event_available' : 'event_note' }}
         </ng-container>
       </mat-icon>
       <a
