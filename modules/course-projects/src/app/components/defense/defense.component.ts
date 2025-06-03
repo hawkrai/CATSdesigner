@@ -41,7 +41,7 @@ export class DefenseComponent implements OnInit {
     private toastr: ToastrService,
     private translatePipe: TranslatePipe,
     private store: Store<IAppState>
-  ) {}
+  ) { }
 
   ngOnInit() {
     console.log(this.courseUser)
@@ -129,9 +129,9 @@ export class DefenseComponent implements OnInit {
     const body =
       userLabFile && this.courseUser.IsStudent
         ? {
-            comments: userLabFile.Comments,
-            attachments: userLabFile.Attachments,
-          }
+          comments: userLabFile.Comments,
+          attachments: userLabFile.Attachments,
+        }
         : { comments: '', attachments: [] }
     const dialogRef = this.dialog.open(AddJobDialogComponent, {
       width: '550px',
@@ -169,7 +169,7 @@ export class DefenseComponent implements OnInit {
     const isRet = this.courseUser.IsLecturer
     const attachmentId =
       dialogResult.uploadedFile.IdFile &&
-      dialogResult.uploadedFile.IdFile !== -1
+        dialogResult.uploadedFile.IdFile !== -1
         ? dialogResult.uploadedFile.IdFile
         : '0'
     this.labFilesService
@@ -202,13 +202,13 @@ export class DefenseComponent implements OnInit {
         this.addFlashMessage(
           isRet
             ? this.translatePipe.transform(
-                'text.course.defence.dialog.correct',
-                'Работа отправлена для исправления'
-              )
+              'text.course.defence.dialog.correct',
+              'Работа отправлена для исправления'
+            )
             : this.translatePipe.transform(
-                'text.course.defence.dialog.success',
-                'Работа успешно добавлена'
-              )
+              'text.course.defence.dialog.success',
+              'Работа успешно добавлена'
+            )
         )
       })
   }
@@ -259,7 +259,11 @@ export class DefenseComponent implements OnInit {
 
   approveJob(fileLab: UserLabFile, studentId: string) {
     this.labFilesService.approveJob(fileLab.Id).subscribe(() => {
+
+      fileLab.IsReceived = true
+
       this.updateStudentJobs(studentId)
+
       this.addFlashMessage(
         this.translatePipe.transform(
           'text.course.defence.dialog.approve.success',
@@ -271,7 +275,11 @@ export class DefenseComponent implements OnInit {
 
   restoreFromArchive(fileLab: UserLabFile, studentId: string) {
     this.labFilesService.restoreFromArchive(fileLab.Id).subscribe(() => {
+
+      fileLab.IsReceived = false
+
       this.updateStudentJobs(studentId)
+
       this.addFlashMessage(
         this.translatePipe.transform(
           'text.course.defence.dialog.restore.success',
