@@ -29,11 +29,27 @@ namespace Repository
             .OrderBy(x => x.Subject.ShortName)
             .ToListAsync();
 
-        public async Task<IEnumerable<SubjectGroup>> GetGroupsBySubjectIds(IEnumerable<int> subjectIds, bool includeDetachedGroups = false) =>
-             await FindByCondition(sg => subjectIds.Contains(sg.SubjectId) && ((sg.IsActiveOnCurrentGroup == true && !includeDetachedGroups) || (includeDetachedGroups)), false)
-            .Include(sg => sg.Group)
-            .Include(sg => sg.Subject)
-            .Where(sg => !sg.Subject.IsArchive)
-            .ToListAsync();
+        public async Task<IEnumerable<SubjectGroup>> GetGroupsBySubjectIds(IEnumerable<int> subjectIds, bool includeDetachedGroups = false)
+        {
+            if (subjectIds == null || !subjectIds.Any())
+            {
+                return new List<SubjectGroup>();
+            }
+            var subjectIdsList = subjectIds.ToList();
+
+            var query = RepositoryContext.SubjectGroups.AsNoTracking()
+                        .Include(sg => sg.Group)
+                        .Include(sg => sg.Subject)
+                        .Where(sg => sg.Subject != null && !sg.Subject.IsArchive);
+
+            if (!includeDetachedGroups)
+            {
+                query = query.Where(sg => sg.IsActiveOnCurrentGroup == true);
+            }
+
+            var allMatchingActiveStateAndArchive = await query.ToListAsync();
+
+            return allMatchingActiveStateAndArchive.Where(sg => subjectIdsList.Contains(sg.SubjectId)).ToList();
+        }
     }
 }
