@@ -44,6 +44,7 @@ export class DefenseComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
     this.store.pipe(select(getSubjectId)).subscribe((subjectId) => {
       this.subjectId = subjectId
       if (this.courseUser.IsStudent) {
