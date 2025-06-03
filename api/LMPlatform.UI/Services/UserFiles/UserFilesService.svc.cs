@@ -255,45 +255,55 @@ namespace LMPlatform.UI.Services.UserFiles
 
                     foreach (var doc in result[i].Docs)
                     {
-                        var resultS = new ResultPlag();
-
-                        var fileName = Path.GetFileName(doc);
-                        var fileNameWithoutExt = Path.GetFileNameWithoutExtension(doc);
-
-                        resultS.DocFileName = fileName;
-                        resultS.Name = Name;
-
-                        var name = this.FilesManagementService.GetFileDisplayName(fileName);
-                        resultS.subjectName = subjectName;
-                        resultS.doc = name;
-
-                        var pathName = this.FilesManagementService.GetPathName(fileName);
-                        resultS.DocPathName = pathName;
-
-                        var userFileT = this.SubjectManagementService.GetUserLabFile(pathName);
-                        var userId = userFileT.UserId;
-                        var user = this.StudentManagementService.GetStudent(userId);
-
-                        resultS.author = user.FullName;
-                        resultS.groupName = user.Group.Name;
-
-                        var attachment = new Attachment
+                        try
                         {
-                            PathName = pathName,
-                            FileName = fileName
-                        };
-                        var fileSizeBytes = this.FilesManagementService.GetFileSize(attachment) ?? 0;
-                        resultS.sizeFile = Math.Round(fileSizeBytes / 1024.0, 2).ToString() + " КБ";
+                            var resultS = new ResultPlag();
 
-                        var labFiles = this.LabsManagementService.GetUserLabFiles(userId, int.Parse(subjectId));
-                        var matchedLab = labFiles.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
+                            var fileName = Path.GetFileName(doc);
+                            var fileNameWithoutExt = Path.GetFileNameWithoutExtension(doc);
 
-                        var labFilesPr = this.PracticalManagementService.GetUserPracticalFiles(userId, int.Parse(subjectId));
-                        var matchedLabPr = labFilesPr.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
+                            resultS.DocFileName = fileName;
+                            resultS.Name = Name;
 
-                        resultS.Theme = matchedLab?.Lab?.Theme ?? matchedLabPr?.Practical?.Theme ?? " ";
-                        resultS.shortName = matchedLab?.Lab?.ShortName ?? matchedLabPr?.Practical?.ShortName ?? " ";
-                        correctDocs.Add(resultS);
+                            var name = this.FilesManagementService.GetFileDisplayName(fileName);
+                            resultS.subjectName = subjectName;
+                            resultS.doc = name;
+
+                            var pathName = this.FilesManagementService.GetPathName(fileName);
+                            resultS.DocPathName = pathName;
+
+                            var userFileT = this.SubjectManagementService.GetUserLabFile(pathName);
+                            var userId = userFileT.UserId;
+                            var user = this.StudentManagementService.GetStudent(userId);
+
+                            resultS.author = user.FullName;
+                            resultS.groupName = user.Group.Name;
+
+                            var attachment = new Attachment
+                            {
+                                PathName = pathName,
+                                FileName = fileName
+                            };
+                            var fileSizeBytes = this.FilesManagementService.GetFileSize(attachment) ?? 0;
+                            resultS.sizeFile = Math.Round(fileSizeBytes / 1024.0, 2).ToString() + " КБ";
+
+                            var labFiles = this.LabsManagementService.GetUserLabFiles(userId, int.Parse(subjectId));
+                            var matchedLab = labFiles.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
+
+                            var labFilesPr = this.PracticalManagementService.GetUserPracticalFiles(userId, int.Parse(subjectId));
+                            var matchedLabPr = labFilesPr.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
+
+                            var labFilesCP = this.SubjectManagementService.GetUserCourseFiles(userId, int.Parse(subjectId));
+                            var matchedLabCp = labFilesCP.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
+
+                            resultS.Theme = matchedLab?.Lab?.Theme ?? matchedLabPr?.Practical?.Theme ?? matchedLabCp?.Lab?.Theme ?? " ";
+                            resultS.shortName = matchedLab?.Lab?.ShortName ?? matchedLabPr?.Practical?.ShortName ?? " ";
+                            correctDocs.Add(resultS);
+                        }
+                        catch (Exception ex)
+                        {
+                            continue;
+                        }
                     }
 
                     data.clusters[i].correctDocs = correctDocs
@@ -330,8 +340,6 @@ namespace LMPlatform.UI.Services.UserFiles
                 }
             }
         }
-
-
         public ResultViewData CheckPlagiarism(int userFileId, int subjectId, bool isCp = false, bool isLab = false, bool isPractical = false)
         {
             var path = Guid.NewGuid().ToString("N");
