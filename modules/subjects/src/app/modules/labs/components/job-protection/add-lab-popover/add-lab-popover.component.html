@@ -15,8 +15,9 @@
           <mat-option
             *ngFor="let lab of labs$ | async"
             [value]="lab.LabId"
-            [ngStyle]="{'background-color': lab.RowColor}"
-            [disabled]="lab.RowColor === '#d5fcd5'">
+            [ngStyle]="{ 'background-color': lab.RowColor }"
+            [disabled]="lab.RowColor === '#d5fcd5'"
+          >
             {{ lab.ShortName }}. {{ lab.Theme }}
           </mat-option>
         </mat-select>

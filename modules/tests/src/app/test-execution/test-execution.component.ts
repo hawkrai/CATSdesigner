@@ -67,7 +67,8 @@ export class TestExecutionComponent
             })
           }
           const timezoneOffsetInSeconds = new Date().getTimezoneOffset() * 60
-          const adjustedSeconds = this.question.Seconds + timezoneOffsetInSeconds
+          const adjustedSeconds =
+            this.question.Seconds + timezoneOffsetInSeconds
           this.question.Seconds = adjustedSeconds > 0 ? adjustedSeconds : 0
           this.questionNumber = question && question.Number.toString()
           this.allAnswersArray = question && question.IncompleteQuestionsNumbers

@@ -1,9 +1,15 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
-import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms'
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms'
 import { Group } from 'src/app/model/group'
 import { GroupService } from 'src/app/service/group.service'
-
 
 @Component({
   selector: 'app-add-group',
@@ -16,7 +22,7 @@ export class AddGroupComponent implements OnInit {
   group: Group
   groupNameSymbols = 'А-Яа-яA-Za-z0-9ёЁіІ _-,.'
   @Output() submitEM = new EventEmitter()
-  groupsList: Group[] = [];
+  groupsList: Group[] = []
 
   constructor(
     private formBuilder: FormBuilder,
@@ -26,7 +32,6 @@ export class AddGroupComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-
     this.date = new Date()
     this.group = this.data
     const nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-,.]*$'
@@ -41,7 +46,7 @@ export class AddGroupComponent implements OnInit {
         Validators.required,
         Validators.pattern('^[0-9a-zA-ZА-Яа-я .,_-]*$'),
         Validators.maxLength(10),
-        this.groupAlreadyExistValidator()
+        this.groupAlreadyExistValidator(),
       ]),
       StartYear: new FormControl(Number.parseInt(this.data.StartYear)),
       GraduationYear: new FormControl(
@@ -113,12 +118,12 @@ export class AddGroupComponent implements OnInit {
 
   groupAlreadyExistValidator() {
     return (control: AbstractControl): ValidationErrors | null => {
-      const newGroupName = control.value;
+      const newGroupName = control.value
 
       const existingNames = this.groupsList.map((item) => item.Name)
       const groupAlreadyExists = existingNames.includes(newGroupName)
 
-      return groupAlreadyExists ? { groupAlreadyExists } : null;
-  };
-}
+      return groupAlreadyExists ? { groupAlreadyExists } : null
+    }
+  }
 }

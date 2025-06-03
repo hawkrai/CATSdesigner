@@ -70,7 +70,7 @@ export class TeacherJobProtectionComponent implements OnInit {
 
   hasWordFile(attachments: { FileName: string }[]): boolean {
     return attachments.some(
-      a =>
+      (a) =>
         a.FileName.toLowerCase().endsWith('.doc') ||
         a.FileName.toLowerCase().endsWith('.docx')
     )

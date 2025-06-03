@@ -167,20 +167,25 @@
         }}</mat-checkbox>
       </div>
 
-      <mat-form-field *ngIf="this.form.controls.IsSecretary.value"
-                      appearance="fill">
+      <mat-form-field
+        *ngIf="this.form.controls.IsSecretary.value"
+        appearance="fill"
+      >
         <mat-label>
           {{
-          'text.adminPanel.modal.lecturerModal.groupsSecretary' | translate
+            'text.adminPanel.modal.lecturerModal.groupsSecretary' | translate
           }}
         </mat-label>
         <mat-select [formControl]="this.form.controls.SecGroupsIds" multiple>
-          <mat-option *ngFor="let group of this.groups"
-                      [value]="group.Id"
-                      [disabled]="
-       group.OccupiedBySecretary !== 0 &&
-       group.OccupiedBySecretary !== this.professor.Id
-     ">{{ group.Name }}</mat-option>
+          <mat-option
+            *ngFor="let group of this.groups"
+            [value]="group.Id"
+            [disabled]="
+              group.OccupiedBySecretary !== 0 &&
+              group.OccupiedBySecretary !== this.professor.Id
+            "
+            >{{ group.Name }}</mat-option
+          >
         </mat-select>
       </mat-form-field>
     </mat-dialog-content>

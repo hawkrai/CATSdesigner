@@ -7,7 +7,10 @@
       <mat-form-field class="example-full-width" *ngIf="!data.body.isTeacher">
         <mat-select
           formControlName="practicalId"
-          [placeholder]="'text.subjects.practicals.choose.practical' | translate: 'Выберите практическое занятие'"
+          [placeholder]="
+            'text.subjects.practicals.choose.practical'
+              | translate: 'Выберите практическое занятие'
+          "
         >
           <mat-option
             *ngFor="let practical of practicals$ | async"

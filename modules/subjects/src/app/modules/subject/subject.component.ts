@@ -41,7 +41,6 @@ export class SubjectComponent implements OnInit, OnDestroy {
   listViewMatcher: MediaQueryList
   mobileViewMatcher: MediaQueryList
 
-
   public displayedColumns = [
     'name',
     'shortName',
@@ -64,20 +63,20 @@ export class SubjectComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.addMediaMatchers();
-    this.store.dispatch(subjectActions.loadSubjects());
+    this.addMediaMatchers()
+    this.store.dispatch(subjectActions.loadSubjects())
     this.state$ = combineLatest([
       this.store.select(subjectSelectors.getSubjects),
       this.store.select(subjectSelectors.getUser),
     ]).pipe(
       map(([subjects, user]) => {
-        subjects.forEach(subject => {
-          subject.OwnerFullName = this.getOwnerFullName(subject);
-          subject.OwnerShortName = this.getOwnerShortName(subject);
-        });
-        return { subjects, user };
+        subjects.forEach((subject) => {
+          subject.OwnerFullName = this.getOwnerFullName(subject)
+          subject.OwnerShortName = this.getOwnerShortName(subject)
+        })
+        return { subjects, user }
       })
-    );
+    )
   }
 
   private matcherListener(event: MediaQueryListEvent): void {}
@@ -187,19 +186,21 @@ export class SubjectComponent implements OnInit, OnDestroy {
   }
 
   getOwnerShortName(subject: Subject): string {
-    const owner = subject.Lectors.find(lector => lector.Id === subject.Owner);
+    const owner = subject.Lectors.find((lector) => lector.Id === subject.Owner)
 
-    if (!owner) return "";
+    if (!owner) return ''
 
-    return `${owner.LastName} ${owner.FirstName[0]}. ${owner.MiddleName ? owner.MiddleName[0] + '.' : ''}`;
+    return `${owner.LastName} ${owner.FirstName[0]}. ${
+      owner.MiddleName ? owner.MiddleName[0] + '.' : ''
+    }`
   }
 
   getOwnerFullName(subject: Subject): string {
-    const owner = subject.Lectors.find(lector => lector.Id === subject.Owner);
+    const owner = subject.Lectors.find((lector) => lector.Id === subject.Owner)
 
-    if (!owner) return "";
+    if (!owner) return ''
 
-    return `${owner.LastName} ${owner.FirstName} ${owner.MiddleName || ''}`;
+    return `${owner.LastName} ${owner.FirstName} ${owner.MiddleName || ''}`
   }
 
   subjectsHelp: Help = {
