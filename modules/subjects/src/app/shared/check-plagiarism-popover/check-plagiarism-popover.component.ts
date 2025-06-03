@@ -1,7 +1,7 @@
 import { finalize, map, switchMap, tap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { PlagiarismResultSubject } from './../../models/plagiarism-result-subject.model'
-import { Component, Inject} from '@angular/core'
+import { Component, Inject } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { Store } from '@ngrx/store'
 import { IAppState } from 'src/app/store/state/app.state'
@@ -25,7 +25,14 @@ export class CheckPlagiarismPopoverComponent {
   percent = 50
   loading = false
   result$: Observable<PlagiarismResultSubject[]>
-  displayedColumns = ['author', 'group', 'subject', 'themelab', 'file', 'filesize']
+  displayedColumns = [
+    'author',
+    'group',
+    'subject',
+    'themelab',
+    'file',
+    'filesize',
+  ]
 
   constructor(
     private dialogRef: MatDialogRef<CheckPlagiarismPopoverComponent>,
@@ -33,7 +40,7 @@ export class CheckPlagiarismPopoverComponent {
     private userFilesService: UserFilesService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private translatePipe: TranslatePipe,
-    private catsService: CatsService 
+    private catsService: CatsService
   ) {}
 
   onClick(): void {
@@ -53,7 +60,7 @@ export class CheckPlagiarismPopoverComponent {
         })
       ),
       tap((response) => {
-        this.loading = false;
+        this.loading = false
 
         if (response.Code === ErrorCode.NoAcceptedWorks) {
           this.catsService.showMessage({
@@ -62,7 +69,7 @@ export class CheckPlagiarismPopoverComponent {
               'Отсутствуют принятые работы для проверки на плагиат'
             ),
             Code: ErrorCode.NoAcceptedWorks,
-          });
+          })
         } else if (response.Code === ErrorCode.Success) {
           this.catsService.showMessage({
             Message: this.translatePipe.transform(
@@ -70,8 +77,8 @@ export class CheckPlagiarismPopoverComponent {
               'Проверка прошла успешно'
             ),
             Code: ErrorCode.Success,
-          });
-        }        
+          })
+        }
       }),
       finalize(() => {
         this.loading = false

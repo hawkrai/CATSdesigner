@@ -19,15 +19,13 @@ export class ListOfStudentsComponent implements OnInit {
   isLoad = false
 
   constructor(
-
     private groupService: GroupService,
     public dialogRef: MatDialogRef<ListOfStudentsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
   ngOnInit() {
-
-      this.loadStudentById(this.data.Id)
+    this.loadStudentById(this.data.Id)
   }
 
   isStudents() {
@@ -44,29 +42,26 @@ export class ListOfStudentsComponent implements OnInit {
   }
 
   isDeleted(student: Students): boolean {
-    return student.isActive === false; 
+    return student.isActive === false
   }
 
   isConfirmed(student: Students): boolean {
     if (student.Confirmed === true) {
-      return true; 
+      return true
     }
     if (student.Confirmed === false) {
-      return false; 
+      return false
     }
     if (student.Confirmed === null && student.DeletedOn === null) {
-      return true; 
+      return true
     }
     if (student.Confirmed === null && student.DeletedOn) {
-      return false; 
+      return false
     }
-    return false; 
+    return false
   }
-
-
 
   onNoClick(): void {
     this.dialogRef.close()
   }
-
 }

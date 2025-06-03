@@ -4,32 +4,35 @@ import {
   FormGroup,
   FormArray,
   ValidationErrors,
-} from '@angular/forms';
-import { Component, Inject, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+} from '@angular/forms'
+import { Component, Inject, OnInit } from '@angular/core'
+import { Store } from '@ngrx/store'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
+import { Observable } from 'rxjs'
+import { map, take } from 'rxjs/operators'
 
-import { BaseFileManagementComponent } from 'src/app/shared/base-file-management-dialog.component';
-import { DialogData } from '../../../../../models/dialog-data.model';
-import { IAppState } from 'src/app/store/state/app.state';
-import * as filesActions from '../../../../../store/actions/files.actions';
-import { Lab } from 'src/app/models/lab.model';
-import * as labsActions from '../../../../../store/actions/labs.actions';
-import * as labsSelectors from '../../../../../store/selectors/labs.selectors';
-import { FilesService } from 'src/app/services/files.service';
-import { attchedFileConverter } from '../../../../../utils';
-import { LabPositionsService } from 'src/app/services/lab-positions.service';
+import { BaseFileManagementComponent } from 'src/app/shared/base-file-management-dialog.component'
+import { DialogData } from '../../../../../models/dialog-data.model'
+import { IAppState } from 'src/app/store/state/app.state'
+import * as filesActions from '../../../../../store/actions/files.actions'
+import { Lab } from 'src/app/models/lab.model'
+import * as labsActions from '../../../../../store/actions/labs.actions'
+import * as labsSelectors from '../../../../../store/selectors/labs.selectors'
+import { FilesService } from 'src/app/services/files.service'
+import { attchedFileConverter } from '../../../../../utils'
+import { LabPositionsService } from 'src/app/services/lab-positions.service'
 
 @Component({
   selector: 'app-lab-work-popover',
   templateUrl: './add-lab-popover.component.html',
   styleUrls: ['./add-lab-popover.component.less'],
 })
-export class AddLabPopoverComponent extends BaseFileManagementComponent implements OnInit {
-  jobProtectionForm: FormGroup;
-  labs$: Observable<Lab[]>;
+export class AddLabPopoverComponent
+  extends BaseFileManagementComponent
+  implements OnInit
+{
+  jobProtectionForm: FormGroup
+  labs$: Observable<Lab[]>
 
   constructor(
     private labPositionsService: LabPositionsService,
@@ -38,16 +41,16 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
     filesService: FilesService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {
-    super(store, filesService);
-    this.setAttachments(this.data.model.attachments);
+    super(store, filesService)
+    this.setAttachments(this.data.model.attachments)
   }
 
   get filesArray(): FormArray {
-    return this.jobProtectionForm.get('attachments') as FormArray;
+    return this.jobProtectionForm.get('attachments') as FormArray
   }
 
   ngOnInit(): void {
-    this.loadAttachments();
+    this.loadAttachments()
 
     this.jobProtectionForm = new FormGroup(
       {
@@ -56,9 +59,9 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
         attachments: new FormArray([]),
       },
       [this.validateForm.bind(this)]
-    );
+    )
 
-    this.store.dispatch(labsActions.loadLabs());
+    this.store.dispatch(labsActions.loadLabs())
 
     this.labs$ = this.store.select(labsSelectors.getLabs).pipe(
       map((labs) =>
@@ -71,13 +74,13 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
               : '#ffffff',
         }))
       )
-    );
+    )
 
-    this.observeAttachments(this.filesArray);
+    this.observeAttachments(this.filesArray)
   }
 
   validateForm(formGroup: FormGroup): ValidationErrors | null {
-    const attachments = formGroup.get('attachments').value;
+    const attachments = formGroup.get('attachments').value
     if (
       this.data.model.labId &&
       formGroup.get('labId').value === this.data.model.labId &&
@@ -87,52 +90,53 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent implemen
       ) &&
       this.data.model.attachments.length === attachments.length
     ) {
-      return { form: true };
+      return { form: true }
     }
-    return null;
+    return null
   }
 
   onPaste(clipboardData: DataTransfer): void {
     if (clipboardData.files.length > 0) {
       this.store.dispatch(
         filesActions.uploadFile({ file: clipboardData.files[0] })
-      );
+      )
     }
   }
 
   isValid(): boolean {
     return (
       this.filesArray.length > 0 ||
-      (this.data.model.isTeacher && !!this.jobProtectionForm.get('comments').value)
-    );
+      (this.data.model.isTeacher &&
+        !!this.jobProtectionForm.get('comments').value)
+    )
   }
 
   onClose(toSave: boolean): void {
     if (toSave) {
-      this.onSave();
+      this.onSave()
     } else {
       this.removeFiles(this.filesArray.value.filter((f) => f.IdFile <= 0))
         .pipe(take(1))
         .subscribe({
           complete: () => {
-            this.dialogRef.close();
+            this.dialogRef.close()
           },
-        });
+        })
     }
   }
 
   onSave(): void {
     if (this.jobProtectionForm.invalid || !this.isValid()) {
-      return;
+      return
     }
-    const value = this.jobProtectionForm.value;
-    value.attachments = value.attachments.map((a) => attchedFileConverter(a));
+    const value = this.jobProtectionForm.value
+    value.attachments = value.attachments.map((a) => attchedFileConverter(a))
     this.removeDeletedFiles()
       .pipe(take(1))
       .subscribe({
         complete: () => {
-          this.dialogRef.close(value);
+          this.dialogRef.close(value)
         },
-      });
+      })
   }
 }

@@ -75,7 +75,11 @@
                 color="primary"
                 [matMenuTriggerFor]="menu.childMenu"
                 (click)="selectConcept(item.Id)"
-                [disabled]="conceptId && conceptId !== item.Id && !hasChild(item, conceptId)"
+                [disabled]="
+                  conceptId &&
+                  conceptId !== item.Id &&
+                  !hasChild(item, conceptId)
+                "
               >
                 {{ item.Name }}
                 <mat-icon>expand_more</mat-icon>

@@ -3,9 +3,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects'
 import { map, tap } from 'rxjs/operators'
 import { CatsMessageService } from 'src/app/services/cats.message'
 import { Message } from '../../../../../../container/src/app/core/models/message'
-import { TranslatePipe } from 'educats-translate';
+import { TranslatePipe } from 'educats-translate'
 import * as catsActions from '../actions/cats.actions'
-import { KnownMessage, translationKeyMapping } from '../message-mappings';
+import { KnownMessage, translationKeyMapping } from '../message-mappings'
 
 @Injectable()
 export class CatsEffects {
@@ -20,18 +20,21 @@ export class CatsEffects {
       this.actions$.pipe(
         ofType(catsActions.sendMessage),
         tap(({ message }) => {
-            const parsedValue = JSON.parse(message.Value);
-            const translationKey = translationKeyMapping[parsedValue.text as KnownMessage];
-            if (translationKey) {
-              parsedValue.text = this.translatePipe.transform(translationKey, parsedValue.text);
-              message.Value = JSON.stringify(parsedValue);
-            }
-          this.catsMessageService.sendMessage(message);
+          const parsedValue = JSON.parse(message.Value)
+          const translationKey =
+            translationKeyMapping[parsedValue.text as KnownMessage]
+          if (translationKey) {
+            parsedValue.text = this.translatePipe.transform(
+              translationKey,
+              parsedValue.text
+            )
+            message.Value = JSON.stringify(parsedValue)
+          }
+          this.catsMessageService.sendMessage(message)
         })
       ),
     { dispatch: false }
-  );
-  
+  )
 
   setupMessageCommunication = createEffect(
     () =>

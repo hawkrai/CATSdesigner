@@ -7,7 +7,7 @@ export class CorrectDoc {
   DocFileName: string
   DocPathName: string
   Name: string
-  Theme: string;
-  shortName: string;
-  sizeFile: string;
+  Theme: string
+  shortName: string
+  sizeFile: string
 }
