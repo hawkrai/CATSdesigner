@@ -103,63 +103,70 @@ export class ComplexGridComponent implements OnInit {
   }
 
   onAddButtonClick() {
-    const dialogData: DialogData = {
-      buttonText: this.translatePipe.transform('common.save', 'Сохранить'),
-      width: '500px',
-      title: this.translatePipe.transform(
-        'complex.addComplex',
-        'Добавление ЭУМК'
-      ),
-      name: '',
-      subjectName: this.subjectName,
-      isNew: true,
-    }
-
-    const dialogRef = this.openDialog(dialogData, ComplexGridEditPopupComponent)
-
-    dialogRef.afterClosed().subscribe((result) => {
-      const {
-        name,
-        isPublished,
-        includeLabs,
-        includeWorkshops,
-        includeLectures,
-        includeTests,
-      } = result
-
-      const complex: Complex = {
-        name,
-        container: '',
-        subjectId: this.subjectId,
-        isPublished,
-        includeLabs,
-        includeLectures,
-        includeWorkshops,
-        includeTests,
+    this.complexService.getAvailableModules().subscribe((availableModules) => {
+      const dialogData: DialogData = {
+        buttonText: this.translatePipe.transform('common.save', 'Сохранить'),
+        width: '500px',
+        title: this.translatePipe.transform(
+          'complex.addComplex',
+          'Добавление ЭУМК'
+        ),
+        name: '',
+        subjectName: this.subjectName,
+        isNew: true,
+        // @ts-ignore
+        availableModules,
       }
-      this.showLoader = true
-      this.complexService.addRootConcept(complex).subscribe((result) => {
-        if (result['Code'] === '500') {
-          this.showLoader = false
-          this.router.navigateByUrl('/main')
-          this.catsService.showMessage({
-            Message: `${this.translatePipe.transform(
-              'common.error.operation',
-              'Эумк с таким именем уже существует'
-            )}.`,
-            Type: CodeType.error,
-          })
-        } else {
-          this.showLoader = false
-          this.router.navigateByUrl('/main')
-          this.catsService.showMessage({
-            Message: `${this.translatePipe.transform(
-              'common.success.operation',
-              'Успешно сохранено'
-            )}.`,
-            Type: CodeType.success,
-          })
+
+      const dialogRef = this.openDialog(
+        dialogData,
+        ComplexGridEditPopupComponent
+      )
+
+      dialogRef.afterClosed().subscribe((result) => {
+        const {
+          name,
+          isPublished,
+          includeLabs,
+          includeWorkshops,
+          includeLectures,
+          includeTests,
+        } = result
+
+        const complex: Complex = {
+          name,
+          container: '',
+          subjectId: this.subjectId,
+          isPublished,
+          includeLabs,
+          includeLectures,
+          includeWorkshops,
+          includeTests,
         }
+        this.showLoader = true
+        this.complexService.addRootConcept(complex).subscribe((result) => {
+          if (result['Code'] === '500') {
+            this.showLoader = false
+            this.router.navigateByUrl('/main')
+            this.catsService.showMessage({
+              Message: `${this.translatePipe.transform(
+                'common.error.operation',
+                'Эумк с таким именем уже существует'
+              )}.`,
+              Type: CodeType.error,
+            })
+          } else {
+            this.showLoader = false
+            this.router.navigateByUrl('/main')
+            this.catsService.showMessage({
+              Message: `${this.translatePipe.transform(
+                'common.success.operation',
+                'Успешно сохранено'
+              )}.`,
+              Type: CodeType.success,
+            })
+          }
+        })
       })
     })
   }
