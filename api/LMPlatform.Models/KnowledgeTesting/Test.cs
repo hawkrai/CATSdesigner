@@ -72,19 +72,19 @@ namespace LMPlatform.Models.KnowledgeTesting
             set;
         }
 
-	    public bool ForNN
-	    {
-		    get;
-		    set;
-	    }
+        public bool ForNN
+        {
+            get;
+            set;
+        }
 
-	    public string Data { get; set; }
+        public string Data { get; set; }
 
         public bool Unlocked
         {
             get
             {
-                return ForSelfStudy || ForEUMK || (TestUnlocks != null && TestUnlocks.Any());
+                return TestUnlocks != null && TestUnlocks.Where(x => !x.Student.IsDeleted).Any();
             }
         }
 
