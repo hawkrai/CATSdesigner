@@ -148,7 +148,8 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
 			var query = lite ? new Query<Test>() : new Query<Test>().Include(test => test.TestUnlocks);
 
-			if (subjectId.HasValue)
+
+            if (subjectId.HasValue)
 			{
 				query.AddFilterClause(test => test.SubjectId == subjectId.Value);
 				if (!lite)
@@ -159,7 +160,15 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
 			var searchResults = repositoriesContainer.TestsRepository.GetAll(query).ToList();
 
-			return searchResults;
+            foreach (var test in searchResults)
+            {
+                foreach (var unlock in test.TestUnlocks)
+                {
+                    unlock.Student = repositoriesContainer.StudentsRepository.GetStudent(unlock.StudentId);
+                }
+            }
+
+            return searchResults;
 		}
 
 		public List<Question> GetQuestions()
