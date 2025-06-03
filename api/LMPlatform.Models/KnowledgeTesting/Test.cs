@@ -84,8 +84,7 @@ namespace LMPlatform.Models.KnowledgeTesting
         {
             get
             {
-                return ForSelfStudy || ForEUMK
-                    || (TestUnlocks != null && TestUnlocks.Where(x => !x.Student.IsDeleted).Any());
+                return TestUnlocks != null && TestUnlocks.Where(x => !x.Student.IsDeleted).Any();
             }
         }
 
