@@ -718,6 +718,9 @@
                             type="button"
                             (click)="attachFileClick(fileInput)"
                             class="btn"
+                            [disabled]="
+                              dataService.activChat?.isCompletedForUser
+                            "
                             matTooltip="{{
                               'chat.attachFile' | translate: 'Прикрепить файл'
                             }}"
