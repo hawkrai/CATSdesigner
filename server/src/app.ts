@@ -140,6 +140,7 @@ const proxySignalROptions = {
   target: TARGET_CHAT_DOMAIN,
   pathRewrite: {
     '^/chatSignalR': '/chat',
+    '^/notificationSignalR': '/notification',
   },
   secure: false,
   ws: true,
