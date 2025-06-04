@@ -55,9 +55,9 @@ export class CheckPlagiarismPopoverComponent {
   downloadFile(element) {
     window.open(
       'http://localhost:8080/api/Upload?fileName=' +
-        element.DocPathName +
-        '//' +
-        element.DocFileName
+      element.DocPathName +
+      '//' +
+      element.DocFileName
     )
   }
 }
