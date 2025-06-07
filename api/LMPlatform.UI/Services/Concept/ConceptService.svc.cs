@@ -374,35 +374,33 @@ namespace LMPlatform.UI.Services.Concept
 
         private List<ConceptMonitoring> GetMonitoringInfo(Models.Concept rootConcept, int studentId)
         {
-            try
-            {
-                var resultList = new List<ConceptMonitoring>();
+            var resultList = new List<ConceptMonitoring>();
 
-                foreach (var children in rootConcept.Children)
-                {
-                    var resultItem = ConceptMonitoring.FromConcept(children);
-                    if (children.Children != null && children.Children.Any())
-                    {
-                        resultItem.Children = GetMonitoringInfo(children, studentId);
-                    }
-                    if (children.Container != null)
-                    {
-                        int Estimated = WatchingTimeService.GetEstimatedTime(children.Container);
-                        if (Estimated > 0)
-                        {
-                            resultItem.Estimated = Estimated;
-                            resultItem.WatchingTime = WatchingTimeService.GetByConceptSubject(children.Id, studentId).Time;
-                        }
-                    }
-                    resultList.Add(resultItem);
-                }
-                return resultList;
-            }
-            catch (Exception ex)
+            foreach (var children in rootConcept.Children)
             {
-                Console.WriteLine(ex.Message);
-                return null;
+                var resultItem = ConceptMonitoring.FromConcept(children);
+
+                if (children.Children?.Any() == true)
+                {
+                    resultItem.Children = GetMonitoringInfo(children, studentId);
+                }
+
+                if (children.Container != null)
+                {
+                    int estimated = WatchingTimeService.GetEstimatedTime(children.Container);
+
+                    if (estimated > 0)
+                    {
+                        resultItem.Estimated = estimated;
+                    }
+
+                    resultItem.WatchingTime = WatchingTimeService.GetByConceptSubject(children.Id, studentId)?.Time;
+                }
+
+                resultList.Add(resultItem);
             }
+
+            return resultList;
         }
 
         public ConceptViewData GetConceptTreeMobile(int elementId)

@@ -17,6 +17,8 @@ namespace Application.Infrastructure.WatchingTimeManagement
 {
     public class WatchingTimeService : IWatchingTimeService
     {
+        private const int SECONDS_PER_PAGE = 30;
+
         private readonly LazyDependency<IFilesManagementService> _filesManagementService = 
             new LazyDependency<IFilesManagementService>();
 
@@ -30,28 +32,50 @@ namespace Application.Infrastructure.WatchingTimeManagement
             var attachments = FilesManagementService.GetAttachments(container);
             if (attachments.Count == 0)
             {
-	            return 0;
+                return 0;
             }
 
-            var path = ConfigurationManager.AppSettings["FileUploadPath"] + attachments[0].PathName + "\\" + attachments[0].FileName;
-            if (!File.Exists(path))
+            int totalTime = 0;
+            string basePath = ConfigurationManager.AppSettings["FileUploadPath"];
+
+            foreach (var attachment in attachments)
             {
-	            return 0;
+                if (attachment?.PathName == null || attachment?.FileName == null)
+                {
+                    continue;
+                }
+
+                var path = Path.Combine(basePath, attachment.PathName, attachment.FileName);
+
+                if (!File.Exists(path))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    if (Path.GetExtension(path).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
+                    {
+                        using var pdfReader = new PdfReader(path);
+                        totalTime += pdfReader.NumberOfPages * SECONDS_PER_PAGE;
+                    }
+                    else
+                    {
+                        var player = new WindowsMediaPlayer();
+                        var clip = player.newMedia(path);
+                        totalTime += (int)clip.duration;
+                        player.close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error processing file {path}: {ex.Message}");
+                }
             }
 
-            try
-            {
-                var pdfReader = new PdfReader(path);
-                var numberOfPages = pdfReader.NumberOfPages;
-                return numberOfPages * 30; //30 сек страница временно тут
-            }
-            catch
-            {
-                var player = new WindowsMediaPlayer();
-                var clip = player.newMedia(path);
-                return (int)clip.duration;
-            }
+            return totalTime;
         }
+
 
         public void SaveWatchingTime(WatchingTime item)
         {
@@ -74,12 +98,25 @@ namespace Application.Infrastructure.WatchingTimeManagement
 
         public WatchingTime GetByConceptSubject(int conceptId, int userId)
         {
-            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+            var timeRecords = repositoriesContainer
+                .WatchingTimeRepository
+                .GetAll(new Query<WatchingTime>()
+                 .AddFilterClause(u => u.ConceptId == conceptId && u.UserId == userId))
+                .ToList();
+
+            if (timeRecords.Count == 0)
             {
-                return repositoriesContainer.WatchingTimeRepository.GetAll(new Query<WatchingTime>().AddFilterClause(u => u.ConceptId == conceptId & u.UserId == userId)).ToList()[0];
-                //return repositoriesContainer.WatchingTimeRepository.GetAll(new Query<WatchingTime>().AddFilterClause(u => u.Concept.Id == conceptId & u.UserId == userId)).ToList()[0];
+                return null;
             }
+
+            return timeRecords
+                .GroupBy(w => new { w.UserId, w.ConceptId })
+                .Select(g => new WatchingTime(g.Key.UserId, g.Key.ConceptId, g.Sum(w => w.Time)))
+                .FirstOrDefault();
         }
+
 
         public List<WatchingTime> GetAllRecords(int conceptId, int? studentId = null)
         {
