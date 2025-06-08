@@ -21,7 +21,7 @@ export class CheckPlagiarismPopoverComponent {
   result: any = ''
   isLoad = false
 
-  displayedColumns = ['author', 'group', 'subject', 'file']
+  displayedColumns = ['author', 'group', 'subject', 'file', 'filesize']
 
   constructor(
     public dialogRef: MatDialogRef<CheckPlagiarismPopoverComponent>,

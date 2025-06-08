@@ -1,62 +1,100 @@
 .check-plagiarism {
-  min-width: 520px;
-
-  table {
-    width: 100%;
-  }
-
-  .mat-cell {
-    padding-right: 15px;
-  }
-
-  .mat-column-file {
-    width: 30%;
-  }
-
-  .mat-column-author {
-    width: 45%;
-  }
-
-  .link {
-    color: #3f51b5;
-    cursor: pointer;
-    width: fit-content;
-  }
-}
-
-.result {
-  max-height: 100vh;
-  overflow: auto;
-}
-
-.example-form {
-  min-width: 150px;
-  max-width: 500px;
-  .example-full-width {
-    width: 100%;
-  }
-}
-
-.section-method {
+  width: 600px;
+  max-width: 100%;
+  background: #fff;
   display: flex;
-  flex-flow: column;
-  margin-top: 15px;
-  margin-bottom: 30px;
-  height: 50px;
+  flex-direction: column;
+  position: relative;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+  height: 100%;
+}
+
+.dialog-header {
+  display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0px;
+  flex-shrink: 0;
+  position: relative;
 }
 
-.example-full-width {
-  width: 150px !important;
+.dialog-header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
 }
 
-.mat-dialog {
-  &-actions {
-    justify-content: flex-end;
-  }
+.close-button {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  color: #939393;
+  cursor: pointer;
 }
 
-table.mat-table {
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  box-shadow: none;
+.warning-messages {
+  margin: 0 0 12px 0;
+  padding-left: 0;
+  flex-shrink: 0;
+}
+
+.added-message {
+  font-size: 12px;
+  color: #808080;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
+
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0 0;
+  overflow-y: auto;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  margin-bottom: 16px;
+}
+
+.table-wrapper table {
+  width: 800px;
+  border-collapse: collapse;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 0 0 0;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.link {
+  color: #3f51b5;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.link:hover {
+  color: #303f9f;
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.no-data-msg {
+  font-size: 14px;
+  color: #777;
+  padding: 16px;
 }

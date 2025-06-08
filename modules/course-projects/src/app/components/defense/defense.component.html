@@ -232,9 +232,7 @@
                   <td class="mdc-data-table__cell">{{ fileLab.Comments }}</td>
                   <td class="mdc-data-table__cell">{{ fileLab.Date }}</td>
                   <td class="mdc-data-table__cell">
-                    <ng-container
-                      *ngIf="!fileLab.IsReturned && !fileLab.IsReceived"
-                    >
+                    <ng-container *ngIf="!fileLab.IsReturned">
                       <button
                         mat-icon-button
                         color="primary"
@@ -245,7 +243,11 @@
                       >
                         <mat-icon>visibility</mat-icon>
                       </button>
+                    </ng-container>
 
+                    <ng-container
+                      *ngIf="!fileLab.IsReturned && !fileLab.IsReceived"
+                    >
                       <button
                         mat-icon-button
                         color="primary"
@@ -261,23 +263,26 @@
                         mat-icon-button
                         color="primary"
                         matTooltip="{{
-                          'text.reject' | translate: 'Отклонить работу'
-                        }}"
-                        *ngIf="fileLab.IsReceived"
-                        (click)="restoreFromArchive(fileLab, student.StudentId)"
-                      >
-                        <mat-icon>thumb_down</mat-icon>
-                      </button>
-
-                      <button
-                        mat-icon-button
-                        color="primary"
-                        matTooltip="{{
                           'text.return' | translate: 'Вернуть работу'
                         }}"
                         (click)="addJob(fileLab, student.StudentId)"
                       >
                         <mat-icon>arrow_forward</mat-icon>
+                      </button>
+                    </ng-container>
+
+                    <ng-container
+                      *ngIf="fileLab.IsReceived && !fileLab.IsReturned"
+                    >
+                      <button
+                        mat-icon-button
+                        color="primary"
+                        matTooltip="{{
+                          'text.reject' | translate: 'Отклонить работу'
+                        }}"
+                        (click)="restoreFromArchive(fileLab, student.StudentId)"
+                      >
+                        <mat-icon>thumb_down</mat-icon>
                       </button>
                     </ng-container>
                   </td>
