@@ -356,8 +356,6 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       else this.dataService.updateRead().subscribe()
     }
 
-    document.getElementById('chat-room')?.classList.add('user-chat-show')
-
     if (this.dataService.isSearching.getValue()) {
       this.filterValue = ''
       this.searchTerms.next('')
@@ -651,7 +649,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   closeUserChat() {
-    document.getElementById('chat-room').classList.remove('user-chat-show')
+    this.dataService.setActiveChat(null, false, null)
     if (this.isFormatPanelOpen) {
       this.isFormatPanelOpen = false
       this.cdr.detectChanges()

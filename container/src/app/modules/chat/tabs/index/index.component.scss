@@ -18,12 +18,6 @@
   height: -webkit-fill-available;
 }
 
-@media (max-width: 991.98px) {
-  .ng-star-inserted {
-    height: 100%;
-  }
-}
-
 .groupName {
   max-width: calc(100vw - 160px);
 }
@@ -113,7 +107,6 @@
 .chat-input-container {
   width: 100%;
   margin-top: auto;
-  padding: 10px 0;
   background-color: white;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -761,5 +754,40 @@ blockquote:last-child {
   .chat-input-links button[disabled] {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .layout-wrapper {
+    height: auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chat-leftsidebar {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(0);
+    z-index: 10;
+  }
+
+  .user-chat {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(100%);
+    background-color: white;
+    z-index: 11;
+  }
+
+  .user-chat.user-chat-show {
+    transform: translateX(0);
   }
 }

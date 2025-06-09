@@ -88,6 +88,7 @@
   <div
     class="user-chat w-100"
     id="chat-room"
+    [class.user-chat-show]="dataService.activChatId !== null"
     [ngClass]="{ 'no-chat-selected': dataService.activChatId === null }"
   >
     <div class="d-lg-flex" style="height: 100%">

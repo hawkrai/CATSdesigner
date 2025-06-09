@@ -1,6 +1,6 @@
 <!-- Start Groups content -->
-<div>
-  <div class="p-4" style="padding-top: 1.5rem !important">
+<div style="display: flex; flex-direction: column; height: 100%">
+  <div class="p-4" style="flex-shrink: 0">
     <h4 class="mb-3">
       {{ 'chat.groupChats' | translate: 'Групповые чаты' }}
     </h4>
@@ -37,10 +37,9 @@
     </div>
   </div>
 
-  <!-- Start chat-group-list -->
   <perfect-scrollbar
-    class="p-4 pt-0 chat-message-list chat-group-list"
-    style="background: white; height: calc(100vh - 310px) !important"
+    class="px-4 pt-0 chat-group-list"
+    style="flex-grow: 1; min-height: 0; position: relative"
     data-simplebar
   >
     <ul class="list-unstyled chat-list" style="max-height: none">
