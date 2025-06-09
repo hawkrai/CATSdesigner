@@ -18,7 +18,7 @@ export class CheckPlagiarismStudentComponent implements OnInit {
   result: any
   isLoad = false
 
-  displayedColumns = ['coeff', 'author', 'group', 'subject', 'file']
+  displayedColumns = ['coeff', 'author', 'group', 'subject', 'file', 'sizefile']
 
   constructor(
     public dialogRef: MatDialogRef<CheckPlagiarismStudentComponent>,
@@ -34,10 +34,18 @@ export class CheckPlagiarismStudentComponent implements OnInit {
         subjectId: this.data.body.subjectId,
         userFileId: this.data.body.userFileId,
       })
-      .subscribe((res) => {
-        if (res) {
-          this.result = res
-        }
+      .subscribe({
+        next: (res) => {
+          if (res && Array.isArray(res)) {
+            this.result = res
+            this.isLoad = true
+          }
+        },
+        error: (err) => {
+          console.error('Ошибка при запросе:', err)
+          this.result = []
+          this.isLoad = true
+        },
       })
   }
 
