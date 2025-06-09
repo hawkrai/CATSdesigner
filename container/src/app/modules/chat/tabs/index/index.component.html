@@ -99,12 +99,11 @@
           class="p-3 p-lg-4 border-bottom"
           style="padding: 0.72rem !important"
         >
-          <div class="row align-items-center">
-            <div class="col-sm-4 col-8">
+          <div class="d-flex align-items-center">
+            <div class="flex-grow-1" style="min-width: 0">
               <div
                 *ngIf="dataService.activChat"
                 class="media align-items-center"
-                style="width: min-content"
               >
                 <div class="d-block d-lg-none mr-2">
                   <a
@@ -115,77 +114,79 @@
                     <mat-icon>keyboard_arrow_left</mat-icon>
                   </a>
                 </div>
-                <div
-                  *ngIf="!dataService.isGroupChat && dataService.activChatId"
-                  class="media"
-                  style="align-items: center"
-                >
+                <ng-container *ngIf="!(isMobileView && isSearchExpanded)">
                   <div
-                    class="chat-user-img align-self-center mr-3"
-                    [ngClass]="{
-                      online: dataService.activChat.isOnline,
-                      away: !dataService.activChat.isOnline
-                    }"
+                    *ngIf="!dataService.isGroupChat && dataService.activChatId"
+                    class="media align-items-center"
+                    style="flex: 1; min-width: 0"
                   >
-                    <img
-                      style="height: 36px !important"
-                      *ngIf="dataService.activChat.img"
-                      src="{{ dataService.activChat.img }}"
-                      class="rounded-circle avatar-xs"
-                      alt=""
-                    />
-                    <div class="avatar-xs" *ngIf="!dataService.activChat.img">
-                      <span
-                        style="height: 36px !important"
-                        class="avatar-title rounded-circle"
-                      >
-                        {{
-                          dataService.activChat.name.split(' ')[0].charAt(0) +
-                            dataService.activChat.name.split(' ')[1].charAt(0)
-                        }}
-                      </span>
-                    </div>
-                    <span class="user-status"></span>
-                  </div>
-                  <div
-                    class="groupName media-body overflow-hidden"
-                    matTooltip="{{ dataService.activChat.name }}"
-                  >
-                    <h5 class="text-truncate font-size-15 mb-1">
-                      {{ dataService.activChat.name }}
-                    </h5>
-                    <p class="chat-user-message text-truncate mb-0">
-                      {{ dataService.activChat.lastMessage }}
-                    </p>
-                  </div>
-                </div>
-                <div
-                  *ngIf="dataService.isGroupChat && dataService.activChatId"
-                  matTooltip="{{ dataService.activChat.name }}"
-                  class="groupName media-body overflow-hidden"
-                >
-                  <h5
-                    class="font-size-16 mb-0 text-truncate d-flex align-items-center"
-                  >
-                    <span
-                      class="subject-color-dot mr-2"
-                      [style.backgroundColor]="groupColor"
-                    ></span>
-                    <a class="text-reset user-profile-show">{{
-                      dataService.activChat.name
-                    }}</a>
-                    <span
-                      *ngIf="dataService.activChat?.isCompletedForUser"
-                      class="badge badge-warning ml-2"
-                      >{{
-                        'chat.readOnlyBadge' | translate: 'Только чтение'
-                      }}</span
+                    <div
+                      class="chat-user-img align-self-center mr-3"
+                      [ngClass]="{
+                        online: dataService.activChat.isOnline,
+                        away: !dataService.activChat.isOnline
+                      }"
                     >
-                  </h5>
-                </div>
+                      <img
+                        style="height: 36px !important"
+                        *ngIf="dataService.activChat.img"
+                        src="{{ dataService.activChat.img }}"
+                        class="rounded-circle avatar-xs"
+                        alt=""
+                      />
+                      <div class="avatar-xs" *ngIf="!dataService.activChat.img">
+                        <span
+                          style="height: 36px !important"
+                          class="avatar-title rounded-circle"
+                        >
+                          {{
+                            dataService.activChat.name.split(' ')[0].charAt(0) +
+                              dataService.activChat.name.split(' ')[1].charAt(0)
+                          }}
+                        </span>
+                      </div>
+                      <span class="user-status"></span>
+                    </div>
+                    <div
+                      class="groupName media-body overflow-hidden"
+                      matTooltip="{{ dataService.activChat.name }}"
+                    >
+                      <h5 class="text-truncate font-size-15 mb-1">
+                        {{ dataService.activChat.name }}
+                      </h5>
+                      <p class="chat-user-message text-truncate mb-0">
+                        {{ dataService.activChat.lastMessage }}
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    *ngIf="dataService.isGroupChat && dataService.activChatId"
+                    matTooltip="{{ dataService.activChat.name }}"
+                    class="groupName media-body overflow-hidden"
+                  >
+                    <h5
+                      class="font-size-16 mb-0 text-truncate d-flex align-items-center"
+                    >
+                      <span
+                        class="subject-color-dot mr-2"
+                        [style.backgroundColor]="groupColor"
+                      ></span>
+                      <a class="text-reset user-profile-show">{{
+                        dataService.activChat.name
+                      }}</a>
+                      <span
+                        *ngIf="dataService.activChat?.isCompletedForUser"
+                        class="badge badge-warning ml-2"
+                        >{{
+                          'chat.readOnlyBadge' | translate: 'Только чтение'
+                        }}</span
+                      >
+                    </h5>
+                  </div>
+                </ng-container>
               </div>
             </div>
-            <div class="col-sm-8 col-4">
+            <div>
               <ul class="list-inline user-chat-nav text-right mb-0">
                 <li class="list-inline-item sliding-search-container">
                   <div

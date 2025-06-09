@@ -66,6 +66,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   isFormatPanelOpen: boolean = false
   activeFormats = new Set<FormatTag>()
   isSearchExpanded = false
+  isMobileView: boolean
   private lastScrollTop: number = 0
   private scrollLock: boolean = false
   private destroy$ = new Subject<void>()
@@ -102,7 +103,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('searchDropdown') searchDropdown: NgbDropdown
   @ViewChild('messageTextarea') messageTextarea: ElementRef
   @ViewChild('searchInput') searchInput: ElementRef
-
+  @HostListener('window:resize', ['$event'])
   ngOnInit(): void {
     this.dataService.activChatId$
       .pipe(
@@ -195,6 +196,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       })
 
     this.tryRestoreChat()
+    this.checkScreenWidth()
   }
 
   ngAfterViewInit() {}
@@ -251,6 +253,14 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
         this.scrollToBottom(false)
       }, 100)
     }
+  }
+
+  onResize(event?) {
+    this.checkScreenWidth()
+  }
+
+  private checkScreenWidth(): void {
+    this.isMobileView = window.innerWidth < 992
   }
 
   private tryRestoreChat(): void {
