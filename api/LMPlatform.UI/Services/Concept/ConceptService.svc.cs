@@ -380,6 +380,11 @@ namespace LMPlatform.UI.Services.Concept
             {
                 var resultItem = ConceptMonitoring.FromConcept(children);
 
+                if (!children.Published)
+                {
+                    continue;
+                }
+
                 if (children.Children?.Any() == true)
                 {
                     resultItem.Children = GetMonitoringInfo(children, studentId);
