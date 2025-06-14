@@ -524,7 +524,7 @@ namespace Application.Infrastructure.ConceptManagement
             return string.Format("P{0}", Guid.NewGuid().ToString("N").ToUpper());
         }
 
-        public Concept CreateRootConcept(string name, int authorId, int subjectId, bool isPublished = true, bool includeLabs = true, bool includeLectures = true, bool includeTests = true, bool includeWorkshops = true)
+        public Concept CreateRootConcept(string name, int authorId, int subjectId, bool isPublished = false, bool includeLabs = false, bool includeLectures = false, bool includeTests = false, bool includeWorkshops = false)
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
             var author = repositoriesContainer.UsersRepository.GetBy(new Query<User>().AddFilterClause(u => u.Id == authorId));
@@ -576,14 +576,14 @@ namespace Application.Infrastructure.ConceptManagement
             concept2.NextConcept = concept3.Id;
             concept3.PrevConcept = concept2.Id;
 
-            var concept4 = new Concept(PracticalSectionName, parent.Author, parent.Subject, true, includeLabs)
+            var concept4 = new Concept(PracticalSectionName, parent.Author, parent.Subject, true, includeLabs || includeWorkshops)
             {
                 ParentId = parent.Id,
                 ReadOnly = true
             };
             repositoriesContainer.ConceptRepository.Save(concept4);
 
-            InitPracticalChild(concept4, repositoriesContainer);
+            InitPracticalChild(concept4, repositoriesContainer, includeLabs, includeWorkshops);
 
             concept3.NextConcept = concept4.Id;
             concept4.PrevConcept = concept3.Id;
@@ -651,7 +651,7 @@ namespace Application.Infrastructure.ConceptManagement
             repositoriesContainer.ConceptRepository.Save(itemsToUpdate);
         }
 
-        private void InitPracticalChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer)
+        private void InitPracticalChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLabs, bool includeWorkshops)
         {
             Concept prev = null;
 
@@ -665,7 +665,7 @@ namespace Application.Infrastructure.ConceptManagement
             {
                 foreach (var item in sub.Practicals.OrderBy(s => s.Order))
                 {
-                    var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, true)
+                    var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, includeWorkshops)
                     {
                         ParentId = parent.Id,
                         PracticalId = item.Id
@@ -688,7 +688,7 @@ namespace Application.Infrastructure.ConceptManagement
             {
                 foreach (var item in sub.Labs.OrderBy(s => s.Order))
                 {
-                    var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, true)
+                    var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, includeLabs)
                     {
                         ParentId = parent.Id,
                         LabId = item.Id
