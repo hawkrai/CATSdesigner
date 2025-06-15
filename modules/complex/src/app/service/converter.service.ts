@@ -84,9 +84,15 @@ export class ConverterService {
   public studentMonitoringsConverter(
     complexStudentMonitorings: ComplexStudentMonitoring
   ): ComplexStudentMonitoring {
-    complexStudentMonitorings.ConceptMonitorings.forEach((mon) =>
-      this.studentMonitoringConverter(mon)
-    )
+    if (
+      complexStudentMonitorings &&
+      complexStudentMonitorings.ConceptMonitorings
+    ) {
+      complexStudentMonitorings.ConceptMonitorings.forEach((mon) =>
+        this.studentMonitoringConverter(mon)
+      )
+    }
+
     return complexStudentMonitorings
   }
 
