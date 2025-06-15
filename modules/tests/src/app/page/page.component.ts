@@ -5,6 +5,8 @@ import { AutoUnsubscribeBase } from '../core/auto-unsubscribe-base'
 import { AutoUnsubscribe } from '../decorator/auto-unsubscribe'
 import { takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs'
+import { Router } from '@angular/router'
+import { ActivatedRoute } from '@angular/router'
 
 @AutoUnsubscribe
 @Component({
@@ -24,7 +26,11 @@ export class PageComponent extends AutoUnsubscribeBase implements OnInit {
   public filterResult: string = ''
   private unsubscribeStream$: Subject<void> = new Subject<void>()
 
-  constructor(private testPassingService: TestPassingService) {
+  constructor(
+    private testPassingService: TestPassingService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     super()
   }
 

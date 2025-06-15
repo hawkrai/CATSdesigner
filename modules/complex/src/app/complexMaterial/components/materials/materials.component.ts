@@ -18,6 +18,8 @@ import { CatsService, CodeType } from 'src/app/service/cats.service'
 import { DeleteConfirmationPopupComponent } from './delete-confirmation-popup/delete-confirmation-popup.component'
 import { takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs'
+import { MenuService } from '../../../../../../../container/src/app/core/services/menu.service'
+import { ModuleType } from '../../../../../../../container/src/app/core/models/module.model'
 
 @Component({
   selector: 'app-material-tree',
@@ -45,7 +47,8 @@ export class MaterialComponent implements OnInit {
     private complexService: ComplexService,
     private translatePipe: TranslatePipe,
     private catsService: CatsService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private menuService: MenuService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -137,6 +140,22 @@ export class MaterialComponent implements OnInit {
       this.complexService.saveWatchingTime(nodeId, result).subscribe()
       console.log('The dialog was closed')
     })
+  }
+
+  openTest(node: any) {
+    if (node.TestId) {
+      const { item } = this.menuService.getSubjectInfo(ModuleType.SmartTest)
+
+      const currentSubject = localStorage.getItem('currentSubject')
+      const subject = JSON.parse(currentSubject)
+
+      sessionStorage.setItem('complexTestId', node.TestId)
+
+      this.catsService.sendMessage({
+        Type: 'Route',
+        Value: `web/viewer/subject/${subject.id}#${item}`,
+      })
+    }
   }
 
   openMonitoring(nodeId: string, nodeName: string): void {
