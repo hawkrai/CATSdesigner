@@ -655,15 +655,14 @@ blockquote:last-child {
     margin-right: 4px;
     opacity: 0;
 
+    @media (max-width: 991.98px) {
+      transition: none;
+    }
+
     &.expanded {
       width: 240px;
       max-width: 240px;
       opacity: 1;
-
-      @media (max-width: 576px) {
-        width: 180px;
-        max-width: 180px;
-      }
     }
 
     .search-input {
@@ -715,6 +714,7 @@ blockquote:last-child {
     width: 36px;
     height: 36px;
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
     padding: 0;
@@ -729,6 +729,31 @@ blockquote:last-child {
 
     &:focus {
       box-shadow: none;
+    }
+  }
+}
+
+.chat-header-info {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.d-flex.align-items-center.search-mode-mobile {
+  & > .chat-header-info {
+    flex-grow: 0;
+  }
+  & > div:last-child {
+    flex: 1 1 auto;
+  }
+  .user-chat-nav {
+    width: 100%;
+  }
+  .sliding-search-container {
+    flex: 1 1 auto;
+
+    .search-field-wrapper.expanded {
+      width: 100%;
+      max-width: 100%;
     }
   }
 }
@@ -785,5 +810,14 @@ blockquote:last-child {
 
   .user-chat.user-chat-show {
     transform: translateX(0);
+  }
+
+  .user-chat-nav {
+    display: flex;
+    align-items: center;
+
+    .search-list-item {
+      order: 3;
+    }
   }
 }

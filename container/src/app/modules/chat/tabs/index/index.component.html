@@ -99,8 +99,13 @@
           class="p-3 p-lg-4 border-bottom"
           style="padding: 0.72rem !important"
         >
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1" style="min-width: 0">
+          <div
+            class="d-flex align-items-center"
+            [ngClass]="{
+              'search-mode-mobile': isMobileView && isSearchExpanded
+            }"
+          >
+            <div class="chat-header-info">
               <div
                 *ngIf="dataService.activChat"
                 class="media align-items-center"
@@ -188,7 +193,9 @@
             </div>
             <div>
               <ul class="list-inline user-chat-nav text-right mb-0">
-                <li class="list-inline-item sliding-search-container">
+                <li
+                  class="list-inline-item sliding-search-container search-list-item"
+                >
                   <div
                     class="search-field-wrapper"
                     [ngClass]="{ expanded: isSearchExpanded }"
@@ -234,7 +241,8 @@
                   *ngIf="
                     dataService.isLecturer &&
                     dataService.isGroupChat &&
-                    dataService.activChat.groupId
+                    dataService.activChat.groupId &&
+                    !(isMobileView && isSearchExpanded)
                   "
                 >
                   <button
@@ -249,7 +257,11 @@
                 </li>
                 <li
                   class="list-inline-item"
-                  *ngIf="isAllowedForUser() && !dataService.isGroupChat"
+                  *ngIf="
+                    isAllowedForUser() &&
+                    !dataService.isGroupChat &&
+                    !(isMobileView && isSearchExpanded)
+                  "
                 >
                   <button
                     type="button"
