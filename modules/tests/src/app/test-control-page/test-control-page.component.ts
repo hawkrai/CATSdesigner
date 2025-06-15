@@ -73,6 +73,14 @@ export class TestControlPageComponent
     this.user = JSON.parse(localStorage.getItem('currentUser'))
     this.subject = JSON.parse(localStorage.getItem('currentSubject'))
     this.getTests(this.subject.id)
+
+    const complexTestId = sessionStorage.getItem('complexTestId')
+
+    if (complexTestId) {
+      this.router.navigate(['test/' + complexTestId])
+
+      sessionStorage.removeItem(complexTestId)
+    }
   }
 
   openDialog(event?: any): void {

@@ -12,7 +12,7 @@
         class="expandable-external"
         [ngClass]="{
           folder_file_icons: node.FilePath != null,
-          'empty-tree-icon': node.FilePath == null
+          'empty-tree-icon': node.FilePath == null && !node.TestId
         }"
       >
         <ng-container>
@@ -26,9 +26,12 @@
       >
         {{ node.Name }}
       </a>
+      <a class="btn clickable" *ngIf="node.TestId" (click)="openTest(node)">
+        {{ node.Name }}
+      </a>
       <a
         class="btn clickable"
-        *ngIf="!node.FilePath"
+        *ngIf="!node.FilePath && !node.TestId"
         (click)="$event.preventDefault()"
         [matTooltip]="
           'complex.noInfo' | translate: 'Отсутствует информация по теме'

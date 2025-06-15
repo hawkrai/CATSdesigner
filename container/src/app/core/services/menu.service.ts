@@ -167,7 +167,7 @@ export class MenuService {
 
   public toogleSidenav(): void {
     if (this.sideNav) {
-      this.sideNav?.toggle()
+      this.sideNav.toggle()
     }
   }
 }
