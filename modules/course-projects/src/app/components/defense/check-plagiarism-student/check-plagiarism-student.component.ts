@@ -15,8 +15,8 @@ export interface DialogData {
   styleUrls: ['./check-plagiarism-student.component.less'],
 })
 export class CheckPlagiarismStudentComponent implements OnInit {
-  result: any
-  isLoad = false
+  result: any[] = []
+  isLoad = true
 
   displayedColumns = ['coeff', 'author', 'group', 'subject', 'file', 'sizefile']
 
@@ -36,17 +36,18 @@ export class CheckPlagiarismStudentComponent implements OnInit {
       })
       .subscribe({
         next: (res) => {
-          if (res && Array.isArray(res)) {
-            this.result = res
-            this.isLoad = true
-          }
+          this.result = res && Array.isArray(res) ? res : []
+          this.isLoad = false
         },
         error: (err) => {
-          console.error('Ошибка при запросе:', err)
           this.result = []
-          this.isLoad = true
+          this.isLoad = false
         },
       })
+  }
+
+  get hasData(): boolean {
+    return this.result && this.result.length > 0
   }
 
   onClick(): void {
