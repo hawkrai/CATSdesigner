@@ -28,7 +28,7 @@
 
   <div class="dialog-body">
     <ng-container *ngIf="!isLoad; else load">
-      <div *ngIf="result">
+      <div *ngIf="hasData; else noDataMessage">
         <div class="table-wrapper">
           <table
             mat-table
@@ -102,11 +102,13 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
         </div>
-
-        <div *ngIf="result.length === 0" class="no-data-msg">
-          <p>Совпадений не найдено</p>
-        </div>
       </div>
+
+      <ng-template #noDataMessage>
+        <div class="no-data-message">
+          {{ 'no.matches.found' | translate: 'Совпадений не найдено' }}
+        </div>
+      </ng-template>
     </ng-container>
 
     <ng-template #load>
@@ -118,7 +120,7 @@
 
   <div class="dialog-actions">
     <button mat-raised-button (click)="onClick()">
-      {{ 'text.close' | translate: 'Закрыть' }}
+      {{ 'button.close' | translate: 'Закрыть' }}
     </button>
   </div>
 </div>
