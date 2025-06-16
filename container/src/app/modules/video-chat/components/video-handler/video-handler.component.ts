@@ -6,6 +6,7 @@ import {
   ElementRef,
   ChangeDetectorRef,
   AfterViewInit,
+  HostListener,
 } from '@angular/core'
 import { Subscription, Observable, combineLatest, BehaviorSubject } from 'rxjs'
 import {
@@ -60,6 +61,9 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
     shouldShowOverlay: boolean | null
   }>
 
+  public isMobileView = false
+  public isSelfOverlayVisible = true
+  private selfOverlayHideTimer: any = null
   public localParticipant: IVideoParticipant | null = null
   public remoteParticipant: IVideoParticipant | null = null
 
@@ -73,6 +77,11 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private subscriptions = new Subscription()
   private streamHandlerReady = new BehaviorSubject<boolean>(false)
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event?) {
+    this.checkScreenWidth()
+  }
 
   constructor(
     public videoChatService: VideoChatService,
@@ -99,6 +108,7 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.checkScreenWidth()
     this.subscriptions.add(
       this.videoChatService.localParticipantInfo.subscribe((p) => {
         this.localParticipant = p
@@ -147,6 +157,9 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
           tap(([isActive, isOutgoing, isIncoming]) => {
             const inCallProcess = isActive || isOutgoing || isIncoming
             const isOutgoingCall = isOutgoing && !isActive && !isIncoming
+            if (isActive) {
+              this.showSelfOverlay()
+            }
             if (isOutgoingCall) {
               if (!this.isOutgoingCallAnimating) {
                 this.isOutgoingCallAnimating = true
@@ -372,6 +385,8 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isMicActive
       )
     }
+
+    this.showSelfOverlay()
   }
 
   toggleCamera(): void {
@@ -387,6 +402,8 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isCameraActive
       )
     }
+
+    this.showSelfOverlay()
   }
 
   onRemoteVideoMetadataLoaded(): void {}
@@ -398,6 +415,39 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
         audioElement.pause()
       }
       audioElement.currentTime = 0
+    }
+  }
+
+  private checkScreenWidth(): void {
+    this.isMobileView = window.innerWidth < 992
+    if (!this.isMobileView) {
+      this.isSelfOverlayVisible = true
+      if (this.selfOverlayHideTimer) {
+        clearTimeout(this.selfOverlayHideTimer)
+        this.selfOverlayHideTimer = null
+      }
+    }
+  }
+
+  public onSelfVideoClick(): void {
+    if (this.isMobileView) {
+      this.showSelfOverlay()
+    }
+  }
+
+  private showSelfOverlay(): void {
+    if (this.selfOverlayHideTimer) {
+      clearTimeout(this.selfOverlayHideTimer)
+    }
+
+    this.isSelfOverlayVisible = true
+    this.cdr.markForCheck()
+
+    if (this.isMobileView) {
+      this.selfOverlayHideTimer = setTimeout(() => {
+        this.isSelfOverlayVisible = false
+        this.cdr.markForCheck()
+      }, 4000)
     }
   }
 }
