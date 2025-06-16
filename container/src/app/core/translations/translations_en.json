@@ -40,6 +40,7 @@
   "chat.messageSizeWarning": "Message is empty or exceeds the allowed size!",
   "chat.messageSentError": "Error sending message",
   "chat.messageEdited": "Message edited",
+  "chat.messageDeletedSuccess": "Message has been successfully deleted from all recipients",
   "chat.showFormat": "Show formatting",
   "chat.hideFormat": "Hide formatting",
   "chat.noStudents": "The students could not be found",

@@ -465,7 +465,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   copyText(html: string) {
     const md = this.turndownService.turndown(html)
     this.clipboardApi.copyFromContent(md)
-    this.toastr.info(
+    this.toastr.success(
       this.translatePipe.transform('chat.textCopied', 'Текст скопирован')
     )
   }
@@ -553,6 +553,12 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   remove(id: any) {
     if (id === undefined || id === null) return
     this.signalRService.remove(id)
+    this.toastr.success(
+      this.translatePipe.transform(
+        'chat.messageDeletedSuccess',
+        'Сообщение успешно удалено у всех адресатов'
+      )
+    )
   }
 
   sendMsg() {
@@ -604,7 +610,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
             this.resetTextareaHeight()
           }
           this.cdr.detectChanges()
-          this.toastr.info(
+          this.toastr.success(
             this.translatePipe.transform(
               'chat.messageEdited',
               'Сообщение изменено'
