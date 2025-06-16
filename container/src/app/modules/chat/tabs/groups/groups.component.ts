@@ -84,7 +84,15 @@ export class GroupsComponent implements OnInit, OnDestroy {
       return
     }
 
-    this.dataService.setActiveChat(value.id, true, value)
+    let parentSubject: SubjectGroups | null = null
+
+    if (!isSubjectChat) {
+      parentSubject =
+        this.oldGroups.find((s) => s.groups?.some((g) => g.id === value.id)) ||
+        null
+    }
+
+    this.dataService.setActiveChat(value.id, true, value, parentSubject)
   }
 
   onCompletedFilterChange(checked: boolean): void {

@@ -27,6 +27,7 @@ export class DataService {
     new BehaviorSubject<number>(0)
   public activGroup: Groups
   public activeSubject: SubjectGroups
+  public activeSubjectForGroup: SubjectGroups | null = null
   public chats: BehaviorSubject<Chat[]> = new BehaviorSubject<Array<Chat>>([])
   public groups: BehaviorSubject<SubjectGroups[]> = new BehaviorSubject<
     Array<SubjectGroups>
@@ -69,7 +70,12 @@ export class DataService {
     this.isLecturer = this.user?.role === 'lector'
   }
 
-  public setActiveChat(chatId: number | null, isGroup: boolean, chatInfo: any) {
+  public setActiveChat(
+    chatId: number | null,
+    isGroup: boolean,
+    chatInfo: any,
+    parentSubjectInfo: SubjectGroups | null = null
+  ) {
     if (this.activChatId !== chatId) {
       if (this.activeChatReadTimer) {
         clearTimeout(this.activeChatReadTimer)
@@ -80,6 +86,7 @@ export class DataService {
       this.activChat = chatInfo
         ? { ...chatInfo, isCompletedForUser: chatInfo.isCompletedForUser }
         : null
+      this.activeSubjectForGroup = parentSubjectInfo
       this._activChatIdSubject.next(chatId)
       this.resetMessageState(true)
       if (chatId !== null) {

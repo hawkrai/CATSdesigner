@@ -723,6 +723,26 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     return parent?.color || '#6c757d'
   }
 
+  get parentSubjectName(): string | null {
+    if (
+      this.dataService.isGroupChat &&
+      this.dataService.activeSubjectForGroup
+    ) {
+      return this.dataService.activeSubjectForGroup.name
+    }
+    return null
+  }
+
+  get parentSubjectShortName(): string | null {
+    if (
+      this.dataService.isGroupChat &&
+      this.dataService.activeSubjectForGroup
+    ) {
+      return this.dataService.activeSubjectForGroup.shortName
+    }
+    return null
+  }
+
   getInitials(name: string): string {
     if (!name) return ''
 

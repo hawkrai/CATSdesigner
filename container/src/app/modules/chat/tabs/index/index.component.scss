@@ -840,3 +840,14 @@ blockquote:last-child {
     gap: 8px;
   }
 }
+
+.subject-name-in-header {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: $gray-600;
+  margin-left: 8px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 50%;
+}
