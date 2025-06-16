@@ -107,9 +107,10 @@
 
   .conversation-list {
     margin-bottom: 24px;
-    display: inline-flex;
+    display: flex;
     position: relative;
     align-items: flex-end;
+    max-width: 90%;
 
     .ctext-wrap {
       display: flex;
@@ -144,10 +145,6 @@
         font-size: 18px;
         padding: 4px;
         color: $gray-600;
-
-        @media (max-width: 575.98px) {
-          display: none;
-        }
       }
     }
 
@@ -187,6 +184,10 @@
           }
         }
       }
+    }
+
+    .user-chat-content {
+      min-width: 0;
     }
   }
 

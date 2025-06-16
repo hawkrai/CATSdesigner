@@ -361,10 +361,7 @@
 
                     <div class="user-chat-content">
                       <div class="ctext-wrap">
-                        <div
-                          style="width: -webkit-fill-available"
-                          class="ctext-wrap-content"
-                        >
+                        <div class="ctext-wrap-content">
                           <p class="mb-0" [innerHTML]="data.text | safeHtml">
                             <span class="animate-typing" *ngIf="data.istyping">
                               <span class="dot ml-1"></span>
@@ -429,7 +426,16 @@
                           </div>
                         </div>
 
-                        <div class="dropdown align-self-start" ngbDropdown>
+                        <div
+                          class="dropdown align-self-start"
+                          ngbDropdown
+                          container="body"
+                          [placement]="
+                            data.align === 'right'
+                              ? ['auto', 'top-end']
+                              : ['auto', 'top-start']
+                          "
+                        >
                           <a
                             class="dropdown-toggle"
                             role="button"
@@ -440,7 +446,13 @@
                           >
                             <mat-icon>more_vert</mat-icon>
                           </a>
-                          <div class="dropdown-menu" ngbDropdownMenu>
+                          <div
+                            class="dropdown-menu"
+                            ngbDropdownMenu
+                            [ngClass]="{
+                              'dropdown-menu-end': data.align === 'right'
+                            }"
+                          >
                             <a
                               class="dropdown-item"
                               style="width: min-content"
@@ -469,7 +481,7 @@
                             >
                               <mat-icon
                                 style="color: rgba(0, 0, 0, 0.54) !important"
-                                >delete_forever</mat-icon
+                                >delete</mat-icon
                               >
                               {{ 'chat.delete' | translate: 'Удалить' }}
                             </a>
@@ -477,10 +489,7 @@
                         </div>
                       </div>
                       <div class="ctext-wrap" *ngIf="data.message2">
-                        <div
-                          style="width: -webkit-fill-available"
-                          class="ctext-wrap-content"
-                        >
+                        <div class="ctext-wrap-content">
                           <p class="mb-0">
                             {{ data.message2 }}
                           </p>
@@ -491,7 +500,16 @@
                             }}</span>
                           </p>
                         </div>
-                        <div class="dropdown align-self-start" ngbDropdown>
+                        <div
+                          class="dropdown align-self-start"
+                          ngbDropdown
+                          container="body"
+                          [placement]="
+                            data.align === 'right'
+                              ? ['auto', 'top-end']
+                              : ['auto', 'top-start']
+                          "
+                        >
                           <a
                             class="dropdown-toggle"
                             href="#"
@@ -503,7 +521,13 @@
                           >
                             <mat-icon>more_vert</mat-icon>
                           </a>
-                          <div class="dropdown-menu" ngbDropdownMenu>
+                          <div
+                            class="dropdown-menu"
+                            ngbDropdownMenu
+                            [ngClass]="{
+                              'dropdown-menu-end': data.align === 'right'
+                            }"
+                          >
                             <a
                               class="dropdown-item"
                               (click)="copyText(data.text)"
@@ -520,7 +544,7 @@
                             >
                               <mat-icon
                                 style="color: rgba(0, 0, 0, 0.54) !important"
-                                >delete_forever</mat-icon
+                                >delete</mat-icon
                               >
                               {{ 'chat.delete' | translate: 'Удалить' }}
                             </a>
