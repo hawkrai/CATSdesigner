@@ -26,6 +26,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     this.dataService.loadGroups()
     this.subscription = this.dataService.groups.subscribe((groups) => {
       this.groups = groups
+      this.sortSubjectsAndGroups(groups)
       this.oldGroups = [...groups]
       this.cdr.detectChanges()
     })
@@ -110,5 +111,39 @@ export class GroupsComponent implements OnInit, OnDestroy {
       this.dataService.showCompletedFilterState.getValue() &&
       !!subject.isCompletedForUser
     )
+  }
+
+  private createSorter(key: 'name' | 'shortName') {
+    return (a: any, b: any) => {
+      const valueA = (a[key] || '').trim()
+      const valueB = (b[key] || '').trim()
+
+      const isACyrillic = /[а-яА-ЯЁё]/.test(valueA)
+      const isBCyrillic = /[а-яА-ЯЁё]/.test(valueB)
+
+      if (!isACyrillic && isBCyrillic) {
+        return -1
+      }
+      if (isACyrillic && !isBCyrillic) {
+        return 1
+      }
+
+      return valueA.localeCompare(valueB, 'ru')
+    }
+  }
+
+  private sortSubjectsAndGroups(subjects: SubjectGroups[]): void {
+    const groupSorter = this.createSorter('name')
+    const subjectSorter = this.createSorter('shortName')
+
+    subjects.forEach((subject) => {
+      if (subject.groups && subject.groups.length > 1) {
+        subject.groups.sort(groupSorter)
+      }
+    })
+
+    if (subjects.length > 1) {
+      subjects.sort(subjectSorter)
+    }
   }
 }
