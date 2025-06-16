@@ -35,9 +35,19 @@ export class GroupListComponent {
     this.chatApiService.getStudentsByGroupId(this.data.groupId).subscribe({
       next: (students: User[]) => {
         this.users = students.map((s) => this.mapStudentToChat(s))
+
+        const isCyrillic = (text: string) => /^[а-яА-ЯёЁ]/.test(text)
+
         this.users.sort((a, b) => {
-          return (a.name || '').localeCompare(b.name || '')
+          const nameA = a.name || ''
+          const nameB = b.name || ''
+
+          return (
+            Number(isCyrillic(nameA)) - Number(isCyrillic(nameB)) ||
+            nameA.localeCompare(nameB)
+          )
         })
+
         this.loadingStudents = false
       },
       error: (err) => {
