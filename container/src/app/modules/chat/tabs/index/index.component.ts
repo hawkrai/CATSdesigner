@@ -66,6 +66,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   isFormatPanelOpen: boolean = false
   activeFormats = new Set<FormatTag>()
   isSearchExpanded = false
+  isMobileView: boolean
   private lastScrollTop: number = 0
   private scrollLock: boolean = false
   private destroy$ = new Subject<void>()
@@ -102,7 +103,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('searchDropdown') searchDropdown: NgbDropdown
   @ViewChild('messageTextarea') messageTextarea: ElementRef
   @ViewChild('searchInput') searchInput: ElementRef
-
+  @HostListener('window:resize', ['$event'])
   ngOnInit(): void {
     this.dataService.activChatId$
       .pipe(
@@ -195,6 +196,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       })
 
     this.tryRestoreChat()
+    this.checkScreenWidth()
   }
 
   ngAfterViewInit() {}
@@ -251,6 +253,14 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
         this.scrollToBottom(false)
       }, 100)
     }
+  }
+
+  onResize(event?) {
+    this.checkScreenWidth()
+  }
+
+  private checkScreenWidth(): void {
+    this.isMobileView = window.innerWidth < 992
   }
 
   private tryRestoreChat(): void {
@@ -356,8 +366,6 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       else this.dataService.updateRead().subscribe()
     }
 
-    document.getElementById('chat-room')?.classList.add('user-chat-show')
-
     if (this.dataService.isSearching.getValue()) {
       this.filterValue = ''
       this.searchTerms.next('')
@@ -457,7 +465,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   copyText(html: string) {
     const md = this.turndownService.turndown(html)
     this.clipboardApi.copyFromContent(md)
-    this.toastr.info(
+    this.toastr.success(
       this.translatePipe.transform('chat.textCopied', 'Текст скопирован')
     )
   }
@@ -545,6 +553,12 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   remove(id: any) {
     if (id === undefined || id === null) return
     this.signalRService.remove(id)
+    this.toastr.success(
+      this.translatePipe.transform(
+        'chat.messageDeletedSuccess',
+        'Сообщение успешно удалено у всех адресатов'
+      )
+    )
   }
 
   sendMsg() {
@@ -596,7 +610,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
             this.resetTextareaHeight()
           }
           this.cdr.detectChanges()
-          this.toastr.info(
+          this.toastr.success(
             this.translatePipe.transform(
               'chat.messageEdited',
               'Сообщение изменено'
@@ -651,7 +665,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   closeUserChat() {
-    document.getElementById('chat-room').classList.remove('user-chat-show')
+    this.dataService.setActiveChat(null, false, null)
     if (this.isFormatPanelOpen) {
       this.isFormatPanelOpen = false
       this.cdr.detectChanges()
@@ -713,6 +727,26 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       )
 
     return parent?.color || '#6c757d'
+  }
+
+  get parentSubjectName(): string | null {
+    if (
+      this.dataService.isGroupChat &&
+      this.dataService.activeSubjectForGroup
+    ) {
+      return this.dataService.activeSubjectForGroup.name
+    }
+    return null
+  }
+
+  get parentSubjectShortName(): string | null {
+    if (
+      this.dataService.isGroupChat &&
+      this.dataService.activeSubjectForGroup
+    ) {
+      return this.dataService.activeSubjectForGroup.shortName
+    }
+    return null
   }
 
   getInitials(name: string): string {

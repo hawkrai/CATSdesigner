@@ -40,6 +40,7 @@
   "chat.messageSizeWarning": "Сообщение пустое или превышает разрешенный размер!",
   "chat.messageSentError": "Ошибка отправки сообщения",
   "chat.messageEdited": "Сообщение изменено",
+  "chat.messageDeletedSuccess": "Сообщение успешно удалено у всех адресатов",
   "chat.showFormat": "Показать форматирование",
   "chat.hideFormat": "Скрыть форматирование",
   "chat.noStudents": "Не удалось найти студентов",

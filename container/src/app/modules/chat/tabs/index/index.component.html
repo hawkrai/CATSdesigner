@@ -88,6 +88,7 @@
   <div
     class="user-chat w-100"
     id="chat-room"
+    [class.user-chat-show]="dataService.activChatId !== null"
     [ngClass]="{ 'no-chat-selected': dataService.activChatId === null }"
   >
     <div class="d-lg-flex" style="height: 100%">
@@ -98,12 +99,16 @@
           class="p-3 p-lg-4 border-bottom"
           style="padding: 0.72rem !important"
         >
-          <div class="row align-items-center">
-            <div class="col-sm-4 col-8">
+          <div
+            class="d-flex align-items-center"
+            [ngClass]="{
+              'search-mode-mobile': isMobileView && isSearchExpanded
+            }"
+          >
+            <div class="chat-header-info">
               <div
                 *ngIf="dataService.activChat"
                 class="media align-items-center"
-                style="width: min-content"
               >
                 <div class="d-block d-lg-none mr-2">
                   <a
@@ -114,79 +119,92 @@
                     <mat-icon>keyboard_arrow_left</mat-icon>
                   </a>
                 </div>
-                <div
-                  *ngIf="!dataService.isGroupChat && dataService.activChatId"
-                  class="media"
-                  style="align-items: center"
-                >
+                <ng-container *ngIf="!(isMobileView && isSearchExpanded)">
                   <div
-                    class="chat-user-img align-self-center mr-3"
-                    [ngClass]="{
-                      online: dataService.activChat.isOnline,
-                      away: !dataService.activChat.isOnline
-                    }"
+                    *ngIf="!dataService.isGroupChat && dataService.activChatId"
+                    class="media align-items-center"
+                    style="flex: 1; min-width: 0"
                   >
-                    <img
-                      style="height: 36px !important"
-                      *ngIf="dataService.activChat.img"
-                      src="{{ dataService.activChat.img }}"
-                      class="rounded-circle avatar-xs"
-                      alt=""
-                    />
-                    <div class="avatar-xs" *ngIf="!dataService.activChat.img">
-                      <span
-                        style="height: 36px !important"
-                        class="avatar-title rounded-circle"
-                      >
-                        {{
-                          dataService.activChat.name.split(' ')[0].charAt(0) +
-                            dataService.activChat.name.split(' ')[1].charAt(0)
-                        }}
-                      </span>
-                    </div>
-                    <span class="user-status"></span>
-                  </div>
-                  <div
-                    class="groupName media-body overflow-hidden"
-                    matTooltip="{{ dataService.activChat.name }}"
-                  >
-                    <h5 class="text-truncate font-size-15 mb-1">
-                      {{ dataService.activChat.name }}
-                    </h5>
-                    <p class="chat-user-message text-truncate mb-0">
-                      {{ dataService.activChat.lastMessage }}
-                    </p>
-                  </div>
-                </div>
-                <div
-                  *ngIf="dataService.isGroupChat && dataService.activChatId"
-                  matTooltip="{{ dataService.activChat.name }}"
-                  class="groupName media-body overflow-hidden"
-                >
-                  <h5
-                    class="font-size-16 mb-0 text-truncate d-flex align-items-center"
-                  >
-                    <span
-                      class="subject-color-dot mr-2"
-                      [style.backgroundColor]="groupColor"
-                    ></span>
-                    <a class="text-reset user-profile-show">{{
-                      dataService.activChat.name
-                    }}</a>
-                    <span
-                      *ngIf="dataService.activChat?.isCompletedForUser"
-                      class="badge badge-warning ml-2"
-                      >{{
-                        'chat.readOnlyBadge' | translate: 'Только чтение'
-                      }}</span
+                    <div
+                      class="chat-user-img align-self-center mr-3"
+                      [ngClass]="{
+                        online: dataService.activChat.isOnline,
+                        away: !dataService.activChat.isOnline
+                      }"
                     >
-                  </h5>
-                </div>
+                      <img
+                        style="height: 36px !important"
+                        *ngIf="dataService.activChat.img"
+                        src="{{ dataService.activChat.img }}"
+                        class="rounded-circle avatar-xs"
+                        alt=""
+                      />
+                      <div class="avatar-xs" *ngIf="!dataService.activChat.img">
+                        <span
+                          style="height: 36px !important"
+                          class="avatar-title rounded-circle"
+                        >
+                          {{
+                            dataService.activChat.name.split(' ')[0].charAt(0) +
+                              dataService.activChat.name.split(' ')[1].charAt(0)
+                          }}
+                        </span>
+                      </div>
+                      <span class="user-status"></span>
+                    </div>
+                    <div
+                      class="groupName media-body overflow-hidden"
+                      matTooltip="{{ dataService.activChat.name }}"
+                    >
+                      <h5 class="text-truncate font-size-15 mb-1">
+                        {{ dataService.activChat.name }}
+                      </h5>
+                      <p class="chat-user-message text-truncate mb-0">
+                        {{ dataService.activChat.lastMessage }}
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    *ngIf="dataService.isGroupChat && dataService.activChatId"
+                    matTooltip="{{ dataService.activChat.name }}"
+                    class="groupName media-body overflow-hidden"
+                  >
+                    <h5 class="font-size-16 mb-0 d-flex align-items-baseline">
+                      <span
+                        class="subject-color-dot mr-2"
+                        [style.backgroundColor]="groupColor"
+                      ></span>
+                      <a class="text-reset user-profile-show text-truncate">{{
+                        dataService.activChat.name
+                      }}</a>
+                      <span
+                        class="subject-name-in-header"
+                        *ngIf="parentSubjectName"
+                      >
+                        <ng-container *ngIf="!isMobileView">{{
+                          parentSubjectName
+                        }}</ng-container>
+                        <ng-container *ngIf="isMobileView">{{
+                          parentSubjectShortName
+                        }}</ng-container>
+                      </span>
+                      <span
+                        *ngIf="dataService.activChat?.isCompletedForUser"
+                        class="badge badge-warning ml-2"
+                        >{{
+                          'chat.readOnlyBadge' | translate: 'Только чтение'
+                        }}</span
+                      >
+                    </h5>
+                  </div>
+                </ng-container>
               </div>
             </div>
-            <div class="col-sm-8 col-4">
+            <div>
               <ul class="list-inline user-chat-nav text-right mb-0">
-                <li class="list-inline-item sliding-search-container">
+                <li
+                  class="list-inline-item sliding-search-container search-list-item"
+                >
                   <div
                     class="search-field-wrapper"
                     [ngClass]="{ expanded: isSearchExpanded }"
@@ -232,7 +250,8 @@
                   *ngIf="
                     dataService.isLecturer &&
                     dataService.isGroupChat &&
-                    dataService.activChat.groupId
+                    dataService.activChat.groupId &&
+                    !(isMobileView && isSearchExpanded)
                   "
                 >
                   <button
@@ -247,7 +266,11 @@
                 </li>
                 <li
                   class="list-inline-item"
-                  *ngIf="isAllowedForUser() && !dataService.isGroupChat"
+                  *ngIf="
+                    isAllowedForUser() &&
+                    !dataService.isGroupChat &&
+                    !(isMobileView && isSearchExpanded)
+                  "
                 >
                   <button
                     type="button"
@@ -349,10 +372,7 @@
 
                     <div class="user-chat-content">
                       <div class="ctext-wrap">
-                        <div
-                          style="width: -webkit-fill-available"
-                          class="ctext-wrap-content"
-                        >
+                        <div class="ctext-wrap-content">
                           <p class="mb-0" [innerHTML]="data.text | safeHtml">
                             <span class="animate-typing" *ngIf="data.istyping">
                               <span class="dot ml-1"></span>
@@ -417,7 +437,16 @@
                           </div>
                         </div>
 
-                        <div class="dropdown align-self-start" ngbDropdown>
+                        <div
+                          class="dropdown align-self-start"
+                          ngbDropdown
+                          container="body"
+                          [placement]="
+                            data.align === 'right'
+                              ? ['auto', 'top-end']
+                              : ['auto', 'top-start']
+                          "
+                        >
                           <a
                             class="dropdown-toggle"
                             role="button"
@@ -428,7 +457,13 @@
                           >
                             <mat-icon>more_vert</mat-icon>
                           </a>
-                          <div class="dropdown-menu" ngbDropdownMenu>
+                          <div
+                            class="dropdown-menu"
+                            ngbDropdownMenu
+                            [ngClass]="{
+                              'dropdown-menu-end': data.align === 'right'
+                            }"
+                          >
                             <a
                               class="dropdown-item"
                               style="width: min-content"
@@ -457,7 +492,7 @@
                             >
                               <mat-icon
                                 style="color: rgba(0, 0, 0, 0.54) !important"
-                                >delete_forever</mat-icon
+                                >delete</mat-icon
                               >
                               {{ 'chat.delete' | translate: 'Удалить' }}
                             </a>
@@ -465,10 +500,7 @@
                         </div>
                       </div>
                       <div class="ctext-wrap" *ngIf="data.message2">
-                        <div
-                          style="width: -webkit-fill-available"
-                          class="ctext-wrap-content"
-                        >
+                        <div class="ctext-wrap-content">
                           <p class="mb-0">
                             {{ data.message2 }}
                           </p>
@@ -479,7 +511,16 @@
                             }}</span>
                           </p>
                         </div>
-                        <div class="dropdown align-self-start" ngbDropdown>
+                        <div
+                          class="dropdown align-self-start"
+                          ngbDropdown
+                          container="body"
+                          [placement]="
+                            data.align === 'right'
+                              ? ['auto', 'top-end']
+                              : ['auto', 'top-start']
+                          "
+                        >
                           <a
                             class="dropdown-toggle"
                             href="#"
@@ -491,7 +532,13 @@
                           >
                             <mat-icon>more_vert</mat-icon>
                           </a>
-                          <div class="dropdown-menu" ngbDropdownMenu>
+                          <div
+                            class="dropdown-menu"
+                            ngbDropdownMenu
+                            [ngClass]="{
+                              'dropdown-menu-end': data.align === 'right'
+                            }"
+                          >
                             <a
                               class="dropdown-item"
                               (click)="copyText(data.text)"
@@ -508,7 +555,7 @@
                             >
                               <mat-icon
                                 style="color: rgba(0, 0, 0, 0.54) !important"
-                                >delete_forever</mat-icon
+                                >delete</mat-icon
                               >
                               {{ 'chat.delete' | translate: 'Удалить' }}
                             </a>

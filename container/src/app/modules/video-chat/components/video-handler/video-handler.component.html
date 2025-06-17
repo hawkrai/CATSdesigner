@@ -62,7 +62,11 @@
             </div>
           </div>
 
-          <div class="participant-tile self-participant" ngDraggable>
+          <div
+            class="participant-tile self-participant"
+            ngDraggable
+            (click)="onSelfVideoClick()"
+          >
             <video
               #selfVideoElement
               class="participant-video"
@@ -91,7 +95,11 @@
             >
               <span>{{ localParticipant?.initials }}</span>
             </div>
-            <div class="participant-info-overlay" *ngIf="localParticipant">
+            <div
+              class="participant-info-overlay"
+              *ngIf="localParticipant"
+              [class.visible]="isSelfOverlayVisible"
+            >
               <span
                 class="material-icons status-icon"
                 *ngIf="!localParticipant?.micOn"
@@ -102,8 +110,7 @@
                 *ngIf="!localParticipant?.cameraOn"
                 >videocam_off</span
               >
-              <span class="participant-name"
-                >{{ localParticipant?.displayName }}
+              <span class="participant-name">
                 {{ 'videochat.youSuffix' | translate: '(Вы)' }}</span
               >
             </div>
