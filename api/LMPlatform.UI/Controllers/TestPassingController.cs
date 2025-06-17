@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Net;
@@ -11,6 +12,7 @@ using Application.Core.Helpers;
 using Application.Core.SLExcel;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.ConceptManagement;
+using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Infrastructure.SubjectManagement;
@@ -29,6 +31,10 @@ namespace LMPlatform.UI.Controllers
     [JwtAuth]
     public class TestPassingController : BasicController
     {
+        private readonly LazyDependency<IFilesManagementService> filesManagementService = new LazyDependency<IFilesManagementService>();
+        public IFilesManagementService FilesManagementService => filesManagementService.Value;
+
+
         [JwtAuth]
         [HttpGet]
         public ActionResult StudentsTesting(int subjectId)
@@ -292,6 +298,8 @@ namespace LMPlatform.UI.Controllers
         public JsonResult AnswerQuestionAndGetNextMobile(IEnumerable<AnswerViewModel> answers, int testId,
             int questionNumber, int userId)
         {
+
+
             this.TestPassingService.MakeUserAnswer(
                 answers != null && answers.Any() ? answers.Select(answerModel => answerModel.ToAnswer()) : null, userId,
                 testId, questionNumber);
@@ -417,7 +425,16 @@ namespace LMPlatform.UI.Controllers
 
             foreach (var concept in test.Questions.Where(e => e.ConceptId.HasValue).Select(x => x.Concept).OrderBy(e => e.Id))
             {
-                thems.Add(new { name = concept.Name, id = concept.Id });
+                string filePath = null;
+                var attachments = FilesManagementService.GetAttachments(concept.Container);
+                var attachment = attachments.FirstOrDefault();
+
+                if (attachment != null)
+                {
+                    filePath = $"{attachment.PathName}//{attachment.FileName}";
+                }
+
+                thems.Add(new { name = concept.Name, id = concept.Id, container = concept.Container, filePath });
             }
 
             var answers = this.TestPassingService.GetAnswersForEndedTest(testId, UserContext.CurrentUserId);            
