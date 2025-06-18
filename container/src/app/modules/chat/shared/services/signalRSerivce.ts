@@ -127,6 +127,15 @@ export class SignalRService {
         }
       }
     )
+
+    this.hubConnection.on('GroupCallStarted', (groupChatId: number) => {
+      this.dataService.setGroupCallState(groupChatId, true)
+    })
+
+    this.hubConnection.on('GroupCallEnded', (groupChatId: number) => {
+      this.dataService.setGroupCallState(groupChatId, false)
+      this.videoChatService.handleGroupCallEnded(groupChatId)
+    })
   }
 
   public addChat(firstId: number, secondId: number, chatId: number) {
@@ -264,5 +273,45 @@ export class SignalRService {
 
   public join(userId: number, role: string) {
     return this.hubConnection.invoke('Join', userId, role)
+  }
+
+  public startGroupCall(groupChatId: number) {
+    return this.hubConnection.invoke('StartGroupCall', groupChatId)
+  }
+
+  public endGroupCall(groupChatId: number) {
+    return this.hubConnection.invoke('EndGroupCall', groupChatId)
+  }
+
+  public joinGroupCall(groupChatId: number) {
+    return this.hubConnection.invoke('JoinGroupCall', groupChatId)
+  }
+
+  public leaveGroupCall(groupChatId: number) {
+    return this.hubConnection.invoke('LeaveGroupCall', groupChatId)
+  }
+
+  public sendGroupOffer(targetConnectionId: string, offer: any) {
+    return this.hubConnection.invoke(
+      'SendGroupOffer',
+      targetConnectionId,
+      offer
+    )
+  }
+
+  public sendGroupAnswer(targetConnectionId: string, answer: any) {
+    return this.hubConnection.invoke(
+      'SendGroupAnswer',
+      targetConnectionId,
+      answer
+    )
+  }
+
+  public sendGroupIceCandidate(targetConnectionId: string, candidate: any) {
+    return this.hubConnection.invoke(
+      'SendGroupIceCandidate',
+      targetConnectionId,
+      candidate
+    )
   }
 }
