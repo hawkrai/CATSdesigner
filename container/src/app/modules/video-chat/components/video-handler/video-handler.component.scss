@@ -99,6 +99,18 @@
   &:active {
     cursor: grabbing;
   }
+
+  .participant-info-overlay {
+    @media (max-width: 991.98px) {
+      transition: opacity 0.4s ease-in-out;
+      opacity: 0;
+      pointer-events: none;
+
+      &.visible {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .avatar-placeholder {
@@ -154,23 +166,13 @@
   padding: 4px 10px;
   display: flex;
   align-items: center;
-  gap: 6px;
   font-size: 0.8rem;
-  backdrop-filter: blur(4px);
-
-  @media (max-width: 991.98px) {
-    transition: opacity 0.4s ease-in-out;
-    opacity: 0;
-    pointer-events: none;
-
-    &.visible {
-      opacity: 1;
-    }
-  }
 
   .status-icon {
     font-size: 1rem;
     color: #f87171;
+    display: inline-flex;
+    align-items: center;
   }
 
   .participant-name {
