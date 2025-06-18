@@ -19,6 +19,7 @@ export class DataService {
   public activChatId: number | null = null
   private _activChatIdSubject = new BehaviorSubject<number | null>(null)
   public activChatId$ = this._activChatIdSubject.asObservable()
+  public activeGroupCalls = new BehaviorSubject<Set<number>>(new Set())
   public readMessageGroupCount: BehaviorSubject<number> =
     new BehaviorSubject<number>(0)
   public readMessageCount: BehaviorSubject<number> =
@@ -678,6 +679,16 @@ export class DataService {
 
   public SendImg(formData: FormData) {
     return this.fileApiService.uploadFile(formData)
+  }
+
+  public setGroupCallState(groupChatId: number, isActive: boolean): void {
+    const currentActiveCalls = this.activeGroupCalls.getValue()
+    if (isActive) {
+      currentActiveCalls.add(groupChatId)
+    } else {
+      currentActiveCalls.delete(groupChatId)
+    }
+    this.activeGroupCalls.next(new Set(currentActiveCalls))
   }
 
   public getNumChatById(id: number): number {
