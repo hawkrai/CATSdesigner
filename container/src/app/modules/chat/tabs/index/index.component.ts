@@ -105,25 +105,41 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('searchInput') searchInput: ElementRef
   @HostListener('window:resize', ['$event'])
   ngOnInit(): void {
-    this.dataService.activChatId$
+    this.contactService.openChatComand
       .pipe(
         takeUntil(this.destroy$),
-        filter((chatId) => chatId !== null && !!this.dataService.activChat)
+        filter((chatToOpen) => !!chatToOpen)
       )
-      .subscribe((activeChatId) => {
-        const chatToActivate = { ...this.dataService.activChat }
-        if (chatToActivate && chatToActivate.id === activeChatId) {
-          this.activateChat(chatToActivate)
-        }
-      })
-
-    this.contactService.openChatComand
-      .pipe(takeUntil(this.destroy$))
       .subscribe((chatToOpen) => {
-        if (chatToOpen && chatToOpen.id !== this.dataService.activChatId) {
-          this.activateChat(chatToOpen)
-          this.activetab = 2
+        this.activetab = 2
+
+        if (!chatToOpen.id) {
+          this.contactService.CreateChat(chatToOpen.userId).subscribe(
+            (chatId) => {
+              if (chatId) {
+                chatToOpen.id = chatId
+                this.dataService.setActiveChat(chatToOpen.id, false, chatToOpen)
+                this.dataService.updateOrAddChat(chatToOpen)
+                this.signalRService.addChat(
+                  this.dataService.user.id,
+                  chatToOpen.userId,
+                  chatId
+                )
+              }
+            },
+            (error) => console.error('Error creating chat:', error)
+          )
+        } else {
+          this.dataService.setActiveChat(chatToOpen.id, false, chatToOpen)
         }
+
+        if (this.dataService.isSearching.getValue()) {
+          this.filterValue = ''
+          this.searchTerms.next('')
+        }
+
+        this.contactService.openChatComand.next(null)
+        this.cdr.detectChanges()
       })
 
     this.dataService.readMessageChatCount
@@ -167,6 +183,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dataService.initialMessagesLoaded
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        this.dataService.markActiveChatAsRead()
         this.zone.runOutsideAngular(() => {
           requestAnimationFrame(() => {
             this.scrollToBottom(false)
@@ -193,6 +210,30 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
           this.studentListDialogRef.close()
           this.studentListDialogRef = null
         }
+      })
+
+    this.dataService.activeChatUpdated
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.cdr.detectChanges()
+      })
+
+    this.dataService.scrollToBottom
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.isScrollAtBottom()) {
+          setTimeout(() => this.scrollToBottom(true), 100)
+        }
+      })
+
+    this.dataService.searchResultsLoaded
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.zone.runOutsideAngular(() => {
+          requestAnimationFrame(() => {
+            this.scrollToBottom(false)
+          })
+        })
       })
 
     this.tryRestoreChat()
@@ -325,52 +366,6 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.loadMoreMessages()
     }
-  }
-
-  activateChat(chatData: any) {
-    if (!chatData || !chatData.id) return
-    if (
-      this.dataService.activChatId === chatData.id &&
-      (!chatData.unread || chatData.unread === 0)
-    )
-      return
-
-    if (this.dataService.activChatId === chatData.id) {
-      if (chatData.unread > 0) {
-        const isGroup =
-          !!chatData.groups || !!chatData.groupId || !!chatData.shortName
-        if (isGroup) {
-          this.dataService.groupRead().subscribe()
-        } else {
-          this.dataService.updateRead().subscribe()
-        }
-      }
-      return
-    }
-
-    let isGroup =
-      !!chatData.groups || !!chatData.groupId || !!chatData.shortName
-    const initialUnreadCount = chatData.unread || 0
-
-    if (initialUnreadCount > 0) {
-      if (isGroup) {
-        this.dataService.groupRead().subscribe()
-      } else {
-        this.dataService.updateRead().subscribe()
-      }
-    } else if (
-      this.dataService.activChatId === chatData.id &&
-      chatData.unread > 0
-    ) {
-      if (isGroup) this.dataService.groupRead().subscribe()
-      else this.dataService.updateRead().subscribe()
-    }
-
-    if (this.dataService.isSearching.getValue()) {
-      this.filterValue = ''
-      this.searchTerms.next('')
-    }
-    this.cdr.detectChanges()
   }
 
   loadMoreMessages() {
@@ -586,25 +581,23 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       return
     }
 
-    const rawMd = this.currentMsg.text
-    this.currentMsg.text = this.markdownService.toHtml(rawMd)
+    const htmlText = this.markdownService.toHtml(this.currentMsg.text)
 
     if (this.isEdit) {
       const updatePromise = this.dataService.isGroupChat
         ? this.signalRService.updateGroupMessage(
             this.editedMsg.id,
-            this.currentMsg.text,
+            htmlText,
             this.dataService.activChatId
           )
         : this.signalRService.updateChatMessage(
             this.editedMsg.id,
-            this.currentMsg.text,
+            htmlText,
             this.dataService.activChatId
           )
 
       updatePromise.then(
         () => {
-          this.currentMsg.text = ''
           this.stopEdit()
           if (!this.isFormatPanelOpen) {
             this.resetTextareaHeight()
@@ -628,12 +621,16 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       )
     } else {
-      this.currentMsg.userId = this.dataService.user.id
-      this.currentMsg.chatId = this.dataService.activChatId
+      const payload: MessageCto = {
+        ...this.currentMsg,
+        text: htmlText,
+        userId: this.dataService.user.id,
+        chatId: this.dataService.activChatId,
+      }
 
       const sendPromise = this.dataService.isGroupChat
-        ? this.signalRService.sendGroupMessage(this.currentMsg)
-        : this.signalRService.sendMessage(this.currentMsg)
+        ? this.signalRService.sendGroupMessage(payload)
+        : this.signalRService.sendMessage(payload)
 
       sendPromise.then(
         () => {
@@ -657,9 +654,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       )
 
       if (this.dataService.isGroupChat) {
-        this.dataService.groupRead()
+        this.dataService.groupRead().subscribe()
       } else {
-        this.dataService.updateRead()
+        this.dataService.updateRead().subscribe()
       }
     }
   }
@@ -793,7 +790,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.componentRef?.directiveRef) return false
 
     const element = this.componentRef.directiveRef.elementRef.nativeElement
-    return element.scrollHeight - element.scrollTop - element.clientHeight < 100
+    return element.scrollHeight - element.scrollTop - element.clientHeight < 400
   }
 
   applyFormat(tag: FormatTag) {

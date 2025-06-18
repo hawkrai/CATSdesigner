@@ -37,12 +37,15 @@ namespace Repository
             .Take(limit)
             .ToListAsync();
 
-        public async Task<IEnumerable<ChatMessage>> SearchUserChatMessagesAsync(int chatId, string searchText, bool trackChanges, int limit, int offset)
-        {
-            return await FindByCondition(c => c.ChatId.Equals(chatId), trackChanges)
-                .Include(x => x.User)
-                .OrderByDescending(c => c.Time)
-                .ToListAsync();
-        }
+        public async Task<IEnumerable<ChatMessage>> SearchUserChatMessagesAsync(int chatId, string searchText, bool trackChanges, int limit, int offset) =>
+            await FindByCondition(c => c.ChatId.Equals(chatId), trackChanges)
+            .Include(x => x.User)
+            .OrderByDescending(c => c.Time)
+            .ToListAsync();
+
+        public async Task<IEnumerable<ChatMessage>> GetUserChatMessagesAsync(List<int> chatIds, bool trackChanges) =>
+            await FindByCondition(c => chatIds.Contains(c.ChatId), trackChanges)
+            .Include(x => x.User)
+            .ToListAsync();
     }
 }

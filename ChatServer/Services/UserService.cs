@@ -154,13 +154,18 @@ namespace Services
         {
             var user = await _repository.Users.GetUserChats(userId, false);
 
-            if (user == null || user.UserChats == null)
+            if (user == null || user.UserChats == null || !user.UserChats.Any())
             {
                 return new List<ChatDto>();
             }
 
             var chats = user.UserChats.ToList();
+            var chatIds = chats.Select(c => c.Id).ToList();
+
+            var allMessages = (await _repository.UserChatMessages.GetUserChatMessagesAsync(chatIds, false)).GroupBy(m => m.ChatId);
+
             var chatsDTO = _mapper.Map<List<ChatDto>>(chats);
+            var messageGroups = allMessages.ToDictionary(g => g.Key, g => g.ToList());
 
             for (int i = 0; i < chats.Count; i++)
             {
@@ -176,34 +181,33 @@ namespace Services
                 currentChatDto.UserId = secondUser.UserId;
                 currentChatDto.IsOnline = secondUser.IsOnline;
                 currentChatDto.Img = secondUser.Avatar;
-                string fullName = secondUser.FullName;
-                Lecturer lecturer = await _repository.Lecturers.GetLecturerAsync(secondUser.UserId, false);
 
-                if (lecturer != null)
-                {
-                    fullName = lecturer.FullName;
-                }
-                else
+                Lecturer lecturer = await _repository.Lecturers.GetLecturerAsync(secondUser.UserId, false);
+                currentChatDto.Name = lecturer?.FullName;
+
+                if (string.IsNullOrEmpty(currentChatDto.Name))
                 {
                     Student student = await _repository.Students.GetStudentAsync(secondUser.UserId, false);
-                    if (student != null)
-                    {
-                        fullName = student.FullName;
-                    }
+                    currentChatDto.Name = student?.FullName;
                 }
-                currentChatDto.Name = fullName;
 
-                var history = user.UserChatHistory.FirstOrDefault(x => x.ChatId == chats[i].Id);
-                var messages = currentChat.Messages ?? new List<ChatMessage>();
+                if (string.IsNullOrEmpty(currentChatDto.Name))
+                {
+                    currentChatDto.Name = secondUser.FullName;
+                }
+
+                var history = user.UserChatHistory.FirstOrDefault(x => x.ChatId == currentChat.Id);
+
+                var messagesForThisChat = messageGroups.ContainsKey(currentChat.Id) ? messageGroups[currentChat.Id] : new List<ChatMessage>();
+
                 int unreadCount = 0;
-
                 if (history != null)
                 {
-                    unreadCount = messages.Count(x => x.Time > history.Date);
+                    unreadCount = messagesForThisChat.Count(x => x.Time > history.Date);
                 }
                 else
                 {
-                    unreadCount = messages.Count;
+                    unreadCount = messagesForThisChat.Count;
                 }
                 currentChatDto.Unread = unreadCount;
             }

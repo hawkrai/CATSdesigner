@@ -152,21 +152,14 @@
                       </div>
                       <span class="user-status"></span>
                     </div>
-                    <div
-                      class="groupName media-body overflow-hidden"
-                      matTooltip="{{ dataService.activChat.name }}"
-                    >
+                    <div class="groupName media-body overflow-hidden">
                       <h5 class="text-truncate font-size-15 mb-1">
                         {{ dataService.activChat.name }}
                       </h5>
-                      <p class="chat-user-message text-truncate mb-0">
-                        {{ dataService.activChat.lastMessage }}
-                      </p>
                     </div>
                   </div>
                   <div
                     *ngIf="dataService.isGroupChat && dataService.activChatId"
-                    matTooltip="{{ dataService.activChat.name }}"
                     class="groupName media-body overflow-hidden"
                   >
                     <h5 class="font-size-16 mb-0 d-flex align-items-baseline">
@@ -380,12 +373,6 @@
                               <span class="dot ml-1"></span>
                             </span>
                           </p>
-                          <p class="chat-time mb-0">
-                            <i class="ri-time-line align-middle"></i>
-                            <span class="align-middle" *ngIf="data.time">{{
-                              data.time | date: 'dd.MM.yyyy HH:mm:ss'
-                            }}</span>
-                          </p>
 
                           <ul
                             class="list-inline message-img mb-0"
@@ -398,9 +385,12 @@
                                 title="Project 1"
                               >
                                 <img
-                                  :src="catService/file/Download?chatId={{
-                                    dataService.activChatId
-                                  }}&file={{ data.fileContent }}"
+                                  [src]="
+                                    'catService/file/Download?chatId=' +
+                                    dataService.activChatId +
+                                    '&file=' +
+                                    data.fileContent
+                                  "
                                   alt=""
                                   class="rounded border"
                                 />
@@ -435,6 +425,12 @@
                               </div>
                             </div>
                           </div>
+                          <p class="chat-time mb-0">
+                            <i class="ri-time-line align-middle"></i>
+                            <span class="align-middle" *ngIf="data.time">{{
+                              data.time | date: 'dd.MM.yyyy HH:mm:ss'
+                            }}</span>
+                          </p>
                         </div>
 
                         <div

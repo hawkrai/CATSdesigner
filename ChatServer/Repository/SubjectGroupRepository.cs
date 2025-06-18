@@ -17,6 +17,8 @@ namespace Repository
 
         public async Task<IEnumerable<SubjectGroup>> GetSubjects(int groupId, bool includeDetachedGroups = false) =>
             await FindByCondition(c => c.GroupId == groupId && ((c.IsActiveOnCurrentGroup == true && !includeDetachedGroups) || (includeDetachedGroups)), false)
+            .Include(x => x.Subject)
+            .Include(x => x.Group)
             .Where(x => !x.Subject.IsArchive)
             .OrderBy(x => x.Subject.ShortName)
             .ToListAsync();

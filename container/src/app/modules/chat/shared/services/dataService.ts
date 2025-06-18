@@ -55,6 +55,9 @@ export class DataService {
     new BehaviorSubject<boolean>(false)
   private loadingTimeout: any = null
   public initialMessagesLoaded = new Subject<void>()
+  public searchResultsLoaded = new Subject<void>()
+  public activeChatUpdated = new Subject<void>()
+  public scrollToBottom = new Subject<void>()
   private activeChatReadTimer: any = null
   public readonly defaultPageSize: number = 20
   public readonly searchPageSize: number = 20
@@ -257,12 +260,34 @@ export class DataService {
       )
   }
 
+  public markActiveChatAsRead(): void {
+    if (!this.activChat || (this.activChat.unread || 0) === 0) {
+      return
+    }
+
+    if (this.isGroupChat) {
+      this.groupRead().subscribe()
+    } else {
+      this.updateRead().subscribe()
+    }
+  }
+
   public SetStatus(id: number, isOnline: boolean): void {
     var chats = this.chats.getValue()
     var chatNum = chats.findIndex((x) => x.userId == id)
     if (chatNum > -1) {
       chats[chatNum].isOnline = isOnline
       this.chats.next([...chats])
+    }
+
+    const currentActiveChat = this.activChat
+    if (
+      currentActiveChat &&
+      !this.isGroupChat &&
+      currentActiveChat.userId === id
+    ) {
+      this.activChat = { ...currentActiveChat, isOnline: isOnline }
+      this.activeChatUpdated.next()
     }
   }
 
@@ -426,6 +451,7 @@ export class DataService {
         this.hasMoreSearchResults = results.length === this.searchPageSize
         this.searchResults.next([...results].reverse())
         this.searchOffset = results.length
+        this.searchResultsLoaded.next()
       })
   }
 
@@ -529,6 +555,7 @@ export class DataService {
         const currentMessages = this.messages.getValue()
         if (!currentMessages.some((m) => m.id === messageWithDate.id)) {
           this.messages.next([...currentMessages, messageWithDate])
+          this.scrollToBottom.next()
           if (!this.activChat?.isCompletedForUser) {
             this.scheduleActiveChatRead()
           }

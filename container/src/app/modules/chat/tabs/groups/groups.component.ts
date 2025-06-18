@@ -94,6 +94,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     }
 
     this.dataService.setActiveChat(value.id, true, value, parentSubject)
+    this.dataService.markActiveChatAsRead()
   }
 
   onCompletedFilterChange(checked: boolean): void {
