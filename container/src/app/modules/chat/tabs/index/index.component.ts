@@ -586,25 +586,23 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       return
     }
 
-    const rawMd = this.currentMsg.text
-    this.currentMsg.text = this.markdownService.toHtml(rawMd)
+    const htmlText = this.markdownService.toHtml(this.currentMsg.text)
 
     if (this.isEdit) {
       const updatePromise = this.dataService.isGroupChat
         ? this.signalRService.updateGroupMessage(
             this.editedMsg.id,
-            this.currentMsg.text,
+            htmlText,
             this.dataService.activChatId
           )
         : this.signalRService.updateChatMessage(
             this.editedMsg.id,
-            this.currentMsg.text,
+            htmlText,
             this.dataService.activChatId
           )
 
       updatePromise.then(
         () => {
-          this.currentMsg.text = ''
           this.stopEdit()
           if (!this.isFormatPanelOpen) {
             this.resetTextareaHeight()
@@ -628,12 +626,16 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       )
     } else {
-      this.currentMsg.userId = this.dataService.user.id
-      this.currentMsg.chatId = this.dataService.activChatId
+      const payload: MessageCto = {
+        ...this.currentMsg,
+        text: htmlText,
+        userId: this.dataService.user.id,
+        chatId: this.dataService.activChatId,
+      }
 
       const sendPromise = this.dataService.isGroupChat
-        ? this.signalRService.sendGroupMessage(this.currentMsg)
-        : this.signalRService.sendMessage(this.currentMsg)
+        ? this.signalRService.sendGroupMessage(payload)
+        : this.signalRService.sendMessage(payload)
 
       sendPromise.then(
         () => {
@@ -657,9 +659,9 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       )
 
       if (this.dataService.isGroupChat) {
-        this.dataService.groupRead()
+        this.dataService.groupRead().subscribe()
       } else {
-        this.dataService.updateRead()
+        this.dataService.updateRead().subscribe()
       }
     }
   }
