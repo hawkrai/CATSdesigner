@@ -56,6 +56,7 @@ export class DataService {
   private loadingTimeout: any = null
   public initialMessagesLoaded = new Subject<void>()
   public activeChatUpdated = new Subject<void>()
+  public scrollToBottom = new Subject<void>()
   private activeChatReadTimer: any = null
   public readonly defaultPageSize: number = 20
   public readonly searchPageSize: number = 20
@@ -552,6 +553,7 @@ export class DataService {
         const currentMessages = this.messages.getValue()
         if (!currentMessages.some((m) => m.id === messageWithDate.id)) {
           this.messages.next([...currentMessages, messageWithDate])
+          this.scrollToBottom.next()
           if (!this.activChat?.isCompletedForUser) {
             this.scheduleActiveChatRead()
           }

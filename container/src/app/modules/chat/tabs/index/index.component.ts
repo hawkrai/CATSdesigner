@@ -218,6 +218,14 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
         this.cdr.detectChanges()
       })
 
+    this.dataService.scrollToBottom
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.isScrollAtBottom()) {
+          setTimeout(() => this.scrollToBottom(true), 100)
+        }
+      })
+
     this.tryRestoreChat()
     this.checkScreenWidth()
   }
@@ -772,7 +780,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.componentRef?.directiveRef) return false
 
     const element = this.componentRef.directiveRef.elementRef.nativeElement
-    return element.scrollHeight - element.scrollTop - element.clientHeight < 100
+    return element.scrollHeight - element.scrollTop - element.clientHeight < 400
   }
 
   applyFormat(tag: FormatTag) {
