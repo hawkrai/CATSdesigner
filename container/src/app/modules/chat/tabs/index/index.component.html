@@ -152,10 +152,7 @@
                       </div>
                       <span class="user-status"></span>
                     </div>
-                    <div
-                      class="groupName media-body overflow-hidden"
-                      matTooltip="{{ dataService.activChat.name }}"
-                    >
+                    <div class="groupName media-body overflow-hidden">
                       <h5 class="text-truncate font-size-15 mb-1">
                         {{ dataService.activChat.name }}
                       </h5>
@@ -166,7 +163,6 @@
                   </div>
                   <div
                     *ngIf="dataService.isGroupChat && dataService.activChatId"
-                    matTooltip="{{ dataService.activChat.name }}"
                     class="groupName media-body overflow-hidden"
                   >
                     <h5 class="font-size-16 mb-0 d-flex align-items-baseline">
