@@ -226,6 +226,16 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       })
 
+    this.dataService.searchResultsLoaded
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.zone.runOutsideAngular(() => {
+          requestAnimationFrame(() => {
+            this.scrollToBottom(false)
+          })
+        })
+      })
+
     this.tryRestoreChat()
     this.checkScreenWidth()
   }

@@ -55,6 +55,7 @@ export class DataService {
     new BehaviorSubject<boolean>(false)
   private loadingTimeout: any = null
   public initialMessagesLoaded = new Subject<void>()
+  public searchResultsLoaded = new Subject<void>()
   public activeChatUpdated = new Subject<void>()
   public scrollToBottom = new Subject<void>()
   private activeChatReadTimer: any = null
@@ -450,6 +451,7 @@ export class DataService {
         this.hasMoreSearchResults = results.length === this.searchPageSize
         this.searchResults.next([...results].reverse())
         this.searchOffset = results.length
+        this.searchResultsLoaded.next()
       })
   }
 
