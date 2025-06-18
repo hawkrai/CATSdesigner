@@ -1,120 +1,172 @@
 <ng-container *ngIf="callState$ | async as callState">
   <div class="video-call-overlay" *ngIf="callState.shouldShowOverlay">
     <div
-      [ngResizable]="callState.isActive"
+      [ngResizable]="
+        callState.isActive ||
+        videoChatService.activeGroupCallId.getValue() !== null
+      "
       [rzHandles]="'se,sw,ne,nw'"
       [rzMinWidth]="300"
       [rzMinHeight]="200"
       class="video-call-window"
       [ngClass]="{
-        'active-call': callState.isActive && !callState.isIncoming,
+        'active-call':
+          callState.isActive ||
+          videoChatService.activeGroupCallId.getValue() !== null,
         'incoming-call': callState.isIncoming,
         'outgoing-call':
           !callState.isActive && !callState.isIncoming && callState.isOutgoing
       }"
     >
       <div
-        *ngIf="callState.isActive && !callState.isIncoming"
+        *ngIf="
+          callState.isActive ||
+          videoChatService.activeGroupCallId.getValue() !== null
+        "
         class="video-call-active-content"
       >
-        <div class="video-grid">
-          <div class="participant-tile remote-participant">
-            <video
-              #remoteVideoElement
-              class="participant-video"
-              [class.hidden]="!remoteParticipant?.cameraOn || !hasRemoteStream"
-              autoplay
-              playsinline
-              (loadedmetadata)="onRemoteVideoMetadataLoaded()"
-            ></video>
-            <div
-              class="avatar-placeholder"
-              *ngIf="
-                remoteParticipant?.avatarUrl &&
-                (!remoteParticipant?.cameraOn || !hasRemoteStream)
-              "
-            >
-              <img [src]="remoteParticipant?.avatarUrl" alt="Remote Avatar" />
-            </div>
-            <div
-              class="avatar-placeholder initials-placeholder"
-              *ngIf="
-                !remoteParticipant?.avatarUrl &&
-                (!remoteParticipant?.cameraOn || !hasRemoteStream)
-              "
-            >
-              <span>{{ remoteParticipant?.initials }}</span>
-            </div>
-            <div class="participant-info-overlay" *ngIf="remoteParticipant">
-              <span
-                class="material-icons status-icon"
-                *ngIf="!remoteParticipant?.micOn"
-                >mic_off</span
-              >
-              <span
-                class="material-icons status-icon"
-                *ngIf="!remoteParticipant?.cameraOn"
-                >videocam_off</span
-              >
-              <span class="participant-name">{{
-                remoteParticipant?.displayName
-              }}</span>
-            </div>
-          </div>
-
-          <div
-            class="participant-tile self-participant"
-            ngDraggable
-            (click)="onSelfVideoClick()"
+        <div
+          #videoContainer
+          class="video-grid"
+          [ngClass]="
+            'participants-' + ((groupParticipants$ | async)?.length || 1)
+          "
+        >
+          <ng-container
+            *ngIf="videoChatService.activeGroupCallId.getValue() !== null"
           >
-            <video
-              #selfVideoElement
-              class="participant-video"
-              [class.hidden]="
-                !localParticipant?.cameraOn || !localParticipant?.stream
-              "
-              autoplay
-              muted
-              playsinline
-            ></video>
             <div
-              class="avatar-placeholder"
-              *ngIf="
-                localParticipant?.avatarUrl &&
-                (!localParticipant?.cameraOn || !localParticipant?.stream)
+              *ngFor="
+                let p of groupParticipants$ | async;
+                trackBy: trackByConnectionId
               "
+              class="participant-tile"
+              [ngClass]="{ 'self-participant-tile': p.isCurrentUser }"
             >
-              <img [src]="localParticipant?.avatarUrl" alt="Local Avatar" />
+              <video
+                [srcObject]="p.stream"
+                [muted]="p.isCurrentUser"
+                autoplay
+                playsinline
+                class="participant-video"
+                [class.hidden]="!p.cameraOn || !p.stream"
+              ></video>
+              <div class="avatar-placeholder" *ngIf="!p.cameraOn || !p.stream">
+                <img *ngIf="p.avatarUrl" [src]="p.avatarUrl" alt="Avatar" />
+                <div class="initials-placeholder" *ngIf="!p.avatarUrl">
+                  <span>{{ getInitials(p.displayName) }}</span>
+                </div>
+              </div>
+              <div class="participant-info-overlay">
+                <mat-icon class="status-icon" *ngIf="!p.micOn"
+                  >mic_off</mat-icon
+                >
+                <span class="participant-name">
+                  {{ p.displayName }}
+                  <ng-container *ngIf="p.isCurrentUser">{{
+                    'videochat.youSuffix' | translate: '(Вы)'
+                  }}</ng-container>
+                </span>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container
+            *ngIf="videoChatService.activeGroupCallId.getValue() === null"
+          >
+            <div class="participant-tile remote-participant">
+              <video
+                #remoteVideoElement
+                class="participant-video"
+                [class.hidden]="
+                  !remoteParticipant?.cameraOn || !hasRemoteStream
+                "
+                autoplay
+                playsinline
+              ></video>
+              <div
+                class="avatar-placeholder"
+                *ngIf="
+                  remoteParticipant?.avatarUrl &&
+                  (!remoteParticipant?.cameraOn || !hasRemoteStream)
+                "
+              >
+                <img [src]="remoteParticipant.avatarUrl" alt="Remote Avatar" />
+              </div>
+              <div
+                class="avatar-placeholder initials-placeholder"
+                *ngIf="
+                  !remoteParticipant?.avatarUrl &&
+                  (!remoteParticipant?.cameraOn || !hasRemoteStream)
+                "
+              >
+                <span>{{ remoteParticipant?.initials }}</span>
+              </div>
+              <div class="participant-info-overlay" *ngIf="remoteParticipant">
+                <mat-icon class="status-icon" *ngIf="!remoteParticipant?.micOn"
+                  >mic_off</mat-icon
+                >
+                <mat-icon
+                  class="status-icon"
+                  *ngIf="!remoteParticipant?.cameraOn"
+                  >videocam_off</mat-icon
+                >
+                <span class="participant-name">{{
+                  remoteParticipant.displayName
+                }}</span>
+              </div>
             </div>
             <div
-              class="avatar-placeholder initials-placeholder"
-              *ngIf="
-                !localParticipant?.avatarUrl &&
-                (!localParticipant?.cameraOn || !localParticipant?.stream)
-              "
+              class="participant-tile self-participant"
+              ngDraggable
+              (click)="onSelfVideoClick()"
             >
-              <span>{{ localParticipant?.initials }}</span>
+              <video
+                #selfVideoElement
+                class="participant-video"
+                [class.hidden]="
+                  !localParticipant?.cameraOn || !localParticipant?.stream
+                "
+                autoplay
+                muted
+                playsinline
+              ></video>
+              <div
+                class="avatar-placeholder"
+                *ngIf="
+                  localParticipant?.avatarUrl &&
+                  (!localParticipant?.cameraOn || !localParticipant?.stream)
+                "
+              >
+                <img [src]="localParticipant.avatarUrl" alt="Local Avatar" />
+              </div>
+              <div
+                class="avatar-placeholder initials-placeholder"
+                *ngIf="
+                  !localParticipant?.avatarUrl &&
+                  (!localParticipant?.cameraOn || !localParticipant?.stream)
+                "
+              >
+                <span>{{ localParticipant?.initials }}</span>
+              </div>
+              <div
+                class="participant-info-overlay"
+                *ngIf="localParticipant"
+                [class.visible]="isSelfOverlayVisible"
+              >
+                <mat-icon class="status-icon" *ngIf="!localParticipant?.micOn"
+                  >mic_off</mat-icon
+                >
+                <mat-icon
+                  class="status-icon"
+                  *ngIf="!localParticipant?.cameraOn"
+                  >videocam_off</mat-icon
+                >
+                <span class="participant-name">{{
+                  'videochat.youSuffix' | translate: '(Вы)'
+                }}</span>
+              </div>
             </div>
-            <div
-              class="participant-info-overlay"
-              *ngIf="localParticipant"
-              [class.visible]="isSelfOverlayVisible"
-            >
-              <span
-                class="material-icons status-icon"
-                *ngIf="!localParticipant?.micOn"
-                >mic_off</span
-              >
-              <span
-                class="material-icons status-icon"
-                *ngIf="!localParticipant?.cameraOn"
-                >videocam_off</span
-              >
-              <span class="participant-name">
-                {{ 'videochat.youSuffix' | translate: '(Вы)' }}</span
-              >
-            </div>
-          </div>
+          </ng-container>
         </div>
 
         <div class="call-controls">
