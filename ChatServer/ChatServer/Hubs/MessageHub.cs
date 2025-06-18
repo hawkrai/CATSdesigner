@@ -321,13 +321,19 @@ namespace ChatServer.Hubs
         {
             if (_activeGroupCalls.TryGetValue(groupChatId, out var callInfo))
             {
-                var existingParticipants = callInfo.Participants.ToList();
+                var existingParticipants = callInfo.Participants
+                    .Where(cid => users.ContainsKey(cid))
+                    .ToDictionary(cid => cid, cid => users[cid].UserId);
 
                 callInfo.Participants.Add(Context.ConnectionId);
 
                 await Clients.Caller.SendAsync("ExistingParticipantsInGroupCall", groupChatId, existingParticipants);
 
-                await Clients.GroupExcept(groupChatId.ToString() + "G", Context.ConnectionId).SendAsync("NewParticipantInGroupCall", groupChatId, Context.ConnectionId);
+                if (users.TryGetValue(Context.ConnectionId, out var newUserInfo))
+                {
+                    var newParticipantPayload = new Dictionary<string, int> { { Context.ConnectionId, newUserInfo.UserId } };
+                    await Clients.GroupExcept(groupChatId.ToString() + "G", Context.ConnectionId).SendAsync("NewParticipantInGroupCall", groupChatId, newParticipantPayload);
+                }
             }
         }
 
@@ -335,8 +341,17 @@ namespace ChatServer.Hubs
         {
             if (_activeGroupCalls.TryGetValue(groupChatId, out var callInfo))
             {
-                callInfo.Participants.Remove(Context.ConnectionId);
-                await Clients.GroupExcept(groupChatId.ToString() + "G", Context.ConnectionId).SendAsync("ParticipantLeftGroupCall", groupChatId, Context.ConnectionId);
+                if (callInfo.Participants.Remove(Context.ConnectionId))
+                {
+                    if (users.TryGetValue(Context.ConnectionId, out var userInfo))
+                    {
+                        await Clients.GroupExcept(groupChatId.ToString() + "G", Context.ConnectionId).SendAsync("ParticipantLeftGroupCall", groupChatId, Context.ConnectionId, userInfo.UserId);
+                    }
+                    else
+                    {
+                        await Clients.GroupExcept(groupChatId.ToString() + "G", Context.ConnectionId).SendAsync("ParticipantLeftGroupCall", groupChatId, Context.ConnectionId, -1);
+                    }
+                }
             }
         }
 
