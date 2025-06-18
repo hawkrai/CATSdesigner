@@ -55,6 +55,7 @@ export class DataService {
     new BehaviorSubject<boolean>(false)
   private loadingTimeout: any = null
   public initialMessagesLoaded = new Subject<void>()
+  public activeChatUpdated = new Subject<void>()
   private activeChatReadTimer: any = null
   public readonly defaultPageSize: number = 20
   public readonly searchPageSize: number = 20
@@ -263,6 +264,16 @@ export class DataService {
     if (chatNum > -1) {
       chats[chatNum].isOnline = isOnline
       this.chats.next([...chats])
+    }
+
+    const currentActiveChat = this.activChat
+    if (
+      currentActiveChat &&
+      !this.isGroupChat &&
+      currentActiveChat.userId === id
+    ) {
+      this.activChat = { ...currentActiveChat, isOnline: isOnline }
+      this.activeChatUpdated.next()
     }
   }
 

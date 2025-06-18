@@ -195,6 +195,12 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       })
 
+    this.dataService.activeChatUpdated
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.cdr.detectChanges()
+      })
+
     this.tryRestoreChat()
     this.checkScreenWidth()
   }
