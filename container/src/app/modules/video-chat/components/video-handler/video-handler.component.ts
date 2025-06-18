@@ -317,7 +317,7 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
           if (this.streamHandler && this.streamHandler.initializeMedia) {
             this.streamHandler.initializeMedia().then(() => {
               if (this.videoChatService.currentChatId !== null) {
-                this.signalRService.SetVoiceChatConnection(
+                this.signalRService.setVoiceChatConnection(
                   this.videoChatService.currentChatId
                 )
               }
