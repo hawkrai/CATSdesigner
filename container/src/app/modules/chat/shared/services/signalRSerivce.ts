@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { Injectable, Injector } from '@angular/core'
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr'
 import { Message } from '@chat/shared/models/entities/message.model'
 import { DataService } from '@chat/shared/services/dataService'
@@ -46,15 +46,24 @@ export class SignalRService implements WebRtcSignalingGateway {
   public onAnswer$ = new Subject<IAnswerEvent>()
   public onCandidate$ = new Subject<ICandidateEvent>()
 
+  private _videoChatService: VideoChatService
+
   constructor(
+    private injector: Injector,
     private dataService: DataService,
-    private videoChatService: VideoChatService,
     private contactService: ContactService,
     private toastr: ToastrService,
     private fileApiService: FileApiService
   ) {
     this.user = JSON.parse(localStorage.getItem('currentUser'))
     this.connect()
+  }
+
+  private get videoChatService(): VideoChatService {
+    if (!this._videoChatService) {
+      this._videoChatService = this.injector.get(VideoChatService)
+    }
+    return this._videoChatService
   }
 
   public connect() {
