@@ -57,14 +57,6 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.openChatSubscription = this.contactService.openChatComand.subscribe(
-      (chat) => {
-        if (chat) {
-          this.showChat(chat)
-        }
-      }
-    )
-
     this.contactSubscription = this.contactService.contacts.subscribe(
       (contacts: Chat[]) => {
         if (this.isSearching) {
@@ -203,6 +195,7 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
           if (chatId) {
             chat.id = chatId
             this.dataService.setActiveChat(chat.id, false, chat)
+            this.dataService.markActiveChatAsRead()
             this.dataService.updateOrAddChat(chat)
             this.signalRService.addChat(
               this.dataService.user.id,
@@ -217,6 +210,7 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
       )
     } else {
       this.dataService.setActiveChat(chat.id, false, chat)
+      this.dataService.markActiveChatAsRead()
     }
 
     this.filterValue = ''

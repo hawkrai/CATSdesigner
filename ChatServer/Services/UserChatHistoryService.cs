@@ -38,7 +38,7 @@ namespace Services
         public async Task UpdateLastRead(int userId, int chatId)
         {
             var userH= await _repository.UserChatHistoryRepository.GetUserChatHistoryAsync(userId, chatId, true);
-            userH.Date = DateTime.Now;
+            userH.Date = DateTime.UtcNow;
             await _repository.SaveAsync();
         }
     }

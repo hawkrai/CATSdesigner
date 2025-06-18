@@ -44,14 +44,14 @@ namespace Services
                 userH = new GroupChatHistory()
                 {
                     GroupChatId = chatId,
-                    Date = DateTime.Now,
+                    Date = DateTime.UtcNow,
                     UserId = userId,
                 };
 
                 await _repository.GroupChatHistoryRepository.Add(userH);
             }
 
-            userH.Date = DateTime.Now;
+            userH.Date = DateTime.UtcNow;
             await _repository.SaveAsync();
         }
     }

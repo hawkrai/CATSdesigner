@@ -105,25 +105,41 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('searchInput') searchInput: ElementRef
   @HostListener('window:resize', ['$event'])
   ngOnInit(): void {
-    this.dataService.activChatId$
+    this.contactService.openChatComand
       .pipe(
         takeUntil(this.destroy$),
-        filter((chatId) => chatId !== null && !!this.dataService.activChat)
+        filter((chatToOpen) => !!chatToOpen)
       )
-      .subscribe((activeChatId) => {
-        const chatToActivate = { ...this.dataService.activChat }
-        if (chatToActivate && chatToActivate.id === activeChatId) {
-          this.activateChat(chatToActivate)
-        }
-      })
-
-    this.contactService.openChatComand
-      .pipe(takeUntil(this.destroy$))
       .subscribe((chatToOpen) => {
-        if (chatToOpen && chatToOpen.id !== this.dataService.activChatId) {
-          this.activateChat(chatToOpen)
-          this.activetab = 2
+        this.activetab = 2
+
+        if (!chatToOpen.id) {
+          this.contactService.CreateChat(chatToOpen.userId).subscribe(
+            (chatId) => {
+              if (chatId) {
+                chatToOpen.id = chatId
+                this.dataService.setActiveChat(chatToOpen.id, false, chatToOpen)
+                this.dataService.updateOrAddChat(chatToOpen)
+                this.signalRService.addChat(
+                  this.dataService.user.id,
+                  chatToOpen.userId,
+                  chatId
+                )
+              }
+            },
+            (error) => console.error('Error creating chat:', error)
+          )
+        } else {
+          this.dataService.setActiveChat(chatToOpen.id, false, chatToOpen)
         }
+
+        if (this.dataService.isSearching.getValue()) {
+          this.filterValue = ''
+          this.searchTerms.next('')
+        }
+
+        this.contactService.openChatComand.next(null)
+        this.cdr.detectChanges()
       })
 
     this.dataService.readMessageChatCount
@@ -167,6 +183,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dataService.initialMessagesLoaded
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        this.dataService.markActiveChatAsRead()
         this.zone.runOutsideAngular(() => {
           requestAnimationFrame(() => {
             this.scrollToBottom(false)
@@ -331,52 +348,6 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.loadMoreMessages()
     }
-  }
-
-  activateChat(chatData: any) {
-    if (!chatData || !chatData.id) return
-    if (
-      this.dataService.activChatId === chatData.id &&
-      (!chatData.unread || chatData.unread === 0)
-    )
-      return
-
-    if (this.dataService.activChatId === chatData.id) {
-      if (chatData.unread > 0) {
-        const isGroup =
-          !!chatData.groups || !!chatData.groupId || !!chatData.shortName
-        if (isGroup) {
-          this.dataService.groupRead().subscribe()
-        } else {
-          this.dataService.updateRead().subscribe()
-        }
-      }
-      return
-    }
-
-    let isGroup =
-      !!chatData.groups || !!chatData.groupId || !!chatData.shortName
-    const initialUnreadCount = chatData.unread || 0
-
-    if (initialUnreadCount > 0) {
-      if (isGroup) {
-        this.dataService.groupRead().subscribe()
-      } else {
-        this.dataService.updateRead().subscribe()
-      }
-    } else if (
-      this.dataService.activChatId === chatData.id &&
-      chatData.unread > 0
-    ) {
-      if (isGroup) this.dataService.groupRead().subscribe()
-      else this.dataService.updateRead().subscribe()
-    }
-
-    if (this.dataService.isSearching.getValue()) {
-      this.filterValue = ''
-      this.searchTerms.next('')
-    }
-    this.cdr.detectChanges()
   }
 
   loadMoreMessages() {

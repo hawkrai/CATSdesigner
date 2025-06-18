@@ -258,6 +258,18 @@ export class DataService {
       )
   }
 
+  public markActiveChatAsRead(): void {
+    if (!this.activChat || (this.activChat.unread || 0) === 0) {
+      return
+    }
+
+    if (this.isGroupChat) {
+      this.groupRead().subscribe()
+    } else {
+      this.updateRead().subscribe()
+    }
+  }
+
   public SetStatus(id: number, isOnline: boolean): void {
     var chats = this.chats.getValue()
     var chatNum = chats.findIndex((x) => x.userId == id)

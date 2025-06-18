@@ -57,13 +57,13 @@ namespace ChatServer.Controllers
             var chatHistory = new UserChatHistory();
             chatHistory.ChatId = chat.Id;
             chatHistory.UserId = user.FirstId;
-            chatHistory.Date = DateTime.Now;
+            chatHistory.Date = DateTime.UtcNow;
             await _userChatHistoryService.Create(chatHistory);
 
             chatHistory = new UserChatHistory();
             chatHistory.ChatId = chat.Id;
             chatHistory.UserId = user.SecondId;
-            chatHistory.Date = DateTime.Now;
+            chatHistory.Date = DateTime.UtcNow;
 
             await _userChatHistoryService.Create(chatHistory);
 
