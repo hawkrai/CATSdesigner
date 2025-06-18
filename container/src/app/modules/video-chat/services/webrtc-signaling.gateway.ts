@@ -3,6 +3,7 @@ import { Observable } from 'rxjs'
 import { IOfferEvent } from '@modules/video-chat/interfaces/offer-event.interface'
 import { IAnswerEvent } from '@modules/video-chat/interfaces/answer-event.interface'
 import { ICandidateEvent } from '@modules/video-chat/interfaces/candidate-event.interface'
+import { IParticipantInfo } from '@modules/video-chat/interfaces/participant-info.interface'
 
 @Injectable({
   providedIn: 'root',
@@ -10,9 +11,12 @@ import { ICandidateEvent } from '@modules/video-chat/interfaces/candidate-event.
 export abstract class WebRtcSignalingGateway {
   abstract selfConnectionId: string | null
 
-  abstract onNewParticipant$: Observable<string>
-  abstract onExistingParticipants$: Observable<string[]>
-  abstract onParticipantLeft$: Observable<string>
+  abstract onNewParticipant$: Observable<IParticipantInfo>
+  abstract onExistingParticipants$: Observable<IParticipantInfo>
+  abstract onParticipantLeft$: Observable<{
+    connectionId: string
+    userId: number
+  }>
   abstract onOffer$: Observable<IOfferEvent>
   abstract onAnswer$: Observable<IAnswerEvent>
   abstract onCandidate$: Observable<ICandidateEvent>

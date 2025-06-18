@@ -11,6 +11,7 @@ import { WebRtcSignalingGateway } from '@modules/video-chat/services/webrtc-sign
 import { IOfferEvent } from '@modules/video-chat/interfaces/offer-event.interface'
 import { IAnswerEvent } from '@modules/video-chat/interfaces/answer-event.interface'
 import { ICandidateEvent } from '@modules/video-chat/interfaces/candidate-event.interface'
+import { IParticipantInfo } from '@modules/video-chat/interfaces/participant-info.interface'
 import { Subject } from 'rxjs'
 
 const SendCallRequest = 'SendCallRequest'
@@ -34,9 +35,12 @@ export class SignalRService implements WebRtcSignalingGateway {
 
   public selfConnectionId: string | null = null
 
-  public onNewParticipant$ = new Subject<string>()
-  public onExistingParticipants$ = new Subject<string[]>()
-  public onParticipantLeft$ = new Subject<string>()
+  public onNewParticipant$ = new Subject<IParticipantInfo>()
+  public onExistingParticipants$ = new Subject<IParticipantInfo>()
+  public onParticipantLeft$ = new Subject<{
+    connectionId: string
+    userId: number
+  }>()
   public onOffer$ = new Subject<IOfferEvent>()
   public onAnswer$ = new Subject<IAnswerEvent>()
   public onCandidate$ = new Subject<ICandidateEvent>()
@@ -151,22 +155,22 @@ export class SignalRService implements WebRtcSignalingGateway {
 
     this.hubConnection.on(
       'ExistingParticipantsInGroupCall',
-      (groupChatId: number, participants: string[]) => {
+      (groupChatId: number, participants: IParticipantInfo) => {
         this.onExistingParticipants$.next(participants)
       }
     )
 
     this.hubConnection.on(
       'NewParticipantInGroupCall',
-      (groupChatId: number, connectionId: string) => {
-        this.onNewParticipant$.next(connectionId)
+      (groupChatId: number, participantInfo: IParticipantInfo) => {
+        this.onNewParticipant$.next(participantInfo)
       }
     )
 
     this.hubConnection.on(
       'ParticipantLeftGroupCall',
-      (groupChatId: number, connectionId: string) => {
-        this.onParticipantLeft$.next(connectionId)
+      (groupChatId: number, connectionId: string, userId: number) => {
+        this.onParticipantLeft$.next({ connectionId, userId })
       }
     )
 
