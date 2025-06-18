@@ -916,4 +916,27 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
       }, 0)
     }
   }
+
+  startGroupCall() {
+    if (this.dataService.activChatId !== null) {
+      this.signalRService.startGroupCall(this.dataService.activChatId)
+      this.joinGroupCall()
+    }
+  }
+
+  endGroupCall() {
+    if (this.dataService.activChatId !== null) {
+      this.signalRService.endGroupCall(this.dataService.activChatId)
+    }
+  }
+
+  joinGroupCall() {
+    if (this.dataService.activChatId !== null) {
+      this.videoChatService.joinGroupCall(this.dataService.activChatId)
+    }
+  }
+
+  leaveGroupCall() {
+    this.videoChatService.leaveGroupCall()
+  }
 }

@@ -85,6 +85,14 @@
               </div>
               <div class="media-body overflow-hidden">
                 <h5 class="text-truncate font-size-14 mb-0">
+                  <mat-icon
+                    *ngIf="
+                      (dataService.activeGroupCalls | async)?.has(subject.id)
+                    "
+                    class="align-middle mr-1"
+                    style="font-size: 1.1rem; color: #dc3545"
+                    >podcasts</mat-icon
+                  >
                   {{ subject.shortName }} ({{ subject.name }})
                   <span
                     style="top: calc(50% - 16px)"
