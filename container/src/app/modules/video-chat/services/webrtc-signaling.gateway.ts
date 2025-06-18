@@ -11,16 +11,20 @@ import { IParticipantInfo } from '@modules/video-chat/interfaces/participant-inf
 export abstract class WebRtcSignalingGateway {
   abstract selfConnectionId: string | null
 
-  abstract onNewParticipant$: Observable<IParticipantInfo>
-  abstract onExistingParticipants$: Observable<IParticipantInfo>
-  abstract onParticipantLeft$: Observable<{
+  abstract onPersonalCallNewcomer$: Observable<string>
+
+  abstract onGroupCallNewParticipant$: Observable<IParticipantInfo>
+  abstract onGroupCallExistingParticipants$: Observable<IParticipantInfo>
+  abstract onGroupCallParticipantLeft$: Observable<{
     connectionId: string
     userId: number
   }>
+
   abstract onOffer$: Observable<IOfferEvent>
   abstract onAnswer$: Observable<IAnswerEvent>
   abstract onCandidate$: Observable<ICandidateEvent>
 
+  abstract joinGroupCall(groupChatId: number): Promise<void>
   abstract leaveGroupCall(groupChatId: number): Promise<void>
   abstract sendOffer(targetConnectionId: string, offer: any): Promise<void>
   abstract sendAnswer(targetConnectionId: string, answer: any): Promise<void>

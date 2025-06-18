@@ -8,9 +8,12 @@ import {
   OnDestroy,
   EventEmitter,
 } from '@angular/core'
-
-import { SignalRService } from '@chat/shared/services/signalRSerivce'
+import { Subscription } from 'rxjs'
 import { VideoChatService } from '@app/modules/video-chat/services/video-chat.service'
+import { WebRtcSignalingGateway } from '../../services/webrtc-signaling.gateway'
+import { ChatApiService } from '@chat/shared/api/chat-api.service'
+import { IVideoParticipant } from '../../interfaces/videoParticipant.interface'
+import { User } from '@chat/shared/models/dto/user'
 
 const configuration = {
   configuration: {
@@ -63,7 +66,7 @@ const configuration = {
   ],
 }
 
-const options = {
+const offerOptions = {
   offerToReceiveAudio: true,
   offerToReceiveVideo: true,
 }
@@ -80,34 +83,44 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   @Output() callAcceptedByRemote = new EventEmitter<void>()
   @Output() remoteUserDisconnected = new EventEmitter<void>()
 
-  private peerConnections: Map<string, RTCPeerConnection> = new Map()
+  private peerConnections = new Map<string, RTCPeerConnection>()
   private localStream: MediaStream | null = null
+  private subscriptions = new Subscription()
+  private isGroupCall = false
 
   constructor(
-    private signalRService: SignalRService,
-    private videoChatService: VideoChatService
+    private signalingGateway: WebRtcSignalingGateway,
+    private videoChatService: VideoChatService,
+    private chatApiService: ChatApiService
   ) {}
 
   ngOnInit(): void {
-    this.setupSignalRListeners()
+    this.isGroupCall =
+      this.videoChatService.activeGroupCallId.getValue() !== null
+    this.setupSignalingListeners()
+
+    if (this.isGroupCall) {
+      const chatId = this.videoChatService.activeGroupCallId.getValue()
+      if (chatId !== null) {
+        this.signalingGateway.joinGroupCall(chatId)
+      }
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.localStream) {
       if (changes.initialMicStatus) {
-        const newMicStatus = changes.initialMicStatus.currentValue
-        this.setTrackEnabled('audio', newMicStatus)
+        this.setTrackEnabled('audio', changes.initialMicStatus.currentValue)
       }
       if (changes.initialVideoStatus) {
-        const newVideoStatus = changes.initialVideoStatus.currentValue
-        this.setTrackEnabled('video', newVideoStatus)
+        this.setTrackEnabled('video', changes.initialVideoStatus.currentValue)
       }
     }
   }
 
   ngOnDestroy(): void {
     this.cleanupConnections()
-    this.removeSignalRListeners()
+    this.subscriptions.unsubscribe()
   }
 
   public async initializeMedia(): Promise<void> {
@@ -132,92 +145,127 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
 
       this.peerConnections.forEach((pc) => {
         this.localStream?.getTracks().forEach((track) => {
-          if (pc.getSenders().find((s) => s.track === track)) {
-            return
+          if (!pc.getSenders().find((s) => s.track === track)) {
+            pc.addTrack(track, this.localStream!)
           }
-          pc.addTrack(track, this.localStream!)
         })
       })
     } catch (e) {
-      this.videoChatService.endCall(this.videoChatService.currentChatId)
+      console.error('Error getting user media:', e)
+      this.videoChatService.disconnectFromCall()
     }
   }
 
-  private setupSignalRListeners(): void {
-    this.signalRService.hubConnection.on(
-      'AddNewcomer',
-      async (newcomerConnectionId: string, chatId: number) => {
-        if (newcomerConnectionId === this.signalRService.selfConnectionId)
-          return
-        if (!this.videoChatService.isChatMatch(chatId)) {
-          return
+  private setupSignalingListeners(): void {
+    const personalCallSub =
+      this.signalingGateway.onPersonalCallNewcomer$.subscribe((peerId) => {
+        if (!this.isGroupCall) {
+          this.callAcceptedByRemote.emit()
+          this.createPeerConnection(peerId, true)
         }
-        this.callAcceptedByRemote.emit()
-        await this.createPeerConnection(newcomerConnectionId, chatId, true)
+      })
+
+    const existingParticipantsSub =
+      this.signalingGateway.onGroupCallExistingParticipants$.subscribe(
+        (participants) => {
+          if (this.isGroupCall) {
+            for (const connectionId in participants) {
+              if (connectionId !== this.signalingGateway.selfConnectionId) {
+                const userId = participants[connectionId]
+                this.fetchUserInfoAndAddParticipant(connectionId, userId, null)
+                this.createPeerConnection(connectionId, true)
+              }
+            }
+          }
+        }
+      )
+
+    const newParticipantSub =
+      this.signalingGateway.onGroupCallNewParticipant$.subscribe(
+        (participantInfo) => {
+          if (this.isGroupCall) {
+            for (const connectionId in participantInfo) {
+              const userId = participantInfo[connectionId]
+              this.fetchUserInfoAndAddParticipant(connectionId, userId, null)
+            }
+          }
+        }
+      )
+
+    const participantLeftSub =
+      this.signalingGateway.onGroupCallParticipantLeft$.subscribe(
+        ({ connectionId }) => {
+          if (this.isGroupCall) {
+            this.handleDisconnection(connectionId)
+          }
+        }
+      )
+
+    const offerSub = this.signalingGateway.onOffer$.subscribe(
+      async ({ fromConnectionId, offer }) => {
+        if (fromConnectionId === this.signalingGateway.selfConnectionId) return
+
+        await this.createPeerConnection(fromConnectionId, false, offer)
       }
     )
 
-    this.signalRService.hubConnection.on(
-      'RegisterOffer',
-      async (
-        chatId: number,
-        offer: RTCSessionDescriptionInit,
-        fromClientHubId: string
-      ) => {
-        if (fromClientHubId === this.signalRService.selfConnectionId) return
-        if (!this.videoChatService.isChatMatch(chatId)) {
-          return
-        }
-        this.callAcceptedByRemote.emit()
-        await this.createPeerConnection(fromClientHubId, chatId, false, offer)
-      }
-    )
-
-    this.signalRService.hubConnection.on(
-      'RegisterAnswer',
-      async (answer: RTCSessionDescriptionInit, userConnectionId: string) => {
-        if (userConnectionId === this.signalRService.selfConnectionId) return
-        const pc = this.peerConnections.get(userConnectionId)
-        if (pc) {
-          if (
-            pc.signalingState === 'have-local-offer' ||
-            pc.signalingState === 'stable'
-          ) {
-            try {
-              await pc.setRemoteDescription(new RTCSessionDescription(answer))
-            } catch (e) {}
+    const answerSub = this.signalingGateway.onAnswer$.subscribe(
+      async ({ fromConnectionId, answer }) => {
+        const pc = this.peerConnections.get(fromConnectionId)
+        if (
+          pc &&
+          (pc.signalingState === 'have-local-offer' ||
+            pc.signalingState === 'stable')
+        ) {
+          try {
+            await pc.setRemoteDescription(new RTCSessionDescription(answer))
+          } catch (e) {
+            console.error('Error setting remote description for answer:', e)
           }
         }
       }
     )
 
-    this.signalRService.hubConnection.on(
-      'HandleNewCandidate',
-      async (candidate: RTCIceCandidateInit, userConnectionId: string) => {
-        if (userConnectionId === this.signalRService.selfConnectionId) return
-        const pc = this.peerConnections.get(userConnectionId)
+    const candidateSub = this.signalingGateway.onCandidate$.subscribe(
+      async ({ fromConnectionId, candidate }) => {
+        const pc = this.peerConnections.get(fromConnectionId)
         if (pc && candidate) {
           try {
             await pc.addIceCandidate(new RTCIceCandidate(candidate))
-          } catch (e) {}
+          } catch (e) {
+            console.error('Error adding received ice candidate:', e)
+          }
         }
       }
     )
+
+    this.subscriptions.add(personalCallSub)
+    this.subscriptions.add(existingParticipantsSub)
+    this.subscriptions.add(newParticipantSub)
+    this.subscriptions.add(participantLeftSub)
+    this.subscriptions.add(offerSub)
+    this.subscriptions.add(answerSub)
+    this.subscriptions.add(candidateSub)
   }
 
   private async createPeerConnection(
     peerId: string,
-    chatId: number,
     isOfferer: boolean,
     offer?: RTCSessionDescriptionInit
   ): Promise<void> {
-    if (this.peerConnections.has(peerId)) {
+    if (
+      this.peerConnections.has(peerId) ||
+      peerId === this.signalingGateway.selfConnectionId
+    ) {
       return
     }
 
     if (!this.localStream) {
       await this.initializeMedia()
       if (!this.localStream) {
+        console.error(
+          'Local stream is not available, cannot create peer connection.'
+        )
         return
       }
     }
@@ -226,80 +274,108 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.peerConnections.set(peerId, pc)
 
     this.localStream?.getTracks().forEach((track) => {
-      if (pc.getSenders().find((s) => s.track === track)) {
-        return
+      if (!pc.getSenders().find((s) => s.track === track)) {
+        pc.addTrack(track, this.localStream!)
       }
-      pc.addTrack(track, this.localStream!)
     })
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {
-        this.signalRService.hubConnection?.invoke(
-          'FireCandidate',
-          event.candidate,
-          peerId
-        )
+        this.signalingGateway.sendCandidate(peerId, event.candidate)
       }
     }
 
-    pc.oniceconnectionstatechange = () => {}
-
     pc.ontrack = (event) => {
       const stream = event.streams[0]
-      if (stream) {
-        event.track.onunmute = () => {}
+      if (this.isGroupCall) {
+        const participants =
+          this.videoChatService.groupCallParticipants.getValue()
+        const participant = participants.get(peerId)
+        if (participant) {
+          participant.stream = stream
+          this.videoChatService.addGroupParticipant(peerId, { ...participant })
+        }
+      } else {
         this.remoteStreamReady.emit(stream)
         this.videoChatService.updateRemoteStream(stream)
-      } else {
-        let inboundStream = new MediaStream()
-        inboundStream.addTrack(event.track)
-        this.remoteStreamReady.emit(inboundStream)
-        this.videoChatService.updateRemoteStream(inboundStream)
       }
     }
 
     pc.onconnectionstatechange = () => {
-      switch (pc.connectionState) {
-        case 'connected':
-          break
-        case 'disconnected':
-        case 'failed':
-        case 'closed':
-          this.handleDisconnection(peerId)
-          break
+      if (
+        pc.connectionState === 'failed' ||
+        pc.connectionState === 'disconnected' ||
+        pc.connectionState === 'closed'
+      ) {
+        this.handleDisconnection(peerId)
       }
     }
 
     if (isOfferer) {
       try {
-        const createdOffer = await pc.createOffer(options)
+        const createdOffer = await pc.createOffer(offerOptions)
         await pc.setLocalDescription(createdOffer)
-        this.signalRService.hubConnection?.invoke(
-          'SendOffer',
-          chatId,
-          pc.localDescription,
-          peerId
-        )
-      } catch (e) {}
+        this.signalingGateway.sendOffer(peerId, pc.localDescription)
+      } catch (e) {
+        console.error('Error creating offer:', e)
+      }
     } else if (offer) {
       try {
         await pc.setRemoteDescription(new RTCSessionDescription(offer))
         const answer = await pc.createAnswer()
         await pc.setLocalDescription(answer)
-        this.signalRService.hubConnection?.invoke(
-          'SendAnswer',
-          pc.localDescription,
-          peerId
-        )
-      } catch (e) {}
+        this.signalingGateway.sendAnswer(peerId, pc.localDescription)
+      } catch (e) {
+        console.error('Error handling offer and creating answer:', e)
+      }
     }
   }
 
-  private setTrackEnabled(kind: 'audio' | 'video', enabled: boolean): void {
-    if (!this.localStream) {
-      return
+  private fetchUserInfoAndAddParticipant(
+    connectionId: string,
+    userId: number,
+    stream: MediaStream | null
+  ): void {
+    this.chatApiService.getUserInfoById(userId).subscribe({
+      next: (user: User) => {
+        const newParticipant: IVideoParticipant = {
+          displayName: user.fullName,
+          avatarUrl: user.profile,
+          initials: this.getInitials(user.fullName),
+          isCurrentUser: false,
+          cameraOn: true,
+          micOn: true,
+          stream: stream,
+        }
+        this.videoChatService.addGroupParticipant(connectionId, newParticipant)
+      },
+      error: () => {
+        const tempParticipant: IVideoParticipant = {
+          displayName: `User ${userId}`,
+          isCurrentUser: false,
+          cameraOn: true,
+          micOn: true,
+          stream: stream,
+          initials: 'U',
+        }
+        this.videoChatService.addGroupParticipant(connectionId, tempParticipant)
+      },
+    })
+  }
+
+  private getInitials(name: string): string {
+    if (!name) return '??'
+    const nameParts = name.split(' ')
+    if (nameParts.length >= 2) {
+      return (nameParts[0].charAt(0) + nameParts[1].charAt(0)).toUpperCase()
+    } else if (nameParts.length === 1 && nameParts[0]) {
+      return nameParts[0].substring(0, 2).toUpperCase()
     }
-    this.localStream.getTracks().forEach((track) => {
+    return '??'
+  }
+
+  private setTrackEnabled(kind: 'audio' | 'video', enabled: boolean): void {
+    this.localStream?.getTracks().forEach((track) => {
       if (track.kind === kind) {
         track.enabled = enabled
       }
@@ -312,31 +388,30 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
       pc.close()
       this.peerConnections.delete(peerId)
     }
-    if (this.peerConnections.size === 0) {
-      this.remoteUserDisconnected.emit()
-      this.videoChatService.updateRemoteStream(null)
+
+    if (this.isGroupCall) {
+      this.videoChatService.removeGroupParticipant(peerId)
+    } else {
+      if (this.peerConnections.size === 0) {
+        this.remoteUserDisconnected.emit()
+        this.videoChatService.updateRemoteStream(null)
+      }
     }
   }
 
   public cleanupConnections(): void {
-    this.peerConnections.forEach((pc, peerId) => {
-      pc.close()
-    })
+    this.peerConnections.forEach((pc) => pc.close())
     this.peerConnections.clear()
 
-    if (this.localStream) {
-      this.localStream.getTracks().forEach((track) => track.stop())
-      this.localStream = null
-    }
-    this.videoChatService.updateLocalStream(null)
-    this.videoChatService.updateRemoteStream(null)
-  }
+    this.localStream?.getTracks().forEach((track) => track.stop())
+    this.localStream = null
 
-  private removeSignalRListeners(): void {
-    this.signalRService.hubConnection.off('AddNewcomer')
-    this.signalRService.hubConnection.off('RegisterOffer')
-    this.signalRService.hubConnection.off('RegisterAnswer')
-    this.signalRService.hubConnection.off('HandleNewCandidate')
+    this.videoChatService.updateLocalStream(null)
+    if (this.isGroupCall) {
+      this.videoChatService.leaveGroupCall()
+    } else {
+      this.videoChatService.updateRemoteStream(null)
+    }
   }
 
   public toggleMicrophone(active: boolean): void {

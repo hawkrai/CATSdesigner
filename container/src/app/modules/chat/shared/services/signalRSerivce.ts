@@ -35,9 +35,10 @@ export class SignalRService implements WebRtcSignalingGateway {
 
   public selfConnectionId: string | null = null
 
-  public onNewParticipant$ = new Subject<IParticipantInfo>()
-  public onExistingParticipants$ = new Subject<IParticipantInfo>()
-  public onParticipantLeft$ = new Subject<{
+  public onPersonalCallNewcomer$ = new Subject<string>()
+  public onGroupCallNewParticipant$ = new Subject<IParticipantInfo>()
+  public onGroupCallExistingParticipants$ = new Subject<IParticipantInfo>()
+  public onGroupCallParticipantLeft$ = new Subject<{
     connectionId: string
     userId: number
   }>()
@@ -144,6 +145,13 @@ export class SignalRService implements WebRtcSignalingGateway {
       }
     )
 
+    this.hubConnection.on(
+      'AddNewcomer',
+      (newcomerConnectionId: string, chatId: number) => {
+        this.onPersonalCallNewcomer$.next(newcomerConnectionId)
+      }
+    )
+
     this.hubConnection.on('GroupCallStarted', (groupChatId: number) => {
       this.dataService.setGroupCallState(groupChatId, true)
     })
@@ -156,21 +164,21 @@ export class SignalRService implements WebRtcSignalingGateway {
     this.hubConnection.on(
       'ExistingParticipantsInGroupCall',
       (groupChatId: number, participants: IParticipantInfo) => {
-        this.onExistingParticipants$.next(participants)
+        this.onGroupCallExistingParticipants$.next(participants)
       }
     )
 
     this.hubConnection.on(
       'NewParticipantInGroupCall',
       (groupChatId: number, participantInfo: IParticipantInfo) => {
-        this.onNewParticipant$.next(participantInfo)
+        this.onGroupCallNewParticipant$.next(participantInfo)
       }
     )
 
     this.hubConnection.on(
       'ParticipantLeftGroupCall',
       (groupChatId: number, connectionId: string, userId: number) => {
-        this.onParticipantLeft$.next({ connectionId, userId })
+        this.onGroupCallParticipantLeft$.next({ connectionId, userId })
       }
     )
 
