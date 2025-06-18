@@ -1,29 +1,17 @@
-﻿using ChatServer.services;
-using Entities;
+﻿using AutoMapper;
+using ChatServer.Interfaces;
+using ChatServer.Models;
+using ChatServer.services;
+using Contracts;
+using Contracts.Services;
+using Entities.CTO;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Configuration;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
-using System;
-using Entities.Models;
-using AutoMapper;
-using ChatServer.Interfaces;
-using Entities.DTO;
-using Entities.CTO;
-using Microsoft.EntityFrameworkCore;
-using Contracts;
-using Entities.Models.GroupChatModels;
-using Contracts.Services;
-using Contracts.Repositories;
 
 namespace ChatServer.Hubs
 {
@@ -31,12 +19,12 @@ namespace ChatServer.Hubs
     {
         private readonly ChatService _chatService;
 
-        private static readonly Dictionary<string, int> users = new Dictionary<string, int>();
+        private static readonly Dictionary<string, (int UserId, string Role)> users = new Dictionary<string, (int UserId, string Role)>();
+        private static readonly ConcurrentDictionary<int, GroupCallInfo> _activeGroupCalls = new ConcurrentDictionary<int, GroupCallInfo>();
 
         private readonly IRepositoryManager _repository;
         private readonly IUserService _userService;
         private readonly IGroupMessageService _groupMessageService;
-        private readonly IUserChatMessageRepository _userChatMessageRepository;
         private readonly IChatMessageService _chatMessageService;
 
         public MessageHub(ChatService сhannelService, IChatMessageService chatMessageService,
@@ -54,9 +42,10 @@ namespace ChatServer.Hubs
         public async Task Join(string userId, string role)
         {
             var id = int.Parse(userId);
-            users.Add(Context.ConnectionId, id);
+            users.Add(Context.ConnectionId, (id, role));
             await _userService.SetStatus(id, true);
-            await Clients.All.SendAsync("Status", users[Context.ConnectionId], true);
+            await Clients.All.SendAsync("Status", users[Context.ConnectionId].UserId, true);
+
             var channels = await _chatService.GetChats(id);
             bool isStudent = !role.ToLower().Equals("lector");
             if (isStudent)
@@ -120,7 +109,7 @@ namespace ChatServer.Hubs
         {
             var msg = await _groupMessageService.GetMessage(msgId);
             await _groupMessageService.UpdateMsg(msg, text);
-            await Clients.Group(chatId.ToString()).SendAsync("EditedMessage", chatId, msgId, text);
+            await Clients.Group(chatId.ToString() + "G").SendAsync("EditedMessage", chatId, msgId, text);
         }
 
         public async Task DeleteGroupMsg(string msgId, string chatId)
@@ -142,16 +131,16 @@ namespace ChatServer.Hubs
                 await Clients.GroupExcept(messageCto.ChatId.ToString() + "G", Context.ConnectionId)
                     .SendAsync("GetMessage", msg);
             }
-            catch
+            catch (Exception ex)
             {
-                Console.WriteLine("Error");
+                Console.WriteLine(ex);
             }
         }
 
         public async Task AddChat(int firstUserId, int secondUserId, int chatId)
         {
-            var user1 = users.Where(x => x.Value == firstUserId).ToList();
-            var user2 = users.Where(x => x.Value == secondUserId).ToList();
+            var user1 = users.Where(x => x.Value.UserId == firstUserId).ToList();
+            var user2 = users.Where(x => x.Value.UserId == secondUserId).ToList();
             if (user1.Count != 0)
             {
                 foreach (var keyValue in user1)
@@ -173,7 +162,7 @@ namespace ChatServer.Hubs
 
         public async Task UpdateMediaStatus(int chatId, string deviceType, bool newStatus)
         {
-            var userId = users[Context.ConnectionId];
+            var userId = users[Context.ConnectionId].UserId;
 
             await Clients.GroupExcept(chatId.ToString(), Context.ConnectionId)
                          .SendAsync("RemoteMediaStatusChanged", chatId, userId, deviceType, newStatus);
@@ -181,13 +170,33 @@ namespace ChatServer.Hubs
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
-            await Clients.All.SendAsync("Status", users[Context.ConnectionId], false);
-            await _userService.SetStatus(users[Context.ConnectionId], false);
-            users.Remove(Context.ConnectionId);
+            if (users.ContainsKey(Context.ConnectionId))
+            {
+                var user = users[Context.ConnectionId];
+                await Clients.All.SendAsync("Status", user.UserId, false);
+                await _userService.SetStatus(user.UserId, false);
+
+                foreach (var groupCall in _activeGroupCalls)
+                {
+                    if (groupCall.Value.Participants.Contains(Context.ConnectionId))
+                    {
+                        if (groupCall.Value.OwnerConnectionId == Context.ConnectionId)
+                        {
+                            _ = EndGroupCall(groupCall.Key);
+                        }
+                        else 
+                        {
+                            _ = LeaveGroupCall(groupCall.Key);
+                        }
+                    }
+                }
+
+                users.Remove(Context.ConnectionId);
+            }
             await base.OnDisconnectedAsync(exception);
         }
 
-        #region video chat methods
+        #region Personal video chat methods
 
         public async Task SendCallRequest(string userId, int chatId)
         {
@@ -276,6 +285,76 @@ namespace ChatServer.Hubs
                     chatId,
                     message);
         }
+        #endregion
+
+        #region Group video chat methods
+
+        public async Task StartGroupCall(int groupChatId)
+        {
+            if (users.TryGetValue(Context.ConnectionId, out var caller) && caller.Role.ToLower() == "lector")
+            {
+                var newCall = new GroupCallInfo
+                {
+                    OwnerConnectionId = Context.ConnectionId
+                };
+                newCall.Participants.Add(Context.ConnectionId);
+
+                if (_activeGroupCalls.TryAdd(groupChatId, newCall))
+                {
+                    await Clients.Group(groupChatId.ToString() + "G").SendAsync("GroupCallStarted", groupChatId);
+                }
+            }
+        }
+
+        public async Task EndGroupCall(int groupChatId)
+        {
+            if (_activeGroupCalls.TryGetValue(groupChatId, out var callInfo) && callInfo.OwnerConnectionId == Context.ConnectionId)
+            {
+                if (_activeGroupCalls.TryRemove(groupChatId, out _))
+                {
+                    await Clients.Group(groupChatId.ToString() + "G").SendAsync("GroupCallEnded", groupChatId);
+                }
+            }
+        }
+
+        public async Task JoinGroupCall(int groupChatId)
+        {
+            if (_activeGroupCalls.TryGetValue(groupChatId, out var callInfo))
+            {
+                var existingParticipants = callInfo.Participants.ToList();
+
+                callInfo.Participants.Add(Context.ConnectionId);
+
+                await Clients.Caller.SendAsync("ExistingParticipantsInGroupCall", groupChatId, existingParticipants);
+
+                await Clients.GroupExcept(groupChatId.ToString() + "G", Context.ConnectionId).SendAsync("NewParticipantInGroupCall", groupChatId, Context.ConnectionId);
+            }
+        }
+
+        public async Task LeaveGroupCall(int groupChatId)
+        {
+            if (_activeGroupCalls.TryGetValue(groupChatId, out var callInfo))
+            {
+                callInfo.Participants.Remove(Context.ConnectionId);
+                await Clients.GroupExcept(groupChatId.ToString() + "G", Context.ConnectionId).SendAsync("ParticipantLeftGroupCall", groupChatId, Context.ConnectionId);
+            }
+        }
+
+        public async Task SendGroupOffer(string targetConnectionId, object offer)
+        {
+            await Clients.Client(targetConnectionId).SendAsync("ReceiveGroupOffer", Context.ConnectionId, offer);
+        }
+
+        public async Task SendGroupAnswer(string targetConnectionId, object answer)
+        {
+            await Clients.Client(targetConnectionId).SendAsync("ReceiveGroupAnswer", Context.ConnectionId, answer);
+        }
+
+        public async Task SendGroupIceCandidate(string targetConnectionId, object candidate)
+        {
+            await Clients.Client(targetConnectionId).SendAsync("ReceiveGroupIceCandidate", Context.ConnectionId, candidate);
+        }
+
         #endregion
     }
 }
