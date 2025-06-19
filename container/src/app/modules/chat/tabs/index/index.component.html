@@ -257,48 +257,93 @@
                     <mat-icon>list_alt</mat-icon>
                   </button>
                 </li>
-                <li
-                  class="list-inline-item"
+                <ng-container
                   *ngIf="
                     dataService.isGroupChat &&
                     !(isMobileView && isSearchExpanded)
                   "
                 >
                   <ng-container *ngIf="dataService.isLecturer">
-                    <button
+                    <li
                       *ngIf="
                         !(dataService.activeGroupCalls | async)?.has(
                           dataService.activChatId
                         )
                       "
-                      (click)="startGroupCall()"
-                      class="btn nav-btn"
-                      matTooltip="{{
-                        'videochat.startGroupCallTooltip'
-                          | translate: 'Начать групповой звонок'
-                      }}"
+                      class="list-inline-item"
                     >
-                      <mat-icon>videocam</mat-icon>
-                    </button>
-                    <button
+                      <button
+                        (click)="startGroupCall()"
+                        class="btn nav-btn"
+                        matTooltip="{{
+                          'videochat.startGroupCallTooltip'
+                            | translate: 'Начать групповой звонок'
+                        }}"
+                      >
+                        <mat-icon>videocam</mat-icon>
+                      </button>
+                    </li>
+
+                    <ng-container
                       *ngIf="
                         (dataService.activeGroupCalls | async)?.has(
                           dataService.activChatId
                         )
                       "
-                      (click)="endGroupCall()"
-                      class="btn nav-btn text-danger"
-                      matTooltip="{{
-                        'videochat.endGroupCallTooltip'
-                          | translate: 'Завершить групповой звонок'
-                      }}"
                     >
-                      <mat-icon>call_end</mat-icon>
-                    </button>
+                      <li
+                        *ngIf="
+                          (videoChatService.activeGroupCallId | async) !==
+                          dataService.activChatId
+                        "
+                        class="list-inline-item"
+                      >
+                        <button
+                          (click)="joinGroupCall()"
+                          class="btn nav-btn"
+                          matTooltip="{{
+                            'videochat.rejoinGroupCallTooltip'
+                              | translate: 'Вернуться в звонок'
+                          }}"
+                        >
+                          <mat-icon>login</mat-icon>
+                        </button>
+                      </li>
+                      <li
+                        *ngIf="
+                          (videoChatService.activeGroupCallId | async) ===
+                          dataService.activChatId
+                        "
+                        class="list-inline-item"
+                      >
+                        <button
+                          (click)="leaveGroupCall()"
+                          class="btn nav-btn text-danger"
+                          matTooltip="{{
+                            'videochat.leaveGroupCallTooltip'
+                              | translate: 'Покинуть звонок'
+                          }}"
+                        >
+                          <mat-icon>logout</mat-icon>
+                        </button>
+                      </li>
+                      <li class="list-inline-item">
+                        <button
+                          (click)="endGroupCall()"
+                          class="btn nav-btn text-danger"
+                          matTooltip="{{
+                            'videochat.endGroupCallTooltip'
+                              | translate: 'Завершить групповой звонок'
+                          }}"
+                        >
+                          <mat-icon>call_end</mat-icon>
+                        </button>
+                      </li>
+                    </ng-container>
                   </ng-container>
 
                   <ng-container *ngIf="!dataService.isLecturer">
-                    <button
+                    <li
                       *ngIf="
                         (dataService.activeGroupCalls | async)?.has(
                           dataService.activChatId
@@ -306,31 +351,39 @@
                         (videoChatService.activeGroupCallId | async) !==
                           dataService.activChatId
                       "
-                      (click)="joinGroupCall()"
-                      class="btn nav-btn"
-                      matTooltip="{{
-                        'videochat.joinGroupCallTooltip'
-                          | translate: 'Присоединиться к звонку'
-                      }}"
+                      class="list-inline-item"
                     >
-                      <mat-icon>login</mat-icon>
-                    </button>
-                    <button
+                      <button
+                        (click)="joinGroupCall()"
+                        class="btn nav-btn"
+                        matTooltip="{{
+                          'videochat.joinGroupCallTooltip'
+                            | translate: 'Присоединиться к звонку'
+                        }}"
+                      >
+                        <mat-icon>login</mat-icon>
+                      </button>
+                    </li>
+                    <li
                       *ngIf="
                         (videoChatService.activeGroupCallId | async) ===
                         dataService.activChatId
                       "
-                      (click)="leaveGroupCall()"
-                      class="btn nav-btn text-danger"
-                      matTooltip="{{
-                        'videochat.leaveGroupCallTooltip'
-                          | translate: 'Покинуть звонок'
-                      }}"
+                      class="list-inline-item"
                     >
-                      <mat-icon>logout</mat-icon>
-                    </button>
+                      <button
+                        (click)="leaveGroupCall()"
+                        class="btn nav-btn text-danger"
+                        matTooltip="{{
+                          'videochat.leaveGroupCallTooltip'
+                            | translate: 'Покинуть звонок'
+                        }}"
+                      >
+                        <mat-icon>logout</mat-icon>
+                      </button>
+                    </li>
                   </ng-container>
-                </li>
+                </ng-container>
                 <li
                   class="list-inline-item"
                   *ngIf="
