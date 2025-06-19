@@ -126,7 +126,8 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
 
   public async initializeMedia(): Promise<void> {
     if (this.localStream) {
-      this.selfStreamReady.emit(this.localStream)
+      const previewStream = new MediaStream(this.localStream.getVideoTracks())
+      this.selfStreamReady.emit(previewStream)
       return
     }
     try {
@@ -142,8 +143,8 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
       this.videoChatService.updateLocalCameraStatus(this.initialVideoStatus)
       this.videoChatService.updateLocalMicStatus(this.initialMicStatus)
 
-      this.selfStreamReady.emit(this.localStream)
-
+      const previewStream = new MediaStream(this.localStream.getVideoTracks())
+      this.selfStreamReady.emit(previewStream)
       this.peerConnections.forEach((pc) => {
         this.localStream?.getTracks().forEach((track) => {
           if (!pc.getSenders().find((s) => s.track === track)) {
@@ -160,7 +161,10 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   private setupSignalingListeners(): void {
     const personalCallSub =
       this.signalingGateway.onPersonalCallNewcomer$.subscribe((peerId) => {
-        if (!this.isGroupCall) {
+        if (
+          !this.isGroupCall &&
+          peerId !== this.signalingGateway.selfConnectionId
+        ) {
           this.callAcceptedByRemote.emit()
           this.createPeerConnection(peerId, true)
         }
@@ -296,6 +300,10 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
 
     pc.ontrack = (event) => {
       const stream = event.streams[0]
+      if (stream.id === this.localStream?.id) {
+        return
+      }
+
       if (this.isGroupCall) {
         const participants =
           this.videoChatService.groupCallParticipants.getValue()
