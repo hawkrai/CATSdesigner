@@ -141,10 +141,20 @@ export class SignalRService implements WebRtcSignalingGateway {
         deviceType: 'microphone' | 'camera',
         newStatus: boolean
       ) => {
-        if (
-          this.user.id !== userId &&
-          this.videoChatService.isChatMatch(chatId)
-        ) {
+        if (this.user.id === userId) return
+
+        const isGroupCallActive =
+          this.videoChatService.activeGroupCallId.getValue() === chatId
+        const isPersonalCallActive =
+          this.videoChatService.currentChatId === chatId
+
+        if (isGroupCallActive) {
+          this.videoChatService.updateGroupParticipantMediaStatus(
+            userId,
+            deviceType,
+            newStatus
+          )
+        } else if (isPersonalCallActive) {
           if (deviceType === 'microphone') {
             this.videoChatService.updateRemoteMicStatus(newStatus)
           } else if (deviceType === 'camera') {
@@ -294,14 +304,16 @@ export class SignalRService implements WebRtcSignalingGateway {
   public sendMediaStatusUpdate(
     chatId: number,
     deviceType: 'microphone' | 'camera',
-    newStatus: boolean
+    newStatus: boolean,
+    isGroupChat: boolean
   ) {
     if (this.hubConnection?.state === 'Connected') {
       return this.hubConnection.invoke(
         UpdateMediaStatus,
         chatId,
         deviceType,
-        newStatus
+        newStatus,
+        isGroupChat
       )
     }
     return Promise.resolve()

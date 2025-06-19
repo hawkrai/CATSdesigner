@@ -40,6 +40,7 @@ export class VideoChatService {
         (fullUserInfo: User | null) => {
           if (fullUserInfo && fullUserInfo.fullName) {
             this.localParticipantInfo.next({
+              userId: fullUserInfo.userId,
               displayName: this.formatLocalUserName(fullUserInfo.fullName),
               avatarUrl: fullUserInfo.profile,
               isCurrentUser: true,
@@ -105,11 +106,15 @@ export class VideoChatService {
     return '??'
   }
 
-  private setDefaultLocalParticipantInfo(baseUser: { userName?: string }) {
+  private setDefaultLocalParticipantInfo(baseUser: {
+    id?: number
+    userName?: string
+  }) {
     const nameToFormat =
       baseUser.userName ||
       this.translatePipe.transform('videochat.fallbackUserName', 'User')
     this.localParticipantInfo.next({
+      userId: baseUser.id,
       displayName: this.formatLocalUserName(nameToFormat),
       avatarUrl: undefined,
       isCurrentUser: true,
@@ -290,12 +295,10 @@ export class VideoChatService {
   }
 
   public joinGroupCall(chatId: number): void {
-    if (
-      this.activeGroupCallId.getValue() !== null ||
-      this.isActiveCall.getValue()
-    ) {
+    if (this.isActiveCall.getValue()) {
       return
     }
+
     this.activeGroupCallId.next(chatId)
     const self = this.localParticipantInfo.getValue()
     if (self) {
@@ -340,5 +343,33 @@ export class VideoChatService {
   private resetGroupCallState(): void {
     this.activeGroupCallId.next(null)
     this.groupCallParticipants.next(new Map())
+  }
+
+  public updateGroupParticipantMediaStatus(
+    userId: number,
+    deviceType: 'microphone' | 'camera',
+    newStatus: boolean
+  ): void {
+    const participantsMap = this.groupCallParticipants.getValue()
+    let targetConnectionId: string | null = null
+    let targetParticipant: IVideoParticipant | null = null
+
+    for (const [connectionId, participant] of participantsMap.entries()) {
+      if (participant.userId === userId) {
+        targetConnectionId = connectionId
+        targetParticipant = participant
+        break
+      }
+    }
+
+    if (targetConnectionId && targetParticipant) {
+      if (deviceType === 'microphone') {
+        targetParticipant.micOn = newStatus
+      } else if (deviceType === 'camera') {
+        targetParticipant.cameraOn = newStatus
+      }
+      participantsMap.set(targetConnectionId, { ...targetParticipant })
+      this.groupCallParticipants.next(new Map(participantsMap))
+    }
   }
 }

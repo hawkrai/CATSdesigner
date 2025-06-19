@@ -339,6 +339,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.chatApiService.getUserInfoById(userId).subscribe({
       next: (user: User) => {
         const newParticipant: IVideoParticipant = {
+          userId: user.userId,
           displayName: user.fullName,
           avatarUrl: user.profile,
           initials: this.getInitials(user.fullName),
@@ -351,6 +352,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
       },
       error: () => {
         const tempParticipant: IVideoParticipant = {
+          userId: userId,
           displayName: `User ${userId}`,
           isCurrentUser: false,
           cameraOn: false,

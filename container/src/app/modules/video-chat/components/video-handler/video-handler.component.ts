@@ -363,7 +363,8 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
       this.signalRService.sendMediaStatusUpdate(
         chatId,
         'microphone',
-        this.isMicActive
+        this.isMicActive,
+        this.videoChatService.activeGroupCallId.getValue() !== null
       )
     }
     this.showSelfOverlay()
@@ -382,7 +383,8 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
       this.signalRService.sendMediaStatusUpdate(
         chatId,
         'camera',
-        this.isCameraActive
+        this.isCameraActive,
+        this.videoChatService.activeGroupCallId.getValue() !== null
       )
     }
     this.showSelfOverlay()

@@ -42,22 +42,35 @@ namespace ChatServer.Hubs
         public async Task Join(string userId, string role)
         {
             var id = int.Parse(userId);
+            // Проверяем, есть ли уже соединение для этого пользователя, чтобы избежать дубликатов
+            if (users.ContainsKey(Context.ConnectionId))
+            {
+                users.Remove(Context.ConnectionId);
+            }
             users.Add(Context.ConnectionId, (id, role));
+
             await _userService.SetStatus(id, true);
             await Clients.All.SendAsync("Status", users[Context.ConnectionId].UserId, true);
 
             var channels = await _chatService.GetChats(id);
             bool isStudent = !role.ToLower().Equals("lector");
+
+            var userGroupChatIds = new List<int>();
+
             if (isStudent)
             {
-                var groupId = (await _repository.Students.GetStudentAsync(id, false)).GroupId;
-                var subjects = await _repository.SubjectGroup.GetSubjects(groupId);
-                foreach (var subject in subjects)
+                var student = await _repository.Students.GetStudentAsync(id, false);
+                if (student != null)
                 {
-                    var groupChats = await _repository.GroupChats.GetForStudents(groupId, subject.SubjectId);
-                    foreach (var chat in groupChats)
+                    var subjects = await _repository.SubjectGroup.GetSubjects(student.GroupId);
+                    foreach (var subject in subjects)
                     {
-                        await Groups.AddToGroupAsync(Context.ConnectionId, chat.Id.ToString() + "G");
+                        var groupChats = await _repository.GroupChats.GetForStudents(student.GroupId, subject.SubjectId);
+                        foreach (var chat in groupChats)
+                        {
+                            await Groups.AddToGroupAsync(Context.ConnectionId, chat.Id.ToString() + "G");
+                            userGroupChatIds.Add(chat.Id);
+                        }
                     }
                 }
             }
@@ -70,6 +83,7 @@ namespace ChatServer.Hubs
                     foreach (var chat in groupChats)
                     {
                         await Groups.AddToGroupAsync(Context.ConnectionId, chat.Id.ToString() + "G");
+                        userGroupChatIds.Add(chat.Id);
                     }
                 }
             }
@@ -77,6 +91,14 @@ namespace ChatServer.Hubs
             foreach (var item in channels)
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, item.Id.ToString());
+            }
+
+            foreach (var activeCall in _activeGroupCalls)
+            {
+                if (userGroupChatIds.Contains(activeCall.Key))
+                {
+                    await Clients.Client(Context.ConnectionId).SendAsync("GroupCallStarted", activeCall.Key);
+                }
             }
         }
 
@@ -160,11 +182,13 @@ namespace ChatServer.Hubs
             await Clients.Group(chatId.ToString()).SendAsync("NewChat", firstUserId, secondUserId, chatId);
         }
 
-        public async Task UpdateMediaStatus(int chatId, string deviceType, bool newStatus)
+        public async Task UpdateMediaStatus(int chatId, string deviceType, bool newStatus, bool isGroupChat)
         {
             var userId = users[Context.ConnectionId].UserId;
 
-            await Clients.GroupExcept(chatId.ToString(), Context.ConnectionId)
+            string groupName = isGroupChat ? chatId.ToString() + "G" : chatId.ToString();
+
+            await Clients.GroupExcept(groupName, Context.ConnectionId)
                          .SendAsync("RemoteMediaStatusChanged", chatId, userId, deviceType, newStatus);
         }
 
@@ -299,10 +323,9 @@ namespace ChatServer.Hubs
                 };
                 newCall.Participants.Add(Context.ConnectionId);
 
-                if (_activeGroupCalls.TryAdd(groupChatId, newCall))
-                {
-                    await Clients.Group(groupChatId.ToString() + "G").SendAsync("GroupCallStarted", groupChatId);
-                }
+                _activeGroupCalls[groupChatId] = newCall;
+
+                await Clients.Group(groupChatId.ToString() + "G").SendAsync("GroupCallStarted", groupChatId);
             }
         }
 
