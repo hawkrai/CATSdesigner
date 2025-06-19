@@ -216,7 +216,7 @@ namespace ChatServer.Hubs
                 {
                     if (groupCall.Value.Participants.ContainsKey(Context.ConnectionId))
                     {
-                        if (groupCall.Value.OwnerConnectionId == Context.ConnectionId)
+                        if (groupCall.Value.OwnerUserId == user.UserId)
                         {
                             _ = EndGroupCall(groupCall.Key);
                         }
@@ -331,7 +331,8 @@ namespace ChatServer.Hubs
             {
                 var newCall = new GroupCallInfo
                 {
-                    OwnerConnectionId = Context.ConnectionId
+                    OwnerConnectionId = Context.ConnectionId,
+                    OwnerUserId = caller.UserId
                 };
 
                 newCall.Participants.TryAdd(Context.ConnectionId, new ParticipantState { UserId = caller.UserId });
@@ -342,7 +343,9 @@ namespace ChatServer.Hubs
 
         public async Task EndGroupCall(int groupChatId)
         {
-            if (_activeGroupCalls.TryGetValue(groupChatId, out var callInfo) && callInfo.OwnerConnectionId == Context.ConnectionId)
+            if (users.TryGetValue(Context.ConnectionId, out var callerInfo) &&
+                _activeGroupCalls.TryGetValue(groupChatId, out var callInfo) &&
+                callInfo.OwnerUserId == callerInfo.UserId)
             {
                 if (_activeGroupCalls.TryRemove(groupChatId, out _))
                 {
