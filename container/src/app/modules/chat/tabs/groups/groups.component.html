@@ -89,8 +89,7 @@
                     *ngIf="
                       (dataService.activeGroupCalls | async)?.has(subject.id)
                     "
-                    class="align-middle mr-1"
-                    style="font-size: 1.1rem; color: #dc3545"
+                    class="align-middle subgroup-call-icon"
                     >podcasts</mat-icon
                   >
                   {{ subject.shortName }} ({{ subject.name }})
@@ -130,12 +129,22 @@
                 class="media align-items-center"
               >
                 <div class="media-body overflow-hidden">
-                  <h5 class="text-truncate font-size-14 mb-0">
-                    {{ group.name }}
+                  <h5
+                    class="text-truncate font-size-14 mb-0 d-flex align-items-center"
+                  >
+                    <mat-icon
+                      *ngIf="
+                        (dataService.activeGroupCalls | async)?.has(group.id)
+                      "
+                      class="align-middle subgroup-call-icon"
+                    >
+                      podcasts
+                    </mat-icon>
+                    <span class="text-truncate">{{ group.name }}</span>
                     <span
-                      style="top: calc(50% - 16px)"
+                      style="margin-left: auto"
                       *ngIf="!group.isCompletedForUser && group.unread > 0"
-                      class="badge badge-soft-danger badge-pill float-right"
+                      class="badge badge-soft-danger badge-pill"
                       >{{ group.unread }}</span
                     >
                   </h5>
