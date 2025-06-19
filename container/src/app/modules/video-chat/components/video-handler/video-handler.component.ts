@@ -96,20 +96,21 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
       this.videoChatService.isActiveCall,
       this.videoChatService.isIncomingCall,
       this.videoChatService.isOutgoingCall,
+      this.videoChatService.activeGroupCallId,
     ]).pipe(
       distinctUntilChanged(
         (prev, curr) =>
-          prev[0] === curr[0] && prev[1] === curr[1] && prev[2] === curr[2]
+          prev[0] === curr[0] &&
+          prev[1] === curr[1] &&
+          prev[2] === curr[2] &&
+          prev[3] === curr[3]
       ),
-      map(([isActive, isIncoming, isOutgoing]) => ({
+      map(([isActive, isIncoming, isOutgoing, activeGroupCallId]) => ({
         isActive: isActive,
         isIncoming: isIncoming,
         isOutgoing: isOutgoing,
         shouldShowOverlay:
-          isActive ||
-          isIncoming ||
-          isOutgoing ||
-          this.videoChatService.activeGroupCallId.getValue() !== null,
+          isActive || isIncoming || isOutgoing || activeGroupCallId !== null,
       }))
     )
   }
@@ -118,7 +119,14 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.checkScreenWidth()
 
     this.groupParticipants$ = this.videoChatService.groupCallParticipants.pipe(
-      map((participantsMap) => Array.from(participantsMap.values()))
+      map((participantsMap) =>
+        Array.from(participantsMap.entries()).map(
+          ([connectionId, participant]) => ({
+            connectionId,
+            ...participant,
+          })
+        )
+      )
     )
 
     const callStateSub = combineLatest([
@@ -129,23 +137,21 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
     ])
       .pipe(auditTime(0))
       .subscribe(([isActive, isOutgoing, isIncoming, activeGroupCallId]) => {
-        const inCallProcess =
-          isActive || isOutgoing || isIncoming || activeGroupCallId !== null
-        const isOutgoingCall = isOutgoing && !isActive && !isIncoming
+        const inPersonalCall = isActive || isOutgoing || isIncoming
+        const inGroupCall = activeGroupCallId !== null
+        const inCallProcess = inPersonalCall || inGroupCall
 
-        if (isActive || activeGroupCallId !== null) {
-          this.showSelfOverlay()
-        }
-
-        if (isOutgoingCall) {
+        if (isOutgoing && !isActive && !isIncoming) {
           if (!this.isOutgoingCallAnimating) this.isOutgoingCallAnimating = true
         } else if (this.isOutgoingCallAnimating) {
           this.isOutgoingCallAnimating = false
         }
 
-        if (inCallProcess && !this.shouldInitStreamHandler) {
-          this.shouldInitStreamHandler = true
-          this.cdr.detectChanges()
+        if (inCallProcess) {
+          if (!this.shouldInitStreamHandler) {
+            this.shouldInitStreamHandler = true
+            this.cdr.detectChanges()
+          }
 
           this.streamHandlerReady
             .pipe(
@@ -157,9 +163,11 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.streamHandler.initializeMedia()
               }
             })
-        } else if (!inCallProcess && this.shouldInitStreamHandler) {
-          this.shouldInitStreamHandler = false
-          this.cdr.detectChanges()
+        } else {
+          if (this.shouldInitStreamHandler) {
+            this.shouldInitStreamHandler = false
+            this.cdr.detectChanges()
+          }
         }
       })
 
@@ -230,15 +238,11 @@ export class VideoHandlerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  trackByConnectionId(index: number, participant: IVideoParticipant): string {
-    const participantsMap =
-      this.videoChatService.groupCallParticipants.getValue()
-    for (const [key, value] of participantsMap.entries()) {
-      if (value === participant) {
-        return key
-      }
-    }
-    return participant.displayName
+  trackByConnectionId = (
+    index: number,
+    participant: IVideoParticipant & { connectionId: string }
+  ): string => {
+    return participant.connectionId
   }
 
   getInitials(name: string): string {
