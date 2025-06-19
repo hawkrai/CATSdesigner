@@ -56,6 +56,17 @@ export class VideoChatService {
         }
       )
     }
+
+    this.localParticipantInfo.subscribe((self) => {
+      if (self && this.activeGroupCallId.getValue() !== null) {
+        const selfId = this.signalingGateway.selfConnectionId
+        if (selfId) {
+          const currentParticipants = this.groupCallParticipants.getValue()
+          currentParticipants.set(selfId, self)
+          this.groupCallParticipants.next(new Map(currentParticipants))
+        }
+      }
+    })
   }
 
   private formatLocalUserName(fullName: string): string {

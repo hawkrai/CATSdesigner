@@ -343,8 +343,8 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
           avatarUrl: user.profile,
           initials: this.getInitials(user.fullName),
           isCurrentUser: false,
-          cameraOn: true,
-          micOn: true,
+          cameraOn: false,
+          micOn: false,
           stream: stream,
         }
         this.videoChatService.addGroupParticipant(connectionId, newParticipant)
@@ -353,8 +353,8 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
         const tempParticipant: IVideoParticipant = {
           displayName: `User ${userId}`,
           isCurrentUser: false,
-          cameraOn: true,
-          micOn: true,
+          cameraOn: false,
+          micOn: false,
           stream: stream,
           initials: 'U',
         }
