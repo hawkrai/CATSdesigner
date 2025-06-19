@@ -10,9 +10,10 @@ import {
 } from '@angular/core'
 import { Subscription } from 'rxjs'
 import { VideoChatService } from '@app/modules/video-chat/services/video-chat.service'
-import { WebRtcSignalingGateway } from '../../services/webrtc-signaling.gateway'
+import { WebRtcSignalingGateway } from '@modules/video-chat/services/webrtc-signaling.gateway'
 import { ChatApiService } from '@chat/shared/api/chat-api.service'
-import { IVideoParticipant } from '../../interfaces/videoParticipant.interface'
+import { IVideoParticipant } from '@modules/video-chat/interfaces/videoParticipant.interface'
+import { IParticipantState } from '@modules/video-chat/interfaces/participant-state.interface'
 import { User } from '@chat/shared/models/dto/user'
 
 const configuration = {
@@ -171,8 +172,12 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
           if (this.isGroupCall) {
             for (const connectionId in participants) {
               if (connectionId !== this.signalingGateway.selfConnectionId) {
-                const userId = participants[connectionId]
-                this.fetchUserInfoAndAddParticipant(connectionId, userId, null)
+                const participantState = participants[connectionId]
+                this.fetchUserInfoAndAddParticipant(
+                  connectionId,
+                  participantState,
+                  null
+                )
                 this.createPeerConnection(connectionId, true)
               }
             }
@@ -185,8 +190,12 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
         (participantInfo) => {
           if (this.isGroupCall) {
             for (const connectionId in participantInfo) {
-              const userId = participantInfo[connectionId]
-              this.fetchUserInfoAndAddParticipant(connectionId, userId, null)
+              const participantState = participantInfo[connectionId]
+              this.fetchUserInfoAndAddParticipant(
+                connectionId,
+                participantState,
+                null
+              )
             }
           }
         }
@@ -333,10 +342,10 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
 
   private fetchUserInfoAndAddParticipant(
     connectionId: string,
-    userId: number,
+    state: IParticipantState,
     stream: MediaStream | null
   ): void {
-    this.chatApiService.getUserInfoById(userId).subscribe({
+    this.chatApiService.getUserInfoById(state.userId).subscribe({
       next: (user: User) => {
         const newParticipant: IVideoParticipant = {
           userId: user.userId,
@@ -344,19 +353,19 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
           avatarUrl: user.profile,
           initials: this.getInitials(user.fullName),
           isCurrentUser: false,
-          cameraOn: false,
-          micOn: false,
+          cameraOn: state.isCameraOn,
+          micOn: state.isMicOn,
           stream: stream,
         }
         this.videoChatService.addGroupParticipant(connectionId, newParticipant)
       },
       error: () => {
         const tempParticipant: IVideoParticipant = {
-          userId: userId,
-          displayName: `User ${userId}`,
+          userId: state.userId,
+          displayName: `User ${state.userId}`,
           isCurrentUser: false,
-          cameraOn: false,
-          micOn: false,
+          cameraOn: state.isCameraOn,
+          micOn: state.isMicOn,
           stream: stream,
           initials: 'U',
         }

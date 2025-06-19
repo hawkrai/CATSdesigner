@@ -1,3 +1,5 @@
+import { IParticipantState } from './participant-state.interface'
+
 export interface IParticipantInfo {
-  [connectionId: string]: number
+  [connectionId: string]: IParticipantState
 }

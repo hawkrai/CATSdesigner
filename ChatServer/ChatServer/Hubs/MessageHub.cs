@@ -42,7 +42,6 @@ namespace ChatServer.Hubs
         public async Task Join(string userId, string role)
         {
             var id = int.Parse(userId);
-            // Проверяем, есть ли уже соединение для этого пользователя, чтобы избежать дубликатов
             if (users.ContainsKey(Context.ConnectionId))
             {
                 users.Remove(Context.ConnectionId);
@@ -186,29 +185,42 @@ namespace ChatServer.Hubs
         {
             var userId = users[Context.ConnectionId].UserId;
 
-            string groupName = isGroupChat ? chatId.ToString() + "G" : chatId.ToString();
+            if (isGroupChat && _activeGroupCalls.TryGetValue(chatId, out var callInfo))
+            {
+                if (callInfo.Participants.TryGetValue(Context.ConnectionId, out var participantState))
+                {
+                    if (deviceType.Equals("camera", StringComparison.OrdinalIgnoreCase))
+                    {
+                        participantState.IsCameraOn = newStatus;
+                    }
+                    else if (deviceType.Equals("microphone", StringComparison.OrdinalIgnoreCase))
+                    {
+                        participantState.IsMicOn = newStatus;
+                    }
+                }
+            }
 
+            string groupName = isGroupChat ? chatId.ToString() + "G" : chatId.ToString();
             await Clients.GroupExcept(groupName, Context.ConnectionId)
                          .SendAsync("RemoteMediaStatusChanged", chatId, userId, deviceType, newStatus);
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
-            if (users.ContainsKey(Context.ConnectionId))
+            if (users.TryGetValue(Context.ConnectionId, out var user))
             {
-                var user = users[Context.ConnectionId];
                 await Clients.All.SendAsync("Status", user.UserId, false);
                 await _userService.SetStatus(user.UserId, false);
 
                 foreach (var groupCall in _activeGroupCalls)
                 {
-                    if (groupCall.Value.Participants.Contains(Context.ConnectionId))
+                    if (groupCall.Value.Participants.ContainsKey(Context.ConnectionId))
                     {
                         if (groupCall.Value.OwnerConnectionId == Context.ConnectionId)
                         {
                             _ = EndGroupCall(groupCall.Key);
                         }
-                        else 
+                        else
                         {
                             _ = LeaveGroupCall(groupCall.Key);
                         }
@@ -321,10 +333,9 @@ namespace ChatServer.Hubs
                 {
                     OwnerConnectionId = Context.ConnectionId
                 };
-                newCall.Participants.Add(Context.ConnectionId);
 
+                newCall.Participants.TryAdd(Context.ConnectionId, new ParticipantState { UserId = caller.UserId });
                 _activeGroupCalls[groupChatId] = newCall;
-
                 await Clients.Group(groupChatId.ToString() + "G").SendAsync("GroupCallStarted", groupChatId);
             }
         }
@@ -344,18 +355,19 @@ namespace ChatServer.Hubs
         {
             if (_activeGroupCalls.TryGetValue(groupChatId, out var callInfo))
             {
-                var existingParticipants = callInfo.Participants
-                    .Where(cid => users.ContainsKey(cid))
-                    .ToDictionary(cid => cid, cid => users[cid].UserId);
+                var existingParticipantsState = callInfo.Participants
+                    .ToDictionary(p => p.Key, p => p.Value);
 
-                callInfo.Participants.Add(Context.ConnectionId);
-
-                await Clients.Caller.SendAsync("ExistingParticipantsInGroupCall", groupChatId, existingParticipants);
+                await Clients.Caller.SendAsync("ExistingParticipantsInGroupCall", groupChatId, existingParticipantsState);
 
                 if (users.TryGetValue(Context.ConnectionId, out var newUserInfo))
                 {
-                    var newParticipantPayload = new Dictionary<string, int> { { Context.ConnectionId, newUserInfo.UserId } };
-                    await Clients.GroupExcept(groupChatId.ToString() + "G", Context.ConnectionId).SendAsync("NewParticipantInGroupCall", groupChatId, newParticipantPayload);
+                    var newUserState = new ParticipantState { UserId = newUserInfo.UserId };
+                    if (callInfo.Participants.TryAdd(Context.ConnectionId, newUserState))
+                    {
+                        var newParticipantPayload = new Dictionary<string, ParticipantState> { { Context.ConnectionId, newUserState } };
+                        await Clients.GroupExcept(groupChatId.ToString() + "G", Context.ConnectionId).SendAsync("NewParticipantInGroupCall", groupChatId, newParticipantPayload);
+                    }
                 }
             }
         }
@@ -364,16 +376,10 @@ namespace ChatServer.Hubs
         {
             if (_activeGroupCalls.TryGetValue(groupChatId, out var callInfo))
             {
-                if (callInfo.Participants.Remove(Context.ConnectionId))
+                if (callInfo.Participants.TryRemove(Context.ConnectionId, out var leftParticipantState))
                 {
-                    if (users.TryGetValue(Context.ConnectionId, out var userInfo))
-                    {
-                        await Clients.GroupExcept(groupChatId.ToString() + "G", Context.ConnectionId).SendAsync("ParticipantLeftGroupCall", groupChatId, Context.ConnectionId, userInfo.UserId);
-                    }
-                    else
-                    {
-                        await Clients.GroupExcept(groupChatId.ToString() + "G", Context.ConnectionId).SendAsync("ParticipantLeftGroupCall", groupChatId, Context.ConnectionId, -1);
-                    }
+                    await Clients.GroupExcept(groupChatId.ToString() + "G", Context.ConnectionId)
+                        .SendAsync("ParticipantLeftGroupCall", groupChatId, Context.ConnectionId, leftParticipantState.UserId);
                 }
             }
         }

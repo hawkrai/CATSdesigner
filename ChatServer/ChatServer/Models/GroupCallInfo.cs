@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 
 namespace ChatServer.Models
 {
     public class GroupCallInfo
     {
         public string OwnerConnectionId { get; set; }
-        public HashSet<string> Participants { get; set; } = new HashSet<string>();
+        public ConcurrentDictionary<string, ParticipantState> Participants { get; set; } = new ConcurrentDictionary<string, ParticipantState>();
     }
 }
