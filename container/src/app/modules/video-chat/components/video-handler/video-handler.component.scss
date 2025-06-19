@@ -54,10 +54,51 @@
 .video-grid {
   flex-grow: 1;
   position: relative;
-  display: flex;
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
   background-color: #111827;
   border-radius: 8px;
   overflow: hidden;
+
+  &.participants-1 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  &.participants-2 {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+  }
+
+  &.participants-3,
+  &.participants-4 {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  &.participants-5,
+  &.participants-6 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  &.participants-7,
+  &.participants-8,
+  &.participants-9 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+}
+
+.video-grid .self-participant-tile {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: unset;
+  border: 2px solid #3b82f6;
+  cursor: default;
 }
 
 .participant-tile {
