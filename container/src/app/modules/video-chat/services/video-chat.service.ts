@@ -41,7 +41,7 @@ export class VideoChatService {
           if (fullUserInfo && fullUserInfo.fullName) {
             this.localParticipantInfo.next({
               userId: fullUserInfo.userId,
-              displayName: this.formatLocalUserName(fullUserInfo.fullName),
+              displayName: '',
               avatarUrl: fullUserInfo.profile,
               isCurrentUser: true,
               cameraOn: false,
@@ -70,7 +70,7 @@ export class VideoChatService {
     })
   }
 
-  private formatLocalUserName(fullName: string): string {
+  public formatLocalUserName(fullName: string): string {
     if (!fullName)
       return this.translatePipe.transform(
         'videochat.defaultLocalUserName',
@@ -80,7 +80,7 @@ export class VideoChatService {
     return parts.length > 1 ? parts[1] : parts[0]
   }
 
-  private formatRemoteUserName(fullName: string): string {
+  public formatRemoteUserName(fullName: string): string {
     if (!fullName)
       return this.translatePipe.transform(
         'videochat.defaultRemoteUserName',
@@ -115,7 +115,7 @@ export class VideoChatService {
       this.translatePipe.transform('videochat.fallbackUserName', 'User')
     this.localParticipantInfo.next({
       userId: baseUser.id,
-      displayName: this.formatLocalUserName(nameToFormat),
+      displayName: '',
       avatarUrl: undefined,
       isCurrentUser: true,
       cameraOn: false,

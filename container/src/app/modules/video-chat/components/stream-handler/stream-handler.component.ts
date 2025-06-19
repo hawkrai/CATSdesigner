@@ -145,6 +145,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
 
       const previewStream = new MediaStream(this.localStream.getVideoTracks())
       this.selfStreamReady.emit(previewStream)
+
       this.peerConnections.forEach((pc) => {
         this.localStream?.getTracks().forEach((track) => {
           if (!pc.getSenders().find((s) => s.track === track)) {
@@ -357,7 +358,9 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
       next: (user: User) => {
         const newParticipant: IVideoParticipant = {
           userId: user.userId,
-          displayName: user.fullName,
+          displayName: this.videoChatService.formatRemoteUserName(
+            user.fullName
+          ),
           avatarUrl: user.profile,
           initials: this.getInitials(user.fullName),
           isCurrentUser: false,
