@@ -211,9 +211,12 @@
 
   .status-icon {
     font-size: 1rem;
+    width: 16px;
+    height: 16px;
     color: #f87171;
     display: inline-flex;
     align-items: center;
+    margin-right: 2px;
   }
 
   .participant-name {
