@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { Injectable, Injector } from '@angular/core'
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr'
 import { Message } from '@chat/shared/models/entities/message.model'
 import { DataService } from '@chat/shared/services/dataService'
@@ -7,13 +7,18 @@ import { MessageCto } from '@chat/shared/models/dto/messageCto'
 import { VideoChatService } from '@modules/video-chat/services/video-chat.service'
 import { ToastrService } from 'ngx-toastr'
 import { FileApiService } from '@chat/shared/api/file-api.service'
+import { WebRtcSignalingGateway } from '@modules/video-chat/services/webrtc-signaling.gateway'
+import { IOfferEvent } from '@modules/video-chat/interfaces/offer-event.interface'
+import { IAnswerEvent } from '@modules/video-chat/interfaces/answer-event.interface'
+import { ICandidateEvent } from '@modules/video-chat/interfaces/candidate-event.interface'
+import { IParticipantInfo } from '@modules/video-chat/interfaces/participant-info.interface'
+import { Subject } from 'rxjs'
 
-//api methods
 const SendCallRequest = 'SendCallRequest'
 const DisconnectFromChat = 'DisconnectFromChat'
 const SendRejection = 'Reject'
 const UpdateMediaStatus = 'UpdateMediaStatus'
-//handlers
+
 const IncomeCall = 'HandleIncomeCall'
 const DisconnectUser = 'HandleDisconnection'
 const HandleRejection = 'HandleRejection'
@@ -22,22 +27,43 @@ const RemoteMediaStatusChanged = 'RemoteMediaStatusChanged'
 @Injectable({
   providedIn: 'root',
 })
-export class SignalRService {
+export class SignalRService implements WebRtcSignalingGateway {
   public hubConnection: HubConnection
-  public selfConnectionId: string | null = null
   public user: any
   private timer: any
   public readonly chatTimeOut: number = 45000
 
+  public selfConnectionId: string | null = null
+
+  public onPersonalCallNewcomer$ = new Subject<string>()
+  public onGroupCallNewParticipant$ = new Subject<IParticipantInfo>()
+  public onGroupCallExistingParticipants$ = new Subject<IParticipantInfo>()
+  public onGroupCallParticipantLeft$ = new Subject<{
+    connectionId: string
+    userId: number
+  }>()
+  public onOffer$ = new Subject<IOfferEvent>()
+  public onAnswer$ = new Subject<IAnswerEvent>()
+  public onCandidate$ = new Subject<ICandidateEvent>()
+
+  private _videoChatService: VideoChatService
+
   constructor(
+    private injector: Injector,
     private dataService: DataService,
-    private videoChatService: VideoChatService,
     private contactService: ContactService,
     private toastr: ToastrService,
     private fileApiService: FileApiService
   ) {
     this.user = JSON.parse(localStorage.getItem('currentUser'))
     this.connect()
+  }
+
+  private get videoChatService(): VideoChatService {
+    if (!this._videoChatService) {
+      this._videoChatService = this.injector.get(VideoChatService)
+    }
+    return this._videoChatService
   }
 
   public connect() {
@@ -115,16 +141,84 @@ export class SignalRService {
         deviceType: 'microphone' | 'camera',
         newStatus: boolean
       ) => {
-        if (
-          this.user.id !== userId &&
-          this.videoChatService.isChatMatch(chatId)
-        ) {
+        if (this.user.id === userId) return
+
+        const isGroupCallActive =
+          this.videoChatService.activeGroupCallId.getValue() === chatId
+        const isPersonalCallActive =
+          this.videoChatService.currentChatId === chatId
+
+        if (isGroupCallActive) {
+          this.videoChatService.updateGroupParticipantMediaStatus(
+            userId,
+            deviceType,
+            newStatus
+          )
+        } else if (isPersonalCallActive) {
           if (deviceType === 'microphone') {
             this.videoChatService.updateRemoteMicStatus(newStatus)
           } else if (deviceType === 'camera') {
             this.videoChatService.updateRemoteCameraStatus(newStatus)
           }
         }
+      }
+    )
+
+    this.hubConnection.on(
+      'AddNewcomer',
+      (newcomerConnectionId: string, chatId: number) => {
+        this.onPersonalCallNewcomer$.next(newcomerConnectionId)
+      }
+    )
+
+    this.hubConnection.on('GroupCallStarted', (groupChatId: number) => {
+      this.dataService.setGroupCallState(groupChatId, true)
+    })
+
+    this.hubConnection.on('GroupCallEnded', (groupChatId: number) => {
+      this.dataService.setGroupCallState(groupChatId, false)
+      this.videoChatService.handleGroupCallEnded(groupChatId)
+    })
+
+    this.hubConnection.on(
+      'ExistingParticipantsInGroupCall',
+      (groupChatId: number, participants: IParticipantInfo) => {
+        this.onGroupCallExistingParticipants$.next(participants)
+      }
+    )
+
+    this.hubConnection.on(
+      'NewParticipantInGroupCall',
+      (groupChatId: number, participantInfo: IParticipantInfo) => {
+        this.onGroupCallNewParticipant$.next(participantInfo)
+      }
+    )
+
+    this.hubConnection.on(
+      'ParticipantLeftGroupCall',
+      (groupChatId: number, connectionId: string, userId: number) => {
+        this.onGroupCallParticipantLeft$.next({ connectionId, userId })
+      }
+    )
+
+    this.hubConnection.on(
+      'ReceiveGroupOffer',
+      (fromConnectionId: string, offer: any) => {
+        this.onOffer$.next({ fromConnectionId, offer })
+      }
+    )
+
+    this.hubConnection.on(
+      'ReceiveGroupAnswer',
+      (fromConnectionId: string, answer: any) => {
+        this.onAnswer$.next({ fromConnectionId, answer })
+      }
+    )
+
+    this.hubConnection.on(
+      'ReceiveGroupIceCandidate',
+      (fromConnectionId: string, candidate: any) => {
+        this.onCandidate$.next({ fromConnectionId, candidate })
       }
     )
   }
@@ -158,22 +252,22 @@ export class SignalRService {
     )
   }
 
-  public sendRejection(chatId: number, message: string) {
+  public sendRejection(chatId: number, message: string): Promise<void> {
     return this.hubConnection.invoke(SendRejection, chatId, message)
   }
 
-  public sendCallRequest(chatId: number) {
+  public sendCallRequest(chatId: number): Promise<void> {
     this.setEndChatTimer(chatId, this.chatTimeOut)
     this.videoChatService.SetActiveCall(chatId)
     return this.hubConnection.invoke(SendCallRequest, this.user.id, chatId)
   }
 
-  public disconnectFromCall(chatId: any) {
+  public disconnectFromCall(chatId: any): Promise<void> {
     this.callWasConfirmed(chatId)
     return this.hubConnection.invoke(DisconnectFromChat, this.user.id, chatId)
   }
 
-  public SetVoiceChatConnection(chatId: any) {
+  public setVoiceChatConnection(chatId: any): Promise<void> {
     return this.hubConnection.invoke(
       'SetVoiceChatConnection',
       chatId,
@@ -210,14 +304,16 @@ export class SignalRService {
   public sendMediaStatusUpdate(
     chatId: number,
     deviceType: 'microphone' | 'camera',
-    newStatus: boolean
+    newStatus: boolean,
+    isGroupChat: boolean
   ) {
     if (this.hubConnection?.state === 'Connected') {
       return this.hubConnection.invoke(
         UpdateMediaStatus,
         chatId,
         deviceType,
-        newStatus
+        newStatus,
+        isGroupChat
       )
     }
     return Promise.resolve()
@@ -264,5 +360,48 @@ export class SignalRService {
 
   public join(userId: number, role: string) {
     return this.hubConnection.invoke('Join', userId, role)
+  }
+
+  public startGroupCall(groupChatId: number): Promise<void> {
+    return this.hubConnection.invoke('StartGroupCall', groupChatId)
+  }
+
+  public endGroupCall(groupChatId: number): Promise<void> {
+    return this.hubConnection.invoke('EndGroupCall', groupChatId)
+  }
+
+  public joinGroupCall(groupChatId: number): Promise<void> {
+    return this.hubConnection.invoke('JoinGroupCall', groupChatId)
+  }
+
+  public leaveGroupCall(groupChatId: number): Promise<void> {
+    return this.hubConnection.invoke('LeaveGroupCall', groupChatId)
+  }
+
+  public sendOffer(targetConnectionId: string, offer: any): Promise<void> {
+    return this.hubConnection.invoke(
+      'SendGroupOffer',
+      targetConnectionId,
+      offer
+    )
+  }
+
+  public sendAnswer(targetConnectionId: string, answer: any): Promise<void> {
+    return this.hubConnection.invoke(
+      'SendGroupAnswer',
+      targetConnectionId,
+      answer
+    )
+  }
+
+  public sendCandidate(
+    targetConnectionId: string,
+    candidate: any
+  ): Promise<void> {
+    return this.hubConnection.invoke(
+      'SendGroupIceCandidate',
+      targetConnectionId,
+      candidate
+    )
   }
 }

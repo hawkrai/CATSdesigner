@@ -4,8 +4,9 @@ import { ChatService } from '@chat/shared/services/chatService'
 import { DataService } from '@chat/shared/services/dataService'
 import { Chat } from '@chat/shared/models/entities/chats.model'
 import { User } from '@chat/shared/models/dto/user'
-import { IVideoParticipant } from '@app/modules/video-chat/interfaces/videoParticipant.interface'
+import { IVideoParticipant } from '@modules/video-chat/interfaces/videoParticipant.interface'
 import { TranslatePipe } from 'educats-translate'
+import { WebRtcSignalingGateway } from './webrtc-signaling.gateway'
 
 @Injectable({
   providedIn: 'root',
@@ -21,12 +22,17 @@ export class VideoChatService {
   public localParticipantInfo = new BehaviorSubject<IVideoParticipant | null>(
     null
   )
+  public activeGroupCallId = new BehaviorSubject<number | null>(null)
+  public groupCallParticipants = new BehaviorSubject<
+    Map<string, IVideoParticipant>
+  >(new Map())
 
   private _currentRemoteChatInfo: Chat | null = null
   constructor(
     private chatService: ChatService,
     private dataService: DataService,
-    private translatePipe: TranslatePipe
+    private translatePipe: TranslatePipe,
+    private signalingGateway: WebRtcSignalingGateway
   ) {
     const baseCurrentUser = this.dataService.user
     if (baseCurrentUser && baseCurrentUser.id) {
@@ -34,7 +40,8 @@ export class VideoChatService {
         (fullUserInfo: User | null) => {
           if (fullUserInfo && fullUserInfo.fullName) {
             this.localParticipantInfo.next({
-              displayName: this.formatLocalUserName(fullUserInfo.fullName),
+              userId: fullUserInfo.userId,
+              displayName: '',
               avatarUrl: fullUserInfo.profile,
               isCurrentUser: true,
               cameraOn: false,
@@ -50,9 +57,20 @@ export class VideoChatService {
         }
       )
     }
+
+    this.localParticipantInfo.subscribe((self) => {
+      if (self && this.activeGroupCallId.getValue() !== null) {
+        const selfId = this.signalingGateway.selfConnectionId
+        if (selfId) {
+          const currentParticipants = this.groupCallParticipants.getValue()
+          currentParticipants.set(selfId, self)
+          this.groupCallParticipants.next(new Map(currentParticipants))
+        }
+      }
+    })
   }
 
-  private formatLocalUserName(fullName: string): string {
+  public formatLocalUserName(fullName: string): string {
     if (!fullName)
       return this.translatePipe.transform(
         'videochat.defaultLocalUserName',
@@ -62,7 +80,7 @@ export class VideoChatService {
     return parts.length > 1 ? parts[1] : parts[0]
   }
 
-  private formatRemoteUserName(fullName: string): string {
+  public formatRemoteUserName(fullName: string): string {
     if (!fullName)
       return this.translatePipe.transform(
         'videochat.defaultRemoteUserName',
@@ -88,12 +106,16 @@ export class VideoChatService {
     return '??'
   }
 
-  private setDefaultLocalParticipantInfo(baseUser: { userName?: string }) {
+  private setDefaultLocalParticipantInfo(baseUser: {
+    id?: number
+    userName?: string
+  }) {
     const nameToFormat =
       baseUser.userName ||
       this.translatePipe.transform('videochat.fallbackUserName', 'User')
     this.localParticipantInfo.next({
-      displayName: this.formatLocalUserName(nameToFormat),
+      userId: baseUser.id,
+      displayName: '',
       avatarUrl: undefined,
       isCurrentUser: true,
       cameraOn: false,
@@ -270,5 +292,84 @@ export class VideoChatService {
 
   public isChatMatch(chatId: number): boolean {
     return this.currentChatId === chatId
+  }
+
+  public joinGroupCall(chatId: number): void {
+    if (this.isActiveCall.getValue()) {
+      return
+    }
+
+    this.activeGroupCallId.next(chatId)
+    const self = this.localParticipantInfo.getValue()
+    if (self) {
+      const newMap = new Map<string, IVideoParticipant>()
+      const selfId = this.signalingGateway.selfConnectionId
+      if (selfId) {
+        newMap.set(selfId, self)
+        this.groupCallParticipants.next(newMap)
+      }
+    }
+  }
+
+  public leaveGroupCall(): void {
+    const chatId = this.activeGroupCallId.getValue()
+    if (chatId !== null) {
+      this.signalingGateway.leaveGroupCall(chatId)
+      this.resetGroupCallState()
+    }
+  }
+
+  public handleGroupCallEnded(chatId: number): void {
+    if (this.activeGroupCallId.getValue() === chatId) {
+      this.resetGroupCallState()
+    }
+  }
+
+  public addGroupParticipant(
+    connectionId: string,
+    participant: IVideoParticipant
+  ): void {
+    const currentParticipants = this.groupCallParticipants.getValue()
+    currentParticipants.set(connectionId, participant)
+    this.groupCallParticipants.next(new Map(currentParticipants))
+  }
+
+  public removeGroupParticipant(connectionId: string): void {
+    const currentParticipants = this.groupCallParticipants.getValue()
+    currentParticipants.delete(connectionId)
+    this.groupCallParticipants.next(new Map(currentParticipants))
+  }
+
+  private resetGroupCallState(): void {
+    this.activeGroupCallId.next(null)
+    this.groupCallParticipants.next(new Map())
+  }
+
+  public updateGroupParticipantMediaStatus(
+    userId: number,
+    deviceType: 'microphone' | 'camera',
+    newStatus: boolean
+  ): void {
+    const participantsMap = this.groupCallParticipants.getValue()
+    let targetConnectionId: string | null = null
+    let targetParticipant: IVideoParticipant | null = null
+
+    for (const [connectionId, participant] of participantsMap.entries()) {
+      if (participant.userId === userId) {
+        targetConnectionId = connectionId
+        targetParticipant = participant
+        break
+      }
+    }
+
+    if (targetConnectionId && targetParticipant) {
+      if (deviceType === 'microphone') {
+        targetParticipant.micOn = newStatus
+      } else if (deviceType === 'camera') {
+        targetParticipant.cameraOn = newStatus
+      }
+      participantsMap.set(targetConnectionId, { ...targetParticipant })
+      this.groupCallParticipants.next(new Map(participantsMap))
+    }
   }
 }
