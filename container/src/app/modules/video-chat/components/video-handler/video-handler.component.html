@@ -51,11 +51,17 @@
                 class="participant-video"
                 [class.hidden]="!p.cameraOn || !p.stream"
               ></video>
-              <div class="avatar-placeholder" *ngIf="!p.cameraOn || !p.stream">
-                <img *ngIf="p.avatarUrl" [src]="p.avatarUrl" alt="Avatar" />
-                <div class="initials-placeholder" *ngIf="!p.avatarUrl">
-                  <span>{{ getInitials(p.displayName) }}</span>
-                </div>
+              <div
+                class="avatar-placeholder"
+                *ngIf="p.avatarUrl && (!p.cameraOn || !p.stream)"
+              >
+                <img [src]="p.avatarUrl" alt="Avatar" />
+              </div>
+              <div
+                class="avatar-placeholder initials-placeholder"
+                *ngIf="!p.avatarUrl && (!p.cameraOn || !p.stream)"
+              >
+                <span>{{ p.initials || getInitials(p.displayName) }}</span>
               </div>
               <div class="participant-info-overlay">
                 <mat-icon class="status-icon" *ngIf="!p.micOn"
