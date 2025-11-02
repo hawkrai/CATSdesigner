@@ -2,20 +2,23 @@
   <div class="defense-component__header">
     <ng-container *ngIf="courseUser.IsLecturer">
       <div>
-        <mat-form-field
-          class="defense-component__group-select"
-          *ngIf="selectedGroup"
-        >
-          <mat-select [value]="selectedGroup.GroupId">
-            <mat-option
-              *ngFor="let group of groups"
-              (onSelectionChange)="_selectedGroup($event)"
-              [value]="group.GroupId"
-            >
-              {{ group.GroupName }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <mat-form-field class="defense-component__group-select" *ngIf="selectedGroup">
+  <mat-select [value]="selectedGroup.GroupId">
+    <mat-select-trigger>
+      {{ selectedGroup?.GroupName }}
+      <span *ngIf="selectedGroup?.hasNewWork" class="group-exclamation">!</span>
+    </mat-select-trigger>
+    <mat-option
+      *ngFor="let group of groups"
+      (onSelectionChange)="_selectedGroup($event)"
+      [value]="group.GroupId"
+    >
+      {{ group.GroupName }}
+      <span *ngIf="group.hasNewWork" class="group-exclamation">!</span>
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
         <mat-slide-toggle
           class="detached-toggle"
           [color]="'primary'"
@@ -173,8 +176,11 @@
         <mat-expansion-panel *ngFor="let student of studentFiles">
           <mat-expansion-panel-header>
             <mat-panel-title>
-              {{ student.FullName }}
-            </mat-panel-title>
+  {{ student.FullName }}
+  <span *ngIf="student.hasNewWork" class="new-work-exclamation" matTooltip="Новая работа отправлена">!</span>
+</mat-panel-title>
+
+
           </mat-expansion-panel-header>
           <div class="mdc-data-table">
             <table class="mdc-data-table__table">
