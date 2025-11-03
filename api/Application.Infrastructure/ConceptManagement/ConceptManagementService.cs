@@ -14,6 +14,8 @@ using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Core.Helpers;
 using System.Linq.Dynamic;
 
+using System.Diagnostics;
+
 namespace Application.Infrastructure.ConceptManagement
 {
     public class ConceptManagementService : IConceptManagementService
@@ -553,77 +555,91 @@ namespace Application.Infrastructure.ConceptManagement
                 ParentId = parent.Id,
                 ReadOnly = true
             };
-            repositoriesContainer.ConceptRepository.Save(concept1);
 
             var concept2 = new Concept(ProgramSectionName, parent.Author, parent.Subject, false, true)
             {
                 ParentId = parent.Id,
                 ReadOnly = true
             };
-            repositoriesContainer.ConceptRepository.Save(concept2);
-
-            concept1.NextConcept = concept2.Id;
-            concept2.PrevConcept = concept1.Id;
 
             var concept3 = new Concept(LectSectionName, parent.Author, parent.Subject, true, includeLectures)
             {
                 ParentId = parent.Id,
                 ReadOnly = true
             };
-            repositoriesContainer.ConceptRepository.Save(concept3);
-            InitLectChild(concept3, repositoriesContainer);
-
-            concept2.NextConcept = concept3.Id;
-            concept3.PrevConcept = concept2.Id;
 
             var concept4 = new Concept(PracticalSectionName, parent.Author, parent.Subject, true, includeLabs || includeWorkshops)
             {
                 ParentId = parent.Id,
                 ReadOnly = true
             };
-            repositoriesContainer.ConceptRepository.Save(concept4);
-
-            InitPracticalChild(concept4, repositoriesContainer, includeLabs, includeWorkshops);
-
-            concept3.NextConcept = concept4.Id;
-            concept4.PrevConcept = concept3.Id;
 
             var concept5 = new Concept(TestSectionName, parent.Author, parent.Subject, true, includeTests)
             {
                 ParentId = parent.Id,
                 ReadOnly = true
             };
-            repositoriesContainer.ConceptRepository.Save(concept5);
+
+            var concepts = new[] { concept1, concept2, concept3, concept4, concept5 };
+            repositoriesContainer.ConceptRepository.Save(concepts);
+
+            concept1.NextConcept = concept2.Id;
+
+            concept2.PrevConcept = concept1.Id;
+            concept2.NextConcept = concept3.Id;
+
+            concept3.PrevConcept = concept2.Id;
+            concept3.NextConcept = concept4.Id;
+
+            concept4.PrevConcept = concept3.Id;
+            concept4.NextConcept = concept5.Id;
 
             concept5.PrevConcept = concept4.Id;
-            concept4.NextConcept = concept5.Id;
-           
+
+            InitLectChild(concept3, repositoriesContainer);
+            InitPracticalChild(concept4, repositoriesContainer, includeLabs, includeWorkshops);
+
             repositoriesContainer.ApplyChanges();
         }
 
         private void InitLectChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer)
         {
-            var sub = SubjectManagementService.GetSubject(
-                new Query<Subject>(s => s.Id == parent.SubjectId)
+            var sub = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == parent.SubjectId)
                     .Include(s => s.Lectures));
-            Concept prev = null;
-            foreach (var item in sub.Lectures.OrderBy(s => s.Order))
+
+            var lectures = sub.Lectures.OrderBy(s => s.Order).ToList();
+
+            if (lectures.Count == 0)
+                return;
+
+            var conceptsToSave = new List<Concept>(lectures.Count);
+            var fileInitActions = new List<Action>(lectures.Count);
+
+            foreach (var item in lectures)
             {
                 var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, true)
                 {
                     ParentId = parent.Id,
                     LectureId = item.Id
                 };
-                repositoriesContainer.ConceptRepository.Save(concept);
-                if (prev != null)
-                {
-                    concept.PrevConcept = prev.Id;
-                    prev.NextConcept = concept.Id;
-                    repositoriesContainer.ConceptRepository.Save(prev);
-                    repositoriesContainer.ConceptRepository.Save(concept);
-                }
-                prev = concept;
-                InitLectFiles(concept, item.Id, repositoriesContainer);
+                conceptsToSave.Add(concept);
+                var lectureId = item.Id;
+                fileInitActions.Add(() => InitLectFiles(concept, lectureId, repositoriesContainer));
+            }
+
+            repositoriesContainer.ConceptRepository.Save(conceptsToSave);
+
+            for (int i = 1; i < conceptsToSave.Count; i++)
+            {
+                conceptsToSave[i].PrevConcept = conceptsToSave[i - 1].Id;
+                conceptsToSave[i - 1].NextConcept = conceptsToSave[i].Id;
+            }
+
+            repositoriesContainer.ConceptRepository.Save(conceptsToSave, e => true);
+
+            foreach (var action in fileInitActions)
+            {
+                action();
             }
         }
 
@@ -653,15 +669,20 @@ namespace Application.Infrastructure.ConceptManagement
 
         private void InitPracticalChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLabs, bool includeWorkshops)
         {
-            Concept prev = null;
-
-            var sub = SubjectManagementService.GetSubject(
-                new Query<Subject>(s => s.Id == parent.SubjectId)
+            var sub = SubjectManagementService.GetSubject( new Query<Subject>(s => s.Id == parent.SubjectId)
                     .Include(e => e.SubjectModules.Select(x => x.Module))
                     .Include(s => s.Practicals)
                     .Include(s => s.Labs));
+            var moduleTypes = sub.SubjectModules.Select(m => m.Module.ModuleType).ToHashSet();
+            var hasPracticals = moduleTypes.Contains(ModuleType.Practical);
+            var hasLabs = moduleTypes.Contains(ModuleType.Labs);
 
-            if (sub.SubjectModules.Any(m => m.Module.ModuleType == ModuleType.Practical))
+            if (!hasPracticals && !hasLabs)
+                return;
+            var conceptsToSave = new List<Concept>();
+            var fileInitActions = new List<Action>();
+
+            if (hasPracticals)
             {
                 foreach (var item in sub.Practicals.OrderBy(s => s.Order))
                 {
@@ -670,21 +691,13 @@ namespace Application.Infrastructure.ConceptManagement
                         ParentId = parent.Id,
                         PracticalId = item.Id
                     };
-                    repositoriesContainer.ConceptRepository.Save(concept);
-                    if (prev != null)
-                    {
-                        concept.PrevConcept = prev.Id;
-                        prev.NextConcept = concept.Id;
-                        repositoriesContainer.ConceptRepository.Save(prev);
-                        repositoriesContainer.ConceptRepository.Save(concept);
-                    }
-                    prev = concept;
-                    InitPractFiles(concept, item.Id, repositoriesContainer);
+                    conceptsToSave.Add(concept);
+
+                    var itemId = item.Id;
+                    fileInitActions.Add(() => InitPractFiles(concept, itemId, repositoriesContainer));
                 }
             }
- 
-
-            if (sub.SubjectModules.Any(m => m.Module.ModuleType == ModuleType.Labs))
+            if (hasLabs)
             {
                 foreach (var item in sub.Labs.OrderBy(s => s.Order))
                 {
@@ -693,18 +706,26 @@ namespace Application.Infrastructure.ConceptManagement
                         ParentId = parent.Id,
                         LabId = item.Id
                     };
-                    repositoriesContainer.ConceptRepository.Save(concept);
-                    if (prev != null)
-                    {
-                        concept.PrevConcept = prev.Id;
-                        prev.NextConcept = concept.Id;
-                        repositoriesContainer.ConceptRepository.Save(prev);
-                        repositoriesContainer.ConceptRepository.Save(concept);
-                    }
+                    conceptsToSave.Add(concept);
 
-                    prev = concept;
-                    InitLabsFiles(concept, item.Id, repositoriesContainer);
+                    var itemId = item.Id;
+                    fileInitActions.Add(() => InitLabsFiles(concept, itemId, repositoriesContainer));
                 }
+            }
+            if (conceptsToSave.Count == 0)
+                return;
+
+            repositoriesContainer.ConceptRepository.Save(conceptsToSave);
+            for (int i = 1; i < conceptsToSave.Count; i++)
+            {
+                conceptsToSave[i].PrevConcept = conceptsToSave[i - 1].Id;
+                conceptsToSave[i - 1].NextConcept = conceptsToSave[i].Id;
+            }
+
+            repositoriesContainer.ConceptRepository.Save(conceptsToSave, e => true); 
+            foreach (var action in fileInitActions)
+            {
+                action();
             }
         }
 
@@ -757,70 +778,93 @@ namespace Application.Infrastructure.ConceptManagement
 
         private void AddConceptAttachements(IEnumerable<Attachment> existedRecords, Concept parent, LmPlatformRepositoriesContainer currentRepContainer)
         {
-            var readableNonPdfFiles = existedRecords
-                    .Where(x => x.FileName.EndsWith(".doc")
-                        || x.FileName.EndsWith(".docx")
-                        || x.FileName.EndsWith(".rtf"))
-                    .ToList();
+
+            var existedRecordsList = existedRecords as List<Attachment> ?? existedRecords.ToList();
+
+            var readableNonPdfFiles = new List<Attachment>();
+            var pdfAttachements = new List<Attachment>();
+
+            foreach (var record in existedRecordsList)
+            {
+                var fileName = record.FileName;
+                if (fileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                {
+                    pdfAttachements.Add(record);
+                }
+                else if (fileName.EndsWith(".doc", StringComparison.OrdinalIgnoreCase)
+                      || fileName.EndsWith(".docx", StringComparison.OrdinalIgnoreCase)
+                      || fileName.EndsWith(".rtf", StringComparison.OrdinalIgnoreCase))
+                {
+                    readableNonPdfFiles.Add(record);
+                }
+            }
 
             if (readableNonPdfFiles.Any())
             {
                 var convertor = new WordToPdfConvertor();
-
-                var itemsToAdd = new List<Attachment>();
+                var itemsToAdd = new List<Attachment>(readableNonPdfFiles.Count);
 
                 foreach (var file in readableNonPdfFiles)
                 {
                     var friendlyFileName = Path.GetFileNameWithoutExtension(file.Name);
                     var sourceFilePath = $"{_storageRoot}{file.PathName}//{file.FileName}";
+
                     if (File.Exists(sourceFilePath))
                     {
+                        var convertedFileName = convertor.Convert(sourceFilePath);
                         itemsToAdd.Add(new Attachment()
                         {
                             AttachmentType = AttachmentType.Document,
-                            Name = string.Format("{0}.pdf", friendlyFileName),
+                            Name = $"{friendlyFileName}.pdf",
                             PathName = GetGuidFileName(),
-                            FileName = convertor.Convert(sourceFilePath),
+                            FileName = convertedFileName,
                             UserId = UserContext.CurrentUserId,
                             CreationDate = DateTime.UtcNow
                         });
                     }
                 }
-
-                currentRepContainer.AttachmentRepository.Save(itemsToAdd);
-                FilesManagementService.SaveFiles(itemsToAdd, x => x.PathName);
-
-                existedRecords = existedRecords.Union(itemsToAdd);
+                if (itemsToAdd.Any())
+                {
+                    currentRepContainer.AttachmentRepository.Save(itemsToAdd);
+                    FilesManagementService.SaveFiles(itemsToAdd, x => x.PathName);
+                    pdfAttachements.AddRange(itemsToAdd);
+                }
             }
 
-            var pdfAttachements = existedRecords.Where(x => x.FileName.EndsWith(".pdf")).ToList();
+            var conceptsToSave = new List<Concept>(pdfAttachements.Count);
             Concept prev = null;
+
             foreach (var attachement in pdfAttachements)
             {
-                var concept = new Concept(Path.GetFileNameWithoutExtension(attachement.Name), parent.Author, parent.Subject, false, false)
+                var concept = new Concept(
+                    Path.GetFileNameWithoutExtension(attachement.Name),
+                    parent.Author,
+                    parent.Subject,
+                    false,
+                    false)
                 {
                     ParentId = parent.Id,
                     Container = attachement.PathName,
                     Published = true,
                 };
-                try
-                {
-                    currentRepContainer.ConceptRepository.Save(concept);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.StackTrace);
-                }
+
                 if (prev != null)
                 {
                     concept.PrevConcept = prev.Id;
                     prev.NextConcept = concept.Id;
-                    currentRepContainer.ConceptRepository.Save(prev);
-                    currentRepContainer.ConceptRepository.Save(concept);
                 }
+
+                conceptsToSave.Add(concept);
                 prev = concept;
             }
+
+            if (conceptsToSave.Any())
+            {
+                currentRepContainer.ConceptRepository.Save(conceptsToSave);
+            }
         }
+
+   
 
         private void ResetSiblings(int? prevConcept, int? nextConcept, LmPlatformRepositoriesContainer repositoriesContainer)
         {
