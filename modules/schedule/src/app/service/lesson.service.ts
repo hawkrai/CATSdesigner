@@ -168,6 +168,20 @@ export class LessonService {
     })
   }
 
+  getLessonTypes(subjectId: number): Observable<string[][]> {
+    return this.getLessonModule(subjectId).pipe(
+      map((modules) => {
+        const lessonModules = modules
+        .map((m) => [
+          String(m.Order),
+          m.Name,
+        ]);
+
+        return lessonModules.length ? lessonModules : [['4', 'Консультация по дипломному проектированию']];
+      })
+    );
+  }
+
   saveLessonNote(lessonId: number, message: string): Observable<any> {
     return this.http.post<any>('/Services/Notes/NotesService.svc/SaveNote', {
       subjectId: lessonId,
@@ -342,9 +356,9 @@ export class LessonService {
     return this.http.post('/api/CourseProjectConsultationDate/' + id, null)
   }
 
-  getCheckedType(subjectId: any): Observable<any> {
+  getLessonModule(subjectId: any): Observable<any> {
     return this.http.get<any>(
-      '/Services/Subjects/SubjectsService.svc/Modules/' + subjectId
+       '/Services/Subjects/SubjectsService.svc/GetModulesforSchedule/' + subjectId
     )
   }
 }
