@@ -14,8 +14,6 @@ using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Core.Helpers;
 using System.Linq.Dynamic;
 
-using System.Diagnostics;
-
 namespace Application.Infrastructure.ConceptManagement
 {
     public class ConceptManagementService : IConceptManagementService
@@ -293,6 +291,14 @@ namespace Application.Infrastructure.ConceptManagement
                                 conceptChild.Published = includeLectures;
                                 repositoriesContainer.ConceptRepository.Save(conceptChild);
                             }
+                            foreach (var item in conceptChild?.Children)
+                            {
+                                if (item.LectureId.HasValue)
+                                {
+                                    item.Published = includeLectures;
+                                    repositoriesContainer.ConceptRepository.Save(item);
+                                }
+                            }
                             break;
 
                         case PracticalSectionName:
@@ -324,6 +330,10 @@ namespace Application.Infrastructure.ConceptManagement
                             break;
                     }
                 }
+                
+                // Перестроить цепочку Next/Prev, пропуская неопубликованные разделы
+                RebuildSectionsChain(tempConcepts, repositoriesContainer);
+                
                 repositoriesContainer.ApplyChanges();
 
                 return concept;
@@ -548,6 +558,48 @@ namespace Application.Infrastructure.ConceptManagement
             return repositoriesContainer.ConceptRepository.GetBy(new Query<Concept>().AddFilterClause(c => c.Id == concept.Id));
         }
 
+        private void RebuildSectionsChain(IEnumerable<Concept> sections, LmPlatformRepositoriesContainer repositoriesContainer)
+        {
+            // Определяем порядок разделов
+            var orderedSections = new List<Concept>();
+            var titlePage = sections.FirstOrDefault(x => x.Name == TitlePageSectionName);
+            var program = sections.FirstOrDefault(x => x.Name == ProgramSectionName);
+            var lectures = sections.FirstOrDefault(x => x.Name == LectSectionName);
+            var practical = sections.FirstOrDefault(x => x.Name == PracticalSectionName);
+            var tests = sections.FirstOrDefault(x => x.Name == TestSectionName);
+
+            // Титульный экран и Программа курса всегда включены
+            if (titlePage != null) orderedSections.Add(titlePage);
+            if (program != null) orderedSections.Add(program);
+            
+            // Остальные разделы добавляем только если опубликованы
+            if (lectures != null && lectures.Published) orderedSections.Add(lectures);
+            if (practical != null && practical.Published) orderedSections.Add(practical);
+            if (tests != null && tests.Published) orderedSections.Add(tests);
+
+            // Сбрасываем все связи
+            foreach (var section in sections)
+            {
+                section.PrevConcept = null;
+                section.NextConcept = null;
+                repositoriesContainer.ConceptRepository.Save(section);
+            }
+
+            // Строим новую цепочку только для опубликованных разделов
+            for (int i = 0; i < orderedSections.Count; i++)
+            {
+                if (i > 0)
+                {
+                    orderedSections[i].PrevConcept = orderedSections[i - 1].Id;
+                }
+                if (i < orderedSections.Count - 1)
+                {
+                    orderedSections[i].NextConcept = orderedSections[i + 1].Id;
+                }
+                repositoriesContainer.ConceptRepository.Save(orderedSections[i]);
+            }
+        }
+
         private void InitBaseChildrens(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshops)
         {
             var concept1 = new Concept(TitlePageSectionName, parent.Author, parent.Subject, false, true)
@@ -582,27 +634,18 @@ namespace Application.Infrastructure.ConceptManagement
 
             var concepts = new[] { concept1, concept2, concept3, concept4, concept5 };
             repositoriesContainer.ConceptRepository.Save(concepts);
+            repositoriesContainer.ApplyChanges();
 
-            concept1.NextConcept = concept2.Id;
+            // Используем ту же логику для построения цепочки
+            RebuildSectionsChain(concepts, repositoriesContainer);
 
-            concept2.PrevConcept = concept1.Id;
-            concept2.NextConcept = concept3.Id;
-
-            concept3.PrevConcept = concept2.Id;
-            concept3.NextConcept = concept4.Id;
-
-            concept4.PrevConcept = concept3.Id;
-            concept4.NextConcept = concept5.Id;
-
-            concept5.PrevConcept = concept4.Id;
-
-            InitLectChild(concept3, repositoriesContainer);
+            InitLectChild(concept3, repositoriesContainer, includeLectures);
             InitPracticalChild(concept4, repositoriesContainer, includeLabs, includeWorkshops);
 
             repositoriesContainer.ApplyChanges();
         }
 
-        private void InitLectChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer)
+        private void InitLectChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLectures)
         {
             var sub = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == parent.SubjectId)
                     .Include(s => s.Lectures));
@@ -617,7 +660,7 @@ namespace Application.Infrastructure.ConceptManagement
 
             foreach (var item in lectures)
             {
-                var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, true)
+                var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, includeLectures)
                 {
                     ParentId = parent.Id,
                     LectureId = item.Id
@@ -669,7 +712,7 @@ namespace Application.Infrastructure.ConceptManagement
 
         private void InitPracticalChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLabs, bool includeWorkshops)
         {
-            var sub = SubjectManagementService.GetSubject( new Query<Subject>(s => s.Id == parent.SubjectId)
+            var sub = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == parent.SubjectId)
                     .Include(e => e.SubjectModules.Select(x => x.Module))
                     .Include(s => s.Practicals)
                     .Include(s => s.Labs));
@@ -716,13 +759,7 @@ namespace Application.Infrastructure.ConceptManagement
                 return;
 
             repositoriesContainer.ConceptRepository.Save(conceptsToSave);
-            for (int i = 1; i < conceptsToSave.Count; i++)
-            {
-                conceptsToSave[i].PrevConcept = conceptsToSave[i - 1].Id;
-                conceptsToSave[i - 1].NextConcept = conceptsToSave[i].Id;
-            }
-
-            repositoriesContainer.ConceptRepository.Save(conceptsToSave, e => true); 
+            repositoriesContainer.ConceptRepository.Save(conceptsToSave, e => true);
             foreach (var action in fileInitActions)
             {
                 action();
@@ -858,13 +895,13 @@ namespace Application.Infrastructure.ConceptManagement
                 prev = concept;
             }
 
+
+
             if (conceptsToSave.Any())
             {
                 currentRepContainer.ConceptRepository.Save(conceptsToSave);
             }
         }
-
-   
 
         private void ResetSiblings(int? prevConcept, int? nextConcept, LmPlatformRepositoriesContainer repositoriesContainer)
         {
