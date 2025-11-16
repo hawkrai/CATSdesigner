@@ -195,6 +195,15 @@
                     {{ day.StartTime }}-{{ day.EndTime }}
                   </mat-hint>
                 </td>
+                <td class="mdc-data-table__cell">
+                  <mat-hint
+                    *ngIf="day.Audience && day.Building"
+                    style="font-size: 12px"
+                  >
+                    {{ 'date.building' | translate: 'к' }}.{{ day.Building }},
+                    {{ 'date.audience' | translate: 'а' }}.{{ day.Audience }}
+                  </mat-hint>
+                </td>
                 <td class="mdc-data-table__cell visit-date__table-action">
                   <button
                     mat-icon-button
