@@ -138,10 +138,13 @@
       (click)="onChangeTab(6)"
     >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">{{
-          'text.course.defence' | translate: 'Защита проектов'
-        }}</span>
-      </span>
+  <span class="mdc-tab__text-label">
+  {{ 'text.course.defence' | translate: 'Защита проектов' }}
+</span>
+<span *ngIf="courseUser.IsLecturer && hasUnapprovedWorks" class="group-exclamation">!</span>
+
+</span>
+
       <span
         class="mdc-tab-indicator"
         [class.mdc-tab-indicator--active]="tab === 6"
@@ -326,6 +329,11 @@
         </div>
       </div>
     </app-visit-stats>
-    <app-defense *ngIf="tab === 6" [courseUser]="courseUser"></app-defense>
+    <app-defense
+  *ngIf="tab === 6"
+  [courseUser]="courseUser"
+  (newWorkEvent)="onNewWorkEvent($event)"
+></app-defense>
+
   </div>
 </div>
