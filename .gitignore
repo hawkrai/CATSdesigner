@@ -343,3 +343,5 @@ ASALocalRun/
 healthchecksdb
 *.json
 /ChatServer/ChatServer/new
+/api/LMPlatform.UI/App_Data/Lucene_indeces/Lecturer_indeces/segments_2a
+/api/LMPlatform.UI/App_Data/Lucene_indeces/Lecturer_indeces/segments_2a
