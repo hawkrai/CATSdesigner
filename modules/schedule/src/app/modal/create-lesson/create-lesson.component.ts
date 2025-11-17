@@ -616,10 +616,18 @@ export class CreateLessonComponent implements OnInit {
 
     this.lessonservice.getJoinedLector(event.value).subscribe((re) => {
       this.teachers = re
-    })
 
-    this.formGroup.controls.teacher.enable()
-    this.formGroup.controls.teacher.setValue(+this.user.id)
+      const currentLector = re.find(t => t.LectorId === +this.user.id);
+
+      if (currentLector) {
+        this.formGroup.controls.teacher.setValue(currentLector.LectorId);
+        this.lesson.Teacher = currentLector;
+        } else {
+          this.formGroup.controls.teacher.reset();
+        }
+
+      this.formGroup.controls.teacher.enable()
+    })
 
     this.lessonservice.getLessonTypes(subjectId).subscribe((types) => {
       this.lessonTypesFull = types;

@@ -63,18 +63,19 @@ export class LessonService {
     )
   }
 
-  saveLab(Lab: any, dateLab: string): Observable<any> {
+  saveLab(lab: any, dateLab: string): Observable<any> {
     return this.http.post<any>(
       '/Services/Schedule/ScheduleService.svc/SaveDateLab',
       {
-        id: Lab.Id,
-        subjectId: Lab.SubjectId,
+        id: lab.Id,
+        subjectId: lab.SubjectId,
         date: dateLab,
-        startTime: Lab.Start,
-        endTime: Lab.End,
-        building: Lab.Building,
-        audience: Lab.Audience,
-        subGroupId: Lab.SubGroupId,
+        startTime: lab.Start,
+        endTime: lab.End,
+        building: lab.Building,
+        audience: lab.Audience,
+        subGroupId: lab.SubGroupId,
+        lecturerId: lab.Teacher.LectorId
       }
     )
   }
@@ -98,6 +99,7 @@ export class LessonService {
         building: pract.Building,
         audience: pract.Audience,
         groupId: pract.GroupId,
+        lecturerId: pract.Teacher.LectorId
       }
     )
   }
@@ -120,6 +122,7 @@ export class LessonService {
         endTime: lect.End,
         building: lect.Building,
         audience: lect.Audience,
+        lecturerId: lect.Teacher.LectorId
       }
     )
   }
