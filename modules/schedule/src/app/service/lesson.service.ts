@@ -24,30 +24,20 @@ export class LessonService {
   ]
 
   lessonTypesFull: string[][] = [
-    ['0', this.translate.transform('text.schedule.lecture', 'Лекция')],
-    [
-      '1',
-      this.translate.transform(
-        'text.schedule.workshop',
-        'Практическое занятие'
-      ),
-    ],
-    ['2', this.translate.transform('text.schedule.lab', 'Лабораторная работа')],
-    [
-      '3',
-      this.translate.transform(
-        'text.schedule.course.project',
-        'Консультация по курсовому проектированию'
-      ),
-    ],
-    [
-      '4',
-      this.translate.transform(
-        'text.schedule.graduation.project',
-        'Консультация по дипломному проектированию'
-      ),
-    ],
+    ['0', 'text.schedule.lecture'],
+    ['1', 'text.schedule.workshop'],
+    ['2', 'text.schedule.lab'],
+    ['3','text.schedule.course.project',],
+    ['4','text.schedule.graduation.project',],
   ]
+
+  lessonTypeTranslationKeys: Record<number, string> = {
+    0: 'text.schedule.lecture',
+    1: 'text.schedule.workshop',
+    2: 'text.schedule.lab',
+    3: 'text.schedule.course.project',
+    4: 'text.schedule.graduation.project'
+  };
 
   constructor(
     private http: HttpClient,
@@ -170,6 +160,21 @@ export class LessonService {
       userLogin: username,
     })
   }
+
+getLessonTypes(subjectId: number): Observable<string[][]> {
+  return this.getLessonModule(subjectId).pipe(
+    map((modules) => {
+      const lessonModules = modules.map((m) => {
+        const key = this.lessonTypeTranslationKeys[m.Order] || m.Name;
+        return [String(m.Order), key];
+      });
+
+      return lessonModules.length
+        ? lessonModules
+        : [['4', this.lessonTypeTranslationKeys[4]]];
+    })
+  );
+}
 
   saveLessonNote(lessonId: number, message: string): Observable<any> {
     return this.http.post<any>('/Services/Notes/NotesService.svc/SaveNote', {
@@ -345,9 +350,9 @@ export class LessonService {
     return this.http.post('/api/CourseProjectConsultationDate/' + id, null)
   }
 
-  getCheckedType(subjectId: any): Observable<any> {
+  getLessonModule(subjectId: any): Observable<any> {
     return this.http.get<any>(
-      '/Services/Subjects/SubjectsService.svc/Modules/' + subjectId
+       '/Services/Subjects/SubjectsService.svc/GetModulesforSchedule/' + subjectId
     )
   }
 }

@@ -374,7 +374,7 @@ export class CreateLessonComponent implements OnInit {
         })
     } else {
       this.lessonservice
-        .getCheckedType(this.lesson.SubjectId)
+        .getLessonModule(this.lesson.SubjectId)
         .subscribe((types) => {
           this.typeSubject = [false, false, false, false]
           types.forEach((type) => {
@@ -592,9 +592,12 @@ export class CreateLessonComponent implements OnInit {
   }
 
   subjectChange(event): void {
+    const subjectId = event.value;
+
     if (event.value == 0) {
       this.changedType = '4'
     }
+
     this.formGroup
       .get('subjectF')
       .valueChanges.pipe(
@@ -606,9 +609,11 @@ export class CreateLessonComponent implements OnInit {
           this.changedType = ''
         }
       })
+
     this.lessonservice.getGroupsBySubjectId(event.value).subscribe((re) => {
       this.groups = re.Groups
     })
+
     this.lessonservice.getJoinedLector(event.value).subscribe((re) => {
       this.teachers = re
 
