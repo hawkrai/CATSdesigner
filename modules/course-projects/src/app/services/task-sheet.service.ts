@@ -55,8 +55,12 @@ export class TaskSheetService {
   }
 
   public deleteTemplate(params: any): Observable<any> {
-    return this.http.delete('api/CpTaskSheet', {
-      params: new HttpParams({ fromObject: params }),
-    })
+    return this.http.post(
+      'api/CpTaskSheetTemplate/DeleteTaskSheetTemplate',
+      null,
+      {
+        params: new HttpParams({ fromObject: params }),
+      }
+    )
   }
 }

@@ -3,5 +3,5 @@ export class ConsultationMark {
   ConsultationDateId: string
   StudentId: string
   Mark: string
-  Comments: string
+  Comment: string
 }
