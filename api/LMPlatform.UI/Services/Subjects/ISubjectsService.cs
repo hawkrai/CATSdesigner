@@ -37,6 +37,11 @@ namespace LMPlatform.UI.Services.Subjects
         SubjectsResult GetUserSubjects();
 
         [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/GetModulesforSchedule/{subjectId}", ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json)]
+        IEnumerable<ModulesViewModel> GetSubjectModulesforSchedule(string subjectId);
+
+        [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "/Name/Unique", ResponseFormat = WebMessageFormat.Json,
             RequestFormat = WebMessageFormat.Json)]
         UniqueViewData IsSubjectNameUnique(string subjectName, int subjectId);

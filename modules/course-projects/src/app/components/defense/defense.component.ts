@@ -36,7 +36,12 @@ export class DefenseComponent implements OnInit {
   public detachedGroup = false
   public canAddJob = false
 
-  private subjectId: string
+  public userLabFiles: UserLabFile[] = [];
+  public studentFiles: (StudentFilesModel & { hasNewWork?: boolean })[] = [];
+  public detachedGroup = false;
+  public canAddJob = false;
+
+  private subjectId: string;
 
   constructor(
     private groupService: GroupService,
@@ -54,9 +59,9 @@ export class DefenseComponent implements OnInit {
       if (this.courseUser.IsStudent) {
         this.loadStudentFiles()
       } else if (this.courseUser.IsLecturer) {
-        this.retrieveGroupsAndFiles(false)
+        this.retrieveGroupsAndFiles(false);
       }
-    })
+    });
   }
 
   private loadStudentFiles() {
@@ -124,18 +129,71 @@ export class DefenseComponent implements OnInit {
       })
   }
 
+  retrieveGroupsAndFiles(groupStatusChanged: boolean) {
+    const getGroups$ = this.detachedGroup
+      ? this.groupService.getDetachedGroups(this.subjectId)
+      : this.groupService.getGroups(this.subjectId);
+
+    getGroups$.subscribe((res) => {
+      this.groups = res.Groups.map((g) => ({ ...g, hasNewWork: false }));
+      this.allGroups = [...this.groups];
+
+      if (!this.selectedGroup || groupStatusChanged) {
+        this.selectedGroup = this.groups.length > 0 ? this.groups[0] : null;
+      }
+
+      this.checkAllGroupsForNewWork();
+
+      if (this.selectedGroup) {
+        this.retrieveFiles();
+      }
+    });
+  }
+
+  retrieveFiles() {
+  if (!this.selectedGroup) return;
+
+  this.labFilesService
+    .getCourseProjectFiles({
+      isCp: true,
+      subjectId: this.subjectId,
+      groupId: this.selectedGroup.GroupId,
+    })
+    .subscribe((res) => {
+      if (!res || !res.Students) {
+        this.studentFiles = [];
+        this.updateGroupHasNewWork();
+        return;
+      }
+
+      this.studentFiles = res.Students.map((student: any) => {
+        let hasNewWork = false;
+        if (student.FileLabs && student.FileLabs.length > 0) {
+          hasNewWork = student.FileLabs.some((file: any) => !file.IsReceived && !file.IsReturned);
+        }
+        return { ...student, hasNewWork };
+      });
+
+      this.updateGroupHasNewWork();
+      this.emitGlobalWorkStatus();
+    });
+}
+
+
+
+
   _selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.selectedGroup = this.groups.find(
         (res) => res.GroupId === event.source.value
-      )
-      this.retrieveFiles()
+      );
+      this.retrieveFiles();
     }
   }
 
   groupStatusChange(event) {
-    this.detachedGroup = event.checked
-    this.retrieveGroupsAndFiles(true)
+    this.detachedGroup = event.checked;
+    this.retrieveGroupsAndFiles(true);
   }
 
   checkAllGroupsForNewWork() {
@@ -297,7 +355,7 @@ export class DefenseComponent implements OnInit {
           'Комментарий'
         ),
       },
-    })
+    });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
@@ -348,7 +406,7 @@ export class DefenseComponent implements OnInit {
         ),
         color: 'primary',
       },
-    })
+    });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {

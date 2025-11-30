@@ -174,33 +174,34 @@ namespace Application.Core.Data
 			}
 		}
 
-		public void Save(IEnumerable<TModel> models, Func<TModel, bool> performUpdate = null)
-		{
-			ProcessMethod(() =>
-			{
-				foreach (var model in models)
-				{
-					if (model != null)
-					{
-						if (performUpdate == null)
-						{
-							performUpdate = e => !e.IsNew;
-						}
+        public void Save(IEnumerable<TModel> models, Func<TModel, bool> performUpdate = null)
+        {
+            ProcessMethod(() =>
+            {
+                if (performUpdate == null)
+                {
+                    performUpdate = e => !e.IsNew;
+                }
 
-						if (performUpdate(model))
-						{
-							PerformUpdate(model, _dataContext);
-						}
-						else
-						{
-							PerformAdd(model, _dataContext);
-						}
-					}
-				}
-			});
-		}
+                foreach (var model in models)
+                {
+                    if (model != null)
+                    {
+                        if (performUpdate(model))
+                        {
+                            PerformUpdate(model, _dataContext);
+                        }
+                        else
+                        {
+                            PerformAdd(model, _dataContext);
+                        }
+                    }
+                }
+                _dataContext.SaveChanges();
+            });
+        }
 
-		protected void Update(TModel model)
+        protected void Update(TModel model)
 		{
 			ProcessMethod(() =>
 			{

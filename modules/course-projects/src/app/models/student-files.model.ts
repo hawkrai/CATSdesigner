@@ -4,4 +4,6 @@ export class StudentFilesModel {
   StudentId: string
   FullName: string
   FileLabs: UserLabFile[]
+  hasNewWork?: boolean;
+
 }

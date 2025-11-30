@@ -191,14 +191,14 @@ export class AppComponent implements OnInit {
         '/api/CpStatistic?group=' +
         this.selectedGroup.GroupId +
         '&subjectId=' +
-        this.subjectId
+        this.subjectId;
     } else if (this.tab === 5) {
       location.href =
         location.origin +
         '/api/CpStatistic?groupId=' +
         this.selectedGroup.GroupId +
         '&subjectId=' +
-        this.subjectId
+        this.subjectId;
     }
   }
 
@@ -210,6 +210,6 @@ export class AppComponent implements OnInit {
       '/api/CPTaskSheetDownload?groupId=' +
       this.selectedGroup.GroupId +
       '&subjectId=' +
-      this.subjectId
+      this.subjectId;
   }
 }

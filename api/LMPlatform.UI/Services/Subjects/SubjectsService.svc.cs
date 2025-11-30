@@ -75,6 +75,57 @@ namespace LMPlatform.UI.Services.Subjects
             return modulesViewModel.OrderBy(m => m.Order);
         }
 
+        public IEnumerable<ModulesViewModel> GetSubjectModulesforSchedule(string subjectId)
+        {
+            var subjectIdParsed = int.Parse(subjectId);
+
+            var modules = ModulesManagementService.GetModules(subjectIdParsed)
+                .Where(m => m.Visible)
+                .ToList();
+
+            var allowedTypes = new[]
+            {
+                 ModuleType.Lectures,
+                 ModuleType.Practical,
+                 ModuleType.Labs,
+                 ModuleType.Practical,
+                 ModuleType.YeManagment
+            };
+
+            var nameMap = new Dictionary<ModuleType, string>
+             {
+              { ModuleType.Lectures, "Лекция" },
+              { ModuleType.Practical, "Практическое занятие" },
+              { ModuleType.Labs, "Лабораторная работа" },
+              { ModuleType.YeManagment, "Консультация по курсовому проектированию" }
+            };
+
+            var orderMap = new Dictionary<ModuleType, int>
+            {
+                { ModuleType.Lectures, 0 },
+                { ModuleType.Practical, 1 },
+                { ModuleType.Labs, 2 },
+                { ModuleType.YeManagment, 3 }
+                // дипломное проектирование (4) не возвращаем, так как нет такого модуля в предметах
+            };
+
+            var modulesViewModel = modules
+                .Where(m => allowedTypes.Contains(m.ModuleType))
+                .Select(m => new ModulesViewModel(m, true))
+                .Select(vm =>
+                {
+                    if (nameMap.ContainsKey(vm.Type))
+                        vm.Name = nameMap[vm.Type];
+                    if (orderMap.ContainsKey(vm.Type))
+                        vm.Order = orderMap[vm.Type];
+                    return vm;
+                })
+                .OrderBy(vm => vm.Order)
+                .ToList();
+
+            return modulesViewModel;
+        }
+
         public UserAssignedViewData UserAssigned(string subjectId)
         {
             return new UserAssignedViewData
