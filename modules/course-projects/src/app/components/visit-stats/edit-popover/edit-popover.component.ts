@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Lector } from '../../../../../../subjects/src/app/models/lector.model'
 import { VisitStatsService } from '../../../services/visit-stats.service'
 import { ToastrService } from 'ngx-toastr'
+import { UpdatedDay } from '../../../models/updated-day.model'
 
 @Component({
   selector: 'app-edit',
@@ -11,9 +12,12 @@ import { ToastrService } from 'ngx-toastr'
 })
 export class EditPopoverComponent implements OnInit {
   dateForm: FormGroup
-  @Output() close = new EventEmitter()
-  @Input() day: any
-  @Input() lectors: Lector[]
+
+  @Output() close = new EventEmitter<void>()
+  @Output() dataUpdated = new EventEmitter<UpdatedDay>()
+
+  @Input() day!: UpdatedDay
+  @Input() lectors!: Lector[]
 
   constructor(
     private fb: FormBuilder,
@@ -46,7 +50,7 @@ export class EditPopoverComponent implements OnInit {
       const formattedDate = this.parseDate(this.day.Day)
 
       this.dateForm.patchValue({
-        id: this.day.id,
+        id: this.day.Id,
         date: formattedDate,
         lecturerId: this.day.Teacher.LectorId,
         startTime: this.day.StartTime,
@@ -57,53 +61,66 @@ export class EditPopoverComponent implements OnInit {
     }
   }
 
-  get formControls() {
-    return this.dateForm.controls
-  }
-
   onSubmit() {
-    const id = this.day.id
-    const date = this.dateForm.value.date
+    if (this.dateForm.invalid) {
+      this.dateForm.markAllAsTouched()
+      return
+    }
+
+    const id = this.day.Id
+    const date: Date = this.dateForm.value.date
     const lecturerId = this.dateForm.value.lecturerId
     const start = this.dateForm.value.startTime
     const end = this.dateForm.value.endTime
     const audience = this.dateForm.value.audience
     const building = this.dateForm.value.building
 
+    const isoLocalDate = date.toISOString().split('T')[0] + 'T00:00:00';
+
     this.CourseRestService.addDate(
       id,
-      date.toISOString(),
-      this.day.Subject.Id,
-      this.day.GroupId,
+      isoLocalDate,
+      String(this.day.Subject.Id),
+      String(this.day.GroupId),
       start,
       end,
       audience,
       building,
       lecturerId
     ).subscribe(
-      (response) => {
-        console.log('Данные успешно обновлены', response)
-        this.addFlashMessage('Данные успешно обновлены')
-        this.day.LecturerId = lecturerId
-        this.day.StartTime = start
-        this.day.EndTime = end
-        this.day.Building = building
-        this.day.Audience = audience
-        this.day.Day = date.toISOString()
-        this.day.Lector = this.lectors.find(
-          (lector) => lector.LectorId === lecturerId
+      () => {
+        this.toastr.success('Данные успешно обновлены')
+
+        const selectedLector = this.lectors.find(
+          (l) => l.LectorId === lecturerId
         )
 
+        const updatedDay: UpdatedDay = {
+          ...this.day,
+          StartTime: start,
+          EndTime: end,
+          Building: building,
+          Audience: audience,
+          Day: this.formatDate(date),
+          Teacher: selectedLector
+            ? {
+                LectorId: selectedLector.LectorId,
+                FullName: selectedLector.FullName,
+                UserName: selectedLector.UserName,
+              }
+            : this.day.Teacher,
+        }
+
+        this.dataUpdated.emit(updatedDay)
         this.close.emit()
       },
       (error) => {
-        console.error('Произошла ошибка при обновлении данных', error)
+        console.error('Ошибка при обновлении данных', error)
+        this.toastr.error('Ошибка при обновлении данных')
       }
     )
   }
-  addFlashMessage(msg: string) {
-    this.toastr.success(msg)
-  }
+
   onClose() {
     this.close.emit()
   }
@@ -114,11 +131,13 @@ export class EditPopoverComponent implements OnInit {
 
   parseDate(dateString: string): Date {
     const [day, month, year] = dateString.split('.')
+    return new Date(+year, +month - 1, +day)
+  }
 
-    const dayNum = parseInt(day, 10)
-    const monthNum = parseInt(month, 10) - 1
-    const yearNum = parseInt(year, 10)
-
-    return new Date(yearNum, monthNum, dayNum)
+  formatDate(date: Date): string {
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const year = date.getFullYear()
+    return `${day}.${month}.${year}`
   }
 }

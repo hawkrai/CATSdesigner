@@ -147,7 +147,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
       width: '548px',
       data: {
-        mark: pr.Mark !== '' ? pr.Mark : null,
+        mark: pr.Mark !== '' ? pr.Mark : '',
         min: 0,
         max: 100,
         regex: '^[0-9]*$',
@@ -174,17 +174,15 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     })
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (
-        result != null &&
-        result.mark != null &&
-        !(result.mark === '' && pr.Id == null)
-      ) {
+      if (result != null) {
+        const markToSend = result.mark === '' ? null : result.mark
+
         if (pr.Id == null) {
           this.percentageResultsService
             .setPercentage(
               pr.StudentId,
               pr.PercentageGraphId,
-              result.mark,
+              markToSend,
               result.comment,
               result.showForStudent
             )
@@ -203,7 +201,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
               pr.Id,
               pr.StudentId,
               pr.PercentageGraphId,
-              result.mark,
+              markToSend,
               result.comment,
               result.showForStudent
             )
