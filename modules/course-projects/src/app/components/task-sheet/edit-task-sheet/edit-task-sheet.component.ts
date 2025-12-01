@@ -304,7 +304,7 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
     return this.data.taskSheet
   }
 
-  populateSheet(taskSheet: TaskSheet | any): void {
+  populateSheet(taskSheet: TaskSheet): void {
     taskSheet.InputData = this.formGroup.get('inputDataControl').value
     taskSheet.RpzContent = this.formGroup.get('contentControl').value
     taskSheet.DrawMaterials = this.formGroup.get('drawContentControl').value

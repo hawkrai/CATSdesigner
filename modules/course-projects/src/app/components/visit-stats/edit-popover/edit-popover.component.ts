@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Lector } from '../../../../../../subjects/src/app/models/lector.model'
 import { VisitStatsService } from '../../../services/visit-stats.service'
 import { ToastrService } from 'ngx-toastr'
+import { UpdatedDay } from '../../../models/updated-day.model'
 
 @Component({
   selector: 'app-edit',
@@ -12,10 +13,11 @@ import { ToastrService } from 'ngx-toastr'
 export class EditPopoverComponent implements OnInit {
   dateForm: FormGroup
 
-  @Output() close = new EventEmitter()
-  @Output() dataUpdated = new EventEmitter<any>()
-  @Input() day: any
-  @Input() lectors: Lector[]
+  @Output() close = new EventEmitter<void>()
+  @Output() dataUpdated = new EventEmitter<UpdatedDay>()
+
+  @Input() day!: UpdatedDay
+  @Input() lectors!: Lector[]
 
   constructor(
     private fb: FormBuilder,
@@ -73,30 +75,27 @@ export class EditPopoverComponent implements OnInit {
     const audience = this.dateForm.value.audience
     const building = this.dateForm.value.building
 
-    const isoLocalDate =
-      `${date.getFullYear()}-` +
-      `${(date.getMonth() + 1).toString().padStart(2, '0')}-` +
-      `${date.getDate().toString().padStart(2, '0')}T00:00:00`
+    const isoLocalDate = date.toISOString().split('T')[0] + 'T00:00:00';
 
     this.CourseRestService.addDate(
       id,
       isoLocalDate,
-      this.day.Subject.Id,
-      this.day.GroupId,
+      String(this.day.Subject.Id),
+      String(this.day.GroupId),
       start,
       end,
       audience,
       building,
       lecturerId
     ).subscribe(
-      (response) => {
+      () => {
         this.toastr.success('Данные успешно обновлены')
 
         const selectedLector = this.lectors.find(
           (l) => l.LectorId === lecturerId
         )
 
-        const updatedDay = {
+        const updatedDay: UpdatedDay = {
           ...this.day,
           StartTime: start,
           EndTime: end,
