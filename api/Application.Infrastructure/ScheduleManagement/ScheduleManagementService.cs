@@ -274,20 +274,33 @@ namespace Application.Infrastructure.ScheduleManagement
 			{
 				if (classType == ClassType.Lecture)
                 {
-					return LectureScheduleToModel(repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetBy(new Query<LecturesScheduleVisiting>(x => x.Id == scheduleId)
-					.Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes))));
+					return LectureScheduleToModel(
+						repositoriesContainer
+						.RepositoryFor<LecturesScheduleVisiting>()
+						.GetBy(new Query<LecturesScheduleVisiting>(x => x.Id == scheduleId)
+                        .Include(x => x.Lecturer)
+						.Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes))));
 
 				} else if (classType == ClassType.Lab)
                 {
-					return LabScheduleToModel(repositoriesContainer.RepositoryFor<ScheduleProtectionLabs>().GetBy(new Query<ScheduleProtectionLabs>(x => x.Id == scheduleId)
-					.Include(x => x.Subject.ScheduleProtectionLabs.Select(x => x.Notes))
-					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group))
-					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.SubGroups))));
+					return LabScheduleToModel(
+						repositoriesContainer
+						.RepositoryFor<ScheduleProtectionLabs>()
+						.GetBy(new Query<ScheduleProtectionLabs>(x => x.Id == scheduleId)
+                        .Include(x => x.Lecturer)
+                        .Include(x => x.Subject.ScheduleProtectionLabs.Select(x => x.Notes))
+						.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group))
+						.Include(x => x.Subject.SubjectGroups.Select(sg => sg.SubGroups))));
+
 				} else if (ClassType.Practical == classType)
                 {
-					return PracticalScheduleToModel(repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetBy(new Query<ScheduleProtectionPractical>(x => x.Id == scheduleId)
-					.Include(x => x.Subject.ScheduleProtectionPracticals.Select(x => x.Notes))
-					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group))));
+					return PracticalScheduleToModel(
+						repositoriesContainer
+						.RepositoryFor<ScheduleProtectionPractical>()
+						.GetBy(new Query<ScheduleProtectionPractical>(x => x.Id == scheduleId)
+                        .Include(x => x.Lecturer)
+                        .Include(x => x.Subject.ScheduleProtectionPracticals.Select(x => x.Notes))
+						.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group))));
 				}
 				return null;
 			}
