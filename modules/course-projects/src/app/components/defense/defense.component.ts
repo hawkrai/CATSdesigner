@@ -1,22 +1,22 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { MatOptionSelectionChange } from '@angular/material/core';
-import { select, Store } from '@ngrx/store';
-import { IAppState } from '../../store/state/app.state';
-import { getSubjectId } from '../../store/selectors/subject.selector';
-import { CourseUser } from '../../models/course-user.model';
-import { UserLabFile } from '../../models/user-lab-file';
-import { LabFilesService } from '../../services/lab-files-service';
-import { StudentFilesModel } from '../../models/student-files.model';
-import { GroupService } from '../../services/group.service';
-import { CoreGroup } from '../../models/core-group.model';
-import { MatDialog } from '@angular/material';
-import { AddJobDialogComponent } from './add-project-dialog/add-job-dialog.component';
-import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
-import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component';
-import { CheckPlagiarismPopoverComponent } from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
-import { TranslatePipe } from 'educats-translate';
-import { ToastrService } from 'ngx-toastr';
-import { forkJoin } from 'rxjs';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core'
+import { MatOptionSelectionChange } from '@angular/material/core'
+import { select, Store } from '@ngrx/store'
+import { IAppState } from '../../store/state/app.state'
+import { getSubjectId } from '../../store/selectors/subject.selector'
+import { CourseUser } from '../../models/course-user.model'
+import { UserLabFile } from '../../models/user-lab-file'
+import { LabFilesService } from '../../services/lab-files-service'
+import { StudentFilesModel } from '../../models/student-files.model'
+import { GroupService } from '../../services/group.service'
+import { CoreGroup } from '../../models/core-group.model'
+import { MatDialog } from '@angular/material'
+import { AddJobDialogComponent } from './add-project-dialog/add-job-dialog.component'
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component'
+import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component'
+import { CheckPlagiarismPopoverComponent } from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component'
+import { TranslatePipe } from 'educats-translate'
+import { ToastrService } from 'ngx-toastr'
+import { forkJoin } from 'rxjs'
 
 @Component({
   selector: 'app-defense',
@@ -24,12 +24,17 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./defense.component.less'],
 })
 export class DefenseComponent implements OnInit {
-  @Input() courseUser: CourseUser;
-  @Output() newWorkEvent = new EventEmitter<boolean>();
+  @Input() courseUser: CourseUser
+  @Output() newWorkEvent = new EventEmitter<boolean>()
 
-  public groups: (CoreGroup & { hasNewWork?: boolean })[] = [];
-  public allGroups: (CoreGroup & { hasNewWork?: boolean })[] = [];
-  public selectedGroup: (CoreGroup & { hasNewWork?: boolean }) | null = null;
+  public groups: (CoreGroup & { hasNewWork?: boolean })[] = []
+  public allGroups: (CoreGroup & { hasNewWork?: boolean })[] = []
+  public selectedGroup: (CoreGroup & { hasNewWork?: boolean }) | null = null
+
+  public userLabFiles: UserLabFile[] = []
+  public studentFiles: (StudentFilesModel & { hasNewWork?: boolean })[] = []
+  public detachedGroup = false
+  public canAddJob = false
 
   public userLabFiles: UserLabFile[] = [];
   public studentFiles: (StudentFilesModel & { hasNewWork?: boolean })[] = [];
@@ -49,10 +54,10 @@ export class DefenseComponent implements OnInit {
 
   ngOnInit() {
     this.store.pipe(select(getSubjectId)).subscribe((subjectId) => {
-      this.subjectId = subjectId;
+      this.subjectId = subjectId
 
       if (this.courseUser.IsStudent) {
-        this.loadStudentFiles();
+        this.loadStudentFiles()
       } else if (this.courseUser.IsLecturer) {
         this.retrieveGroupsAndFiles(false);
       }
@@ -64,12 +69,64 @@ export class DefenseComponent implements OnInit {
       .getCourseProjectFilesForUser(this.subjectId, this.courseUser.UserId)
       .subscribe((res) => {
         if (res.UserLabFiles) {
-          this.userLabFiles = res.UserLabFiles;
-          this.canAddJob = !this.userLabFiles.find((file) => !file.IsReturned);
+          this.userLabFiles = res.UserLabFiles
+          this.canAddJob = !this.userLabFiles.find((file) => !file.IsReturned)
         } else {
-          this.canAddJob = true;
+          this.canAddJob = true
         }
-      });
+      })
+  }
+
+  retrieveGroupsAndFiles(groupStatusChanged: boolean) {
+    const getGroups$ = this.detachedGroup
+      ? this.groupService.getDetachedGroups(this.subjectId)
+      : this.groupService.getGroups(this.subjectId)
+
+    getGroups$.subscribe((res) => {
+      this.groups = res.Groups.map((g) => ({ ...g, hasNewWork: false }))
+      this.allGroups = [...this.groups]
+
+      if (!this.selectedGroup || groupStatusChanged) {
+        this.selectedGroup = this.groups.length > 0 ? this.groups[0] : null
+      }
+
+      this.checkAllGroupsForNewWork()
+
+      if (this.selectedGroup) {
+        this.retrieveFiles()
+      }
+    })
+  }
+
+  retrieveFiles() {
+    if (!this.selectedGroup) return
+
+    this.labFilesService
+      .getCourseProjectFiles({
+        isCp: true,
+        subjectId: this.subjectId,
+        groupId: this.selectedGroup.GroupId,
+      })
+      .subscribe((res) => {
+        if (!res || !res.Students) {
+          this.studentFiles = []
+          this.updateGroupHasNewWork()
+          return
+        }
+
+        this.studentFiles = res.Students.map((student: any) => {
+          let hasNewWork = false
+          if (student.FileLabs && student.FileLabs.length > 0) {
+            hasNewWork = student.FileLabs.some(
+              (file: any) => !file.IsReceived && !file.IsReturned
+            )
+          }
+          return { ...student, hasNewWork }
+        })
+
+        this.updateGroupHasNewWork()
+        this.emitGlobalWorkStatus()
+      })
   }
 
   retrieveGroupsAndFiles(groupStatusChanged: boolean) {
@@ -174,8 +231,8 @@ export class DefenseComponent implements OnInit {
   }
 
   emitGlobalWorkStatus() {
-    const hasAnyNewWork = this.allGroups.some((g) => g.hasNewWork);
-    this.newWorkEvent.emit(hasAnyNewWork);
+    const hasAnyNewWork = this.allGroups.some((g) => g.hasNewWork)
+    this.newWorkEvent.emit(hasAnyNewWork)
   }
 
   updateStudentJobs(studentId: string) {
@@ -263,24 +320,24 @@ export class DefenseComponent implements OnInit {
 
   approveJob(fileLab: UserLabFile, studentId: string) {
     this.labFilesService.approveJob(fileLab.Id).subscribe(() => {
-      fileLab.IsReceived = true;
-      this.updateStudentJobs(studentId);
-      this.updateGroupHasNewWork();
-    });
+      fileLab.IsReceived = true
+      this.updateStudentJobs(studentId)
+      this.updateGroupHasNewWork()
+    })
   }
 
   restoreFromArchive(fileLab: UserLabFile, studentId: string) {
     this.labFilesService.restoreFromArchive(fileLab.Id).subscribe(() => {
-      fileLab.IsReceived = false;
-      this.updateStudentJobs(studentId);
-      this.updateGroupHasNewWork();
-    });
+      fileLab.IsReceived = false
+      this.updateStudentJobs(studentId)
+      this.updateGroupHasNewWork()
+    })
   }
 
   downloadArchive() {
-    if (!this.selectedGroup) return;
-    const url = 'http://localhost:8080/Subject/';
-    location.href = `${url}GetZipLabs?id=${this.selectedGroup.GroupId}&subjectId=${this.subjectId}`;
+    if (!this.selectedGroup) return
+    const url = 'http://localhost:8080/Subject/'
+    location.href = `${url}GetZipLabs?id=${this.selectedGroup.GroupId}&subjectId=${this.subjectId}`
   }
 
   addJob(userLabFile?: UserLabFile, studentId?: string) {
@@ -321,7 +378,7 @@ export class DefenseComponent implements OnInit {
             result.uploadedFile.IdFile &&
             result.uploadedFile.IdFile !== -1
             ? result.uploadedFile.IdFile
-            : '0';
+            : '0'
 
         this.labFilesService
           .sendJob({
@@ -335,12 +392,12 @@ export class DefenseComponent implements OnInit {
             userId: studentId,
           })
           .subscribe(() => {
-            if (isLecturer) this.updateStudentJobs(studentId);
-            else this.ngOnInit();
-            this.canAddJob = false;
-          });
+            if (isLecturer) this.updateStudentJobs(studentId)
+            else this.ngOnInit()
+            this.canAddJob = false
+          })
       }
-    });
+    })
   }
 
   deleteJob(userLabFile: UserLabFile) {
@@ -366,21 +423,21 @@ export class DefenseComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.labFilesService.deleteJob(userLabFile.Id).subscribe(() => {
-          this.ngOnInit();
-        });
+          this.ngOnInit()
+        })
       }
-    });
+    })
   }
 
   checkPlagiarism() {
     this.dialog.open(CheckPlagiarismPopoverComponent, {
       data: { body: this.subjectId },
-    });
+    })
   }
 
   checkPlagiarismFile(file) {
     this.dialog.open(CheckPlagiarismStudentComponent, {
       data: { body: { subjectId: this.subjectId, userFileId: file.Id } },
-    });
+    })
   }
 }

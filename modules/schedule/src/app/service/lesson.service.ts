@@ -211,9 +211,9 @@ getLessonTypes(subjectId: number): Observable<string[][]> {
     const splitted = title.split('|', 3)
     let a = splitted[1]
     if (a.length != 0) {
-      a = ', a.' + a
+      a =  ', '+ this.translate.transform('text.schedule.audience.cut', 'a') + '.' + a
     }
-    return ' к.' + splitted[2] + a
+    return this.translate.transform('text.schedule.building.cut', 'k') + '.' + splitted[2] + a
   }
 
   getTitlePart(title: string, i: number): any {
