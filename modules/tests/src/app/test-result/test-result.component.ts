@@ -11,6 +11,7 @@ import { ClosedTestResult } from '../models/closed-test-result.model'
 import { DataValues } from '../models/data-values.model'
 import { Constants } from '../models/constanst/DataConstants'
 import * as neuralNetworkV2 from '../core/neuron/neuron1.js'
+import { CatsService } from '../service/cats.service'
 
 interface Theme {
   name: string
@@ -42,18 +43,31 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
   public themes: Theme[]
   public displayedColumns = ['theme', 'status', 'score']
   public nnDatasource: NNItem[] = []
+  public isFromEUMK: boolean = false
   private unsubscribeStream$: Subject<void> = new Subject<void>()
 
   constructor(
     private testPassingService: TestPassingService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private catsService: CatsService
   ) {
     super()
   }
 
   ngOnInit() {
     this.testId = this.route.snapshot.queryParamMap.get('testId')
+    
+    const fromEUMKParam = this.route.snapshot.queryParamMap.get('fromEUMK')
+    const testFromEUMKFlag = sessionStorage.getItem('testFromEUMK')
+    const eumkRoute = sessionStorage.getItem('eumkRoute')
+    
+    this.isFromEUMK = fromEUMKParam === 'true' || testFromEUMKFlag === 'true' || !!eumkRoute
+    
+    if (sessionStorage.getItem('complexTestId')) {
+      sessionStorage.removeItem('complexTestId')
+    }
+    
     this.testPassingService
       .CloseTestAndGetResult(this.testId)
       .pipe(takeUntil(this.unsubscribeStream$))
@@ -119,6 +133,28 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
   }
 
   public navigate(): void {
-    this.router.navigate(['/test-control'])
+    if (this.isFromEUMK) {
+      const eumkComplexId = sessionStorage.getItem('eumkComplexId')
+      const eumkRoute = sessionStorage.getItem('eumkRoute')
+
+      sessionStorage.removeItem('testFromEUMK')
+      
+      if (eumkComplexId) {
+        sessionStorage.removeItem('eumkComplexId')
+        localStorage.setItem('selectedComplex', eumkComplexId)
+      }
+      
+      if (eumkRoute) {
+        sessionStorage.removeItem('eumkRoute')
+        this.catsService.sendMessage({
+          Type: 'Route',
+          Value: eumkRoute,
+        })
+      } else {
+        this.router.navigate(['/test-control'])
+      }
+    } else {
+      this.router.navigate(['/test-control'])
+    }
   }
 }
