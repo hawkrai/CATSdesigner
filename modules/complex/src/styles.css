@@ -100,3 +100,12 @@
 .mat-tooltip {
   font-size: 14px;
 }
+
+/* Toast messages - change font from Times New Roman to Roboto */
+#toast-container > div,
+.toast,
+.toast-message {
+  font-family: 'Roboto' !important;
+  font-weight: normal !important;
+  font-size: 14px !important;
+}

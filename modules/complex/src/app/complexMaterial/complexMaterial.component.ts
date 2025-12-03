@@ -50,6 +50,13 @@ export class ComplexMaterialComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const savedComplexId = localStorage.getItem('selectedComplex')
+    if (savedComplexId && savedComplexId !== this.complexID) {
+      this.complexID = savedComplexId
+      this.complexService
+        .getConceptNameById(this.complexID)
+        .subscribe((name) => (this.complexName = name))
+    }
     this.checkForPredTest()
   }
 

@@ -133,8 +133,12 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
           }),
           takeUntil(this.unsubscribeStream$),
           catchError(() => {
+            const queryParams: any = { testId: this.test.Id }
+            if (sessionStorage.getItem('testFromEUMK') === 'true') {
+              queryParams.fromEUMK = 'true'
+            }
             this.router.navigate(['/test-result'], {
-              queryParams: { testId: this.test.Id },
+              queryParams: queryParams,
             })
             return of(null)
           })
