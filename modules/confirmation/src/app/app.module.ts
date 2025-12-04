@@ -9,7 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { HttpClientModule } from '@angular/common/http'
 import { DemoMaterialModule } from './material-module'
-import { TranslateModule } from 'educats-translate'
+import { TranslateModule, TranslatePipe } from 'educats-translate'
 import * as dataEn from './core/translate/translate_en.json'
 import * as dataRu from './core/translate/translate_ru.json'
 import { SharedModule } from './shared/shared.module'
@@ -40,6 +40,7 @@ import { AspNetDatePipe } from './pipes/asp-net-date.pipe'
     }),
     SharedModule,
   ],
+  providers: [TranslatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
