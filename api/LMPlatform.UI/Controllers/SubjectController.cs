@@ -159,7 +159,7 @@ namespace LMPlatform.UI.Controllers
             {
                 return Json(new
                 {
-                    Message = "Нет доступа для создания предмета",
+                    Message = "text.subjects.response.failure.noAccess",
                     Code = "500"
                 });
             }
@@ -168,7 +168,7 @@ namespace LMPlatform.UI.Controllers
             {
                 return Json(new
                 {
-                    Message = "Предмет с таким именем уже существует",
+                    Message = "text.subjects.response.failure.nameExists",
                     Code = "500"
                 });
             }
@@ -176,13 +176,13 @@ namespace LMPlatform.UI.Controllers
             {
                 return Json(new
                 {
-                    Message = "Предмет с такой аббревиатурой уже существует",
+                    Message = "text.subjects.response.failure.abbrExists",
                     Code = "500"
                 });
             }
             if (string.IsNullOrWhiteSpace(model.DisplayName) || string.IsNullOrWhiteSpace(model.ShortName))
             {
-                return Json(new { Message = "Поля заполнены некорректно", Code  = "500" });
+                return Json(new { Message = "text.subjects.response.failure.incorrectFields", Code  = "500" });
             }
             var color = model.Color;
             var isNew = model.SubjectId == 0;
@@ -201,7 +201,7 @@ namespace LMPlatform.UI.Controllers
 
             model.Save(UserContext.CurrentUserId, color);
             return Json(new {
-                Message = isNew ? "Предмет успешно добавлен" : "Предмет успешно отредактирован",
+                Message = isNew ? "text.subjects.response.success.add" : "text.subjects.response.success.edit",
                 Code = "200"
             });
         }

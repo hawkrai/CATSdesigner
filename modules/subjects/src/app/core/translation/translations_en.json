@@ -102,7 +102,7 @@
   "text.subjects.mark.date": "Rate date",
   "text.subjects.mark.by": "Rated",
   "text.subject.createdBy": "Course created by",
-  "text.download": "Downlaod",
+  "text.download": "Download",
   "text.download.archive": "Download as archive",
   "plagiarism.warning.intro": "For a more accurate calculation of the similarity percentage",
   "plagiarism.warning.minFileSize": "the size of the file being checked must be at least 20 KB",
@@ -121,6 +121,14 @@
   "text.subjects.attachments.loaded": "Loaded file",
   "text.subjects.attachments.delete": "Delete file",
   "text.subjects.attachments.files": "Course files",
+
+  "text.subjects.response.success.add": "Course added successfully",
+  "text.subjects.response.success.edit": "Course edited successfully",
+  "text.subjects.response.success.delete": "Course deleted successfully",
+  "text.subjects.response.failure.noAccess": "No access for creating Course",
+  "text.subjects.response.failure.nameExists": "Course with the same name already exists",
+  "text.subjects.response.failure.abbrExists": "Course with the same abbreviation already exists",
+  "text.subjects.response.failure.incorrectFields": "The fields are filled in incorrectly",
 
   "text.subjects.news.add": "Add news",
   "text.subjects.news.hide.all": "Hide all news",
