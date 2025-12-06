@@ -133,7 +133,7 @@
               *ngFor="let studentFile of userLabFiles"
               [ngClass]="{
                 sticky: studentFile.IsReceived,
-                fix: studentFile.IsReturned,
+                fix: studentFile.IsReturned
               }"
             >
               <td class="mdc-data-table__cell">
@@ -230,7 +230,7 @@
                   *ngFor="let fileLab of student.FileLabs"
                   [ngClass]="{
                     sticky: fileLab.IsReceived,
-                    fix: fileLab.IsReturned,
+                    fix: fileLab.IsReturned
                   }"
                 >
                   <td class="mdc-data-table__cell">
