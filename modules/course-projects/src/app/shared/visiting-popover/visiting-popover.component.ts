@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core'
+import { Component, Inject, OnInit } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 
 export interface DialogData {
@@ -13,15 +13,16 @@ export interface DialogData {
   templateUrl: 'visiting-popover.component.html',
   styleUrls: ['./visiting-popover.component.less'],
 })
-export class VisitingPopoverComponent {
+export class VisitingPopoverComponent implements OnInit {
   private invalid = false
-
   public displayedColumns = ['position', 'name', 'mark', 'comment']
 
   constructor(
     public dialogRef: MatDialogRef<VisitingPopoverComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
+
+  ngOnInit() {}
 
   onClick(): void {
     this.dialogRef.close()

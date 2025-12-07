@@ -1,4 +1,4 @@
-﻿using Application.Core.Data;
+using Application.Core.Data;
 using Application.Infrastructure.Models;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
@@ -388,7 +388,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                             test =>
                                 test.SubjectId == subjectId &&
                                 (test.ForNN || test.ForSelfStudy || (!test.ForEUMK && !test.BeforeEUMK))
-                                && test.TestUnlocks.Any(testUnlock => testUnlock.StudentId == studentId)
+                                && (test.ForSelfStudy || test.TestUnlocks.Any(testUnlock => testUnlock.StudentId == studentId))
                                 && test.Questions.Count > 0))
                     .ToList();
             }
@@ -420,7 +420,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                                 test =>
                                     test.SubjectId == subjectId &&
                                     (test.ForNN || test.ForSelfStudy || (!test.ForEUMK && !test.BeforeEUMK))
-                                    && test.TestUnlocks.Any(testUnlock => testUnlock.StudentId == userId)
+                                    && (test.ForSelfStudy || test.TestUnlocks.Any(testUnlock => testUnlock.StudentId == userId))
                                     && test.Questions.Count > 0))
                         .ToList();
                 }

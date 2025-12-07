@@ -145,11 +145,20 @@ export class MaterialComponent implements OnInit {
   openTest(node: any) {
     if (node.TestId) {
       const { item } = this.menuService.getSubjectInfo(ModuleType.SmartTest)
+      const { item: eumkItem } = this.menuService.getSubjectInfo(
+        ModuleType.ComplexMaterial
+      )
 
       const currentSubject = localStorage.getItem('currentSubject')
       const subject = JSON.parse(currentSubject)
 
       sessionStorage.setItem('complexTestId', node.TestId)
+      sessionStorage.setItem('testFromEUMK', 'true')
+      sessionStorage.setItem('eumkComplexId', this.complexId)
+      sessionStorage.setItem(
+        'eumkRoute',
+        `web/viewer/subject/${subject.id}#${eumkItem}`
+      )
 
       this.catsService.sendMessage({
         Type: 'Route',

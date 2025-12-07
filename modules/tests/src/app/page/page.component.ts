@@ -36,7 +36,16 @@ export class PageComponent extends AutoUnsubscribeBase implements OnInit {
 
   ngOnInit() {
     const subject = JSON.parse(localStorage.getItem('currentSubject'))
-    this.getTests(subject.id)
+    
+    const complexTestId = sessionStorage.getItem('complexTestId')
+
+    if (complexTestId) {
+      sessionStorage.setItem('testFromEUMK', 'true')
+      this.router.navigate(['/test/' + complexTestId])
+      sessionStorage.removeItem('complexTestId')
+    } else {
+      this.getTests(subject.id)
+    }
   }
 
   public sortTests(tests) {

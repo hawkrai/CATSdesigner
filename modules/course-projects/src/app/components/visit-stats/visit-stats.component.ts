@@ -134,12 +134,15 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   }
 
   setVisitMarks(consultationDateId: string) {
-    const date = new Date(
-      this.consultations.find(
-        (consultation) => consultation.Id === consultationDateId
-      ).Day
-    )
+    const rawDate = this.consultations.find(
+      (consultation) => consultation.Id === consultationDateId
+    ).Day
+
+    const [day, month, year] = rawDate.split('.')
+    const date = new Date(Number(year), Number(month) - 1, Number(day))
+
     const visits = { date, students: [] }
+
     this.visitStatsList.forEach((stats) => {
       const mark = stats.CourseProjectConsultationMarks.find(
         (stat) => stat.ConsultationDateId === consultationDateId
@@ -147,7 +150,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       const visit = {
         name: stats.Name,
         mark: mark.Mark,
-        comment: mark.Comments,
+        comment: mark.Comment,
         id: mark.Id,
         consultationDateId: mark.ConsultationDateId,
         studentId: mark.StudentId,
@@ -200,7 +203,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
         const origin = this.visitStatsList
           .find((stats) => stats.Id === visit.studentId)
           .CourseProjectConsultationMarks.find((mark) => mark.Id === visit.id)
-        if (origin.Mark !== visit.mark || origin.Comments !== visit.comment) {
+        if (origin.Mark !== visit.mark || origin.Comment !== visit.comment) {
           hasChanges = true
           this.visitStatsService
             .editMark(

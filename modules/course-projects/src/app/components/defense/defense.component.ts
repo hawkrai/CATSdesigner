@@ -45,7 +45,7 @@ export class DefenseComponent implements OnInit {
     private toastr: ToastrService,
     private translatePipe: TranslatePipe,
     private store: Store<IAppState>
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.store.pipe(select(getSubjectId)).subscribe((subjectId) => {
@@ -79,7 +79,7 @@ export class DefenseComponent implements OnInit {
 
     getGroups$.subscribe((res) => {
       this.groups = res.Groups.map((g) => ({ ...g, hasNewWork: false }));
-      this.allGroups = [...this.groups];
+      this.allGroups = [].concat(this.groups);
 
       if (!this.selectedGroup || groupStatusChanged) {
         this.selectedGroup = this.groups.length > 0 ? this.groups[0] : null;
@@ -94,41 +94,42 @@ export class DefenseComponent implements OnInit {
   }
 
   retrieveFiles() {
-  if (!this.selectedGroup) return;
+    if (!this.selectedGroup) return;
 
-  this.labFilesService
-    .getCourseProjectFiles({
-      isCp: true,
-      subjectId: this.subjectId,
-      groupId: this.selectedGroup.GroupId,
-    })
-    .subscribe((res) => {
-      if (!res || !res.Students) {
-        this.studentFiles = [];
-        this.updateGroupHasNewWork();
-        return;
-      }
-
-      this.studentFiles = res.Students.map((student: any) => {
-        let hasNewWork = false;
-        if (student.FileLabs && student.FileLabs.length > 0) {
-          hasNewWork = student.FileLabs.some((file: any) => !file.IsReceived && !file.IsReturned);
+    this.labFilesService
+      .getCourseProjectFiles({
+        isCp: true,
+        subjectId: this.subjectId,
+        groupId: this.selectedGroup.GroupId,
+      })
+      .subscribe((res) => {
+        if (!res || !res.Students) {
+          this.studentFiles = [];
+          this.updateGroupHasNewWork();
+          return;
         }
-        return { ...student, hasNewWork };
+
+        this.studentFiles = res.Students.map((student: any) => {
+          var hasNewWork = false;
+
+          if (student.FileLabs && student.FileLabs.length > 0) {
+            hasNewWork = student.FileLabs.some(function (file) {
+              return !file.IsReceived && !file.IsReturned;
+            });
+          }
+
+          return { ...student, hasNewWork: hasNewWork };
+        });
+
+        this.updateGroupHasNewWork();
+        this.emitGlobalWorkStatus();
       });
-
-      this.updateGroupHasNewWork();
-      this.emitGlobalWorkStatus();
-    });
-}
-
-
-
+  }
 
   _selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.selectedGroup = this.groups.find(
-        (res) => res.GroupId === event.source.value
+        (g) => g.GroupId === event.source.value
       );
       this.retrieveFiles();
     }
@@ -140,32 +141,37 @@ export class DefenseComponent implements OnInit {
   }
 
   checkAllGroupsForNewWork() {
-  if (!this.courseUser.IsLecturer || !this.groups || this.groups.length === 0) return;
+    if (!this.courseUser.IsLecturer || !this.groups.length) return;
 
-  const requests = this.groups.map((group) =>
-    this.labFilesService.getCourseProjectFiles({
-      isCp: true,
-      subjectId: this.subjectId,
-      groupId: group.GroupId,
-    })
-  );
+    const requests = this.groups.map((group) =>
+      this.labFilesService.getCourseProjectFiles({
+        isCp: true,
+        subjectId: this.subjectId,
+        groupId: group.GroupId,
+      })
+    );
 
-  forkJoin(requests).subscribe((results) => {
-    results.forEach((res, index) => {
-      let hasNewWork = false;
-      if (res && res.Students && res.Students.length > 0) {
-        hasNewWork = res.Students.some((student: any) =>
-          student.FileLabs && student.FileLabs.some((file: any) => !file.IsReceived && !file.IsReturned)
-        );
-      }
-      this.groups[index].hasNewWork = hasNewWork;
+    forkJoin(requests).subscribe((results) => {
+      results.forEach((res, index) => {
+        var hasNewWork = false;
+
+        if (res && res.Students && res.Students.length > 0) {
+          hasNewWork = res.Students.some(function (student) {
+            return (
+              student.FileLabs &&
+              student.FileLabs.some(function (file) {
+                return !file.IsReceived && !file.IsReturned;
+              })
+            );
+          });
+        }
+
+        this.groups[index].hasNewWork = hasNewWork;
+      });
+
+      this.emitGlobalWorkStatus();
     });
-
-    this.emitGlobalWorkStatus();
-  });
-}
-
-
+  }
 
   emitGlobalWorkStatus() {
     const hasAnyNewWork = this.allGroups.some((g) => g.hasNewWork);
@@ -173,75 +179,87 @@ export class DefenseComponent implements OnInit {
   }
 
   updateStudentJobs(studentId: string) {
-  const student = this.studentFiles.find(s => s.StudentId === studentId);
-  if (!student) return;
+    const student = this.studentFiles.find((s) => s.StudentId === studentId);
+    if (!student) return;
 
-  this.labFilesService
-    .getCourseProjectFilesForUser(this.subjectId, studentId)
-    .subscribe((res) => {
-      student.FileLabs = res.UserLabFiles;
-      this.updateGroupHasNewWork();
-      this.updateGlobalWorkStatusForAllGroups();
-    });
-}
-
+    this.labFilesService
+      .getCourseProjectFilesForUser(this.subjectId, studentId)
+      .subscribe((res) => {
+        student.FileLabs = res.UserLabFiles;
+        this.updateGroupHasNewWork();
+        this.updateGlobalWorkStatusForAllGroups();
+      });
+  }
 
   updateGroupHasNewWork() {
-  if (!this.selectedGroup || !this.studentFiles) return;
+    if (!this.selectedGroup || !this.studentFiles) return;
 
-  this.studentFiles.forEach(student => {
-    student.hasNewWork =
-      student.FileLabs && student.FileLabs.some(file => !file.IsReceived && !file.IsReturned);
-  });
+    this.studentFiles.forEach((student) => {
+      var hasNew = false;
 
-  const groupHasNewWork = this.studentFiles.some(student => student.hasNewWork);
-
-  this.selectedGroup.hasNewWork = groupHasNewWork;
-
-  const groupInList = this.groups.find(g => g.GroupId === this.selectedGroup.GroupId);
-  if (groupInList) groupInList.hasNewWork = groupHasNewWork;
-
-  const groupInAll = this.allGroups.find(g => g.GroupId === this.selectedGroup.GroupId);
-  if (groupInAll) groupInAll.hasNewWork = groupHasNewWork;
-
-  this.emitGlobalWorkStatus();
-}
-
-
-
-
-
-  updateGlobalWorkStatusForAllGroups() {
-  if (!this.allGroups || this.allGroups.length === 0) return;
-
-  const requests = this.allGroups.map((group) =>
-    this.labFilesService.getCourseProjectFiles({
-      isCp: true,
-      subjectId: this.subjectId,
-      groupId: group.GroupId,
-    })
-  );
-
-  forkJoin(requests).subscribe((results) => {
-    results.forEach((res, index) => {
-      let hasNewWork = false;
-      if (res && res.Students && res.Students.length > 0) {
-        hasNewWork = res.Students.some((student: any) =>
-          student.FileLabs && student.FileLabs.some((f: any) => !f.IsReceived && !f.IsReturned)
-        );
+      if (student.FileLabs && student.FileLabs.length) {
+        hasNew = student.FileLabs.some(function (file) {
+          return !file.IsReceived && !file.IsReturned;
+        });
       }
 
-      this.allGroups[index].hasNewWork = hasNewWork;
-
-      const groupInCurrent = this.groups.find(g => g.GroupId === this.allGroups[index].GroupId);
-      if (groupInCurrent) groupInCurrent.hasNewWork = hasNewWork;
+      student.hasNewWork = hasNew;
     });
 
+    const groupHasNewWork = this.studentFiles.some((s) => s.hasNewWork);
+
+    this.selectedGroup.hasNewWork = groupHasNewWork;
+
+    const groupInList = this.groups.find(
+      (g) => g.GroupId === this.selectedGroup.GroupId
+    );
+    if (groupInList) groupInList.hasNewWork = groupHasNewWork;
+
+    const groupInAll = this.allGroups.find(
+      (g) => g.GroupId === this.selectedGroup.GroupId
+    );
+    if (groupInAll) groupInAll.hasNewWork = groupHasNewWork;
+
     this.emitGlobalWorkStatus();
-  });
-}
+  }
 
+  updateGlobalWorkStatusForAllGroups() {
+    if (!this.allGroups.length) return;
 
+    const requests = this.allGroups.map((group) =>
+      this.labFilesService.getCourseProjectFiles({
+        isCp: true,
+        subjectId: this.subjectId,
+        groupId: group.GroupId,
+      })
+    );
+
+    forkJoin(requests).subscribe((results) => {
+      results.forEach((res, index) => {
+        var hasNewWork = false;
+
+        if (res && res.Students) {
+          hasNewWork = res.Students.some(function (student) {
+            return (
+              student.FileLabs &&
+              student.FileLabs.some(function (file) {
+                return !file.IsReceived && !file.IsReturned;
+              })
+            );
+          });
+        }
+
+        this.allGroups[index].hasNewWork = hasNewWork;
+
+        const currentGroup = this.groups.find(
+          (g) => g.GroupId === this.allGroups[index].GroupId
+        );
+        if (currentGroup) currentGroup.hasNewWork = hasNewWork;
+      });
+
+      this.emitGlobalWorkStatus();
+    });
+  }
 
   approveJob(fileLab: UserLabFile, studentId: string) {
     this.labFilesService.approveJob(fileLab.Id).subscribe(() => {
@@ -269,9 +287,9 @@ export class DefenseComponent implements OnInit {
     const body =
       userLabFile && this.courseUser.IsStudent
         ? {
-            comments: userLabFile.Comments,
-            attachments: userLabFile.Attachments,
-          }
+          comments: userLabFile.Comments,
+          attachments: userLabFile.Attachments,
+        }
         : { comments: '', attachments: [] };
 
     const dialogRef = this.dialog.open(AddJobDialogComponent, {
@@ -297,8 +315,11 @@ export class DefenseComponent implements OnInit {
       if (result) {
         const isLecturer = this.courseUser.IsLecturer;
         const id = !userLabFile || isLecturer ? '0' : userLabFile.Id;
+
         const attachmentId =
-          result.uploadedFile && result.uploadedFile.IdFile && result.uploadedFile.IdFile !== -1
+          result.uploadedFile &&
+            result.uploadedFile.IdFile &&
+            result.uploadedFile.IdFile !== -1
             ? result.uploadedFile.IdFile
             : '0';
 

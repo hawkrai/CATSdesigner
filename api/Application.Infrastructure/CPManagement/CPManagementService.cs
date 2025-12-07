@@ -405,7 +405,7 @@ namespace Application.Infrastructure.CPManagement
                             Id = cm.Id,
                             ConsultationDateId = cm.ConsultationDateId,
                             StudentId = cm.StudentId,
-                            Mark = cm.Mark,
+                            Mark = cm.Mark, 
                             Comment = cm.Comments,
                         })
                     }).ApplyPaging(parms);
@@ -482,7 +482,7 @@ namespace Application.Infrastructure.CPManagement
                                 ConsultationDateId = cm.ConsultationDateId,
                                 StudentId = cm.StudentId,
                                 Mark = cm.Mark,
-                                Comment = cm.Comments
+                                Comment = cm.Comments,
                             })
                         }).ApplyPaging(parms);
             }
@@ -518,7 +518,7 @@ namespace Application.Infrastructure.CPManagement
                                 ConsultationDateId = cm.ConsultationDateId,
                                 StudentId = cm.StudentId,
                                 Mark = cm.Mark,
-                                Comment = cm.Comments
+                                Comment = cm.Comments,
                             })
                         }).ApplyPaging(parms);
             }
@@ -575,6 +575,19 @@ namespace Application.Infrastructure.CPManagement
             Context.SaveChanges();
         }
 
+        public async Task DeleteTaskSheetTemplate(int taskSheetId, int userId)
+        {
+            AuthorizationHelper.ValidateLecturerAccess(Context, userId);
+
+            var taskSheet = await Context.CourseProjectTaskSheetTemplates
+                .FirstOrDefaultAsync(x => x.Id == taskSheetId);
+
+            if (taskSheet != null)
+            {
+                Context.CourseProjectTaskSheetTemplates.Remove(taskSheet);
+                Context.SaveChanges();
+            }
+        }
         public List<TaskSheetData> GetTaskSheets(int userId, GetPagedListParams parms)
         {
             var subjectId = int.Parse(parms.Filters["subjectId"]);
@@ -667,39 +680,60 @@ namespace Application.Infrastructure.CPManagement
 
         public string GetTasksSheetHtml(int courseProjectId, string language)
         {
-            var userId = 0;
+            var userId = UserContext.CurrentUserId;
             int studentId = 0;
-            userId = UserContext.CurrentUserId;
             var isStudent = AuthorizationHelper.IsStudent(Context, userId);
 
             if (isStudent)
             {
                 studentId = userId;
-
             }
 
-            var courseProject =
-                new LmPlatformModelsContext().CourseProjects
-                    .Include(x => x.AssignedCourseProjects.Select(y => y.Student.Group))
-                    .Single(x => x.CourseProjectId == courseProjectId);
+            var context = new LmPlatformModelsContext();
+
+            var courseProject = context.CourseProjects
+                .Include(x => x.AssignedCourseProjects.Select(y => y.Student.Group))
+                .Single(x => x.CourseProjectId == courseProjectId);
 
             if (isStudent && !courseProject.AssignedCourseProjects.Any(acp => acp.Student.Id == studentId))
             {
-                courseProject = new CourseProject();
-                AssignedCourseProject assignedCourseProject = new AssignedCourseProject();
-                assignedCourseProject.CourseProject = new CourseProject();
-                assignedCourseProject.Student = new Student();
-                assignedCourseProject.Student.Group = new Group();
-                assignedCourseProject.CourseProject.Subject = new Subject();
-                assignedCourseProject.CourseProject.Subject.CoursePersentagesGraphs = new List<CoursePercentagesGraph> { };
-                assignedCourseProject.CourseProject.Lecturer = new Lecturer();
-                courseProject.AssignedCourseProjects = new List<AssignedCourseProject> { assignedCourseProject };
+                var placeholderStudent = new AssignedCourseProject
+                {
+                    Student = new Student
+                    {
+                        FirstName = " ",
+                        LastName = " ", 
+                        Group = new Group { Name = " " } 
+                    },
+                    CourseProject = courseProject
+                };
+
+                courseProject.AssignedCourseProjects = new List<AssignedCourseProject> { placeholderStudent };
             }
-            language = language.IsEmpty() ? "ru" : language;
+
+            if (!courseProject.AssignedCourseProjects.Any())
+            {
+                var placeholderStudent = new AssignedCourseProject
+                {
+                    Student = new Student
+                    {
+                        FirstName = " ",
+                        LastName = " ",
+                        Group = new Group { Name = " " }
+                    },
+                    CourseProject = courseProject
+                };
+
+                courseProject.AssignedCourseProjects = new List<AssignedCourseProject> { placeholderStudent };
+            }
+
+            language = string.IsNullOrEmpty(language) ? "ru" : language;
+
             return courseProject.AssignedCourseProjects.Count == 1
                 ? WordCourseProject.CourseProjectToDocView(courseProject.AssignedCourseProjects.First(), language)
                 : WordCourseProject.CourseProjectToDocView(courseProject, language);
         }
+
 
         public void SaveTaskSheet(int userId, TaskSheetData taskSheet)
         {

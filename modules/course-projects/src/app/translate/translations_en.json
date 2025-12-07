@@ -88,6 +88,7 @@
   "text.course.list.dialog.template.apply": "Apply template",
   "text.course.list.dialog.template.save.success": "Template has been saved successfully",
   "text.course.list.dialog.template.apply.success": "Template has been applied successfully",
+  "text.course.list.dialog.template.delete.success": "The template was successfully deleted",
   "text.course.list.dialog.template.groups": "Groups",
   "text.course.list.dialog.data.input": "Input data",
   "text.course.list.dialog.data.error.large": "To 999 symbols",
