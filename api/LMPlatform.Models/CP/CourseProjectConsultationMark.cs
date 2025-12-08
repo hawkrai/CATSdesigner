@@ -4,7 +4,7 @@ namespace LMPlatform.Models.CP
 {
     public class CourseProjectConsultationMark
     {
-        public bool ShowForStudent;
+        public bool ShowForStudent { get; set; }
 
         public int Id { get; set; }
 

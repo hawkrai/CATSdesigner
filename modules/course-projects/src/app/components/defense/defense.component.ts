@@ -45,7 +45,7 @@ export class DefenseComponent implements OnInit {
     private toastr: ToastrService,
     private translatePipe: TranslatePipe,
     private store: Store<IAppState>
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.store.pipe(select(getSubjectId)).subscribe((subjectId) => {
@@ -63,7 +63,7 @@ export class DefenseComponent implements OnInit {
     this.labFilesService
       .getCourseProjectFilesForUser(this.subjectId, this.courseUser.UserId)
       .subscribe((res) => {
-        if (res.UserLabFiles) {
+        if (res && res.UserLabFiles) {
           this.userLabFiles = res.UserLabFiles;
           this.canAddJob = !this.userLabFiles.find((file) => !file.IsReturned);
         } else {
@@ -78,8 +78,11 @@ export class DefenseComponent implements OnInit {
       : this.groupService.getGroups(this.subjectId);
 
     getGroups$.subscribe((res) => {
-      this.groups = res.Groups.map((g) => ({ ...g, hasNewWork: false }));
-      this.allGroups = [].concat(this.groups);
+      this.groups = (res && res.Groups ? res.Groups : []).map((g) => ({
+        ...g,
+        hasNewWork: false,
+      }));
+      this.allGroups = this.groups.slice(0);
 
       if (!this.selectedGroup || groupStatusChanged) {
         this.selectedGroup = this.groups.length > 0 ? this.groups[0] : null;
@@ -109,7 +112,11 @@ export class DefenseComponent implements OnInit {
           return;
         }
 
-        this.studentFiles = res.Students.map((student: any) => {
+        var mappedStudents: (StudentFilesModel & { hasNewWork?: boolean })[] =
+          [];
+
+        for (var i = 0; i < res.Students.length; i++) {
+          var student = res.Students[i];
           var hasNewWork = false;
 
           if (student.FileLabs && student.FileLabs.length > 0) {
@@ -118,8 +125,10 @@ export class DefenseComponent implements OnInit {
             });
           }
 
-          return { ...student, hasNewWork: hasNewWork };
-        });
+          mappedStudents.push(Object.assign({}, student, { hasNewWork: hasNewWork }));
+        }
+
+        this.studentFiles = mappedStudents;
 
         this.updateGroupHasNewWork();
         this.emitGlobalWorkStatus();
@@ -141,90 +150,117 @@ export class DefenseComponent implements OnInit {
   }
 
   checkAllGroupsForNewWork() {
-    if (!this.courseUser.IsLecturer || !this.groups.length) return;
+    if (!this.courseUser.IsLecturer || !this.groups || !this.groups.length)
+      return;
 
-    const requests = this.groups.map((group) =>
+    const requests = this.groups.map((g) =>
       this.labFilesService.getCourseProjectFiles({
         isCp: true,
         subjectId: this.subjectId,
-        groupId: group.GroupId,
+        groupId: g.GroupId,
       })
     );
 
     forkJoin(requests).subscribe((results) => {
-      results.forEach((res, index) => {
+      for (var i = 0; i < results.length; i++) {
+        var res = results[i];
         var hasNewWork = false;
 
         if (res && res.Students && res.Students.length > 0) {
-          hasNewWork = res.Students.some(function (student) {
-            return (
-              student.FileLabs &&
-              student.FileLabs.some(function (file) {
-                return !file.IsReceived && !file.IsReturned;
-              })
-            );
+          hasNewWork = res.Students.some(function (s) {
+            if (s.FileLabs && s.FileLabs.length > 0) {
+              return s.FileLabs.some(function (f) {
+                return !f.IsReceived && !f.IsReturned;
+              });
+            }
+            return false;
           });
         }
 
-        this.groups[index].hasNewWork = hasNewWork;
-      });
+        this.groups[i].hasNewWork = !!hasNewWork;
+      }
 
       this.emitGlobalWorkStatus();
     });
   }
 
-  emitGlobalWorkStatus() {
-    const hasAnyNewWork = this.allGroups.some((g) => g.hasNewWork);
-    this.newWorkEvent.emit(hasAnyNewWork);
-  }
-
   updateStudentJobs(studentId: string) {
-    const student = this.studentFiles.find((s) => s.StudentId === studentId);
-    if (!student) return;
+  let index = -1;
 
-    this.labFilesService
-      .getCourseProjectFilesForUser(this.subjectId, studentId)
-      .subscribe((res) => {
-        student.FileLabs = res.UserLabFiles;
-        this.updateGroupHasNewWork();
-        this.updateGlobalWorkStatusForAllGroups();
-      });
+  for (let i = 0; i < this.studentFiles.length; i++) {
+    if (this.studentFiles[i].StudentId === studentId) {
+      index = i;
+      break;
+    }
   }
+
+  if (index === -1) return;
+
+  this.labFilesService
+    .getCourseProjectFilesForUser(this.subjectId, studentId)
+    .subscribe((res) => {
+      const newLabs = res && res.UserLabFiles ? res.UserLabFiles : [];
+
+      const hasNew = newLabs.some(f => !f.IsReceived && !f.IsReturned);
+
+      const updatedStudent = {
+        ...this.studentFiles[index],
+        FileLabs: newLabs,
+        hasNewWork: hasNew
+      };
+
+      this.studentFiles = [
+        ...this.studentFiles.slice(0, index),
+        updatedStudent,
+        ...this.studentFiles.slice(index + 1)
+      ];
+
+      this.updateGroupHasNewWork();
+
+      this.updateGlobalWorkStatusForAllGroups();
+    });
+}
+
 
   updateGroupHasNewWork() {
     if (!this.selectedGroup || !this.studentFiles) return;
 
-    this.studentFiles.forEach((student) => {
-      var hasNew = false;
+    var groupHasNew = false;
 
-      if (student.FileLabs && student.FileLabs.length) {
-        hasNew = student.FileLabs.some(function (file) {
-          return !file.IsReceived && !file.IsReturned;
+    for (var i = 0; i < this.studentFiles.length; i++) {
+      var s = this.studentFiles[i];
+      if (s.FileLabs && s.FileLabs.length > 0) {
+        var found = s.FileLabs.some(function (f) {
+          return !f.IsReceived && !f.IsReturned;
         });
+        if (found) {
+          groupHasNew = true;
+          break;
+        }
       }
+    }
 
-      student.hasNewWork = hasNew;
-    });
+    this.selectedGroup.hasNewWork = groupHasNew;
 
-    const groupHasNewWork = this.studentFiles.some((s) => s.hasNewWork);
+    for (var j = 0; j < this.groups.length; j++) {
+      if (this.groups[j].GroupId === this.selectedGroup.GroupId) {
+        this.groups[j].hasNewWork = groupHasNew;
+        break;
+      }
+    }
 
-    this.selectedGroup.hasNewWork = groupHasNewWork;
-
-    const groupInList = this.groups.find(
-      (g) => g.GroupId === this.selectedGroup.GroupId
-    );
-    if (groupInList) groupInList.hasNewWork = groupHasNewWork;
-
-    const groupInAll = this.allGroups.find(
-      (g) => g.GroupId === this.selectedGroup.GroupId
-    );
-    if (groupInAll) groupInAll.hasNewWork = groupHasNewWork;
+    for (var k = 0; k < this.allGroups.length; k++) {
+      if (this.allGroups[k].GroupId === this.selectedGroup.GroupId) {
+        this.allGroups[k].hasNewWork = groupHasNew;
+        break;
+      }
+    }
 
     this.emitGlobalWorkStatus();
   }
 
   updateGlobalWorkStatusForAllGroups() {
-    if (!this.allGroups.length) return;
+    if (!this.allGroups || this.allGroups.length === 0) return;
 
     const requests = this.allGroups.map((group) =>
       this.labFilesService.getCourseProjectFiles({
@@ -235,61 +271,53 @@ export class DefenseComponent implements OnInit {
     );
 
     forkJoin(requests).subscribe((results) => {
-      results.forEach((res, index) => {
+      for (var i = 0; i < results.length; i++) {
+        var res = results[i];
         var hasNewWork = false;
 
-        if (res && res.Students) {
-          hasNewWork = res.Students.some(function (student) {
-            return (
-              student.FileLabs &&
-              student.FileLabs.some(function (file) {
-                return !file.IsReceived && !file.IsReturned;
-              })
-            );
+        if (res && res.Students && res.Students.length > 0) {
+          hasNewWork = res.Students.some(function (s) {
+            if (s.FileLabs && s.FileLabs.length > 0) {
+              return s.FileLabs.some(function (f) {
+                return !f.IsReceived && !f.IsReturned;
+              });
+            }
+            return false;
           });
         }
 
-        this.allGroups[index].hasNewWork = hasNewWork;
+        this.allGroups[i].hasNewWork = !!hasNewWork;
 
-        const currentGroup = this.groups.find(
-          (g) => g.GroupId === this.allGroups[index].GroupId
-        );
-        if (currentGroup) currentGroup.hasNewWork = hasNewWork;
-      });
+        for (var j = 0; j < this.groups.length; j++) {
+          if (this.groups[j].GroupId === this.allGroups[i].GroupId) {
+            this.groups[j].hasNewWork = !!hasNewWork;
+            break;
+          }
+        }
+      }
 
       this.emitGlobalWorkStatus();
     });
   }
 
-  approveJob(fileLab: UserLabFile, studentId: string) {
-    this.labFilesService.approveJob(fileLab.Id).subscribe(() => {
-      fileLab.IsReceived = true;
-      this.updateStudentJobs(studentId);
-      this.updateGroupHasNewWork();
-    });
-  }
-
-  restoreFromArchive(fileLab: UserLabFile, studentId: string) {
-    this.labFilesService.restoreFromArchive(fileLab.Id).subscribe(() => {
-      fileLab.IsReceived = false;
-      this.updateStudentJobs(studentId);
-      this.updateGroupHasNewWork();
-    });
-  }
-
-  downloadArchive() {
-    if (!this.selectedGroup) return;
-    const url = 'http://localhost:8080/Subject/';
-    location.href = `${url}GetZipLabs?id=${this.selectedGroup.GroupId}&subjectId=${this.subjectId}`;
+  emitGlobalWorkStatus() {
+    var any = false;
+    for (var i = 0; i < this.allGroups.length; i++) {
+      if (this.allGroups[i].hasNewWork) {
+        any = true;
+        break;
+      }
+    }
+    this.newWorkEvent.emit(any);
   }
 
   addJob(userLabFile?: UserLabFile, studentId?: string) {
     const body =
       userLabFile && this.courseUser.IsStudent
         ? {
-          comments: userLabFile.Comments,
-          attachments: userLabFile.Attachments,
-        }
+            comments: userLabFile.Comments,
+            attachments: userLabFile.Attachments,
+          }
         : { comments: '', attachments: [] };
 
     const dialogRef = this.dialog.open(AddJobDialogComponent, {
@@ -313,33 +341,80 @@ export class DefenseComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const isLecturer = this.courseUser.IsLecturer;
-        const id = !userLabFile || isLecturer ? '0' : userLabFile.Id;
-
-        const attachmentId =
-          result.uploadedFile &&
-            result.uploadedFile.IdFile &&
-            result.uploadedFile.IdFile !== -1
-            ? result.uploadedFile.IdFile
-            : '0';
-
-        this.labFilesService
-          .sendJob({
-            attachments: `[{"Id":${attachmentId},"Title":"","Name":"${result.uploadedFile.Name}","AttachmentType":"${result.uploadedFile.Type}","FileName":"${result.uploadedFile.GuidFileName}"}]`,
-            comments: result.comments,
-            id,
-            isCp: true,
-            isRet: isLecturer,
-            pathFile: userLabFile ? userLabFile.PathFile : '',
-            subjectId: this.subjectId,
-            userId: studentId,
-          })
-          .subscribe(() => {
-            if (isLecturer) this.updateStudentJobs(studentId);
-            else this.ngOnInit();
-            this.canAddJob = false;
-          });
+        this.uploadJob(result, studentId || this.courseUser.UserId, userLabFile);
       }
+    });
+  }
+
+  uploadJob(dialogResult: any, studentId: string, userLabFile?: UserLabFile) {
+    const isLecturer = this.courseUser.IsLecturer;
+
+    var attachmentId = '0';
+    if (
+      dialogResult &&
+      dialogResult.uploadedFile &&
+      dialogResult.uploadedFile.IdFile &&
+      dialogResult.uploadedFile.IdFile !== -1
+    ) {
+      attachmentId = dialogResult.uploadedFile.IdFile;
+    }
+
+    var fileName = '';
+    if (dialogResult && dialogResult.uploadedFile) {
+      fileName =
+        dialogResult.uploadedFile.Name ||
+        (dialogResult.uploadedFile.OriginalName
+          ? dialogResult.uploadedFile.OriginalName
+          : dialogResult.uploadedFile.FileName || '');
+    }
+
+    var guidFileName = '';
+    if (dialogResult && dialogResult.uploadedFile) {
+      guidFileName =
+        dialogResult.uploadedFile.GuidFileName || dialogResult.uploadedFile.FileName || '';
+    }
+
+    const payload = {
+      attachments:
+        '[{"Id":' +
+        attachmentId +
+        ',"Title":"","Name":"' +
+        fileName +
+        '","AttachmentType":"Document","FileName":"' +
+        guidFileName +
+        '"}]',
+      comments: dialogResult ? dialogResult.comments : '',
+      id: !userLabFile || isLecturer ? '0' : userLabFile.Id,
+      isCp: true,
+      isRet: isLecturer,
+      pathFile: userLabFile ? userLabFile.PathFile : '',
+      subjectId: this.subjectId,
+      userId: studentId,
+    };
+
+    this.labFilesService.sendJob(payload).subscribe((res) => {
+
+      if (isLecturer) this.updateStudentJobs(studentId);
+      else this.ngOnInit();
+
+      this.updateGroupHasNewWork();
+      this.updateGlobalWorkStatusForAllGroups();
+
+      this.canAddJob = false;
+
+      this.toastr.success(
+        isLecturer
+          ? this.translatePipe.transform(
+              'text.course.defence.dialog.correct',
+              'Работа отправлена для исправления'
+            )
+          : this.translatePipe.transform(
+              'text.course.defence.dialog.success',
+              'Работа успешно добавлена'
+            )
+      );
+    }, (err) => {
+      console.error('[UPLOAD JOB] error:', err);
     });
   }
 
@@ -369,6 +444,22 @@ export class DefenseComponent implements OnInit {
           this.ngOnInit();
         });
       }
+    });
+  }
+
+  approveJob(fileLab: UserLabFile, studentId: string) {
+    this.labFilesService.approveJob(fileLab.Id).subscribe(() => {
+      fileLab.IsReceived = true;
+      this.updateStudentJobs(studentId);
+      this.updateGroupHasNewWork();
+    });
+  }
+
+  restoreFromArchive(fileLab: UserLabFile, studentId: string) {
+    this.labFilesService.restoreFromArchive(fileLab.Id).subscribe(() => {
+      fileLab.IsReceived = false;
+      this.updateStudentJobs(studentId);
+      this.updateGroupHasNewWork();
     });
   }
 

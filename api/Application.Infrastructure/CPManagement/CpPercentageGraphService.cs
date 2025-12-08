@@ -292,8 +292,15 @@ namespace Application.Infrastructure.CPManagement
                 Context.CourseProjectConsultationMarks.Add(consultationMark);
             }
 
-            consultationMark.Mark = string.IsNullOrWhiteSpace(consultationMarkData.Mark) ? null : consultationMarkData.Mark;
-            consultationMark.Comments = string.IsNullOrWhiteSpace(consultationMarkData.Comment) ? null : consultationMarkData.Comment;
+            consultationMark.Mark = string.IsNullOrWhiteSpace(consultationMarkData.Mark)
+                ? null
+                : consultationMarkData.Mark;
+
+            consultationMark.Comments = string.IsNullOrWhiteSpace(consultationMarkData.Comment)
+                ? null
+                : consultationMarkData.Comment;
+
+            consultationMark.ShowForStudent = consultationMarkData.ShowForStudent;
 
             Context.SaveChanges();
         }
