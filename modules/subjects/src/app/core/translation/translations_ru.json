@@ -142,6 +142,14 @@
   "plagiarism.warning.minFileSize": "размер проверяемого файла должен быть не менее 20 KB",
   "common.fileSize": "Размер файла",
 
+  "text.subjects.response.success.add": "Предмет успешно добавлен",
+  "text.subjects.response.success.edit": "Предмет успешно отредактирован",
+  "text.subjects.response.success.delete": "Предмет успешно удален",
+  "text.subjects.response.failure.noAccess": "Нет доступа для создания предмета",
+  "text.subjects.response.failure.nameExists": "Предмет с таким именем уже существует",
+  "text.subjects.response.failure.abbrExists": "Предмет с такой аббревиатурой уже существует",
+  "text.subjects.response.failure.incorrectFields": "Поля заполнены некорректно",
+
   "text.subjects.labs": "Лабораторная работа",
   "text.subjects.labs.plural": "Лабораторные работы",
   "text.subjects.labs.dative": "Лабораторную работу",
