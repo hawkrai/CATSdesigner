@@ -10,6 +10,7 @@ import { AutoUnsubscribe } from '../decorator/auto-unsubscribe'
 import { Group } from '../models/group.model'
 import { Test } from '../models/test.model'
 import { TestService } from '../service/test.service'
+import { TestPassingService } from '../service/test-passing.service'
 import { AppToastrService } from '../service/toastr.service'
 import { DeleteConfirmationPopupComponent } from './components/delete-confirmation-popup/delete-confirmation-popup.component'
 import { EditAvailabilityPopupComponent } from './components/edit-availability-popup/edit-availability-popup.component'
@@ -54,6 +55,7 @@ export class TestControlPageComponent
 
   constructor(
     private testService: TestService,
+    private testPassingService: TestPassingService,
     private router: Router,
     private translatePipe: TranslatePipe,
     private snackBar: MatSnackBar,
@@ -79,9 +81,14 @@ export class TestControlPageComponent
     const complexTestId = sessionStorage.getItem(StorageKeys.ComplexTestId)
 
     if (complexTestId) {
-      this.router.navigate(['test/' + complexTestId])
-
+      sessionStorage.setItem(StorageKeys.TestFromEUMK, 'true')
+      this.router.navigate(['/test/' + complexTestId])
       sessionStorage.removeItem(StorageKeys.ComplexTestId)
+    } else {
+      sessionStorage.removeItem(StorageKeys.TestFromEUMK)
+      sessionStorage.removeItem(StorageKeys.EumkRoute)
+      sessionStorage.removeItem(StorageKeys.EumkComplexId)
+      this.getTests(this.subject.id)
     }
   }
 
@@ -177,7 +184,7 @@ export class TestControlPageComponent
   }
 
   public onChange(event: any): void {
-    localStorage.setItem('testsModule_tab', String(event.index))
+    localStorage.setItem(StorageKeys.TestsModuleTab, String(event.index))
     this.currentTabIndex = event.index
     switch (this.currentTabIndex) {
       case 0: {
@@ -213,8 +220,13 @@ export class TestControlPageComponent
   }
 
   private getTests(subjectId): void {
-    this.testService
-      .getAllTestBySubjectId(subjectId)
+    const isStudent = this.user.role === UserRole.Student
+    
+    const testsObservable = isStudent
+      ? this.testPassingService.getAvailableTests(subjectId)
+      : this.testService.getAllTestBySubjectId(subjectId)
+    
+    testsObservable
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((tests) => {
         this.allTests = tests
