@@ -100,3 +100,11 @@
 .mat-tooltip {
   font-size: 14px;
 }
+
+#toast-container > div,
+.toast,
+.toast-message {
+  font-family: 'Roboto';
+  font-weight: normal;
+  font-size: 14px;
+}
