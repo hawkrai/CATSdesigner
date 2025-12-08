@@ -17,6 +17,7 @@ import { DeleteConfirmationPopupComponent } from '../delete-confirmation-popup/d
 import { StudentsMonitoringComponent } from '../students-monitoring/students-monitoring.component'
 import { takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs'
+import { StorageKeys } from '../../../../../../container/src/app/core/models/storage-keys.enum'
 
 /**
  * @title Menu with icons
@@ -45,7 +46,7 @@ export class GridMenuComponent {
     }
     this.router.onSameUrlNavigation = 'reload'
 
-    const user = JSON.parse(localStorage.getItem('currentUser'))
+    const user = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser))
 
     this.isLecturer = user.role === 'lector'
   }
@@ -151,7 +152,7 @@ export class GridMenuComponent {
     })
 
     if (!complexId) {
-      sessionStorage.setItem('complexId', this.complexId)
+      sessionStorage.setItem(StorageKeys.MonitoringComplexId, this.complexId)
     }
   }
 
@@ -177,7 +178,7 @@ export class GridMenuComponent {
   }
 
   ngOnInit() {
-    const complexId = sessionStorage.getItem('complexId')
+    const complexId = sessionStorage.getItem(StorageKeys.MonitoringComplexId)
 
     if (complexId) {
       this.openMonitoring(complexId)

@@ -14,6 +14,8 @@ import { AppToastrService } from '../service/toastr.service'
 import { DeleteConfirmationPopupComponent } from './components/delete-confirmation-popup/delete-confirmation-popup.component'
 import { EditAvailabilityPopupComponent } from './components/edit-availability-popup/edit-availability-popup.component'
 import { EditTestPopupComponent } from './components/edit-test-popup/edit-test-popup.component'
+import { StorageKeys } from '../../../../container/src/app/core/models/storage-keys.enum'
+import { Theme } from '../../../../container/src/app/core/models/theme.enum'
 
 @AutoUnsubscribe
 @Component({
@@ -63,23 +65,23 @@ export class TestControlPageComponent
   }
 
   ngOnInit() {
-    this.currentTabIndex = Number(localStorage.getItem('testsModule_tab')) || 0
+    this.currentTabIndex = Number(localStorage.getItem(StorageKeys.TestsModuleTab)) || 0
 
-    if (localStorage.getItem('theme') === 'white') {
+    if (localStorage.getItem(StorageKeys.Theme) === Theme.White) {
       this.white = true
     } else {
       this.black = true
     }
-    this.user = JSON.parse(localStorage.getItem('currentUser'))
-    this.subject = JSON.parse(localStorage.getItem('currentSubject'))
+    this.user = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser))
+    this.subject = JSON.parse(localStorage.getItem(StorageKeys.CurrentSubject))
     this.getTests(this.subject.id)
 
-    const complexTestId = sessionStorage.getItem('complexTestId')
+    const complexTestId = sessionStorage.getItem(StorageKeys.ComplexTestId)
 
     if (complexTestId) {
       this.router.navigate(['test/' + complexTestId])
 
-      sessionStorage.removeItem(complexTestId)
+      sessionStorage.removeItem(StorageKeys.ComplexTestId)
     }
   }
 

@@ -9,6 +9,7 @@ import { AdaptivityService } from '../service/adaptivity.service'
 import { DialogData } from '../models/DialogData'
 import { MaterialsPopoverComponent } from './components/materials/materials-popover/materials-popover.component'
 import { TestService } from '../service/test.service'
+import { StorageKeys } from '../../../../container/src/app/core/models/storage-keys.enum'
 
 @Component({
   selector: 'app-labs',
@@ -37,16 +38,16 @@ export class ComplexMaterialComponent implements OnInit {
 
     this.complexID = this.router.getCurrentNavigation().extras.state
     if (this.complexID) {
-      localStorage.setItem('selectedComplex', this.complexID)
+      localStorage.setItem(StorageKeys.SelectedComplex, this.complexID)
     } else {
-      this.complexID = localStorage.getItem('selectedComplex')
+      this.complexID = localStorage.getItem(StorageKeys.SelectedComplex)
     }
     this.complexService
       .getConceptNameById(this.complexID)
       .subscribe((name) => (this.complexName = name))
 
     this.isLector =
-      JSON.parse(localStorage.getItem('currentUser')).role === 'lector'
+      JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).role === 'lector'
   }
 
   ngOnInit(): void {
@@ -74,7 +75,7 @@ export class ComplexMaterialComponent implements OnInit {
           parentId: result.parentId,
           isGroup: result.isGroup,
           fileData: JSON.stringify(result.attachments),
-          userId: JSON.parse(localStorage.getItem('currentUser')).id,
+          userId: JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id,
         }
 
         this.complexService.addOrEditConcept(concept).subscribe((res) => {

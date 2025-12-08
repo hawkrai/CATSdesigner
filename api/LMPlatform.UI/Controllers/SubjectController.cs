@@ -74,17 +74,13 @@ namespace LMPlatform.UI.Controllers
 
         public ActionResult GetFileSubjectV2(int subjectId)
         {
-            var attachments = SubjectManagementService.GetSubjectAttachments(subjectId)
-                             ?? Enumerable.Empty<string>();
+            var attachments = SubjectManagementService.GetSubjectAttachments(subjectId) ?? Enumerable.Empty<string>();
             return new JsonResult
             {
                 Data = new
                 {
-                    Attachment = attachments
-                 .Where(att => !string.IsNullOrWhiteSpace(att))
-                 .SelectMany(att => FilesManagementService.GetAttachments(att) 
-                                   ?? Enumerable.Empty<Attachment>())
-                .ToList()
+                    Attachment = attachments.Where(att => !string.IsNullOrWhiteSpace(att))
+                    .SelectMany(att => FilesManagementService.GetAttachments(att) ?? Enumerable.Empty<Attachment>()).ToList()
                 },
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
