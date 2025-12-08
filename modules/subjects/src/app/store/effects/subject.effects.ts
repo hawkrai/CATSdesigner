@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { Actions, createEffect, ofType } from '@ngrx/effects'
 
 import { map, switchMap } from 'rxjs/operators'
+import { TranslatePipe } from 'educats-translate'
 import { Message } from 'src/app/models/message.model'
 import { SubjectService } from '../../services/subject.service'
 import * as catsActions from '../actions/cats.actions'
@@ -11,6 +12,7 @@ import * as subjectActions from '../actions/subject.actions'
 export class SubjectEffect {
   constructor(
     private actions$: Actions,
+    private translate: TranslatePipe,
     private subjectService: SubjectService
   ) {}
 
@@ -19,6 +21,7 @@ export class SubjectEffect {
       ofType(subjectActions.saveSubject),
       switchMap(({ subject }) =>
         this.subjectService.saveSubject(subject).pipe(
+          map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
           switchMap((body) => [
             catsActions.showMessage({ body }),
             catsActions.sendMessage({

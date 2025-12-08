@@ -134,89 +134,62 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   }
 
   setVisitMarks(consultationDateId: string) {
-    const date = new Date(
-      this.consultations.find(
-        (consultation) => consultation.Id === consultationDateId
-      ).Day
-    )
-    const visits = { date, students: [] }
-    this.visitStatsList.forEach((stats) => {
-      const mark = stats.CourseProjectConsultationMarks.find(
-        (stat) => stat.ConsultationDateId === consultationDateId
-      )
-      const visit = {
-        name: stats.Name,
-        mark: mark.Mark,
-        comment: mark.Comments,
-        id: mark.Id,
-        consultationDateId: mark.ConsultationDateId,
-        studentId: mark.StudentId,
-        date: date,
-      }
-      visits.students.push(visit)
-    })
+  const rawDate = this.consultations.find(
+    (consultation) => consultation.Id === consultationDateId
+  ).Day;
 
-    const dialogRef = this.dialog.open(VisitingPopoverComponent, {
-      width: '538px',
-      data: {
-        title: this.translatePipe.transform(
-          'text.course.visit.dialog.set.title',
-          'Посещение консультации'
-        ),
-        buttonText: this.translatePipe.transform(
-          'text.course.visit.dialog.set.action.save',
-          'Сохранить'
-        ),
-        body: visits,
-      },
-    })
+  const [day, month, year] = rawDate.split('.');
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.processDialogResult(result, false)
-      }
-    })
-  }
+  const visits = { date, students: [] };
+
+  this.visitStatsList.forEach((stats) => {
+    const mark = stats.CourseProjectConsultationMarks.find(
+      (stat) => stat.ConsultationDateId === consultationDateId
+    );
+
+    const visit = {
+      name: stats.Name,
+      mark: mark.Mark,                     
+      comment: mark.Comment,               
+      id: mark.Id,                         
+      consultationDateId: mark.ConsultationDateId,
+      studentId: mark.StudentId,
+      date: date,
+      isShow: mark.ShowForStudent         
+    };
+
+    visits.students.push(visit);
+  });
+
+  const dialogRef = this.dialog.open(VisitingPopoverComponent, {
+    width: '538px',
+    data: {
+      title: this.translatePipe.transform(
+        'text.course.visit.dialog.set.title',
+        'Посещение консультации'
+      ),
+      buttonText: this.translatePipe.transform(
+        'text.course.visit.dialog.set.action.save',
+        'Сохранить'
+      ),
+      body: visits
+    }
+  });
+
+  dialogRef.afterClosed().subscribe((result) => {
+    if (result) {
+      this.processDialogResult(result, false);
+    }
+  });
+}
+
+
 
   processDialogResult(result: any, hasChanges: boolean) {
-    const visit = result.students.pop()
-    if (visit != null) {
-      if (visit.id == null) {
-        if (visit.mark || visit.comment || visit.comment !== '') {
-          hasChanges = true
-          this.visitStatsService
-            .setMark(
-              visit.studentId,
-              visit.consultationDateId,
-              visit.mark,
-              visit.comment,
-              visit.isShow
-            )
-            .subscribe(() => this.processDialogResult(result, hasChanges))
-        } else {
-          this.processDialogResult(result, hasChanges)
-        }
-      } else {
-        const origin = this.visitStatsList
-          .find((stats) => stats.Id === visit.studentId)
-          .CourseProjectConsultationMarks.find((mark) => mark.Id === visit.id)
-        if (origin.Mark !== visit.mark || origin.Comments !== visit.comment) {
-          hasChanges = true
-          this.visitStatsService
-            .editMark(
-              visit.id,
-              visit.studentId,
-              visit.consultationDateId,
-              visit.mark,
-              visit.comment,
-              visit.isShow
-            )
-            .subscribe(() => this.processDialogResult(result, hasChanges))
-        } else {
-          this.processDialogResult(result, hasChanges)
-        }
-      }
-    } else if (hasChanges) {
+  const visit = result.students.pop()
+  if (!visit) {
+    if (hasChanges) {
       this.ngOnInit()
       this.addFlashMessage(
         this.translatePipe.transform(
@@ -225,7 +198,54 @@ export class VisitStatsComponent implements OnInit, OnChanges {
         )
       )
     }
+    return
   }
+  if (visit.id == null) {
+
+    this.visitStatsService
+      .setMark(
+        visit.studentId,
+        visit.consultationDateId,
+        visit.mark,
+        visit.comment,
+        visit.isShow
+      )
+      .subscribe(() => {
+        this.processDialogResult(result, true)
+      })
+
+    return
+  }
+
+  const origin = this.visitStatsList
+    .find((s) => s.Id === visit.studentId)
+    .CourseProjectConsultationMarks
+    .find((m) => m.Id === visit.id)
+
+  const hasUpdate =
+    origin.Mark !== visit.mark ||
+    origin.Comment !== visit.comment ||
+    origin.ShowForStudent !== visit.isShow
+
+  if (hasUpdate) {
+    this.visitStatsService
+      .editMark(
+        visit.id,
+        visit.studentId,
+        visit.consultationDateId,
+        visit.mark,
+        visit.comment,
+        visit.isShow
+      )
+      .subscribe(() => {
+        this.processDialogResult(result, true)
+      })
+
+  } else {
+    this.processDialogResult(result, hasChanges)
+  }
+}
+
 
   addDate() {
     const dialogRef = this.dialog.open(AddDateDialogComponent, {

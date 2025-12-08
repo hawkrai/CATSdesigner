@@ -62,8 +62,12 @@ export class TestExecutionComponent
         tap((question: TestQuestion) => {
           this.question = question
           if (!this.question.Seconds && this.question.Seconds === 0) {
+            const queryParams: any = { testId: this.test.Id }
+            if (sessionStorage.getItem('testFromEUMK') === 'true') {
+              queryParams.fromEUMK = 'true'
+            }
             this.router.navigate(['/test-result'], {
-              queryParams: { testId: this.test.Id },
+              queryParams: queryParams,
             })
           }
           const timezoneOffsetInSeconds = new Date().getTimezoneOffset() * 60
@@ -81,8 +85,12 @@ export class TestExecutionComponent
                 const minute: number = Math.floor(restTime / 60)
                 restTime = restTime - 60 * minute
                 if (hour === 0 && minute === 0 && restTime === 0) {
+                  const queryParams: any = { testId: this.test.Id }
+                  if (sessionStorage.getItem('testFromEUMK') === 'true') {
+                    queryParams.fromEUMK = 'true'
+                  }
                   this.router.navigate(['/test-result'], {
-                    queryParams: { testId: this.test.Id },
+                    queryParams: queryParams,
                   })
                 }
                 return (
@@ -155,19 +163,32 @@ export class TestExecutionComponent
             if (question && question.Question) {
               this.question = question
             } else {
+              const queryParams: any = { testId: this.test.Id }
+              if (sessionStorage.getItem('testFromEUMK') === 'true') {
+                queryParams.fromEUMK = 'true'
+              }
               this.router.navigate(['/test-result'], {
-                queryParams: { testId: this.test.Id },
+                queryParams: queryParams,
               })
             }
           })
       } else {
+        const queryParams: any = { testId: this.test.Id }
+        if (sessionStorage.getItem('testFromEUMK') === 'true') {
+          queryParams.fromEUMK = 'true'
+        }
         this.router.navigate(['/test-result'], {
-          queryParams: { testId: this.test.Id },
+          queryParams: queryParams,
         })
       }
     } else {
+      const queryParams: any = { testId: this.test.Id }
+      // Передаем информацию о запуске из ЭУМК через query параметры
+      if (sessionStorage.getItem('testFromEUMK') === 'true') {
+        queryParams.fromEUMK = 'true'
+      }
       this.router.navigate(['/test-result'], {
-        queryParams: { testId: this.test.Id },
+        queryParams: queryParams,
       })
     }
   }

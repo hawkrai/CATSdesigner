@@ -28,24 +28,31 @@ interface DialogData {
   userId: number
 }
 
+function createEmptyTaskSheet(courseProjectId: string): TaskSheet {
+  return {
+    CourseProjectId: courseProjectId,
+    InputData: '',
+    Faculty: '',
+    CathedraName: '',
+    HeadCathedra: '',
+    RpzContent: '',
+    DrawMaterials: '',
+    Univer: '',
+    DateEnd: '',
+    DateEndString: '',
+    DateStart: '',
+    DateStartString: ''
+  };
+}
+
 @Component({
   selector: 'app-edit-task-sheet',
   templateUrl: './edit-task-sheet.component.html',
   styleUrls: ['./edit-task-sheet.component.less'],
 })
 export class EditTaskSheetComponent implements OnInit, OnDestroy {
-  private readonly destroy$: Subject<void> = new Subject<void>()
 
-  helpMessage: Help = {
-    message: this.translatePipe.transform(
-      'text.course.list.dialog.help.message',
-      'Выберите готовый шаблон, чтобы применить его к листу задания. Шаблон можно изменить и применить к указанным группам'
-    ),
-    action: this.translatePipe.transform(
-      'text.course.list.dialog.help.action',
-      'Понятно'
-    ),
-  }
+  private readonly destroy$: Subject<void> = new Subject<void>()
 
   formGroup: FormGroup
   templateId: number = undefined
@@ -55,10 +62,10 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
   hasChange = false
 
   private templates: Template[]
-  private selectedGroups: any[]
+  selectedGroups: string[] = []
   private projects: Project[]
   private taskSheets: TaskSheet[]
-  private selectedTemplate = 'data.taskSheetTemplate'
+  selectedTemplate = 'data.taskSheetTemplate'
 
   constructor(
     private taskSheetService: TaskSheetService,
@@ -126,9 +133,10 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
         departmentControl: new FormControl(this.data.taskSheet.CathedraName, [
           Validators.maxLength(255),
         ]),
-        headCathedraControl: new FormControl(this.data.taskSheet.HeadCathedra, [
-          Validators.maxLength(255),
-        ]),
+        headCathedraControl: new FormControl(
+          this.data.taskSheet.HeadCathedra,
+          [Validators.maxLength(255)]
+        ),
         startDateControl: new FormControl(
           this.data.taskSheet.DateStart != null
             ? new Date(this.data.taskSheet.DateStart)
@@ -141,8 +149,7 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
 
   noWhitespaceValidator(control: FormControl) {
     const isWhitespace = (control.value || '').trim().length === 0
-    const isValid = !isWhitespace
-    return isValid ? null : { whitespace: true }
+    return !isWhitespace ? null : { whitespace: true }
   }
 
   onCreateGroupFormValueChange() {
@@ -150,21 +157,6 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
     this.formGroup.valueChanges.subscribe((value) => {
       this.hasChange = JSON.stringify(initialValue) !== JSON.stringify(value)
     })
-  }
-
-  showHelp(): void {
-    const dialogRef = this.dialog.open(HelpPopoverScheduleComponent, {
-      data: {
-        message: this.helpMessage.message,
-        action: this.helpMessage.action,
-      },
-      disableClose: true,
-      hasBackdrop: true,
-      backdropClass: 'backdrop-help',
-      panelClass: 'help-popover',
-    })
-
-    dialogRef.afterClosed().subscribe((result) => {})
   }
 
   onCancelClick(): void {
@@ -176,7 +168,6 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
     this.taskSheetService
       .getTemplate({ templateId: event.value.Id })
       .subscribe((res) => {
-        console.log(res)
         this.formGroup.controls.templateNameControl.setValue(event.value.Name)
         this.formGroup.controls.inputDataControl.setValue(res.InputData)
         this.formGroup.controls.contentControl.setValue(res.RpzContent)
@@ -191,62 +182,121 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
   }
 
   isSelectedGroupsInvalid(): boolean {
-    if (this.selectedGroups === undefined) {
-      return true
-    }
-    return this.selectedGroups.length < 1
+    return !this.selectedGroups || this.selectedGroups.length < 1
   }
 
-  saveTemplate() {
+  saveTemplate(): void {
+    if (!this.selectedGroups) {
+      this.selectedGroups = []
+    }
+
     const template = new TaskSheetTemplate()
     template.Name = this.formGroup.get('templateNameControl').value
     template.GroupsId = []
-    this.selectedGroups.forEach((groupName) => {
-      template.GroupsId.push(
-        this.data.groups.find((group) => group.GroupName === groupName).GroupId
-      )
-    })
-    this.populateSheet(template)
-    this.taskSheetService.editTemplate(template).subscribe(() => {
-      this.ngOnInit()
-      this.toastr.success(
-        this.translatePipe.transform(
-          'text.course.list.dialog.template.save.success',
-          'Шаблон успешно сохранен'
+
+    if (this.selectedGroups.length > 0) {
+      this.selectedGroups.forEach((groupName) => {
+        const found = this.data.groups.find(
+          (g) => g.GroupName === groupName
         )
-      )
-    })
+
+        if (found) {
+          template.GroupsId.push(found.GroupId)
+        }
+      })
+    }
+
+    this.populateSheet(template)
+
+    this.taskSheetService
+      .editTemplate(template)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.getTemplates()
+          this.toastr.success(
+            this.translatePipe.transform(
+              'text.course.list.dialog.template.save.success',
+              'Шаблон успешно сохранен'
+            )
+          )
+        },
+        error: () => {
+          this.toastr.error(
+            this.translatePipe.transform(
+              'text.course.list.dialog.template.save.error',
+              'Ошибка при сохранении шаблона'
+            )
+          )
+        },
+      })
   }
 
   deleteTemplate() {
-    this.taskSheetService
-      .deleteTemplate({
-        taskSheetId: this.templateId,
-        userId: this.data.userId,
-      })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.getTemplates()
-      })
-  }
+  this.taskSheetService
+    .deleteTemplate({
+      taskSheetId: this.templateId,
+      userId: this.data.userId,
+    })
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: () => {
+        this.getTemplates();
+
+        this.toastr.success(
+          this.translatePipe.transform(
+            'text.course.list.dialog.template.delete.success',
+            'Шаблон успешно удалён'
+          )
+        );
+      },
+      error: () => {
+        this.toastr.error(
+          this.translatePipe.transform(
+            'text.course.list.dialog.template.delete.error',
+            'Ошибка при удалении шаблона'
+          )
+        );
+      }
+    });
+}
+
 
   applyTemplate() {
-    this.projects.forEach((element) => {
-      if (element.Group != null) {
-        if (this.selectedGroups.includes(element.Group)) {
-          const taskSheet = this.taskSheets.find(
-            (i) => i.CourseProjectId === element.Id
-          )
-          this.taskSheetService.editTaskSheet(taskSheet).subscribe()
-        }
+    const normalize = (v: string) => (v || '').trim().toLowerCase();
+
+    const normalizedSelected = this.selectedGroups.map(g => normalize(g));
+
+    this.projects.forEach(project => {
+      if (!project.Group) return;
+
+      const projectGroupNormalized = normalize(project.Group);
+
+      if (!normalizedSelected.includes(projectGroupNormalized)) return;
+
+      let taskSheet = this.taskSheets.find(
+        t => t.CourseProjectId === project.Id
+      );
+
+      if (!taskSheet) {
+        taskSheet = createEmptyTaskSheet(project.Id);
       }
-    })
+
+      this.populateSheet(taskSheet);
+
+      this.taskSheetService
+        .editTaskSheet(taskSheet)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+        });
+    });
+
     this.toastr.success(
       this.translatePipe.transform(
         'text.course.list.dialog.template.apply.success',
         'Шаблон успешно применен'
       )
-    )
+    );
   }
 
   getResultForm(): TaskSheet {

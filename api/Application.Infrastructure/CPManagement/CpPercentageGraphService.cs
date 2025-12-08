@@ -292,33 +292,44 @@ namespace Application.Infrastructure.CPManagement
                 Context.CourseProjectConsultationMarks.Add(consultationMark);
             }
 
-            consultationMark.Mark = string.IsNullOrWhiteSpace(consultationMarkData.Mark) ? null : consultationMarkData.Mark;
-            consultationMark.Comments = string.IsNullOrWhiteSpace(consultationMarkData.Comment) ? null : consultationMarkData.Comment;
+            consultationMark.Mark = string.IsNullOrWhiteSpace(consultationMarkData.Mark)
+                ? null
+                : consultationMarkData.Mark;
+
+            consultationMark.Comments = string.IsNullOrWhiteSpace(consultationMarkData.Comment)
+                ? null
+                : consultationMarkData.Comment;
+
+            consultationMark.ShowForStudent = consultationMarkData.ShowForStudent;
 
             Context.SaveChanges();
         }
 
-        public CourseProjectConsultationDate SaveConsultationDate(int userId, string date, int subjectId, string startTime, string endTime, string audience, string buildingNumber, int groupId, int? consultationId)
+        public CourseProjectConsultationDate SaveConsultationDate(int userId, int lecturerId, string date, int subjectId, string startTime, string endTime, string audience, string buildingNumber, int groupId, int? consultationId)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);
-            
-            DateTime dateTime = DateTime.Parse(date);
-            TimeSpan? start = TimeSpan.Parse(startTime);
-            TimeSpan? end = TimeSpan.Parse(endTime);
 
-            CourseProjectConsultationDate courseProjectConsultationDate = Context.CourseProjectConsultationDates
+            DateTime dateTime = DateTime.Parse(date);
+            TimeSpan start = TimeSpan.Parse(startTime);
+            TimeSpan end = TimeSpan.Parse(endTime);
+
+            DateTime dayStart = dateTime.Date;
+            DateTime dayEnd = dateTime.Date.AddDays(1);
+
+            var conflict = Context.CourseProjectConsultationDates
                 .Where(x => x.EndTime.HasValue && x.StartTime.HasValue && x.GroupId != null)
-                .Where(x => TimeSpan.Compare(x.StartTime.Value, start.Value) <= 0 && TimeSpan.Compare(x.EndTime.Value, start.Value) >= 0)
-                .Where(x => x.Day.Day == dateTime.Day && x.Day.Month == dateTime.Month && x.Day.Year == dateTime.Year)
+                .Where(x => TimeSpan.Compare(x.StartTime.Value, start) <= 0 &&
+                            TimeSpan.Compare(x.EndTime.Value, start) >= 0)
+                .Where(x => x.Day >= dayStart && x.Day < dayEnd)
                 .Where(x => x.Audience == audience && x.Building == buildingNumber)
                 .FirstOrDefault();
 
-            if (courseProjectConsultationDate == null && consultationId == null)
+            if (conflict == null && consultationId == null)
             {
                 Context.CourseProjectConsultationDates.Add(new CourseProjectConsultationDate
                 {
                     Day = dateTime,
-                    LecturerId = userId,
+                    LecturerId = lecturerId,
                     SubjectId = subjectId,
                     StartTime = start,
                     EndTime = end,
@@ -327,25 +338,27 @@ namespace Application.Infrastructure.CPManagement
                     GroupId = groupId
                 });
             }
-            if (courseProjectConsultationDate == null && consultationId != null || courseProjectConsultationDate != null && courseProjectConsultationDate.Id == consultationId)
+
+            if ((conflict == null && consultationId != null) ||
+                (conflict != null && conflict.Id == consultationId))
             {
-                var courseProjectConsultationDateData = Context.CourseProjectConsultationDates.Find(consultationId.Value);
-                if (courseProjectConsultationDateData != null)
+                var item = Context.CourseProjectConsultationDates.Find(consultationId.Value);
+                if (item != null)
                 {
-                    courseProjectConsultationDateData.Day = dateTime;
-                    courseProjectConsultationDateData.LecturerId = userId;
-                    courseProjectConsultationDateData.SubjectId = subjectId;
-                    courseProjectConsultationDateData.StartTime = start;
-                    courseProjectConsultationDateData.EndTime = end;
-                    courseProjectConsultationDateData.Audience = audience;
-                    courseProjectConsultationDateData.Building = buildingNumber;
-                    courseProjectConsultationDateData.GroupId = groupId;
+                    item.Day = dateTime;
+                    item.LecturerId = lecturerId;
+                    item.SubjectId = subjectId;
+                    item.StartTime = start;
+                    item.EndTime = end;
+                    item.Audience = audience;
+                    item.Building = buildingNumber;
+                    item.GroupId = groupId;
                 }
-                courseProjectConsultationDate = null;
+                conflict = null;
             }
 
             Context.SaveChanges();
-            return courseProjectConsultationDate;
+            return conflict;
         }
 
         public void DeleteConsultationDate(int userId, int id)

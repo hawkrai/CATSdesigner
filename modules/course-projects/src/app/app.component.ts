@@ -23,7 +23,7 @@ interface GroupsResponse {
 export class AppComponent implements OnInit {
   public tab = 1;
   public groups: CoreGroup[] = [];
-  public allGroups: CoreGroup[] = []; // ✅ все группы (обычные + отсоединённые)
+  public allGroups: CoreGroup[] = [];
   public selectedGroup: CoreGroup | null = null;
   public detachedGroup = false;
   public groupNumber: number | null = null;
@@ -49,14 +49,15 @@ export class AppComponent implements OnInit {
       this.subjectId = subjectId;
       if (!this.subjectId) return;
 
-      this.courseUserService.getUser()
+      this.courseUserService
+        .getUser()
         .pipe(
-          switchMap(user => {
+          switchMap((user) => {
             this.courseUser = user;
             return this.courseUserService.getUserInfo(user.UserId);
           })
         )
-        .subscribe(userInfo => {
+        .subscribe((userInfo) => {
           this.groupNumber = userInfo.Group;
           this.groupId = userInfo.GroupId;
 
@@ -73,19 +74,22 @@ export class AppComponent implements OnInit {
   }
 
   checkUnapprovedDefensesForGroup(groupId: number) {
-    const url = '/course/Services/Courses/CoursesService.svc/GetFilesV2?isCp=true&subjectId=' +
-      this.subjectId + '&groupId=' + groupId;
+    const url =
+      '/course/Services/Courses/CoursesService.svc/GetFilesV2?isCp=true&subjectId=' +
+      this.subjectId +
+      '&groupId=' +
+      groupId;
+
     return this.http.get<any>(url);
   }
 
- 
   checkUnapprovedDefensesGlobally() {
     if (!this.allGroups || this.allGroups.length === 0) {
       this.hasUnapprovedWorks = false;
       return;
     }
 
-    const requests = this.allGroups.map(group =>
+    const requests = this.allGroups.map((group) =>
       this.checkUnapprovedDefensesForGroup(Number(group.GroupId))
     );
 
@@ -96,35 +100,41 @@ export class AppComponent implements OnInit {
 
           return res.Students.some((student: any) => {
             if (!Array.isArray(student.FileLabs)) return false;
+
             return student.FileLabs.some(
-              (file: any) => file.IsCoursProject === true && file.IsReceived === false
+              (file: any) =>
+                file.IsCoursProject === true && file.IsReceived === false
             );
           });
         });
       },
-      error: (err) => {
+      error: () => {
         this.hasUnapprovedWorks = false;
-      }
+      },
     });
   }
 
   acceptFile(fileId: number, groupId: number) {
-    const url = '/course/Services/Courses/CoursesService.svc/AcceptFile?fileId=' + fileId;
+    const url =
+      '/course/Services/Courses/CoursesService.svc/AcceptFile?fileId=' + fileId;
+
     this.http.post(url, {}).subscribe({
       next: () => {
         setTimeout(() => this.checkUnapprovedDefensesGlobally(), 600);
       },
-      error: (err) => console.error('Ошибка при принятии файла:', err)
+      error: (err) => console.error('Ошибка при принятии файла:', err),
     });
   }
 
   revokeFile(fileId: number) {
-    const url = '/course/Services/Courses/CoursesService.svc/RevokeFile?fileId=' + fileId;
+    const url =
+      '/course/Services/Courses/CoursesService.svc/RevokeFile?fileId=' + fileId;
+
     this.http.post(url, {}).subscribe({
       next: () => {
         setTimeout(() => this.checkUnapprovedDefensesGlobally(), 600);
       },
-      error: (err) => console.error('Ошибка при отзыве файла:', err)
+      error: (err) => console.error('Ошибка при отзыве файла:', err),
     });
   }
 
@@ -137,7 +147,9 @@ export class AppComponent implements OnInit {
   _selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       const value = Number(event.source.value);
-      this.selectedGroup = this.groups.find(res => Number(res.GroupId) === value) || null;
+      this.selectedGroup =
+        this.groups.find((res) => Number(res.GroupId) === value) || null;
+
       this.checkUnapprovedDefensesGlobally();
     }
   }
@@ -155,13 +167,18 @@ export class AppComponent implements OnInit {
     request$.subscribe((res: GroupsResponse) => {
       this.groups = res.Groups || [];
 
-      const newGroups = this.groups.filter(g =>
-        !this.allGroups.some(a => a.GroupId === g.GroupId)
+      const newGroups = this.groups.filter(
+        (g) => !this.allGroups.some((a) => a.GroupId === g.GroupId)
       );
       this.allGroups = this.allGroups.concat(newGroups);
 
-      if (this.selectedGroup == null || groupStatusChanged) {
-        this.selectedGroup = this.groups.length > 0 ? this.groups[0] : null;
+      if (this.courseUser.IsStudent) {
+        this.selectedGroup =
+          this.groups.find((g) => Number(g.GroupId) === this.groupId) || null;
+      } else {
+        if (this.selectedGroup == null || groupStatusChanged) {
+          this.selectedGroup = this.groups.length > 0 ? this.groups[0] : null;
+        }
       }
 
       this.checkUnapprovedDefensesGlobally();

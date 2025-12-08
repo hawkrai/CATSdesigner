@@ -1,4 +1,4 @@
-﻿using Application.Core;
+using Application.Core;
 using Application.Core.Data;
 using Application.Core.PdfConvertor;
 using Application.Infrastructure.FilesManagement;
@@ -104,15 +104,23 @@ namespace Application.Infrastructure.ConceptManagement
 
         private Concept AttachTestModuleData(Concept root)
         {
-            var testData = TestsManagementService.GetTestsForSubject(root.SubjectId).Where(x => x.ForSelfStudy);
+            if (root.SubjectId <= 0)
+            {
+                return root;
+            }
+
+            var allTests = TestsManagementService.GetTestsForSubject(root.SubjectId);
+            var testData = allTests
+                .Where(x => x.ForSelfStudy && x.CountOfQuestions > 0 && (x.Questions != null && x.Questions.Count > 0));
             var testModule = root.Children.FirstOrDefault(c => string.CompareOrdinal(c.Name, TestSectionName) == 0);
             if (testModule != null)
             {
-                var tests = testData.Select(t => new Concept(t.Title, root.Author, root.Subject, false, t.Unlocked)
+                var tests = testData.Select(t => new Concept(t.Title, root.Author, root.Subject, false, true)
                 {
                     ParentId = testModule.Id,
                     Test = t,
-                    Id = t.Id
+                    Id = t.Id,
+                    Published = true
                 }).ToList();
                 tests.ForEach(t => testModule.Children.Add(t));
             }
@@ -190,7 +198,21 @@ namespace Application.Infrastructure.ConceptManagement
             var parent = GetById(parentId);
             if (IsTestModule(parent.Name))
             {
-                return TestsManagementService.GetTestsForSubject(parent.SubjectId).Where(x => x.ForSelfStudy).Select(t => new Concept(t.Title, parent.Author, parent.Subject, false, t.Unlocked) { Id = t.Id, Container = "test" });
+                if (parent.SubjectId <= 0)
+                {
+                    return Enumerable.Empty<Concept>();
+                }
+
+                var allTests = TestsManagementService.GetTestsForSubject(parent.SubjectId);
+                return allTests
+                    .Where(x => x.ForSelfStudy && x.CountOfQuestions > 0 && (x.Questions != null && x.Questions.Count > 0))
+                    .Select(t => new Concept(t.Title, parent.Author, parent.Subject, false, true) 
+                    { 
+                        Id = t.Id, 
+                        Container = "test", 
+                        Test = t,
+                        Published = true
+                    });
             }
 
             return repositoriesContainer.ConceptRepository.GetByParentId(parentId);

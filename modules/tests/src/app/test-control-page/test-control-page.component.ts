@@ -17,6 +17,7 @@ import { EditAvailabilityPopupComponent } from './components/edit-availability-p
 import { EditTestPopupComponent } from './components/edit-test-popup/edit-test-popup.component'
 import { StorageKeys } from '../../../../container/src/app/core/models/storage-keys.enum'
 import { Theme } from '../../../../container/src/app/core/models/theme.enum'
+import { UserRole } from '../../../../container/src/app/core/models/user-role.enum'
 
 @AutoUnsubscribe
 @Component({
