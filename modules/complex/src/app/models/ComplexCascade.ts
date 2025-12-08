@@ -6,7 +6,6 @@ export class ComplexCascade {
   Published: boolean
   SubjectName: string
   FilePath: string
-  TestId?: number
   IsGroup: boolean
   ParentId: number
   IncludeLabs?: boolean
@@ -15,5 +14,4 @@ export class ComplexCascade {
   IncludeTests?: boolean
   Attachments: Attachment[]
   children?: ComplexCascade[]
-  isSectionNode?: boolean
 }

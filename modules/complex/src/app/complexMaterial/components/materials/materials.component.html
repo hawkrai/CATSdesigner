@@ -29,21 +29,17 @@
       <a class="btn clickable" *ngIf="node.TestId" (click)="openTest(node)">
         {{ node.Name }}
       </a>
-      <span
-        class="btn"
-        [ngClass]="{
-          'non-clickable': !hasContent(node),
-          'non-clickable-filled': hasContent(node)
-        }"
-        *ngIf="!isLeafClickable(node)"
+      <a
+        class="btn clickable"
+        *ngIf="!node.FilePath && !node.TestId"
+        (click)="$event.preventDefault()"
         [matTooltip]="
           'complex.noInfo' | translate: 'Отсутствует информация по теме'
         "
-        [matTooltipDisabled]="hasContent(node)"
         matTooltipPosition="right"
       >
         {{ node.Name }}
-      </span>
+      </a>
       <div class="work-icons" *ngIf="isLecturer">
         <a
           class="btn clickable"
@@ -104,25 +100,20 @@
         <a
           class="complex-three-title btn clickable"
           (click)="openFolderPDF(node.Id)"
-          *ngIf="isGroupClickable(node)"
+          *ngIf="node.children.length !== 0"
         >
           {{ node.Name }}
         </a>
-        <span
-          class="complex-three-title btn"
-          [ngClass]="{
-            'non-clickable': !hasContent(node),
-            'non-clickable-filled': hasContent(node)
-          }"
-          *ngIf="!isGroupClickable(node)"
-        [matTooltip]="
-          'complex.noInfo' | translate: 'Отсутствует информация по теме'
-        "
-        [matTooltipDisabled]="hasContent(node)"
-        matTooltipPosition="right"
+        <a
+          class="complex-three-title btn clickable"
+          *ngIf="node.children.length === 0"
+          [matTooltip]="
+            'complex.noInfo' | translate: 'Отсутствует информация по теме'
+          "
+          matTooltipPosition="right"
         >
           {{ node.Name }}
-        </span>
+        </a>
         <div class="work-icons" *ngIf="isLecturer">
           <a
             class="btn clickable"

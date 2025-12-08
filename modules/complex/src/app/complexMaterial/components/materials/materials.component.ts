@@ -76,18 +76,13 @@ export class MaterialComponent implements OnInit {
       'Практический раздел': 'complex.section.practical',
       'Блок контроля знаний': 'complex.section.control',
     }
-    const sectionNames = Object.keys(translations).filter((key) =>
-      key.includes('раздел') || key.includes('контроля')
-    )
 
     return nodes.map((node) => {
       let localizedName = node.Name
-      let isSectionNode = false
       for (const key in translations) {
         if (translations.hasOwnProperty(key)) {
           if (node.Name.includes(key)) {
             localizedName = this.translatePipe.transform(translations[key], key)
-            isSectionNode = sectionNames.includes(key)
             break
           }
         }
@@ -95,7 +90,6 @@ export class MaterialComponent implements OnInit {
       return {
         ...node,
         Name: localizedName,
-        isSectionNode,
         children: node.children ? this.localizeTree(node.children) : [],
       }
     })
@@ -215,38 +209,6 @@ export class MaterialComponent implements OnInit {
 
   hasChild = (_: number, node: ComplexCascade) =>
     node.IsGroup || (!!node.children && node.children.length > 0)
-
-  isLeafClickable(node: ComplexCascade): boolean {
-    return !!(node.FilePath || node.TestId)
-  }
-
-  isGroupClickable(node: ComplexCascade): boolean {
-    return (
-      !node.isSectionNode &&
-      !!node.children &&
-      node.children.length > 0 &&
-      !!node.Attachments &&
-      node.Attachments.length > 0
-    )
-  }
-
-  hasContent(node: ComplexCascade): boolean {
-    const selfHasContent = !!(
-      node.FilePath ||
-      node.TestId ||
-      (node.Attachments && node.Attachments.length > 0)
-    )
-
-    if (selfHasContent) {
-      return true
-    }
-
-    if (node.children && node.children.length > 0) {
-      return node.children.some((child) => this.hasContent(child))
-    }
-
-    return false
-  }
 
   public openConfirmationDialog(conceptId: number): void {
     const dialogRef = this.dialog.open(DeleteConfirmationPopupComponent, {
