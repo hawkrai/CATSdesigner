@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs'
 import { Router } from '@angular/router'
 import { ActivatedRoute } from '@angular/router'
+import { StorageKeys } from '../models/storage-keys.enum'
 
 @AutoUnsubscribe
 @Component({
@@ -35,8 +36,20 @@ export class PageComponent extends AutoUnsubscribeBase implements OnInit {
   }
 
   ngOnInit() {
-    const subject = JSON.parse(localStorage.getItem('currentSubject'))
-    this.getTests(subject.id)
+    const subject = JSON.parse(localStorage.getItem(StorageKeys.CurrentSubject))
+    
+    const complexTestId = sessionStorage.getItem(StorageKeys.ComplexTestId)
+
+    if (complexTestId) {
+      sessionStorage.setItem(StorageKeys.TestFromEUMK, 'true')
+      this.router.navigate(['/test/' + complexTestId])
+      sessionStorage.removeItem(StorageKeys.ComplexTestId)
+    } else {
+      sessionStorage.removeItem(StorageKeys.TestFromEUMK)
+      sessionStorage.removeItem(StorageKeys.EumkRoute)
+      sessionStorage.removeItem(StorageKeys.EumkComplexId)
+      this.getTests(subject.id)
+    }
   }
 
   public sortTests(tests) {

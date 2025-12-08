@@ -10,10 +10,13 @@ import { AutoUnsubscribe } from '../decorator/auto-unsubscribe'
 import { Group } from '../models/group.model'
 import { Test } from '../models/test.model'
 import { TestService } from '../service/test.service'
+import { TestPassingService } from '../service/test-passing.service'
 import { AppToastrService } from '../service/toastr.service'
 import { DeleteConfirmationPopupComponent } from './components/delete-confirmation-popup/delete-confirmation-popup.component'
 import { EditAvailabilityPopupComponent } from './components/edit-availability-popup/edit-availability-popup.component'
 import { EditTestPopupComponent } from './components/edit-test-popup/edit-test-popup.component'
+import { StorageKeys } from '../models/storage-keys.enum'
+import { UserRole } from '../models/user-role.enum'
 
 @AutoUnsubscribe
 @Component({
@@ -52,6 +55,7 @@ export class TestControlPageComponent
 
   constructor(
     private testService: TestService,
+    private testPassingService: TestPassingService,
     private router: Router,
     private translatePipe: TranslatePipe,
     private snackBar: MatSnackBar,
@@ -63,23 +67,27 @@ export class TestControlPageComponent
   }
 
   ngOnInit() {
-    this.currentTabIndex = Number(localStorage.getItem('testsModule_tab')) || 0
+    this.currentTabIndex = Number(localStorage.getItem(StorageKeys.TestsModuleTab)) || 0
 
-    if (localStorage.getItem('theme') === 'white') {
+    if (localStorage.getItem(StorageKeys.Theme) === 'white') {
       this.white = true
     } else {
       this.black = true
     }
-    this.user = JSON.parse(localStorage.getItem('currentUser'))
-    this.subject = JSON.parse(localStorage.getItem('currentSubject'))
-    this.getTests(this.subject.id)
-
-    const complexTestId = sessionStorage.getItem('complexTestId')
+    this.user = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser))
+    this.subject = JSON.parse(localStorage.getItem(StorageKeys.CurrentSubject))
+    
+    const complexTestId = sessionStorage.getItem(StorageKeys.ComplexTestId)
 
     if (complexTestId) {
-      this.router.navigate(['test/' + complexTestId])
-
-      sessionStorage.removeItem(complexTestId)
+      sessionStorage.setItem(StorageKeys.TestFromEUMK, 'true')
+      this.router.navigate(['/test/' + complexTestId])
+      sessionStorage.removeItem(StorageKeys.ComplexTestId)
+    } else {
+      sessionStorage.removeItem(StorageKeys.TestFromEUMK)
+      sessionStorage.removeItem(StorageKeys.EumkRoute)
+      sessionStorage.removeItem(StorageKeys.EumkComplexId)
+      this.getTests(this.subject.id)
     }
   }
 
@@ -175,7 +183,7 @@ export class TestControlPageComponent
   }
 
   public onChange(event: any): void {
-    localStorage.setItem('testsModule_tab', String(event.index))
+    localStorage.setItem(StorageKeys.TestsModuleTab, String(event.index))
     this.currentTabIndex = event.index
     switch (this.currentTabIndex) {
       case 0: {
@@ -211,8 +219,13 @@ export class TestControlPageComponent
   }
 
   private getTests(subjectId): void {
-    this.testService
-      .getAllTestBySubjectId(subjectId)
+    const isStudent = this.user.role === UserRole.Student
+    
+    const testsObservable = isStudent
+      ? this.testPassingService.getAvailableTests(subjectId)
+      : this.testService.getAllTestBySubjectId(subjectId)
+    
+    testsObservable
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((tests) => {
         this.allTests = tests
