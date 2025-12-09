@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { NestedTreeControl } from '@angular/cdk/tree'
 import { Component, Input, OnInit } from '@angular/core'
 import { MatSnackBar } from '@angular/material'
@@ -20,6 +21,7 @@ import { takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs'
 import { MenuService } from '../../../../../../../container/src/app/core/services/menu.service'
 import { ModuleType } from '../../../../../../../container/src/app/core/models/module.model'
+import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
 
 @Component({
   selector: 'app-material-tree',
@@ -55,7 +57,7 @@ export class MaterialComponent implements OnInit {
     }
     this.router.onSameUrlNavigation = 'reload'
 
-    const user = JSON.parse(localStorage.getItem('currentUser'))
+    const user = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser))
     this.isLecturer = user.role === 'lector'
   }
 
@@ -79,10 +81,12 @@ export class MaterialComponent implements OnInit {
 
     return nodes.map((node) => {
       let localizedName = node.Name
+      let isSectionNode = false
       for (const key in translations) {
         if (translations.hasOwnProperty(key)) {
           if (node.Name.includes(key)) {
             localizedName = this.translatePipe.transform(translations[key], key)
+            key.includes('раздел') || key.includes('блок') ? isSectionNode = true : isSectionNode = false
             break
           }
         }
@@ -90,6 +94,7 @@ export class MaterialComponent implements OnInit {
       return {
         ...node,
         Name: localizedName,
+        isSectionNode,
         children: node.children ? this.localizeTree(node.children) : [],
       }
     })
@@ -149,14 +154,14 @@ export class MaterialComponent implements OnInit {
         ModuleType.ComplexMaterial
       )
 
-      const currentSubject = localStorage.getItem('currentSubject')
+      const currentSubject = localStorage.getItem(StorageKeys.CurrentSubject)
       const subject = JSON.parse(currentSubject)
 
-      sessionStorage.setItem('complexTestId', node.TestId)
-      sessionStorage.setItem('testFromEUMK', 'true')
-      sessionStorage.setItem('eumkComplexId', this.complexId)
+      sessionStorage.setItem(StorageKeys.ComplexTestId, node.TestId)
+      sessionStorage.setItem(StorageKeys.TestFromComplex, 'true')
+      sessionStorage.setItem(StorageKeys.EumkComplexId, this.complexId)
       sessionStorage.setItem(
-        'eumkRoute',
+        StorageKeys.EumkRoute,
         `web/viewer/subject/${subject.id}#${eumkItem}`
       )
 
@@ -204,7 +209,7 @@ export class MaterialComponent implements OnInit {
           parentId: result.parentId,
           isGroup: result.isGroup,
           fileData: JSON.stringify(result.attachments),
-          userId: JSON.parse(localStorage.getItem('currentUser')).id,
+          userId: JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id,
         }
 
         this.complexService.addOrEditConcept(concept).subscribe((res) => {
@@ -218,6 +223,38 @@ export class MaterialComponent implements OnInit {
 
   hasChild = (_: number, node: ComplexCascade) =>
     node.IsGroup || (!!node.children && node.children.length > 0)
+
+  isLeafClickable(node: ComplexCascade): boolean {
+    return !!(node.FilePath || node.TestId)
+  }
+
+  isGroupClickable(node: ComplexCascade): boolean {
+    return (
+      !node.isSectionNode &&
+      !!node.children &&
+      node.children.length > 0 &&
+      !!node.Attachments &&
+      node.Attachments.length > 0
+    )
+  }
+
+  hasContent(node: ComplexCascade): boolean {
+    const selfHasContent = !!(
+      node.FilePath ||
+      node.TestId ||
+      (node.Attachments && node.Attachments.length > 0)
+    )
+
+    if (selfHasContent) {
+      return true
+    }
+
+    if (node.children && node.children.length > 0) {
+      return node.children.some((child) => this.hasContent(child))
+    }
+
+    return false
+  }
 
   public openConfirmationDialog(conceptId: number): void {
     const dialogRef = this.dialog.open(DeleteConfirmationPopupComponent, {

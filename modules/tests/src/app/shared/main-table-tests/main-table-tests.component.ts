@@ -23,6 +23,8 @@ import { AutoUnsubscribe } from '../../decorator/auto-unsubscribe'
 import { AutoUnsubscribeBase } from '../../core/auto-unsubscribe-base'
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
+import { StorageKeys } from '../../../../../../container/src/app/core/models/storage-keys.enum'
+import { Theme } from '../../../../../../container/src/app/core/models/theme.enum'
 
 @AutoUnsubscribe
 @Component({
@@ -77,7 +79,7 @@ export class MainTableTestsComponent
   }
 
   ngOnInit() {
-    if (localStorage.getItem('theme') === 'white') {
+    if (localStorage.getItem(StorageKeys.Theme) === Theme.White) {
       this.white = true
     } else {
       this.black = true
