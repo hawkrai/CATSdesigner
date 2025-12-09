@@ -7,7 +7,7 @@ import { Router } from '@angular/router'
 import { ComplexMonitoring } from 'src/app/models/ComplexMonitoring'
 import { ComplexStudentMonitoring } from 'src/app/models/ComplexStudentMonitoring'
 import { TranslatePipe } from 'educats-translate'
-import { StorageKeys } from '../../../../../../container/src/app/core/models/storage-keys.enum'
+import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
 
 @Component({
   selector: 'app-monitoring-tree',

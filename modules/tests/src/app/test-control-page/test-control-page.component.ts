@@ -15,9 +15,9 @@ import { AppToastrService } from '../service/toastr.service'
 import { DeleteConfirmationPopupComponent } from './components/delete-confirmation-popup/delete-confirmation-popup.component'
 import { EditAvailabilityPopupComponent } from './components/edit-availability-popup/edit-availability-popup.component'
 import { EditTestPopupComponent } from './components/edit-test-popup/edit-test-popup.component'
-import { StorageKeys } from '../../../../container/src/app/core/models/storage-keys.enum'
-import { Theme } from '../../../../container/src/app/core/models/theme.enum'
-import { UserRole } from '../../../../container/src/app/core/models/user-role.enum'
+import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
+import { Theme } from '../../../../../container/src/app/core/models/theme.enum'
+import { UserRole } from '../../../../../container/src/app/core/models/user-role.enum'
 
 @AutoUnsubscribe
 @Component({
@@ -82,11 +82,11 @@ export class TestControlPageComponent
     const complexTestId = sessionStorage.getItem(StorageKeys.ComplexTestId)
 
     if (complexTestId) {
-      sessionStorage.setItem(StorageKeys.TestFromEUMK, 'true')
+      sessionStorage.setItem(StorageKeys.TestFromComplex, 'true')
       this.router.navigate(['/test/' + complexTestId])
       sessionStorage.removeItem(StorageKeys.ComplexTestId)
     } else {
-      sessionStorage.removeItem(StorageKeys.TestFromEUMK)
+      sessionStorage.removeItem(StorageKeys.TestFromComplex)
       sessionStorage.removeItem(StorageKeys.EumkRoute)
       sessionStorage.removeItem(StorageKeys.EumkComplexId)
       this.getTests(this.subject.id)

@@ -17,7 +17,7 @@ import { DeleteConfirmationPopupComponent } from '../delete-confirmation-popup/d
 import { StudentsMonitoringComponent } from '../students-monitoring/students-monitoring.component'
 import { takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs'
-import { StorageKeys } from '../../../../../../container/src/app/core/models/storage-keys.enum'
+import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
 
 /**
  * @title Menu with icons

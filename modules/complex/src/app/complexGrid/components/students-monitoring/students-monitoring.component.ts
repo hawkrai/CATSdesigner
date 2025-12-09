@@ -9,7 +9,7 @@ import { IAppState } from '../../../store/states/app.state'
 import { getSubjectId } from '../../../store/selectors/subject.selector'
 import { Student } from 'src/app/models/student.model'
 import { ComplexService } from 'src/app/service/complex.service'
-import { StorageKeys } from '../../../../../../container/src/app/core/models/storage-keys.enum'
+import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
 
 @Component({
   selector: 'app-students-monitoring',
