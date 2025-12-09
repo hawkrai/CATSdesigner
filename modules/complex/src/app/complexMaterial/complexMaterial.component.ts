@@ -9,7 +9,7 @@ import { AdaptivityService } from '../service/adaptivity.service'
 import { DialogData } from '../models/DialogData'
 import { MaterialsPopoverComponent } from './components/materials/materials-popover/materials-popover.component'
 import { TestService } from '../service/test.service'
-import { StorageKeys } from '../../../../container/src/app/core/models/storage-keys.enum'
+import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
 
 @Component({
   selector: 'app-labs',
