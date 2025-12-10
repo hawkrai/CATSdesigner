@@ -12,6 +12,7 @@ import * as groupsSelectors from '../selectors/groups.selectors'
 import * as filesActions from '../actions/files.actions'
 import * as catsActions from '../actions/cats.actions'
 import { ScheduleService } from 'src/app/services/schedule.service'
+import { TranslatePipe } from 'educats-translate'
 import { generateCreateDateException } from 'src/app/utils/exceptions'
 
 @Injectable()
@@ -20,6 +21,7 @@ export class LecturesEffects {
     private actions$: Actions,
     private store: Store<IAppState>,
     private scheduleService: ScheduleService,
+    private translate: TranslatePipe,
     private rest: LecturesRestService
   ) {}
 
@@ -78,6 +80,7 @@ export class LecturesEffects {
         this.rest
           .saveLecture({ ...lecture, subjectId })
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               lecturesActions.loadLectures(),
@@ -95,6 +98,7 @@ export class LecturesEffects {
         this.rest
           .deleteLecture({ id, subjectId })
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               lecturesActions.loadLectures(),
@@ -135,6 +139,7 @@ export class LecturesEffects {
         this.rest
           .setLecturesVisitingDate({ lecturesMarks })
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               lecturesActions.loadGroupsVisiting(),
@@ -150,6 +155,7 @@ export class LecturesEffects {
       withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
       switchMap(([{ obj }, subjectId]) =>
         this.scheduleService.createLectureDateVisit({ ...obj, subjectId }).pipe(
+          map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
           switchMap((body) => [
             catsActions.showMessage({
               body: {
