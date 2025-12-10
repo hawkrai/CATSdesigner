@@ -11,5 +11,7 @@
         public string Mark { get; set; }
 
         public string Comment { get; set; }
+
+        public bool ShowForStudent { get; set; }
     }
 }

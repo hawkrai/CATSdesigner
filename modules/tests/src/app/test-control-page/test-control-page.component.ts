@@ -15,6 +15,9 @@ import { AppToastrService } from '../service/toastr.service'
 import { DeleteConfirmationPopupComponent } from './components/delete-confirmation-popup/delete-confirmation-popup.component'
 import { EditAvailabilityPopupComponent } from './components/edit-availability-popup/edit-availability-popup.component'
 import { EditTestPopupComponent } from './components/edit-test-popup/edit-test-popup.component'
+import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
+import { Theme } from '../../../../../container/src/app/core/models/theme.enum'
+import { UserRole } from '../../../../../container/src/app/core/models/user-role.enum'
 
 @AutoUnsubscribe
 @Component({
@@ -65,23 +68,27 @@ export class TestControlPageComponent
   }
 
   ngOnInit() {
-    this.currentTabIndex = Number(localStorage.getItem('testsModule_tab')) || 0
+    this.currentTabIndex = Number(localStorage.getItem(StorageKeys.TestsModuleTab)) || 0
 
-    if (localStorage.getItem('theme') === 'white') {
+    if (localStorage.getItem(StorageKeys.Theme) === Theme.White) {
       this.white = true
     } else {
       this.black = true
     }
-    this.user = JSON.parse(localStorage.getItem('currentUser'))
-    this.subject = JSON.parse(localStorage.getItem('currentSubject'))
-    
-    const complexTestId = sessionStorage.getItem('complexTestId')
+    this.user = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser))
+    this.subject = JSON.parse(localStorage.getItem(StorageKeys.CurrentSubject))
+    this.getTests(this.subject.id)
+
+    const complexTestId = sessionStorage.getItem(StorageKeys.ComplexTestId)
 
     if (complexTestId) {
-      sessionStorage.setItem('testFromEUMK', 'true')
+      sessionStorage.setItem(StorageKeys.TestFromComplex, 'true')
       this.router.navigate(['/test/' + complexTestId])
-      sessionStorage.removeItem('complexTestId')
+      sessionStorage.removeItem(StorageKeys.ComplexTestId)
     } else {
+      sessionStorage.removeItem(StorageKeys.TestFromComplex)
+      sessionStorage.removeItem(StorageKeys.EumkRoute)
+      sessionStorage.removeItem(StorageKeys.EumkComplexId)
       this.getTests(this.subject.id)
     }
   }
@@ -178,7 +185,7 @@ export class TestControlPageComponent
   }
 
   public onChange(event: any): void {
-    localStorage.setItem('testsModule_tab', String(event.index))
+    localStorage.setItem(StorageKeys.TestsModuleTab, String(event.index))
     this.currentTabIndex = event.index
     switch (this.currentTabIndex) {
       case 0: {
@@ -214,7 +221,7 @@ export class TestControlPageComponent
   }
 
   private getTests(subjectId): void {
-    const isStudent = this.user.role === 'student'
+    const isStudent = this.user.role === UserRole.Student
     
     const testsObservable = isStudent
       ? this.testPassingService.getAvailableTests(subjectId)

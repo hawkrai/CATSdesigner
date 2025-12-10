@@ -7,6 +7,7 @@ import { Router } from '@angular/router'
 import { ComplexMonitoring } from 'src/app/models/ComplexMonitoring'
 import { ComplexStudentMonitoring } from 'src/app/models/ComplexStudentMonitoring'
 import { TranslatePipe } from 'educats-translate'
+import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
 
 @Component({
   selector: 'app-monitoring-tree',
@@ -56,14 +57,14 @@ export class MonitoringTreeComponent implements OnInit {
         },
         (error) => {
           console.error('Ошибка при получении данных:', error)
-          sessionStorage.removeItem('complexId')
+          sessionStorage.removeItem(StorageKeys.MonitoringComplexId)
           window.location.reload()
         }
       )
   }
 
   onClick() {
-    sessionStorage.removeItem('complexId')
+    sessionStorage.removeItem(StorageKeys.MonitoringComplexId)
 
     window.location.reload()
   }
