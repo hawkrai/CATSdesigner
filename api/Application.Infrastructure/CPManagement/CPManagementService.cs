@@ -407,6 +407,7 @@ namespace Application.Infrastructure.CPManagement
                             StudentId = cm.StudentId,
                             Mark = cm.Mark, 
                             Comment = cm.Comments,
+                            ShowForStudent = cm.ShowForStudent,
                         })
                     }).ApplyPaging(parms);
         }
@@ -483,6 +484,7 @@ namespace Application.Infrastructure.CPManagement
                                 StudentId = cm.StudentId,
                                 Mark = cm.Mark,
                                 Comment = cm.Comments,
+                                ShowForStudent = cm.ShowForStudent,
                             })
                         }).ApplyPaging(parms);
             }
@@ -519,6 +521,7 @@ namespace Application.Infrastructure.CPManagement
                                 StudentId = cm.StudentId,
                                 Mark = cm.Mark,
                                 Comment = cm.Comments,
+                                ShowForStudent = cm.ShowForStudent,
                             })
                         }).ApplyPaging(parms);
             }

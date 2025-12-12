@@ -4,4 +4,5 @@ export class ConsultationMark {
   StudentId: string
   Mark: string
   Comment: string
+  ShowForStudent: boolean;
 }

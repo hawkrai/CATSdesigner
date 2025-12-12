@@ -11,27 +11,27 @@
             №
           </th>
           <th
-            class="mdc-data-table__header-cell"
-            role="columnheader"
-            scope="col"
-          >
+              class="mdc-data-table__header-cell"
+              role="columnheader"
+              scope="col"
+              >
             {{ 'text.course.visit.list.column.student' | translate: 'Студент' }}
           </th>
           <th
-            class="mdc-data-table__header-cell"
-            role="columnheader"
-            scope="col"
-          >
+              class="mdc-data-table__header-cell"
+              role="columnheader"
+              scope="col"
+              >
             {{
               'text.course.visit.list.column.theme'
                 | translate: 'Тема курсового проекта'
             }}
           </th>
           <th
-            class="mdc-data-table__header-cell"
-            role="columnheader"
-            scope="col"
-          >
+              class="mdc-data-table__header-cell"
+              role="columnheader"
+              scope="col"
+              >
             {{
               'text.course.visit.list.column.manager'
                 | translate: 'Руководитель'
@@ -45,7 +45,7 @@
           >
             <div class="header-date">
               <p>
-                {{ consultation.Day }}
+              {{ consultation.Day }}
               </p>
             </div>
           </th>
@@ -74,7 +74,13 @@
 
               <div
                 class="comment"
-                *ngIf="consultationMark && consultationMark.Comment"
+                *ngIf="
+                  consultationMark &&
+                  consultationMark.Comment &&
+                  consultationMark.ShowForStudent &&
+                  consultationMark.StudentId ===
+                    visitStatsComponent.getCourseUser().UserId
+                "
               >
                 <mat-icon
                   class="comment-icon"

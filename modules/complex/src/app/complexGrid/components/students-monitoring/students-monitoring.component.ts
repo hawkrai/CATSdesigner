@@ -9,6 +9,7 @@ import { IAppState } from '../../../store/states/app.state'
 import { getSubjectId } from '../../../store/selectors/subject.selector'
 import { Student } from 'src/app/models/student.model'
 import { ComplexService } from 'src/app/service/complex.service'
+import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
 
 @Component({
   selector: 'app-students-monitoring',
@@ -34,7 +35,7 @@ export class StudentsMonitoringComponent implements OnInit {
     private complexService: ComplexService
   ) {
     this.complexId = data.id
-    const user = JSON.parse(localStorage.getItem('currentUser'))
+    const user = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser))
 
     this.isLecturer = user.role === 'lector'
     if (!this.isLecturer) {
@@ -76,7 +77,7 @@ export class StudentsMonitoringComponent implements OnInit {
   }
 
   onClick() {
-    sessionStorage.removeItem('complexId')
+    sessionStorage.removeItem(StorageKeys.MonitoringComplexId)
 
     window.location.reload()
   }
