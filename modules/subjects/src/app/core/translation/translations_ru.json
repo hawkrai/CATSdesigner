@@ -149,6 +149,7 @@
   "text.subjects.response.failure.nameExists": "Предмет с таким именем уже существует",
   "text.subjects.response.failure.abbrExists": "Предмет с такой аббревиатурой уже существует",
   "text.subjects.response.failure.incorrectFields": "Поля заполнены некорректно",
+  "text.subjects.response.success.editClasses": "Данные успешно изменены",
 
   "text.subjects.labs": "Лабораторная работа",
   "text.subjects.labs.plural": "Лабораторные работы",
@@ -230,16 +231,16 @@
   "prefix.lab": "ЛР",
   "prefix.practical": "ПЗ",
   "prefix.lecture": "Л",
-  
+
   "plagiarismCheck.success": "Проверка прошла успешна",
   "plagiarismCheck.noAcceptedWorks": "Отсутствуют принятые работы для проверки на плагиат",
   "fileUpload.success": "Файл(ы) успешно отправлен(ы)",
-  "general.error": "Произошла ошибка",                         
-  "workDeletion.success": "Работа удалена",                    
-  "workDeletion.error": "Произошла ошибка при удалении работы",   
-  "fileArchive.success": "Файл(ы) перемещен(ы) в архив",         
+  "general.error": "Произошла ошибка",
+  "workDeletion.success": "Работа удалена",
+  "workDeletion.error": "Произошла ошибка при удалении работы",
+  "fileArchive.success": "Файл(ы) перемещен(ы) в архив",
   "fileArchive.error": "Произошла ошибка переноса файла в архив",
-  "fileRevision.success": "Файл отправлен на доработку",           
-  "fileRevision.error": "Не удалось отправить файл на доработку",   
+  "fileRevision.success": "Файл отправлен на доработку",
+  "fileRevision.error": "Не удалось отправить файл на доработку",
   "fileUnarchive.success": "Файл(ы) перемещен(ы) из архива"
 }

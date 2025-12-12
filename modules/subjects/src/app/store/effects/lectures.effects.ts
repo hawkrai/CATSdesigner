@@ -13,11 +13,13 @@ import * as filesActions from '../actions/files.actions'
 import * as catsActions from '../actions/cats.actions'
 import { ScheduleService } from 'src/app/services/schedule.service'
 import { generateCreateDateException } from 'src/app/utils/exceptions'
+import { TranslatePipe } from 'educats-translate'
 
 @Injectable()
 export class LecturesEffects {
   constructor(
     private actions$: Actions,
+    private translate: TranslatePipe,
     private store: Store<IAppState>,
     private scheduleService: ScheduleService,
     private rest: LecturesRestService
@@ -157,6 +159,29 @@ export class LecturesEffects {
                 Message:
                   body.Code === '200'
                     ? body.Message
+                    : generateCreateDateException(body),
+              },
+            }),
+            lecturesActions.loadCalendar(),
+          ])
+        )
+      )
+    )
+  )
+
+  updateDateVisit$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(lecturesActions.updateDateVisit),
+      withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
+      switchMap(([{ obj }, subjectId]) =>
+        this.scheduleService.createLectureDateVisit({ ...obj, subjectId }).pipe(
+          switchMap((body) => [
+            catsActions.showMessage({
+              body: {
+                ...body,
+                Message:
+                  body.Code === '200'
+                    ? this.translate.transform(body.Message, body.Message)
                     : generateCreateDateException(body),
               },
             }),

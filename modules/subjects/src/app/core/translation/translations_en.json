@@ -129,6 +129,7 @@
   "text.subjects.response.failure.nameExists": "Course with the same name already exists",
   "text.subjects.response.failure.abbrExists": "Course with the same abbreviation already exists",
   "text.subjects.response.failure.incorrectFields": "The fields are filled in incorrectly",
+  "text.subjects.response.success.editClasses": "Data successfully changed",
 
   "text.subjects.news.add": "Add news",
   "text.subjects.news.hide.all": "Hide all news",

@@ -24,11 +24,13 @@ import { ScheduleService } from 'src/app/services/schedule.service'
 import { generateCreateDateException } from 'src/app/utils/exceptions'
 import { UserFilesService } from 'src/app/services/user-files.service'
 import { ProtectionType } from 'src/app/models/protection-type.enum'
+import { TranslatePipe } from 'educats-translate'
 
 @Injectable()
 export class LabsEffects {
   constructor(
     private actions$: Actions,
+    private translate: TranslatePipe,
     private store: Store<IAppState>,
     private scheduleService: ScheduleService,
     private rest: LabsRestService,
@@ -148,6 +150,29 @@ export class LabsEffects {
       )
     )
   )
+
+  updateDateVisit$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(labsActions.updateDateVisit),
+        withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
+        switchMap(([{ obj }, subjectId]) =>
+          this.scheduleService.createLabDateVisit({ ...obj, subjectId }).pipe(
+            switchMap((body) => [
+              catsActions.showMessage({
+                body: {
+                  ...body,
+                  Message:
+                    body.Code === '200'
+                      ? this.translate.transform(body.Message, body.Message)
+                      : generateCreateDateException(body),
+                },
+              }),
+              labsActions.loadLabsSchedule(),
+            ])
+          )
+        )
+      )
+    )
 
   deleteDateVisit$ = createEffect(() =>
     this.actions$.pipe(

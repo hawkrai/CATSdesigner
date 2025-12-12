@@ -1,6 +1,7 @@
 <app-visit-date-popover
   *ngIf="state$ | async as state"
   (createDate)="onCreateDate($event)"
+  (updateDate)="onUpdateDate($event)"
   (close)="onClose($event)"
   (deleteDay)="onDeleteDay($event)"
   [data]="data"
