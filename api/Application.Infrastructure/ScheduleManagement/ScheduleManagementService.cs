@@ -46,22 +46,21 @@ namespace Application.Infrastructure.ScheduleManagement
 
             return lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule)
 				.Where(x => x.Start.HasValue
-				&& x.End.HasValue
-				&& (
-					(startTime < x.Start && x.Start < endTime) ||
-					(startTime < x.End && x.End < endTime) ||
-                    (startTime >= x.Start && x.End >= endTime) 
-					)
-				&&
-				(
-					string.Equals(x.Audience.Trim(), audience.Trim(), StringComparison.CurrentCultureIgnoreCase)
-					&& (string.IsNullOrWhiteSpace(x.Building) || string.Equals(x.Building.Trim(), building.Trim(), StringComparison.CurrentCultureIgnoreCase))
-				)
-				|| (x.GroupId == groupId)
-				|| (x.SubGroupId == subGroupId)
-				|| (x.Teacher.Id == lecturerId)
-			);
-
+					&& x.End.HasValue
+					&& (
+						(startTime < x.Start && x.Start < endTime) ||
+						(startTime < x.End && x.End < endTime) ||
+						(startTime >= x.Start && x.End >= endTime) 
+						)
+					&&
+					(
+						string.Equals(x.Audience.Trim(), audience.Trim(), StringComparison.CurrentCultureIgnoreCase)
+						&& (string.IsNullOrWhiteSpace(x.Building) || string.Equals(x.Building.Trim(), building.Trim(), StringComparison.CurrentCultureIgnoreCase))
+                        || x.GroupId == groupId
+						|| x.SubGroupId == subGroupId
+						|| x.Teacher.Id == lecturerId
+                    )
+				);
         }
 
 		public IEnumerable<ScheduleModel> GetScheduleBetweenDates(DateTime startDate, DateTime endDate)
