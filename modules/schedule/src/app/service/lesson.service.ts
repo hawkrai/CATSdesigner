@@ -213,7 +213,7 @@ getLessonTypes(subjectId: number): Observable<string[][]> {
     if (a.length != 0) {
       a =  ', '+ this.translate.transform('text.schedule.audience.cut', 'a') + '.' + a
     }
-    return this.translate.transform('text.schedule.building.cut', 'k') + '.' + splitted[2] + a
+    return this.translate.transform('text.schedule.building.cut', 'к') + '.' + splitted[2] + a
   }
 
   getTitlePart(title: string, i: number): any {

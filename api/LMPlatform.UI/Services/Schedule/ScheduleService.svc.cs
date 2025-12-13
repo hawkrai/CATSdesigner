@@ -65,7 +65,7 @@ namespace LMPlatform.UI.Services.Schedule
                 var schedule = ScheduleManagementService.SaveDateLectures(new LecturesScheduleVisiting(lecturesSchedule) {Id = id, SubjectId = subjectId });
                 return new ScheduleViewResultSingle
                 {
-                    Message = id == 0 ? "Дата успешно добавлена" : "text.subjects.response.success.editClasses",
+                    Message = id == 0 ? "text.date.add.response.success" : "text.date.edit.response.success",
                     Code = "200",
                     Schedule = new ScheduleViewData(
                         ScheduleManagementService.GetScheduleById(schedule.Id, ClassType.Lecture))
@@ -78,7 +78,7 @@ namespace LMPlatform.UI.Services.Schedule
                 return new ScheduleViewResultSingle
                 {
                     Code = "500",
-                    Message = "Время и место занято",
+                    Message = "text.date.response.failure.taken",
                     Lector = new LectorViewData(firstSchedule.Teacher, true),
                     GroupName = firstSchedule.GroupName,
                 };
@@ -87,7 +87,7 @@ namespace LMPlatform.UI.Services.Schedule
             {
                 return new ScheduleViewResultSingle
                 {
-                    Message = ex is ArgumentException ? ex.Message : "Произошла ошибка при добавлении даты",
+                    Message = ex is ArgumentException ? ex.Message : "text.date.add.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -101,7 +101,7 @@ namespace LMPlatform.UI.Services.Schedule
                 var schedule = ScheduleManagementService.SaveScheduleProtectionLabsDate(new ScheduleProtectionLabs(labsSchedule) {Id = id, SuGroupId = subGroupId, SubjectId = subjectId });
 				return new ScheduleViewResultSingle
 				{
-					Message = id == 0 ? "Дата успешно добавлена" : "text.subjects.response.success.editClasses",
+					Message = id == 0 ? "text.date.add.response.success" : "text.date.edit.response.success",
 					Code = "200",
                     Schedule = new ScheduleViewData(ScheduleManagementService.GetScheduleById(schedule.Id, ClassType.Lab))
 
@@ -113,7 +113,7 @@ namespace LMPlatform.UI.Services.Schedule
                 return new ScheduleViewResultSingle
                 {
                     Code = "500",
-                    Message = "Время и место занято",
+                    Message = "text.date.response.failure.taken",
                     Lector = new LectorViewData(firstSchedule.Teacher, true),
                     GroupName = firstSchedule.GroupName,
                 };
@@ -122,7 +122,7 @@ namespace LMPlatform.UI.Services.Schedule
             {
 				return new ScheduleViewResultSingle
                 {
-					Message = ex is ArgumentException ? ex.Message : "Произошла ошибка при добавлении даты",
+					Message = ex is ArgumentException ? ex.Message : "text.date.add.response.failure.unknown",
 					Code = "500"
 				};
 			}
@@ -136,7 +136,7 @@ namespace LMPlatform.UI.Services.Schedule
                 var schedule = ScheduleManagementService.SaveDatePractical(new ScheduleProtectionPractical(practicalsSchedule) {Id = id, GroupId = groupId, SubjectId = subjectId });
                 return new ScheduleViewResultSingle
                 {
-                    Message = id == 0 ? "Дата успешно добавлена" : "text.subjects.response.success.editClasses",
+                    Message = id == 0 ? "text.date.add.response.success" : "text.date.edit.response.success",
                     Code = "200",
                     Schedule = new ScheduleViewData(ScheduleManagementService.GetScheduleById(schedule.Id, ClassType.Practical))
 
@@ -148,7 +148,7 @@ namespace LMPlatform.UI.Services.Schedule
                 return new ScheduleViewResultSingle
                 {
                     Code = "500",
-                    Message = "Время и место занято",
+                    Message = "text.date.response.failure.taken",
                     Lector = new LectorViewData(firstSchedule.Teacher, true),
                     GroupName = firstSchedule.GroupName,
                 };
@@ -157,7 +157,7 @@ namespace LMPlatform.UI.Services.Schedule
             {
                 return new ScheduleViewResultSingle
                 {
-                    Message = ex is ArgumentException ? ex.Message : "Произошла ошибка при добавлении даты",
+                    Message = ex is ArgumentException ? ex.Message : "text.date.add.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -192,7 +192,7 @@ namespace LMPlatform.UI.Services.Schedule
 
                 return new ResultViewData
                 {
-                    Message = "Дата успешно удалена",
+                    Message = "text.date.delete.response.success",
                     Code = "200"
                 };
             }
@@ -200,7 +200,7 @@ namespace LMPlatform.UI.Services.Schedule
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при удалении даты",
+                    Message = "text.date.delete.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -214,7 +214,7 @@ namespace LMPlatform.UI.Services.Schedule
 
                 return new ResultViewData
                 {
-                    Message = "Дата успешно удалена",
+                    Message = "text.date.delete.response.success",
                     Code = "200"
                 };
             }
@@ -222,7 +222,7 @@ namespace LMPlatform.UI.Services.Schedule
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при удалении даты",
+                    Message = "text.date.delete.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -236,7 +236,7 @@ namespace LMPlatform.UI.Services.Schedule
 
                 return new ResultViewData
                 {
-                    Message = "Дата успешно удалена",
+                    Message = "text.date.delete.response.success",
                     Code = "200"
                 };
             }
@@ -244,7 +244,7 @@ namespace LMPlatform.UI.Services.Schedule
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при удалении даты",
+                    Message = "text.date.delete.response.failure.unknown",
                     Code = "500"
                 };
             }

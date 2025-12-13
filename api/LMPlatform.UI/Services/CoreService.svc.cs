@@ -69,14 +69,14 @@ namespace LMPlatform.UI.Services
 					return new ResultViewData
 					{
 						Code = "500",
-						Message = "Нет прав на отсоединение преподавателя с предмета"
-					};
+						Message = "text.core.disjoinLector.response.failure.noAccess"
+                    };
 				}
 				this.LecturerManagementService.DisjoinLector(subjectId, lectorId, CurrentUserId);
 
 				return new ResultViewData
 				{
-					Message = "Связь успешно удалена",
+					Message = "text.core.disjoinLector.response.success",
 					Code = "200"
 				};
 			}
@@ -104,7 +104,7 @@ namespace LMPlatform.UI.Services
 				return new LectorsResult
 				{
 					Lectors = lectors.Select(e => new LectorViewData(e)).ToList(),
-					Message = "Присоединенные преподаватели успешно загружены",
+					Message = "text.core.getJoinedLector.response.success",
 					Code = "200"
 				};
 			}
@@ -129,22 +129,22 @@ namespace LMPlatform.UI.Services
 					return new ResultViewData
 					{
 						Code = "500",
-						Message = "Нет прав на присоединение преподавателя к предмету"
-					};
+						Message = "text.core.joinLector.response.failure.noAccess"
+                    };
 				}
 				if (LecturerManagementService.IsLectorJoined(subjectId, lectorId))
                 {
 					return new ResultViewData
 					{
 						Code = "500",
-						Message = "Преподаватель уже присоединен к предмету"
-					};
+						Message = "text.core.joinLector.response.failure.alreadyJoined"
+                    };
 				}
 				this.LecturerManagementService.Join(subjectId, lectorId, CurrentUserId);
 
 				return new ResultViewData
 				{
-					Message = "Преподаватель успешно присоединен к предмету",
+					Message = "text.core.joinLector.response.success",
 					Code = "200"
 				};
 			}
@@ -166,7 +166,7 @@ namespace LMPlatform.UI.Services
 				return new LectorsResult
 				{
 					Lectors = lectors.Where(x => x.Id != CurrentUserId).Select(e => new LectorViewData(e)).ToList(),
-					Message = "Преподаватели успешно загружены",
+					Message = "text.core.loadLecturers.response.success",
 					Code = "200"
 				};
 			}
@@ -193,7 +193,7 @@ namespace LMPlatform.UI.Services
 						Id = e.Id,
 						Name = e.Name
 					}).ToList(),
-					Message = "Предметы успешно загружены",
+					Message = "text.core.loadSubjects.response.success",
 					Code = "200"
 				};
 			}
@@ -217,7 +217,7 @@ namespace LMPlatform.UI.Services
 				{
 					return new StudentsResult
 					{
-						Message = "Нет прав для подтверждения",
+						Message = "text.core.confirmStudent.response.failure.noAccess",
 						Code = "403"
 					};
 				}
@@ -225,7 +225,7 @@ namespace LMPlatform.UI.Services
 
 				return new StudentsResult
 				{
-					Message = "Студент успешно подтвержден",
+					Message = "text.core.confirmStudent.response.success",
 					Code = "200"
 				};
 			}
@@ -249,7 +249,7 @@ namespace LMPlatform.UI.Services
                 {
 					return new StudentsResult
 					{
-						Message = "Нет прав для отмены",
+						Message = "text.core.unconfirmStudent.response.failure.noAccess",
 						Code = "403"
 					};
 				}
@@ -257,7 +257,7 @@ namespace LMPlatform.UI.Services
 
 				return new StudentsResult
 				{
-					Message = "Подтверждение отменено",
+					Message = "text.core.unconfirmStudent.response.success",
 					Code = "200"
 				};
 			}
@@ -293,7 +293,7 @@ namespace LMPlatform.UI.Services
 						isActive = e.IsActive,
 						DeletedOn = e.DeletedOn
 					}).ToList(),
-					Message = "Студенты успешно загружены",
+					Message = "text.core.loadStudents.response.success",
 					Code = "200"
 				};
 			}
@@ -332,7 +332,7 @@ namespace LMPlatform.UI.Services
                 return new StudentsResult
                 {
                     Students = students,
-                    Message = "Студенты успешно загружены",
+                    Message = "text.core.loadStudents.response.success",
                     Code = "200"
                 };
             }
@@ -369,7 +369,7 @@ namespace LMPlatform.UI.Services
 				return new GroupsResult
 				{
 					Groups = groupsViewModel.ToList(),
-					Message = "Группы успешно загружены",
+					Message = "text.core.loadGroups.response.success",
 					Code = "200"
 				};
 			}
@@ -396,7 +396,7 @@ namespace LMPlatform.UI.Services
 	                    GroupId = e.Id,
 	                    GroupName = e.Name
                     }).ToList(),
-                    Message = "Группы успешно загружены",
+                    Message = "text.core.loadGroups.response.success",
                     Code = "200"
                 };
             }
@@ -449,7 +449,7 @@ namespace LMPlatform.UI.Services
                 {
 					
 					Groups = groupsViewData.OrderBy(e => e.GroupName).ToList(),
-                    Message = "Группы успешно загружены",
+                    Message = "text.core.loadGroups.response.success",
                     Code = "200",
 					HasInactiveGroups = groups.Any(x => x.SubjectGroups.Any(x => !x.IsActiveOnCurrentGroup && x.SubjectId == id)),
 				};
@@ -534,7 +534,7 @@ namespace LMPlatform.UI.Services
                 return new GroupsResult
                 {
                     Groups = groupsViewData,
-                    Message = "Группы успешно загружены",
+                    Message = "text.core.loadGroups.response.success",
                     Code = "200"
                 };
             }
@@ -577,7 +577,7 @@ namespace LMPlatform.UI.Services
 				return new GroupsResult
 				{
 					Groups = groupsViewModel.OrderByDescending(x => x.CountUnconfirmedStudents).ThenBy(x => x.GroupName).ToList(),
-					Message = "Группы успешно загружены",
+					Message = "text.core.loadGroups.response.success",
 					Code = "200"
 				};
 			}
@@ -619,7 +619,7 @@ namespace LMPlatform.UI.Services
 				return new GroupsResult
 				{
 					Groups = groupsViewDatas,
-					Message = "Группы успешно загружены",
+					Message = "text.core.loadGroups.response.success",
 					Code = "200"
 				};
 			}
@@ -893,7 +893,7 @@ namespace LMPlatform.UI.Services
                 return new GroupsResult
                 {
                     Groups = model,
-                    Message = "Группы успешно загружены",
+                    Message = "text.core.loadGroups.response.success",
                     Code = "200"
                 };
             }

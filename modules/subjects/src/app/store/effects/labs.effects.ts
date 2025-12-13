@@ -16,6 +16,7 @@ import * as labsActions from '../actions/labs.actions'
 import * as subjectSelectors from '../selectors/subject.selector'
 import * as filesActions from '../actions/files.actions'
 import * as catsActions from '../actions/cats.actions'
+import { TranslatePipe } from 'educats-translate'
 import * as testsActions from '../actions/tests.actions'
 
 import * as protectionActions from '../actions/protection.actions'
@@ -33,6 +34,7 @@ export class LabsEffects {
     private translate: TranslatePipe,
     private store: Store<IAppState>,
     private scheduleService: ScheduleService,
+    private translate: TranslatePipe,
     private rest: LabsRestService,
     private userFilesService: UserFilesService
   ) {}
@@ -102,6 +104,7 @@ export class LabsEffects {
         this.rest
           .deleteLab({ id, subjectId })
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               labsActions.loadLabs(),
@@ -119,6 +122,7 @@ export class LabsEffects {
         this.rest
           .saveLab({ ...lab, subjectId })
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               labsActions.loadLabs(),
@@ -134,6 +138,7 @@ export class LabsEffects {
       withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
       switchMap(([{ obj }, subjectId]) =>
         this.scheduleService.createLabDateVisit({ ...obj, subjectId }).pipe(
+          map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
           switchMap((body) => [
             catsActions.showMessage({
               body: {
@@ -192,6 +197,7 @@ export class LabsEffects {
         this.rest
           .setLabsVisitingDate(visiting)
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               labsActions.loadLabStudents(),
@@ -228,6 +234,7 @@ export class LabsEffects {
         this.rest
           .setLabsMark(labMark)
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               labsActions.loadLabStudents(),
@@ -244,6 +251,7 @@ export class LabsEffects {
         this.rest
           .removeLabsMark(id)
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               labsActions.loadLabStudents(),

@@ -62,7 +62,7 @@ namespace LMPlatform.UI.Services.Labs
                 return new LabsResult
                 {
                     Labs = model,
-                    Message = "Лабораторные работы успешно загружены",
+                    Message = "text.labs.get.response.success",
                     Code = "200"
                 };
             }
@@ -70,7 +70,7 @@ namespace LMPlatform.UI.Services.Labs
             {
                 return new LabsResult
                 {
-                    Message = "Произошла ошибка при получении лабораторых работ",
+                    Message = "text.labs.get.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -114,7 +114,7 @@ namespace LMPlatform.UI.Services.Labs
 			{
 				return new StudentsMarksResult
 				{
-					Message = "Произошла ошибка при получении результатов студентов",
+					Message = "text.results.get.response.failure.unknown",
 					Code = "500"
 				};
 			}
@@ -130,7 +130,7 @@ namespace LMPlatform.UI.Services.Labs
 					return new ResultViewData
 					{
 						Code = "500",
-						Message = "Пользователь не присоединён к предмету"
+						Message = "text.lab.save.response.failure.unattachedStudent"
 					};
 				}
 				var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
@@ -141,7 +141,7 @@ namespace LMPlatform.UI.Services.Labs
 					return new ResultViewData
 					{
 						Code = "500",
-						Message = "Ошибка вылидации"
+						Message = "text.lab.save.response.failure.validation"
 					};
 				}
 				else if (duration < 1 || duration > 36)
@@ -149,7 +149,7 @@ namespace LMPlatform.UI.Services.Labs
 					return new ResultViewData
 					{
 						Code = "500",
-						Message = "Ошибка вылидации"
+						Message = "text.lab.save.response.failure.validation"
 					};
 				}
                 SubjectManagementService.SaveLabs(new Models.Labs
@@ -165,7 +165,7 @@ namespace LMPlatform.UI.Services.Labs
                 
                 return new ResultViewData
                 {
-                    Message = "Лабораторная работа успешно сохранена",
+                    Message = "text.lab.save.response.success",
                     Code = "200"
                 };
             }
@@ -173,7 +173,7 @@ namespace LMPlatform.UI.Services.Labs
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при сохранении лабораторной работы",
+                    Message = "text.lab.save.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -189,13 +189,13 @@ namespace LMPlatform.UI.Services.Labs
 					return new ResultViewData
 					{
 						Code = "500",
-						Message = "Пользователь не присоединён к предмету"
+						Message = "text.lab.save.response.failure.unattachedStudent"
 					};
 				}
 				SubjectManagementService.DeleteLabs(id);
 				return new ResultViewData
 				{
-					Message = "Лабораторная работа успешно удалена",
+					Message = "text.lab.delete.response.success",
 					Code = "200"
 				};
 			}
@@ -203,7 +203,7 @@ namespace LMPlatform.UI.Services.Labs
 			{
 				return new ResultViewData
 				{
-					Message = "Произошла ошибка при удалении лабораторной работы" + e.Message,
+					Message = "text.lab.delete.response.failure.unknown" + e.Message,
 					Code = "500"
 				};
 			}
@@ -217,7 +217,7 @@ namespace LMPlatform.UI.Services.Labs
 
 				return new ResultViewData
 				{
-					Message = "Данные успешно добавлены",
+					Message = "text.data.add.response.success",
 					Code = "200"
 				};
 			}
@@ -225,7 +225,7 @@ namespace LMPlatform.UI.Services.Labs
 			{
 				return new ResultViewData
 				{
-					Message = "Произошла ошибка при добавлении данных",
+					Message = "text.data.add.response.failure.unknown",
 					Code = "500"
 				};
 			}
@@ -254,7 +254,7 @@ namespace LMPlatform.UI.Services.Labs
 
                 return new ResultViewData
                 {
-                    Message = "Данные успешно добавлены",
+                    Message = "text.data.add.response.success",
                     Code = "200"
                 };
             }
@@ -262,7 +262,7 @@ namespace LMPlatform.UI.Services.Labs
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при добавлении данных",
+                    Message = "text.data.add.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -276,7 +276,7 @@ namespace LMPlatform.UI.Services.Labs
 				SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
                 return new ResultViewData
                 {
-                    Message = "Данные успешно добавлены",
+                    Message = "text.data.add.response.success",
                     Code = "200"
                 };
             }
@@ -284,7 +284,7 @@ namespace LMPlatform.UI.Services.Labs
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при добавлении данных",
+                    Message = "text.data.add.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -346,7 +346,7 @@ namespace LMPlatform.UI.Services.Labs
                 return new UserLabFilesResult
                 {
                     UserLabFiles = model,
-                    Message = "Данные получены",
+                    Message = "text.data.get.response.success",
                     Code = "200"
                 };
             }
@@ -354,7 +354,7 @@ namespace LMPlatform.UI.Services.Labs
             {
                 return new UserLabFilesResult
                 {
-                    Message = "Произошла ошибка при получении данных",
+                    Message = "text.data.get.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -554,7 +554,7 @@ namespace LMPlatform.UI.Services.Labs
 				{
 					Labs = labsSubGroups,
 					ScheduleProtectionLabs = scheduleProtectionLabs,
-					Message = "Лабораторные работы успешно загружены",
+					Message = "text.labs.get.response.success",
 					Code = "200",
 					SubGroups = subGroups.Select(x => new SubGroupViewData(x)).ToList()
 				};
@@ -563,7 +563,7 @@ namespace LMPlatform.UI.Services.Labs
             {
                 return new LabsResult
                 {
-                    Message = "Произошла ошибка при получении лабораторых работ",
+                    Message = "text.labs.get.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -576,7 +576,7 @@ namespace LMPlatform.UI.Services.Labs
 				return new ResultViewData
 				{
 					Code = "200",
-					Message = "Лабораторные работы успешно сохранены"
+					Message = "text.labs.save.response.success"
 				};
             }
 			catch (Exception ex)
