@@ -17,6 +17,7 @@ import { generateCreateDateException } from 'src/app/utils/exceptions'
 import { UserFilesService } from 'src/app/services/user-files.service'
 import { iif, of } from 'rxjs'
 import { ProtectionType } from 'src/app/models/protection-type.enum'
+import { TranslatePipe } from 'educats-translate'
 import * as protectionActions from '../actions/protection.actions'
 import { TranslatePipe } from 'educats-translate'
 
@@ -25,6 +26,7 @@ export class PracticalsEffects {
   constructor(
     private store: Store<IAppState>,
     private actions$: Actions,
+    private translate: TranslatePipe,
     private rest: PracticalRestService,
     private translate: TranslatePipe,
     private scheduleService: ScheduleService,
@@ -143,6 +145,33 @@ export class PracticalsEffects {
       )
     )
   )
+
+  updateDateVisit$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(practicalsActions.updateDateVisit),
+        withLatestFrom(
+          this.store.select(subjectSelectors.getSubjectId),
+          this.store.select(groupSelectors.getCurrentGroupId)
+        ),
+        switchMap(([{ obj }, subjectId, groupId]) =>
+          this.scheduleService.createPracticalDateVisit({ ...obj, subjectId, groupId })
+            .pipe(
+              switchMap((body) => [
+                catsActions.showMessage({
+                  body: {
+                    ...body,
+                    Message:
+                      body.Code === '200'
+                        ? this.translate.transform(body.Message, body.Message)
+                        : generateCreateDateException(body),
+                  },
+                }),
+                practicalsActions.loadSchedule(),
+              ])
+            )
+        )
+      )
+    )
 
   deleteDateVisit$ = createEffect(() =>
     this.actions$.pipe(

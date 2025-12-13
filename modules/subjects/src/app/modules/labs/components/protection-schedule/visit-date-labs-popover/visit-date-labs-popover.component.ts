@@ -76,6 +76,21 @@ export class VisitDateLabsPopoverComponent implements OnInit {
     )
   }
 
+  onUpdateDate(obj: {
+      date: string
+      startTime: string
+      endTime: string
+      building: string
+      audience: string
+      lecturerId
+    }): void {
+      this.store.dispatch(
+        labsActions.updateDateVisit({
+          obj: { ...obj, subGroupId: this.data.body.subGroupId },
+        })
+      )
+    }
+
   onClose(): void {
     this.dialogRef.close()
   }
