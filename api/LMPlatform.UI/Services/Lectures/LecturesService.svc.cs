@@ -43,7 +43,7 @@ namespace LMPlatform.UI.Services.Lectures
                 return new LecturesResult
                 {
                     Lectures = model.OrderBy(e => e.Order).ToList(),
-                    Message = "Лекции успешно загружены",
+                    Message = "text.lecture.get.response.success",
                     Code = "200"
                 };
             }
@@ -51,7 +51,7 @@ namespace LMPlatform.UI.Services.Lectures
             {
                 return new LecturesResult
                 {
-                    Message = "Произошла ошибка при получении лекций",
+                    Message = "text.lecture.get.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -80,7 +80,7 @@ namespace LMPlatform.UI.Services.Lectures
                 return new CalendarResult
                 {
                     Calendar = model,
-                    Message = "Рассписание лекций успешно загружено",
+                    Message = "text.schedule.get.response.success",
                     Code = "200"
                 };
             }
@@ -88,7 +88,7 @@ namespace LMPlatform.UI.Services.Lectures
             {
                 return new CalendarResult
                 {
-                    Message = "Произошла ошибка при получении рассписания лекций",
+                    Message = "text.schedule.get.response.faulure.unknown",
                     Code = "500"
                 };
             }
@@ -104,7 +104,7 @@ namespace LMPlatform.UI.Services.Lectures
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
+                        Message = "text.lectures.save.response.failure.unattachedUser"
                     };
                 }
                 SubjectManagementService.UpdateLecturesOrder(subjectId, prevIndex, curIndex);
@@ -112,7 +112,7 @@ namespace LMPlatform.UI.Services.Lectures
                 return new ResultViewData
                 {
                     Code = "200",
-                    Message = "Лекции успешно сохранены"
+                    Message = "text.lectures.save.response.success"
                 };
             }
             catch (Exception ex)
@@ -135,7 +135,7 @@ namespace LMPlatform.UI.Services.Lectures
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
+                        Message = "text.lectures.save.response.failure.unattachedUser"
                     };
                 }
                 var normalizedTheme = theme?.Trim();
@@ -144,7 +144,7 @@ namespace LMPlatform.UI.Services.Lectures
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Ошибка вылидации"
+                        Message = "text.lecture.save.response.failure.validation"
                     };
                 }
                 if (duration < 1 || duration > 36)
@@ -152,7 +152,7 @@ namespace LMPlatform.UI.Services.Lectures
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Ошибка вылидации"
+                        Message = "text.lecture.save.response.failure.validation"
                     };
                 }
                 var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
@@ -168,7 +168,7 @@ namespace LMPlatform.UI.Services.Lectures
 
                 return new ResultViewData
                 {
-                    Message = "Лекция успешно сохранена",
+                    Message = "text.lecture.save.response.success",
                     Code = "200"
                 };
             }
@@ -192,13 +192,13 @@ namespace LMPlatform.UI.Services.Lectures
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
+                        Message = "text.lecture.delete.response.failure.unattachedUser"
                     };
                 }
                 SubjectManagementService.DeleteLection(new Lectures { Id = id });
                 return new ResultViewData
                 {
-                    Message = "Лекция успешно удалена",
+                    Message = "text.lecture.delete.response.success",
                     Code = "200"
                 };
             }
@@ -253,7 +253,7 @@ namespace LMPlatform.UI.Services.Lectures
                     DateId = dateId,
                     Date = visitingDate.Date.ToString("dd.MM.yyyy"),
                     StudentMarkForDate = model,
-                    Message = "Данные успешно загружены",
+                    Message = "text.calendarData.get.response.success",
                     Code = "200"
                 };
             }
@@ -261,7 +261,7 @@ namespace LMPlatform.UI.Services.Lectures
             {
                 return new StudentMarkForDateResult
                 {
-                    Message = "Произошла ошибка",
+                    Message = "text.calendarData.get.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -286,7 +286,7 @@ namespace LMPlatform.UI.Services.Lectures
                 }
                 return new ResultViewData
                 {
-                    Message = "Данные успешно добавлены",
+                    Message = "text.calendarData.add.response.success",
                     Code = "200"
                 };
             }
@@ -294,7 +294,7 @@ namespace LMPlatform.UI.Services.Lectures
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при добавлении данных",
+                    Message = "text.calendarData.add.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -318,7 +318,7 @@ namespace LMPlatform.UI.Services.Lectures
 
 				return new ResultViewData
 				{
-					Message = "Данные успешно добавлены",
+					Message = "text.calendarData.add.response.success",
 					Code = "200"
 				};
 			}
@@ -326,7 +326,7 @@ namespace LMPlatform.UI.Services.Lectures
 			{
 				return new ResultViewData
 				{
-					Message = "Произошла ошибка при добавлении данных",
+					Message = "text.calendarData.add.response.failure.unknown",
 					Code = "500"
 				};
 			}
@@ -340,7 +340,7 @@ namespace LMPlatform.UI.Services.Lectures
 
 				return new ResultViewData
 				{
-					Message = "Даты успешно удалены",
+					Message = "text.dates.delete.response.success",
 					Code = "200"
 				};
 			}
@@ -348,7 +348,7 @@ namespace LMPlatform.UI.Services.Lectures
 			{
 				return new ResultViewData
 				{
-					Message = "Произошла ошибка при удалении дат",
+					Message = "text.dates.delete.response.failure.unknown",
 					Code = "500"
 				};
 			}
