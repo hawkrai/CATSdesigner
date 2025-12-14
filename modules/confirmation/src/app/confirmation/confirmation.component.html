@@ -85,7 +85,7 @@
             mat-icon-button
             (click)="confirm(element, false)"
             *ngIf="element.Confirmed"
-            matTooltip="Закрыть доступ"
+            matTooltip="{{ 'text.confirmation.access.close' | translate: 'Закрыть доступ' }}"
             matTooltipClass="example-tooltip-blue"
           >
             <mat-icon class="icon-done">done </mat-icon>
@@ -94,7 +94,7 @@
             mat-icon-button
             (click)="confirm(element)"
             *ngIf="!element.Confirmed"
-            matTooltip="Открыть доступ"
+            matTooltip="{{ 'text.confirmation.access.open' | translate: 'Открыть доступ' }}"
             matTooltipClass="example-tooltip-blue"
           >
             <mat-icon class="icon-clear">clear </mat-icon>
