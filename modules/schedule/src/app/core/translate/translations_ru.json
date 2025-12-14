@@ -256,6 +256,8 @@
 
   "text.schedule.delete.event": "Удалить занятие/событие?",
   "text.schedule.edit.event": "Вы уверены, что хотите подтвердить изменение?",
+  "text.schedule.add.event.to.schedule": "Добавление занятия/события в расписание",
+  "text.schedule.edit.event.to.schedule": "Редактирование занятия/события",
 
   "text.schedule.management": "Управление расписанием",
   "text.schedule.management.dates": "Управление датами",

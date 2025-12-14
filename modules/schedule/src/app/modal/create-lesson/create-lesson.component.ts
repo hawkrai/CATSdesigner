@@ -21,6 +21,8 @@ export function flatpickrFactory() {
   styleUrls: ['./create-lesson.component.css'],
 })
 export class CreateLessonComponent implements OnInit {
+  isEditMode = false;
+  dialogTitle = '';
   changedType: string
   formGroup: any
   eventToChange: any
@@ -69,6 +71,14 @@ export class CreateLessonComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isEditMode = !!this.data.lesson
+
+    if (this.isEditMode) {
+      this.dialogTitle = 'text.schedule.edit.event.to.schedule'
+    } else {
+      this.dialogTitle = 'text.schedule.add.event.to.schedule'
+    }
+
     this.user = JSON.parse(localStorage.getItem('currentUser'))
     this.lessonTypes = this.lessonservice.getLessonType()
 
