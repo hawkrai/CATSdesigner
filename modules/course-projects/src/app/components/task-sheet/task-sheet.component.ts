@@ -181,11 +181,19 @@ export class TaskSheetComponent implements OnInit {
   }
 
   downloadTaskSheet() {
-    location.href =
-      location.origin +
-      '/api/CPTaskSheetDownload?courseProjectId=' +
-      this.courseProjectId
-  }
+  const translated = this.translatePipe.transform(
+    'text.course.projects.selection.label',
+    'Выбор темы курсового проекта'
+  );
+
+  const lang = translated !== 'Выбор темы курсового проекта' ? 'en' : 'ru';
+
+  location.href =
+    `${location.origin}/api/CPTaskSheetDownload` +
+    `?courseProjectId=${this.courseProjectId}` +
+    `&lang=${lang}`;
+}
+
 
   get isSelectDisabled(): boolean {
     return this.courseUser.IsStudent && !this.courseUser.IsLecturer

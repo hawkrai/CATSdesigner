@@ -60,6 +60,7 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
   private COUNT = 1000000
   private PAGE = 1
   hasChange = false
+  private initialFormValue: any
 
   private templates: Template[]
   selectedGroups: string[] = []
@@ -144,6 +145,8 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
         ),
         endDateControl: new FormControl(this.data.taskSheet.DateEnd),
       })
+      
+      this.initialFormValue = this.formGroup.value
     }
   }
 
@@ -153,10 +156,26 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
   }
 
   onCreateGroupFormValueChange() {
-    const initialValue = this.formGroup.value
-    this.formGroup.valueChanges.subscribe((value) => {
-      this.hasChange = JSON.stringify(initialValue) !== JSON.stringify(value)
+    this.formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      const currentTemplateFields = this.getTemplateFields(value)
+      const initialTemplateFields = this.getTemplateFields(this.initialFormValue)
+      
+      this.hasChange = JSON.stringify(initialTemplateFields) !== JSON.stringify(currentTemplateFields)
     })
+  }
+
+  private getTemplateFields(formValue: any): any {
+    return {
+      inputDataControl: formValue.inputDataControl,
+      contentControl: formValue.contentControl,
+      drawContentControl: formValue.drawContentControl,
+      univerControl: formValue.univerControl,
+      facultyControl: formValue.facultyControl,
+      departmentControl: formValue.departmentControl,
+      headCathedraControl: formValue.headCathedraControl,
+      startDateControl: formValue.startDateControl,
+      endDateControl: formValue.endDateControl,
+    }
   }
 
   onCancelClick(): void {
@@ -178,6 +197,9 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
         this.formGroup.controls.headCathedraControl.setValue(res.HeadCathedra)
         this.formGroup.controls.startDateControl.setValue(res.DateStart)
         this.formGroup.controls.endDateControl.setValue(res.DateEnd)
+        
+        this.initialFormValue = this.formGroup.value
+        this.hasChange = false
       })
   }
 
@@ -186,81 +208,86 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
   }
 
   saveTemplate(): void {
-    if (!this.selectedGroups) {
-      this.selectedGroups = []
-    }
+    if (!this.selectedGroups) this.selectedGroups = [];
 
-    const template = new TaskSheetTemplate()
-    template.Name = this.formGroup.get('templateNameControl').value
-    template.GroupsId = []
+    const template = new TaskSheetTemplate();
+    template.Name = this.formGroup.get('templateNameControl').value;
+    template.GroupsId = [];
 
     if (this.selectedGroups.length > 0) {
       this.selectedGroups.forEach((groupName) => {
-        const found = this.data.groups.find(
-          (g) => g.GroupName === groupName
-        )
-
-        if (found) {
-          template.GroupsId.push(found.GroupId)
-        }
-      })
+        const found = this.data.groups && this.data.groups.find(g => g.GroupName === groupName);
+        if (found) template.GroupsId.push(found.GroupId);
+      });
     }
+    template.InputData = this.formGroup.get('inputDataControl').value;
+    template.RpzContent = this.formGroup.get('contentControl').value;
+    template.DrawMaterials = this.formGroup.get('drawContentControl').value;
+    template.Univer = this.formGroup.get('univerControl').value;
+    template.Faculty = this.formGroup.get('facultyControl').value;
+    template.CathedraName = this.formGroup.get('departmentControl').value;
+    template.HeadCathedra = this.formGroup.get('headCathedraControl').value;
+    template.DateStart = this.getDate(this.formGroup.get('startDateControl').value);
+    template.DateEnd = this.getDate(this.formGroup.get('endDateControl').value);
 
-    this.populateSheet(template)
+    this.taskSheetService.editTemplate(template).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => {
+        this.getTemplates();
+        this.toastr.success(
+          this.translatePipe.transform(
+        'text.course.list.dialog.template.apply.save',
+        'Шаблон успешно сохранен'
+      ));
 
+        this.initialFormValue = this.formGroup.value
+        this.hasChange = false
+      },
+      error: (err) => {
+        this.toastr.error('Ошибка при сохранении шаблона');
+      },
+    });
+  }
+
+  populateSheet(taskSheet: TaskSheet): void {
+    taskSheet.InputData = this.formGroup.get('inputDataControl').value;
+    taskSheet.RpzContent = this.formGroup.get('contentControl').value;
+    taskSheet.DrawMaterials = this.formGroup.get('drawContentControl').value;
+    taskSheet.Univer = this.formGroup.get('univerControl').value;
+    taskSheet.CathedraName = this.formGroup.get('departmentControl').value; 
+    taskSheet.Faculty = this.formGroup.get('facultyControl').value;
+    taskSheet.HeadCathedra = this.formGroup.get('headCathedraControl').value;
+    taskSheet.DateStart = this.getDate(this.formGroup.get('startDateControl').value);
+    taskSheet.DateEnd = this.getDate(this.formGroup.get('endDateControl').value);
+  }
+
+  deleteTemplate() {
     this.taskSheetService
-      .editTemplate(template)
+      .deleteTemplate({
+        taskSheetId: this.templateId,
+        userId: this.data.userId,
+      })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          this.getTemplates()
+          this.getTemplates();
+
           this.toastr.success(
             this.translatePipe.transform(
-              'text.course.list.dialog.template.save.success',
-              'Шаблон успешно сохранен'
+              'text.course.list.dialog.template.delete.success',
+              'Шаблон успешно удалён'
             )
-          )
+          );
         },
         error: () => {
           this.toastr.error(
             this.translatePipe.transform(
-              'text.course.list.dialog.template.save.error',
-              'Ошибка при сохранении шаблона'
+              'text.course.list.dialog.template.delete.error',
+              'Ошибка при удалении шаблона'
             )
-          )
-        },
-      })
+          );
+        }
+      });
   }
-
-  deleteTemplate() {
-  this.taskSheetService
-    .deleteTemplate({
-      taskSheetId: this.templateId,
-      userId: this.data.userId,
-    })
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
-      next: () => {
-        this.getTemplates();
-
-        this.toastr.success(
-          this.translatePipe.transform(
-            'text.course.list.dialog.template.delete.success',
-            'Шаблон успешно удалён'
-          )
-        );
-      },
-      error: () => {
-        this.toastr.error(
-          this.translatePipe.transform(
-            'text.course.list.dialog.template.delete.error',
-            'Ошибка при удалении шаблона'
-          )
-        );
-      }
-    });
-}
-
 
   applyTemplate() {
     const normalize = (v: string) => (v || '').trim().toLowerCase();
@@ -302,20 +329,6 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
   getResultForm(): TaskSheet {
     this.populateSheet(this.data.taskSheet)
     return this.data.taskSheet
-  }
-
-  populateSheet(taskSheet: TaskSheet): void {
-    taskSheet.InputData = this.formGroup.get('inputDataControl').value
-    taskSheet.RpzContent = this.formGroup.get('contentControl').value
-    taskSheet.DrawMaterials = this.formGroup.get('drawContentControl').value
-    taskSheet.Univer = this.formGroup.get('univerControl').value
-    taskSheet.CathedraName = this.formGroup.get('departmentControl').value
-    taskSheet.Faculty = this.formGroup.get('facultyControl').value
-    taskSheet.HeadCathedra = this.formGroup.get('headCathedraControl').value
-    taskSheet.DateStart = this.getDate(
-      this.formGroup.get('startDateControl').value
-    )
-    taskSheet.DateEnd = this.getDate(this.formGroup.get('endDateControl').value)
   }
 
   getDate(date: string): string {

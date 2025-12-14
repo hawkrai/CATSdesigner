@@ -29,11 +29,13 @@ namespace Application.Infrastructure.Export
     {
         #region Export Word document
 
-        public static HttpResponseMessage CourseProjectToWord(string fileName, CourseProject work)
+        public static HttpResponseMessage CourseProjectToWord(string fileName, CourseProject work, string lang = "ru")
         {
+            CultureInfo cinfo = lang == "en"
+                ? CultureInfo.CreateSpecificCulture("en-US")
+                : CultureInfo.CreateSpecificCulture("ru-RU");
 
-            var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
-            byte[] byteArray = CreateDoc(work, cinfo);
+            byte[] byteArray = CreateDoc(work, cinfo, lang);
 
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
             response.Content = new StreamContent(new MemoryStream(byteArray));
@@ -96,12 +98,13 @@ namespace Application.Infrastructure.Export
             return byteList;
         }
 
-        private static byte[] CreateDoc(CourseProject work, CultureInfo cultureInfo)
+        private static byte[] CreateDoc(CourseProject work, CultureInfo cultureInfo, string lang)
         {
             var adp = work.AssignedCourseProjects.Count == 1 ? work.AssignedCourseProjects.First() : null;
-            var generator = adp is null ? new GenerateCPDocument(work, cultureInfo) : new GenerateCPDocument(adp, cultureInfo);
-            var array = generator.CreatePackageAsBytes();
-            return array;
+            var generator = adp is null
+                ? new GenerateCPDocument(work, cultureInfo, lang)
+                : new GenerateCPDocument(adp, cultureInfo, lang);
+            return generator.CreatePackageAsBytes();
         }
 
         #endregion

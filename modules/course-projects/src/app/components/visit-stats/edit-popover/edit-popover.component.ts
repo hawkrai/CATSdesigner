@@ -4,6 +4,7 @@ import { Lector } from '../../../../../../subjects/src/app/models/lector.model'
 import { VisitStatsService } from '../../../services/visit-stats.service'
 import { ToastrService } from 'ngx-toastr'
 import { UpdatedDay } from '../../../models/updated-day.model'
+import { TranslatePipe } from 'educats-translate'
 
 @Component({
   selector: 'app-edit',
@@ -22,7 +23,8 @@ export class EditPopoverComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private CourseRestService: VisitStatsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private translatePipe: TranslatePipe,
   ) {}
 
   ngOnInit() {
@@ -61,21 +63,30 @@ export class EditPopoverComponent implements OnInit {
     }
   }
 
+  fixTimezone(date: Date): Date {
+    const corrected = new Date(date)
+    corrected.setMinutes(corrected.getMinutes() - corrected.getTimezoneOffset())
+    return corrected
+  }
+
   onSubmit() {
     if (this.dateForm.invalid) {
       this.dateForm.markAllAsTouched()
       return
     }
 
-    const id = this.day.Id
-    const date: Date = this.dateForm.value.date
-    const lecturerId = this.dateForm.value.lecturerId
-    const start = this.dateForm.value.startTime
-    const end = this.dateForm.value.endTime
-    const audience = this.dateForm.value.audience
-    const building = this.dateForm.value.building
+    const formValue = this.dateForm.value
 
-    const isoLocalDate = date.toISOString().split('T')[0] + 'T00:00:00';
+    const id = this.day.Id
+    const date = this.fixTimezone(formValue.date) 
+
+    const lecturerId = formValue.lecturerId
+    const start = formValue.startTime
+    const end = formValue.endTime
+    const audience = formValue.audience
+    const building = formValue.building
+
+    const isoLocalDate = date.toISOString().split('T')[0] + 'T00:00:00'
 
     this.CourseRestService.addDate(
       id,
@@ -89,7 +100,11 @@ export class EditPopoverComponent implements OnInit {
       lecturerId
     ).subscribe(
       () => {
-        this.toastr.success('Данные успешно обновлены')
+        this.toastr.success(
+          this.translatePipe.transform(
+        'text.course.list.dialog.consultations.apply.edit',
+        'Данные успешно обновлены'
+      ))
 
         const selectedLector = this.lectors.find(
           (l) => l.LectorId === lecturerId
@@ -115,7 +130,6 @@ export class EditPopoverComponent implements OnInit {
         this.close.emit()
       },
       (error) => {
-        console.error('Ошибка при обновлении данных', error)
         this.toastr.error('Ошибка при обновлении данных')
       }
     )

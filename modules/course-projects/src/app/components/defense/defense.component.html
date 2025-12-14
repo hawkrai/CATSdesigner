@@ -109,6 +109,13 @@
                 role="columnheader"
                 scope="col"
               >
+                {{ 'text.file.size' | translate: 'Размер файла' }}
+              </th>
+              <th
+                class="mdc-data-table__header-cell"
+                role="columnheader"
+                scope="col"
+              >
                 {{ 'text.comment' | translate: 'Комментарий' }}
               </th>
               <th
@@ -145,6 +152,9 @@
                 >
                   {{ studentFile.Attachments[0]?.Name }}
                 </a>
+              </td>
+              <td class="mdc-data-table__cell">
+                {{ studentFile.fileSize }}
               </td>
               <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
               <td class="mdc-data-table__cell">{{ studentFile.Date }}</td>
@@ -206,6 +216,13 @@
                     role="columnheader"
                     scope="col"
                   >
+                    {{ 'text.file.size' | translate: 'Размер файла' }}
+                  </th>
+                  <th
+                    class="mdc-data-table__header-cell"
+                    role="columnheader"
+                    scope="col"
+                  >
                     {{ 'text.comment' | translate: 'Комментарий' }}
                   </th>
                   <th
@@ -242,6 +259,9 @@
                     >
                       {{ fileLab.Attachments[0]?.Name }}
                     </a>
+                  </td>
+                  <td class="mdc-data-table__cell">
+                    {{ fileLab.fileSize }}
                   </td>
                   <td class="mdc-data-table__cell">{{ fileLab.Comments }}</td>
                   <td class="mdc-data-table__cell">{{ fileLab.Date }}</td>

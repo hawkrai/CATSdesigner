@@ -426,7 +426,13 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   }
 
   downloadTaskSheet(project: Project) {
-    location.href =
-      location.origin + '/api/CPTaskSheetDownload?courseProjectId=' + project.Id
-  }
+  const translatedLabel = this.translatePipe.transform(
+    'text.course.projects.selection.label',
+    'Выбор темы курсового проекта'
+  );
+  
+  const lang = translatedLabel !== 'Выбор темы курсового проекта' ? 'en' : 'ru';
+
+  location.href = `${location.origin}/api/CPTaskSheetDownload?courseProjectId=${project.Id}&lang=${lang}`;
+}
 }
