@@ -31,8 +31,8 @@
         <mat-icon
           class="expandable-external"
           [ngClass]="{
-            folder_file_icons: node.Estimated != null,
-            'empty-tree-icon': node.Estimated == null
+            folder_file_icons: node.Estimated != null || node.TestId != null,
+            'empty-tree-icon': node.Estimated == null && node.TestId == null
           }"
         >
           <ng-container>
@@ -40,10 +40,25 @@
           </ng-container>
         </mat-icon>
 
-        {{ node.Name }}
+        <span *ngIf="!node.TestId">{{ node.Name }}</span>
+        <span *ngIf="node.TestId">
+          {{ node.Name }}
+          <span
+            class="test-result-container"
+            *ngIf="node.TestResult && node.TestResult.Points !== null && node.TestResult.Points !== undefined"
+            [ngStyle]="{
+              color: getTestScoreColor(node.TestResult.Points)
+            }"
+            [matTooltip]="getTestTooltip(node)"
+            [matTooltipClass]="'test-tooltip'"
+            matTooltipPosition="right"
+          >
+            &nbsp;({{ getTestScoreText(node.TestResult.Points) }})
+          </span>
+        </span>
         <span
           class="time-container"
-          *ngIf="node.Estimated > 0"
+          *ngIf="node.Estimated > 0 && !node.TestId"
           [ngStyle]="{
             color: converterService.getColorByTime(
               node.WatchingTime,
@@ -52,7 +67,7 @@
           }"
         >
           <span
-            >&nbsp;(
+            >(
             <ng-container *ngIf="node.WatchingTime > 0">
               <ng-container *ngIf="node.WatchingTimeMinutes != 0">
                 {{ node.WatchingTimeMinutes }}&nbsp;{{
@@ -65,7 +80,7 @@
                 }}&nbsp;
               </ng-container>
             </ng-container> </span
-          >&nbsp;)
+          >)
           <span class="expected-time">
             <span *ngIf="node.Estimated > 0" [ngStyle]="{ color: '#363636' }">
               &nbsp;{{ 'complex.time.expected' | translate }} -

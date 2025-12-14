@@ -29,7 +29,7 @@
 }
 
 h2.info {
-  font-size: 2em;
+  font-size: 24px;
   font-weight: 400;
 }
 
@@ -85,11 +85,11 @@ h3.info {
 
 .folder_file_icons {
   cursor: default;
-  color: gray;
+  color: #7c7b7b;
 }
 
 .empty-tree-icon {
-  color: #808080;
+  color: #a9a7a7;
   opacity: 0.6;
 }
 
@@ -164,7 +164,7 @@ span.clickable {
 
   &-title {
     width: 100%;
-    font-size: 20px;
+    font-size: 26px;
     text-align: center;
     font-family: 'Roboto', 'Helvetica Neue', sans-serif;
     font-weight: normal;
@@ -178,4 +178,16 @@ span.clickable {
 
 .folder-icon {
   color: gray;
+}
+
+.test-result-container {
+  font-weight: normal;
+  margin-left: 5px;
+  cursor: help;
+}
+
+::ng-deep .test-tooltip {
+  white-space: nowrap;
+  max-width: none;
+  word-break: keep-all;
 }

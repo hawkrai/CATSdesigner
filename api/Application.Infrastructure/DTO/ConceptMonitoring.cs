@@ -25,6 +25,8 @@ namespace Application.Infrastructure.DTO
 
         public virtual string SubjectName { get; set; }
 
+        public virtual int? TestId { get; set; }
+
         public List<ConceptMonitoring> GetAllChildren()
         {
             var list = new List<ConceptMonitoring>();
@@ -39,13 +41,24 @@ namespace Application.Infrastructure.DTO
 
         public static ConceptMonitoring FromConcept(Concept concept)
         {
+            int? testId = null;
+            if (concept.Test != null)
+            {
+                testId = concept.Test.Id;
+            }
+            else if (concept.Container == "test")
+            {
+                testId = concept.Id;
+            }
+            
             return new ConceptMonitoring()
             {
                 Name = concept.Name,
                 ParentId = concept.ParentId,
                 Container = concept.Container,
                 IsGroup = concept.IsGroup,
-                SubjectName = concept.Subject?.Name
+                SubjectName = concept.Subject?.Name,
+                TestId = testId
             };
         }
     }
