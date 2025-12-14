@@ -134,7 +134,20 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
   setMark(student: StudentMark, labId: string, recommendedMark: string) {
     const mark = student.LabsMarks.find((mark) => mark.LabId === +labId)
-    if (mark) {
+    const additionalInfo$ = this.state$.pipe(
+      map(state => {
+        const p = state.labs.find(
+          p => p.LabId == Number(labId)
+        )
+         if(!p) return undefined;
+
+         return {
+          shortName: p.ShortName.match(/\d+/g).join(''),
+          fullName: p.Theme
+         }
+      })
+    )
+    if (mark && additionalInfo$) {
       const labsMark = this.getLabMark(mark, student.StudentId)
       const dialogData: DialogData = {
         title: this.translate.transform(
@@ -146,6 +159,9 @@ export class ResultsComponent implements OnInit, OnDestroy {
         model: {
           recommendedMark,
           lecturerId: mark.LecturerId,
+          prefix: this.labPrefix,
+          studentFullName: student.FullName,
+          additionalInfo$: additionalInfo$
         },
       }
       const dialogRef = this.dialogService.openDialog(
