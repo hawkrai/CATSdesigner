@@ -8,6 +8,7 @@ import { map, switchMap, takeUntil, tap } from 'rxjs/operators'
 import { Observable, Subject, timer } from 'rxjs'
 import { AutoUnsubscribe } from '../decorator/auto-unsubscribe'
 import { AutoUnsubscribeBase } from '../core/auto-unsubscribe-base'
+import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
 
 @AutoUnsubscribe
 @Component({
@@ -63,7 +64,7 @@ export class TestExecutionComponent
           this.question = question
           if (!this.question.Seconds && this.question.Seconds === 0) {
             const queryParams: any = { testId: this.test.Id }
-            if (sessionStorage.getItem('testFromEUMK') === 'true') {
+            if (sessionStorage.getItem(StorageKeys.TestFromComplex) === 'true') {
               queryParams.fromEUMK = 'true'
             }
             this.router.navigate(['/test-result'], {
@@ -86,7 +87,7 @@ export class TestExecutionComponent
                 restTime = restTime - 60 * minute
                 if (hour === 0 && minute === 0 && restTime === 0) {
                   const queryParams: any = { testId: this.test.Id }
-                  if (sessionStorage.getItem('testFromEUMK') === 'true') {
+                  if (sessionStorage.getItem(StorageKeys.TestFromComplex) === 'true') {
                     queryParams.fromEUMK = 'true'
                   }
                   this.router.navigate(['/test-result'], {
@@ -164,7 +165,7 @@ export class TestExecutionComponent
               this.question = question
             } else {
               const queryParams: any = { testId: this.test.Id }
-              if (sessionStorage.getItem('testFromEUMK') === 'true') {
+              if (sessionStorage.getItem(StorageKeys.TestFromComplex) === 'true') {
                 queryParams.fromEUMK = 'true'
               }
               this.router.navigate(['/test-result'], {
@@ -174,7 +175,7 @@ export class TestExecutionComponent
           })
       } else {
         const queryParams: any = { testId: this.test.Id }
-        if (sessionStorage.getItem('testFromEUMK') === 'true') {
+        if (sessionStorage.getItem(StorageKeys.TestFromComplex) === 'true') {
           queryParams.fromEUMK = 'true'
         }
         this.router.navigate(['/test-result'], {
@@ -184,7 +185,7 @@ export class TestExecutionComponent
     } else {
       const queryParams: any = { testId: this.test.Id }
       // Передаем информацию о запуске из ЭУМК через query параметры
-      if (sessionStorage.getItem('testFromEUMK') === 'true') {
+      if (sessionStorage.getItem(StorageKeys.TestFromComplex) === 'true') {
         queryParams.fromEUMK = 'true'
       }
       this.router.navigate(['/test-result'], {
