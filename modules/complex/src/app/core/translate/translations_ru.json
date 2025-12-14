@@ -95,5 +95,11 @@
   "complex.delete.eumc": "Удаление ЭУМК",
   "complex.want.to.delete.eumc": "Вы действительно хотите удалить ЭУМК?",
   "complex.delete.title": "Удаление компонента",
-  "complex.want.to.delete.test": "Вы действительно хотите удалить компонент?"
+  "complex.want.to.delete.test": "Вы действительно хотите удалить компонент?",
+  "complex.test.points": "баллов",
+  "complex.test.points.one": "балл",
+  "complex.test.points.few": "балла",
+  "complex.test.points.many": "баллов",
+  "complex.test.tooltip": "Оценка за тест {points} {pointsText}, затраченное время - {time}",
+  "complex.test.score": "Оценка за тест"
 }

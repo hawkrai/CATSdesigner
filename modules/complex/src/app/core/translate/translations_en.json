@@ -95,5 +95,11 @@
   "common.subjects.attachments.add": "Add file",
   "complex.delete.eumc": "Delete Educational Complex",
   "complex.want.to.delete.eumc": "Do you really want to remove the Educational Complex?",
-  "common.test.answer": "Reply"
+  "common.test.answer": "Reply",
+  "complex.test.points": "points",
+  "complex.test.points.one": "point",
+  "complex.test.points.few": "points",
+  "complex.test.points.many": "points",
+  "complex.test.tooltip": "The test score is {points} {pointsText}. The test took {time}",
+  "complex.test.score": "The test score is"
 }
