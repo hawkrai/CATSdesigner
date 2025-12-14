@@ -137,7 +137,6 @@ export class CreateLessonComponent implements OnInit {
       .getAllSubjects(this.user.userName)
       .subscribe((subjects) => {
         this.subjects = subjects
-        this.subjects.sort((a, b) => a.Name.localeCompare(b.Name))
         if (this.data.lesson != null) {
           this.lesson.Id = this.data.lesson.id
           this.lesson.SubjectId = this.lessonservice.getTitlePart(
@@ -589,6 +588,24 @@ export class CreateLessonComponent implements OnInit {
 
   onCancelClick() {
     this.dialogRef.close(null)
+  }
+
+  getTypeTooltip(): string {
+    if (!this.formGroup) {
+        return '';
+      }
+
+    const value = this.formGroup.get('type').value
+
+    if (value === '3') {
+      return 'text.schedule.course.project'
+    }
+
+    if (value === '4') {
+      return 'text.schedule.graduation.project'
+    }
+
+    return ''
   }
 
   subjectChange(event): void {
