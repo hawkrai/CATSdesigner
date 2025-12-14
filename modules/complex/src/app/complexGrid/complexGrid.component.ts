@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { select, Store } from '@ngrx/store'
 import { IAppState } from '../store/states/app.state'
 import { getSubjectId } from '../store/selectors/subject.selector'
-import { Router } from '@angular/router'
+import { Router, NavigationExtras } from '@angular/router'
 import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 import { ComponentType } from '@angular/cdk/typings/portal'
 import { ComplexGridEditPopupComponent } from './components/edit-popup/edit-popup.component'
@@ -12,6 +12,7 @@ import { DialogData } from '../models/DialogData'
 import { Complex } from '../models/Complex'
 import { TranslatePipe } from 'educats-translate'
 import { CatsService, CodeType } from '../service/cats.service'
+import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
 
 @Component({
   selector: 'complex-grid',
@@ -59,6 +60,7 @@ export class ComplexGridComponent implements OnInit {
       this.subjectId = subjectId
       this.complexService.getRootConcepts(this.subjectId).subscribe((res) => {
         this.complexes = res
+        this.checkAndNavigateToSelectedComplex()
       })
       this.complexService
         .getRootConceptsSubjectName(this.subjectId)
@@ -66,6 +68,22 @@ export class ComplexGridComponent implements OnInit {
           this.subjectName = res
         })
     })
+  }
+
+  private checkAndNavigateToSelectedComplex(): void {
+    const selectedComplexId = localStorage.getItem(StorageKeys.SelectedComplex)
+    if (selectedComplexId && this.complexes) {
+      const complexExists = this.complexes.some(
+        (c: any) => c.id === selectedComplexId || c.id === +selectedComplexId
+      )
+      if (complexExists) {
+        const navigationExtras: NavigationExtras = {
+          state: selectedComplexId as any,
+        }
+        localStorage.removeItem(StorageKeys.SelectedComplex)
+        this.router.navigate(['/cMaterial'], navigationExtras)
+      }
+    }
   }
   onResize(event) {
     this.breakpoint =
