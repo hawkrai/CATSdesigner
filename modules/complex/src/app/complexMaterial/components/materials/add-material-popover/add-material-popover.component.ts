@@ -40,6 +40,8 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     super(dialogRef, store, data, translatePipe, catsService)
     this.isFile = false
     this.isFolder = false
+    this.editMode = false
+    this.selectedConcept = ''
     this.addComponentHelp = {
       message: this.translatePipe.transform(
         'text.help.addComponent',
@@ -139,5 +141,124 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
       }
     }
     return null
+  }
+
+  get isMandatoryEUMKComponent(): boolean {
+    return this.data.isMandatoryComponent === true
+  }
+
+  get isTestOrKnowledgeControlBlock(): boolean {
+    if (this.data.testId) {
+      return true
+    }
+    const nameToCheck = this.data.name || ''
+    const knowledgeControlBlockOriginal = 'Блок контроля знаний'
+    const knowledgeControlBlockTranslated = this.translatePipe.transform(
+      'complex.section.control',
+      'Блок контроля знаний'
+    )
+    return (
+      nameToCheck.includes(knowledgeControlBlockOriginal) ||
+      nameToCheck.includes(knowledgeControlBlockTranslated) ||
+      knowledgeControlBlockTranslated.includes(nameToCheck)
+    )
+  }
+
+  get isSelectedConceptKnowledgeControlBlock(): boolean {
+    if (!this.selectedConcept && (!this.conceptId || this.conceptId === null || this.conceptId === undefined)) {
+      return false
+    }
+    
+    const knowledgeControlBlockOriginal = 'Блок контроля знаний'
+    const knowledgeControlBlockTranslated = this.translatePipe.transform(
+      'complex.section.control',
+      'Блок контроля знаний'
+    )
+    
+    if (this.selectedConcept && this.selectedConcept.trim() !== '') {
+      const selectedConceptName = this.selectedConcept
+      if (
+        selectedConceptName.includes(knowledgeControlBlockOriginal) ||
+        selectedConceptName.includes(knowledgeControlBlockTranslated)
+      ) {
+        return true
+      }
+    }
+    
+    if (this.conceptId && this.navItems && this.navItems.length > 0) {
+      const conceptPath = this.getConceptPath(this.navItems, this.conceptId)
+      if (conceptPath) {
+        return (
+          conceptPath.includes(knowledgeControlBlockOriginal) ||
+          conceptPath.includes(knowledgeControlBlockTranslated)
+        )
+      }
+    }
+    
+    return false
+  }
+
+  findConceptById(cascades: ComplexCascade[], id: any): ComplexCascade | null {
+    for (const concept of cascades) {
+      if (concept.Id == id) {
+        return concept
+      }
+      if (concept.children && concept.children.length > 0) {
+        const found = this.findConceptById(concept.children, id)
+        if (found) {
+          return found
+        }
+      }
+    }
+    return null
+  }
+
+  getConceptPath(cascades: ComplexCascade[], id: any): string | null {
+    for (const concept of cascades) {
+      if (concept.Id == id) {
+        return concept.Name
+      }
+      if (concept.children && concept.children.length > 0) {
+        const childPath = this.getConceptPath(concept.children, id)
+        if (childPath) {
+          return concept.Name + ' > ' + childPath
+        }
+      }
+    }
+    return null
+  }
+
+  get shouldHideFileUpload(): boolean {
+    if (this.data && this.data.testId) {
+      return true
+    }
+    
+    if (!this.editMode) {
+      return this.isSelectedConceptKnowledgeControlBlock
+    } else {
+      if (this.isSelectedConceptKnowledgeControlBlock) {
+        return true
+      }
+      
+      const nameToCheck = (this.data && this.data.name) || ''
+      if (!nameToCheck) {
+        return false
+      }
+      
+      const knowledgeControlBlockOriginal = 'Блок контроля знаний'
+      const knowledgeControlBlockTranslated = this.translatePipe.transform(
+        'complex.section.control',
+        'Блок контроля знаний'
+      )
+      if (
+        nameToCheck.includes(knowledgeControlBlockOriginal) ||
+        nameToCheck.includes(knowledgeControlBlockTranslated) ||
+        knowledgeControlBlockTranslated.includes(nameToCheck)
+      ) {
+        return true
+      }
+    }
+    
+    return false
   }
 }
