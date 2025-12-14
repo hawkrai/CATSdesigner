@@ -87,8 +87,8 @@ export class TestControlPageComponent
       sessionStorage.removeItem(StorageKeys.ComplexTestId)
     } else {
       sessionStorage.removeItem(StorageKeys.TestFromComplex)
-      sessionStorage.removeItem(StorageKeys.EumkRoute)
-      sessionStorage.removeItem(StorageKeys.EumkComplexId)
+      sessionStorage.removeItem(StorageKeys.ComplexRoute)
+      sessionStorage.removeItem(StorageKeys.ComplexId)
       this.getTests(this.subject.id)
     }
   }

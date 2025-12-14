@@ -122,4 +122,9 @@ export class ComplexMaterialComponent implements OnInit {
         })
     }
   }
+
+  navigateToComplexList(): void {
+    localStorage.removeItem(StorageKeys.SelectedComplex)
+    this.router.navigate(['/main'])
+  }
 }

@@ -16,4 +16,9 @@ export class ComplexCascade {
   Attachments: Attachment[]
   children?: ComplexCascade[]
   isSectionNode?: boolean
+  TestResult?: {
+    Points?: number
+    StartTime?: string
+    EndTime?: string
+  }
 }
