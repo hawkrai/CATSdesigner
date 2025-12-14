@@ -15,5 +15,7 @@ namespace LMPlatform.Models
         public LecturesScheduleVisiting LecturesScheduleVisiting { get; set; }
 
         public string Comment { get; set; }
+
+        public bool ShowForStudent { get; set; }
     }
 }

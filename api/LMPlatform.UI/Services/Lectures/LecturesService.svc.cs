@@ -281,7 +281,8 @@ namespace LMPlatform.UI.Services.Lectures
 							Mark = e.Mark,
 							LecturesScheduleVisitingId = e.LecturesVisitId,
 							StudentId = student.StudentId,
-                            Comment = e.Comment
+                            Comment = e.Comment,
+                            ShowForStudent = e.ShowForStudent
 						}).ToList());
                 }
                 return new ResultViewData
@@ -300,7 +301,7 @@ namespace LMPlatform.UI.Services.Lectures
             }
         }
 
-		public ResultViewData SaveMarksCalendarDataSingle(int markId, string mark, int lecturesVisitId, int studentId, string comment)
+		public ResultViewData SaveMarksCalendarDataSingle(int markId, string mark, int lecturesVisitId, int studentId, string comment, bool showForStudent)
 		{
 			try
 			{
@@ -312,7 +313,8 @@ namespace LMPlatform.UI.Services.Lectures
 						Mark = mark,
 						LecturesScheduleVisitingId = lecturesVisitId,
 						StudentId = studentId,
-                        Comment = comment
+                        Comment = comment,
+                        ShowForStudent = showForStudent
 					}
 				});
 
@@ -380,7 +382,8 @@ namespace LMPlatform.UI.Services.Lectures
                                 LecturesVisitId = lecturesScheduleVisiting.Id,
                                 Mark = lecturesVisitMark.Mark,
                                 MarkId = lecturesVisitMark.Id,
-                                Comment = lecturesVisitMark.Comment
+                                Comment = lecturesVisitMark.Comment,
+                                ShowForStudent = lecturesVisitMark.ShowForStudent
                             });
                         }
                         else
@@ -457,7 +460,8 @@ namespace LMPlatform.UI.Services.Lectures
                                 LecturesVisitId = lecturesScheduleVisiting.Id,
                                 Mark = lecturesVisitMark.Mark,
                                 MarkId = lecturesVisitMark.Id,
-                                Comment = lecturesVisitMark.Comment
+                                Comment = lecturesVisitMark.Comment,
+                                ShowForStudent = lecturesVisitMark.ShowForStudent,
                             });
                         }
                         else
