@@ -16,7 +16,6 @@ import * as labsActions from '../actions/labs.actions'
 import * as subjectSelectors from '../selectors/subject.selector'
 import * as filesActions from '../actions/files.actions'
 import * as catsActions from '../actions/cats.actions'
-import { TranslatePipe } from 'educats-translate'
 import * as testsActions from '../actions/tests.actions'
 
 import * as protectionActions from '../actions/protection.actions'
@@ -34,7 +33,6 @@ export class LabsEffects {
     private translate: TranslatePipe,
     private store: Store<IAppState>,
     private scheduleService: ScheduleService,
-    private translate: TranslatePipe,
     private rest: LabsRestService,
     private userFilesService: UserFilesService
   ) {}

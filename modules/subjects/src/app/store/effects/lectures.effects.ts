@@ -12,7 +12,6 @@ import * as groupsSelectors from '../selectors/groups.selectors'
 import * as filesActions from '../actions/files.actions'
 import * as catsActions from '../actions/cats.actions'
 import { ScheduleService } from 'src/app/services/schedule.service'
-import { TranslatePipe } from 'educats-translate'
 import { generateCreateDateException } from 'src/app/utils/exceptions'
 import { TranslatePipe } from 'educats-translate'
 
@@ -23,7 +22,6 @@ export class LecturesEffects {
     private translate: TranslatePipe,
     private store: Store<IAppState>,
     private scheduleService: ScheduleService,
-    private translate: TranslatePipe,
     private rest: LecturesRestService
   ) {}
 
