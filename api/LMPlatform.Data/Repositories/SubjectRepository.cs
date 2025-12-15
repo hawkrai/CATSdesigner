@@ -64,7 +64,7 @@ namespace LMPlatform.Data.Repositories
 				.Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(v => v.SubjectStudents)))
 				.Include(e => e.Subject.SubjectLecturers.Select(x => x.Lecturer))
 				.Include(e => e.Subject.LecturesScheduleVisitings)
-				.Where(e => e.GroupId == groupId && (e.Subject == null || e.Subject.IsArchive == isArchive)).ToList();
+				.Where(e => e.GroupId == groupId && (e.Subject == null || (isArchive) ? !e.IsActiveOnCurrentGroup : (!e.Subject.IsArchive && e.IsActiveOnCurrentGroup))).ToList();
 				return subjectGroup.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
 		}
 			public List<Subject> GetSubjects(int groupId = 0, int lecturerId = 0)
