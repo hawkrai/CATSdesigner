@@ -1,13 +1,9 @@
-﻿using System.Linq;
+﻿using Application.Core;
+using Application.Infrastructure.CPManagement;
+using LMPlatform.UI.Attributes;
+using System;
 using System.Net.Http;
 using System.Web.Http;
-using Application.Infrastructure.Export;
-using LMPlatform.Data.Infrastructure;
-using System.Data.Entity;
-using Application.Core;
-using LMPlatform.UI.Attributes;
-using Application.Core.Helpers;
-using Application.Infrastructure.CPManagement;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
@@ -16,12 +12,11 @@ namespace LMPlatform.UI.ApiControllers.CP
     {
         private readonly LazyDependency<ICPManagementService> _courseProjectManagementService = new LazyDependency<ICPManagementService>();
 
-        private ICPManagementService CpManagementService
-            => _courseProjectManagementService.Value;
+        private ICPManagementService CpManagementService => _courseProjectManagementService.Value;
 
-        public HttpResponseMessage Get(int courseProjectId)
+        public HttpResponseMessage Get(int courseProjectId, string lang)
         {
-            return CpManagementService.DownloadTaskSheet(courseProjectId);
+            return CpManagementService.DownloadTaskSheet(courseProjectId, lang);
         }
 
         public HttpResponseMessage Get(int groupId, int subjectId)

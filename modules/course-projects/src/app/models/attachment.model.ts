@@ -4,4 +4,5 @@ export class Attachment {
   FileName: string
   PathName: string
   AttachmentType: number
+  fileSize: string
 }
