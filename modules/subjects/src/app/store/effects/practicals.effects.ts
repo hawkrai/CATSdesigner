@@ -19,14 +19,12 @@ import { iif, of } from 'rxjs'
 import { ProtectionType } from 'src/app/models/protection-type.enum'
 import { TranslatePipe } from 'educats-translate'
 import * as protectionActions from '../actions/protection.actions'
-import { TranslatePipe } from 'educats-translate'
 
 @Injectable()
 export class PracticalsEffects {
   constructor(
     private store: Store<IAppState>,
     private actions$: Actions,
-    private translate: TranslatePipe,
     private rest: PracticalRestService,
     private translate: TranslatePipe,
     private scheduleService: ScheduleService,
@@ -68,6 +66,7 @@ export class PracticalsEffects {
       )
     )
   )
+
 
   updateOrder$ = createEffect(() =>
     this.actions$.pipe(

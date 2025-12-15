@@ -282,7 +282,7 @@ export class ScheduleMainComponent implements OnInit {
     if (subGroupKey && subGroupKey !== 'null') {
       const key = this.subGroupMap[subGroupKey]
       if (key) {
-        message += this.translatePipe.transform(key) + '\n'
+        message += this.translatePipe.transform(key, key) + '\n'
       }
     }
 
