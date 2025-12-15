@@ -1,3 +1,7 @@
+::ng-deep .example-tooltip-blue {
+  white-space: pre-line;
+}
+
 h3 {
   margin: 0 0 10px;
 }
