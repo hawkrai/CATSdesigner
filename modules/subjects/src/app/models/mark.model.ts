@@ -3,4 +3,5 @@ export class Mark {
   Mark: string
   MarkId: number
   Comment: string
+  ShowForStudent: boolean
 }
