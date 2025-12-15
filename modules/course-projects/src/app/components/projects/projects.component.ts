@@ -18,6 +18,7 @@ import { CourseUserService } from '../../services/course-user.service'
 import { delay, switchMap, takeUntil } from 'rxjs/operators'
 import { TranslatePipe } from 'educats-translate'
 import { ProjectsListComponent } from './projects-list/projects-list.component'
+import { LanguageService } from '../../services/language.service'
 
 @Component({
   selector: 'app-projects',
@@ -43,6 +44,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   private direction = 'desc'
   private readonly destroy$: Subject<void> = new Subject<void>()
   private lecturerName = ''
+  private languageSubscription: Subscription
 
   constructor(
     private appComponent: AppComponent,
@@ -52,7 +54,8 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     private store: Store<IAppState>,
     private toastr: ToastrService,
     private translatePipe: TranslatePipe,
-    private courseService: CourseUserService
+    private courseService: CourseUserService,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit() {
@@ -61,6 +64,10 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       this.groupService
         .getGroups(this.subjectId)
         .subscribe((res) => (this.groups = res.Groups))
+      this.retrieveProjects()
+    })
+
+    this.languageSubscription = this.languageService.observe().subscribe(lang => {
       this.retrieveProjects()
     })
 
@@ -86,26 +93,27 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       this.destroy$.next()
       this.destroy$.unsubscribe()
     }
+    if (this.languageSubscription) this.languageSubscription.unsubscribe()
   }
 
   retrieveProjects() {
     forkJoin(
       this.projectsService.getProjects(
         'count=' +
-          this.COUNT +
-          '&page=' +
-          this.PAGE +
-          '&filter={"subjectId":"' +
-          this.subjectId +
-          '","searchString":"' +
-          this.searchString +
-          '"}' +
-          '&filter[subjectId]=' +
-          this.subjectId +
-          '&sorting[' +
-          this.sorting +
-          ']=' +
-          this.direction
+        this.COUNT +
+        '&page=' +
+        this.PAGE +
+        '&filter={"subjectId":"' +
+        this.subjectId +
+        '","searchString":"' +
+        this.searchString +
+        '"}' +
+        '&filter[subjectId]=' +
+        this.subjectId +
+        '&sorting[' +
+        this.sorting +
+        ']=' +
+        this.direction
       ),
       this.projectsService.getReceivedProjects(this.subjectId)
     )
@@ -343,11 +351,11 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this.projectsService
       .getStudents(
         'count=' +
-          this.COUNT +
-          '&page=' +
-          this.PAGE +
-          '&filter[courseProjectId]=' +
-          project.Id
+        this.COUNT +
+        '&page=' +
+        this.PAGE +
+        '&filter[courseProjectId]=' +
+        project.Id
       )
       .subscribe((response) => {
         const dialogRef = this.dialog.open(AssignProjectDialogComponent, {
@@ -426,13 +434,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   }
 
   downloadTaskSheet(project: Project) {
-  const translatedLabel = this.translatePipe.transform(
-    'text.course.projects.selection.label',
-    'Выбор темы курсового проекта'
-  );
-  
-  const lang = translatedLabel !== 'Выбор темы курсового проекта' ? 'en' : 'ru';
-
-  location.href = `${location.origin}/api/CPTaskSheetDownload?courseProjectId=${project.Id}&lang=${lang}`;
-}
+    const lang = this.languageService.current || 'ru'
+    location.href = `${location.origin}/api/CPTaskSheetDownload?courseProjectId=${project.Id}&lang=${lang}`
+  }
 }

@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, OnInit, OnDestroy } from '@angular/core'
 import { Theme } from '../../models/theme.model'
 import { TaskSheetService } from '../../services/task-sheet.service'
-import { Subject, Subscription } from 'rxjs'
+import { Subscription } from 'rxjs'
 import { CourseUser } from '../../models/course-user.model'
 import { EditTaskSheetComponent } from './edit-task-sheet/edit-task-sheet.component'
 import { MatDialog } from '@angular/material'
@@ -14,123 +14,138 @@ import { ToastrService } from 'ngx-toastr'
 import { TranslatePipe } from 'educats-translate'
 import { ProjectsService } from 'src/app/services/projects.service'
 import { map } from 'rxjs/operators'
+import { LanguageService } from '../../services/language.service'
 
 @Component({
   selector: 'app-task-sheet',
   templateUrl: './task-sheet.component.html',
   styleUrls: ['./task-sheet.component.less'],
 })
-export class TaskSheetComponent implements OnInit {
+export class TaskSheetComponent implements OnInit, OnDestroy {
   @Input() courseUser: CourseUser
   @Input() groups: CoreGroup[]
 
   private themes: Theme[]
-  private taskSheetHtml: any
+  private taskSheetHtml: string
   private taskSheetSubscription: Subscription
+  private subjectSubscription: Subscription
+  private languageSubscription: Subscription
 
   private subjectId: string
   private courseProjectId: number
   private templates: any[]
-  private tepmlate: Template
+  private template: Template
+
   constructor(
     private projectsService: ProjectsService,
     private taskSheetService: TaskSheetService,
     private dialog: MatDialog,
     private toastr: ToastrService,
     private translatePipe: TranslatePipe,
+    private languageService: LanguageService,
     private store: Store<IAppState>
   ) {}
 
   ngOnInit() {
-    this.store.pipe(select(getSubjectId)).subscribe((subjectId) => {
-      this.subjectId = subjectId
-      this.projectsService
-        .getProjects(
-          'count=' +
-            1000000 +
-            '&page=' +
-            1 +
-            '&filter={"subjectId":"' +
-            this.subjectId +
-            '","searchString":""}' +
-            '&filter[subjectId]=' +
-            this.subjectId +
-            '&sorting[Id]=' +
-            'desc'
-        )
-        .pipe(map((responce: any) => responce.Items))
-        .subscribe((res) => {
-          if (res.length > 0) {
-            this.themes = res.sort((a, b) => (a.Theme < b.Theme ? -1 : 1))
-            if (!this.courseProjectId) {
-              this.courseProjectId = res[0].Id
-            }
-            if (this.courseUser.IsStudent) {
-              const project = res.find(
-                (item) => item.StudentId === this.courseUser.UserId
-              )
-              if (project) {
-                this.courseProjectId = project.Id
-              }
-            }
-            this.retrieveTaskSheetHtml()
-            this.retrieveTemplates()
-          }
-        })
+    this.subjectSubscription = this.store
+      .pipe(select(getSubjectId))
+      .subscribe((subjectId) => {
+        this.subjectId = subjectId
+        this.loadProjects()
+      })
+
+    this.languageSubscription = this.languageService.observe().subscribe(lang => {
+      if (this.courseProjectId) {
+        this.retrieveTaskSheetHtml(lang)
+      }
     })
   }
 
-  onThemeChange(themeId: number) {
-    this.courseProjectId = themeId
-    if (this.taskSheetSubscription) {
-      this.taskSheetSubscription.unsubscribe()
-    }
-    this.retrieveTaskSheetHtml()
+  ngOnDestroy() {
+    if (this.taskSheetSubscription) this.taskSheetSubscription.unsubscribe()
+    if (this.subjectSubscription) this.subjectSubscription.unsubscribe()
+    if (this.languageSubscription) this.languageSubscription.unsubscribe()
   }
 
-  retrieveTaskSheetHtml() {
-    this.taskSheetHtml = null
-    this.taskSheetSubscription = this.taskSheetService
-      .getTaskSheetHtml({
-        courseProjectId: this.courseProjectId,
-        language: localStorage.getItem('locale'),
-      })
+  private loadProjects() {
+    this.projectsService
+      .getProjects(
+        'count=' +
+        1000000 +
+        '&page=' +
+        1 +
+        '&filter={"subjectId":"' +
+        this.subjectId +
+        '","searchString":""}' +
+        '&filter[subjectId]=' +
+        this.subjectId +
+        '&sorting[Id]=' +
+        'desc'
+      )
+      .pipe(map((res: any) => res.Items))
       .subscribe((res) => {
-        if (res != null) {
-          this.taskSheetHtml = res
-          const div = document.getElementById('task-sheet')
-          div.innerHTML = res
+        if (res.length > 0) {
+          this.themes = res.sort((a, b) => (a.Theme < b.Theme ? -1 : 1))
+          if (!this.courseProjectId) this.courseProjectId = res[0].Id
+
+          if (this.courseUser.IsStudent) {
+            const project = res.find(item => item.StudentId === this.courseUser.UserId)
+            if (project) this.courseProjectId = project.Id
+          }
+
+          this.retrieveTaskSheetHtml(this.languageService.current)
+          this.retrieveTemplates()
         }
       })
   }
 
-  getTaskSheetTemplate(taskSheet: any): object {
-    const checkTheme = this.templates.find(
-      (i) =>
-        i.InputData == taskSheet.InputData &&
-        i.Faculty == i.Faculty &&
-        i.HeadCathedra == i.HeadCathedra &&
-        i.RpzContent == i.RpzContent &&
-        i.DrawMaterials == i.DrawMaterials &&
-        i.Univer == i.Univer &&
-        i.DateEnd == i.DateEnd &&
-        i.DateStart == i.DateStart
-    )
+  onThemeChange(themeId: number) {
+    this.courseProjectId = themeId
+    if (this.taskSheetSubscription) this.taskSheetSubscription.unsubscribe()
+    this.retrieveTaskSheetHtml(this.languageService.current)
+  }
 
-    if (checkTheme != undefined) {
-      this.tepmlate = new Template()
-      this.tepmlate.Id = String(checkTheme.Id)
-      this.tepmlate.Name = checkTheme.Name
-      return this.tepmlate
-    } else {
-      return undefined
-    }
+  retrieveTaskSheetHtml(lang: string) {
+    this.taskSheetHtml = null
+    this.taskSheetSubscription = this.taskSheetService
+      .getTaskSheetHtml({
+        courseProjectId: this.courseProjectId,
+        language: lang
+      })
+      .subscribe(res => {
+        if (res) {
+          this.taskSheetHtml = res
+          const div = document.getElementById('task-sheet')
+          if (div) div.innerHTML = res
+        }
+      })
+  }
+
+  getTaskSheetTemplate(taskSheet: any): Template | undefined {
+    if (!this.templates) return undefined
+    const found = this.templates.find(
+      i =>
+        i.InputData === taskSheet.InputData &&
+        i.Faculty === taskSheet.Faculty &&
+        i.HeadCathedra === taskSheet.HeadCathedra &&
+        i.RpzContent === taskSheet.RpzContent &&
+        i.DrawMaterials === taskSheet.DrawMaterials &&
+        i.Univer === taskSheet.Univer &&
+        i.DateEnd === taskSheet.DateEnd &&
+        i.DateStart === taskSheet.DateStart
+    )
+    if (!found) return undefined
+
+    this.template = new Template()
+    this.template.Id = String(found.Id)
+    this.template.Name = found.Name
+    return this.template
   }
 
   editTaskSheet() {
     this.taskSheetService
       .getTaskSheet({ courseProjectId: this.courseProjectId })
-      .subscribe((response) => {
+      .subscribe(response => {
         const dialogRef = this.dialog.open(EditTaskSheetComponent, {
           width: '548px',
           data: {
@@ -138,14 +153,14 @@ export class TaskSheetComponent implements OnInit {
             taskSheet: response,
             groups: this.groups,
             userId: this.courseUser.UserId,
-            taskSheetTemplate: this.getTaskSheetTemplate(response),
-          },
+            taskSheetTemplate: this.getTaskSheetTemplate(response)
+          }
         })
 
-        dialogRef.afterClosed().subscribe((result) => {
-          if (result != null) {
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
             this.taskSheetService.editTaskSheet(result).subscribe(() => {
-              this.ngOnInit()
+              this.retrieveTaskSheetHtml(this.languageService.current)
               this.toastr.success(
                 this.translatePipe.transform(
                   'text.list.changed.successfully',
@@ -154,7 +169,7 @@ export class TaskSheetComponent implements OnInit {
               )
             })
           } else {
-            this.ngOnInit()
+            this.retrieveTaskSheetHtml(this.languageService.current)
           }
         })
       })
@@ -164,43 +179,31 @@ export class TaskSheetComponent implements OnInit {
     this.taskSheetService
       .getTemplates(
         'count=1000000' +
-          '&page=1' +
-          '&filter={"lecturerId":"' +
-          this.courseUser.UserId +
-          '","searchString":"' +
-          '' +
-          '"}' +
-          '&filter[lecturerId]=' +
-          this.courseUser.UserId +
-          '&sorting[' +
-          'Id' +
-          ']=' +
-          'desc'
+        '&page=1' +
+        '&filter={"lecturerId":"' +
+        this.courseUser.UserId +
+        '","searchString":"' +
+        '' +
+        '"}' +
+        '&filter[lecturerId]=' +
+        this.courseUser.UserId +
+        '&sorting[' +
+        'Id' +
+        ']=' +
+        'desc'
       )
-      .subscribe((res) => (this.templates = res.Items))
+      .subscribe(res => (this.templates = res.Items))
   }
 
   downloadTaskSheet() {
-  const translated = this.translatePipe.transform(
-    'text.course.projects.selection.label',
-    'Выбор темы курсового проекта'
-  );
-
-  const lang = translated !== 'Выбор темы курсового проекта' ? 'en' : 'ru';
-
-  location.href =
-    `${location.origin}/api/CPTaskSheetDownload` +
-    `?courseProjectId=${this.courseProjectId}` +
-    `&lang=${lang}`;
-}
-
+    const lang = this.languageService.current
+    location.href =
+      `${location.origin}/api/CPTaskSheetDownload` +
+      `?courseProjectId=${this.courseProjectId}` +
+      `&lang=${lang}`
+  }
 
   get isSelectDisabled(): boolean {
     return this.courseUser.IsStudent && !this.courseUser.IsLecturer
   }
-}
-function takeUntil(
-  destroy$: Subject<void>
-): import('rxjs').OperatorFunction<any, unknown> {
-  throw new Error('Function not implemented.')
 }

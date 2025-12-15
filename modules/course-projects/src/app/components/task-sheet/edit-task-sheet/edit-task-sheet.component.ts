@@ -28,6 +28,18 @@ interface DialogData {
   userId: number
 }
 
+interface TemplateFields {
+  inputDataControl: string
+  contentControl: string
+  drawContentControl: string
+  univerControl: string
+  facultyControl: string
+  departmentControl: string
+  headCathedraControl: string
+  startDateControl: Date | string
+  endDateControl: Date | string
+}
+
 function createEmptyTaskSheet(courseProjectId: string): TaskSheet {
   return {
     CourseProjectId: courseProjectId,
@@ -60,7 +72,7 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
   private COUNT = 1000000
   private PAGE = 1
   hasChange = false
-  private initialFormValue: any
+  private initialFormValue: TemplateFields
 
   private templates: Template[]
   selectedGroups: string[] = []
@@ -164,19 +176,19 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
     })
   }
 
-  private getTemplateFields(formValue: any): any {
-    return {
-      inputDataControl: formValue.inputDataControl,
-      contentControl: formValue.contentControl,
-      drawContentControl: formValue.drawContentControl,
-      univerControl: formValue.univerControl,
-      facultyControl: formValue.facultyControl,
-      departmentControl: formValue.departmentControl,
-      headCathedraControl: formValue.headCathedraControl,
-      startDateControl: formValue.startDateControl,
-      endDateControl: formValue.endDateControl,
-    }
+  private getTemplateFields(formValue: Partial<TemplateFields>): TemplateFields {
+  return {
+    inputDataControl: formValue.inputDataControl,
+    contentControl: formValue.contentControl,
+    drawContentControl: formValue.drawContentControl,
+    univerControl: formValue.univerControl,
+    facultyControl: formValue.facultyControl,
+    departmentControl: formValue.departmentControl,
+    headCathedraControl: formValue.headCathedraControl,
+    startDateControl: formValue.startDateControl,
+    endDateControl: formValue.endDateControl,
   }
+}
 
   onCancelClick(): void {
     this.dialogRef.close()
