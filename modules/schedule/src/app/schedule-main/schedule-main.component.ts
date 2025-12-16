@@ -88,6 +88,17 @@ export class ScheduleMainComponent implements OnInit {
     )
   }
 
+  private isSameLessonAndNote(lesson: Lesson, note: any): boolean {
+    if (!lesson || !note) return false
+
+    if (lesson.Date !== note.Date) return false
+
+    if (lesson.Start !== note.StartTime) return false
+    if (lesson.End !== note.EndTime) return false
+
+    return true
+  }
+
   ngOnInit() {
     if (this.isMobile()) {
       this.view = CalendarView.Day
@@ -746,25 +757,62 @@ export class ScheduleMainComponent implements OnInit {
 
       this.isLoadActive = false
       this.refresh.next()
-    })
-    this.noteService
-      .GetPersonalNotesBetweenDates(startDate, endDate)
-      .subscribe((l) => {
-        if (l.Notes && l.Notes.length > 0) {
-          l.Notes.forEach((note) => {
-            const dateArray = note.Date.split('.')
-            const year = parseInt(dateArray[2])
-            const month = parseInt(dateArray[1]) - 1
-            const day = parseInt(dateArray[0])
-            const startTime = note.StartTime.split(':')
-            const startHour = parseInt(startTime[0])
-            const startMinute = parseInt(startTime[1])
-            const endTime = note.EndTime.split(':')
-            const endHour = parseInt(endTime[0])
-            const endMinute = parseInt(endTime[1])
 
-            const startT = new Date(year, month, day, startHour, startMinute)
-            const endT = new Date(year, month, day, endHour, endMinute)
+      this.noteService
+        .GetPersonalNotesBetweenDates(startDate, endDate)
+        .subscribe((l) => {
+          if (!l.Notes.length) return
+
+          l.Notes.forEach((note) => {
+            const lesson = this.lessons.find(ls =>
+              this.isSameLessonAndNote(ls, note)
+            )
+
+            if (lesson) {
+              if (!lesson.Notes) {
+                lesson.Notes = []
+              }
+
+              const personalText = `\n---\n${note.Text}: ${note.Note}`
+              if (
+                lesson.Notes.length === 0 ||
+                !lesson.Notes[0].Text.includes(note.Text)
+              ) {
+                if (lesson.Notes.length > 0) {
+                  lesson.Notes[0].Text += personalText
+                } else {
+                  lesson.Notes.push({
+                    Text: `${note.Text}: ${note.Text}`,
+                  })
+                }
+              }
+
+              const event = this.events.find(
+                e => e.meta === 'lesson' && e.id === lesson.Id
+              )
+
+              if (event) {
+                event.title = this.calculateTitle(lesson)
+              }
+
+              return
+            }
+
+            const dateArray = note.Date.split('.')
+            const startT = new Date(
+              +dateArray[2],
+              +dateArray[1] - 1,
+              +dateArray[0],
+              +note.StartTime.split(':')[0],
+              +note.StartTime.split(':')[1]
+            )
+            const endT = new Date(
+              +dateArray[2],
+              +dateArray[1] - 1,
+              +dateArray[0],
+              +note.EndTime.split(':')[0],
+              +note.EndTime.split(':')[1]
+            )
 
             this.events.push({
               id: note.Id,
@@ -780,12 +828,10 @@ export class ScheduleMainComponent implements OnInit {
               meta: 'note',
             })
           })
-          this.isLoadActive = false
+
           this.refresh.next()
-        } else {
-          console.error('l.Notes is empty or undefined')
-        }
-      })
+        })
+    })
   }
 
   showHelp(): void {
