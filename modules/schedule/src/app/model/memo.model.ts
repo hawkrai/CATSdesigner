@@ -1,3 +1,3 @@
 export class Memo {
-  message: string
+  Text: string
 }

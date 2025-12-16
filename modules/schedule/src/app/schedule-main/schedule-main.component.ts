@@ -130,7 +130,7 @@ export class ScheduleMainComponent implements OnInit {
       building = lesson.Building
     }
     if (lesson.Notes.length != 0) {
-      memo = lesson.Notes[0].message
+      memo = lesson.Notes[0].Text
     } else {
       memo = ''
     }

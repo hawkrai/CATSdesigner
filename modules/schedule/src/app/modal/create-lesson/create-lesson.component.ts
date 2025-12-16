@@ -205,7 +205,9 @@ export class CreateLessonComponent implements OnInit {
       this.dayOfLesson = this.data.lesson.start
       this.startTimeOfLesson = this.startHour + ':' + this.startMin
       this.endTimeOfLesson = this.endHour + ':' + this.endMin
-      this.memo = this.lessonservice.getMemo(this.data.lesson.title)
+      this.memo = this.data.lesson.Notes && this.data.lesson.Notes.length > 0
+        ? this.data.lesson.Notes[0].Text
+        : '';
       this.lesson.Audience = this.lessonservice.getTitlePart(
         this.data.lesson.title,
         1
@@ -358,19 +360,19 @@ export class CreateLessonComponent implements OnInit {
     this.lesson.Start = this.startTimeOfLesson
     this.lesson.End = this.endTimeOfLesson
     if (this.memo != undefined) {
-      this.lesson.Notes = [{ message: this.memo }]
+      this.lesson.Notes = [{ Text: this.memo }]
     } else {
       this.lesson.Notes = []
     }
     this.lesson.GroupId = this.formGroup.controls.group.value
     this.lesson.SubGroupId = this.formGroup.controls.subGroup.value
     if (this.isStudentUpdateLesson) {
-      this.lessonservice
-        .saveLessonNote(+this.lesson.Id, this.lesson.Notes[0].message)
+     /*  this.lessonservice
+       .saveLessonNote(+this.lesson.Id, this.lesson.Notes[0].Text)
         .subscribe((res) => {
           console.log(res)
           this.dialogRef.close({ lesson: this.lesson, type: 'lesson' })
-        })
+        })*/
     } else {
       this.lessonservice
         .getLessonModule(this.lesson.SubjectId)
@@ -403,10 +405,11 @@ export class CreateLessonComponent implements OnInit {
                 if (l.Code == '200') {
                   if (this.lesson.Notes.length != 0) {
                     this.lessonservice
-                      .saveLessonNote(
-                        l.Schedule.Id,
-                        this.lesson.Notes[0].message
-                      )
+                      .saveLessonNote({
+                        subjectId: l.Schedule.SubjectId,
+                        text: this.lesson.Notes[0].Text,
+                        lecturesScheduleId: l.Schedule.Id,
+                      })
                       .subscribe((res) => {
                         console.log(res)
                       })
@@ -442,10 +445,11 @@ export class CreateLessonComponent implements OnInit {
                 if (l.Code == '200') {
                   if (this.lesson.Notes.length != 0) {
                     this.lessonservice
-                      .saveLessonNote(
-                        l.Schedule.Id,
-                        this.lesson.Notes[0].message
-                      )
+                      .saveLessonNote({
+                       subjectId: l.Schedule.SubjectId,
+                       text: this.lesson.Notes[0].Text,
+                       labsScheduleId: l.Schedule.Id,
+                      })
                       .subscribe((res) => {
                         console.log(res)
                       })
@@ -481,10 +485,11 @@ export class CreateLessonComponent implements OnInit {
                 if (l.Code == '200') {
                   if (this.lesson.Notes.length != 0) {
                     this.lessonservice
-                      .saveLessonNote(
-                        l.Schedule.Id,
-                        this.lesson.Notes[0].message
-                      )
+                      .saveLessonNote({
+                       subjectId: l.Schedule.SubjectId,
+                       text: this.lesson.Notes[0].Text,
+                       practicalScheduleId: l.Schedule.Id,
+                      })
                       .subscribe((res) => {
                         console.log(res)
                       })

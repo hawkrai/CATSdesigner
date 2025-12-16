@@ -8,6 +8,7 @@ using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Notes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -31,14 +32,14 @@ namespace LMPlatform.UI.Services.Notes
         public ResultViewData SaveNote(int id, string text, int subjectId, int? lecturesScheduleId, int? labsScheduleId, int? practicalScheduleId)
         {
             try
-            {
+            {   
                 var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
+                        Message = $"Пользователь не присоединён к предмету: {subjectId}"
                     };
                 }
                 NoteManagementService.SaveNote(new Note
