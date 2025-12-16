@@ -84,7 +84,7 @@ export class CreateLessonComponent implements OnInit {
           .slice(0, 4)
       }
     })
-    if (this.data.user.role === 'student' && this.data.lesson != null) {
+    if (this.user.role === 'student' && this.data.lesson != null) {
       this.isStudentUpdateLesson = true
     }
     this.formGroup = new FormGroup({
@@ -367,12 +367,27 @@ export class CreateLessonComponent implements OnInit {
     this.lesson.GroupId = this.formGroup.controls.group.value
     this.lesson.SubGroupId = this.formGroup.controls.subGroup.value
     if (this.isStudentUpdateLesson) {
-     /*  this.lessonservice
-       .saveLessonNote(+this.lesson.Id, this.lesson.Notes[0].Text)
-        .subscribe((res) => {
-          console.log(res)
-          this.dialogRef.close({ lesson: this.lesson, type: 'lesson' })
-        })*/
+        if (this.memo && this.memo.trim() !== '') {
+              const personalNote: Note = {
+                id: 0,
+                start: new Date(this.lesson.Date + 'T' + this.lesson.Start),
+                end: new Date(this.lesson.Date + 'T' + this.lesson.End),
+                title: 'Ваша заметка',
+                note: this.memo,
+              };
+
+              this.noteService
+                .savePersonalNote(personalNote, this.lessonservice.formatDate2(this.dayOfLesson), this.lesson.Start, this.lesson.End, 0)
+                .subscribe({
+                  next: (res) => {
+                    console.log('Личная заметка сохранена', res);
+                    this.dialogRef.close({ lesson: this.lesson, type: 'lesson' });
+                  },
+                  error: (err) => {
+                    console.error('Ошибка при сохранении личной заметки', err);
+                  },
+                });
+      }
     } else {
       this.lessonservice
         .getLessonModule(this.lesson.SubjectId)
@@ -560,6 +575,7 @@ export class CreateLessonComponent implements OnInit {
   }
 
   addNote() {
+    const noteId = this.eventToChange && this.eventToChange.id ? this.eventToChange.id : 0;
     this.note.start = this.dayOfNote
     const day = new Date(this.dayOfNote)
     this.note.end = day
@@ -583,7 +599,7 @@ export class CreateLessonComponent implements OnInit {
         this.lessonservice.formatDate2(this.dayOfNote),
         this.startTimeOfNote,
         this.endTimeOfNote,
-        this.eventToChange.id
+        noteId
       )
       .subscribe((l) => {
         console.log(l)

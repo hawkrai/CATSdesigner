@@ -18,12 +18,12 @@ export class NoteService {
     return this.http.post<any>(
       '/Services/Notes/NotesService.svc/SavePersonalNote',
       {
+        id: id,
         text: noteAdd.title,
         date: dateNote,
         startTime: start,
         endTime: end,
         note: noteAdd.note,
-        id: id,
       }
     )
   }
@@ -31,7 +31,7 @@ export class NoteService {
   deletePersonalNote(idNote: number): Observable<any> {
     return this.http.post<any>(
       '/Services/Notes/NotesService.svc/DeletePersonalNote',
-      { idNote }
+      { id: idNote }
     )
   }
   GetPersonalNotesBetweenDates(start: string, end: string): Observable<any> {

@@ -107,11 +107,11 @@ namespace LMPlatform.UI.Services.Notes
                     Message = "Заметка успешно удалена"
                 };
             }
-            catch
+            catch(Exception ex) 
             {
                 return new ResultViewData
                 {
-                    Message = "Не удалось удалить заметку",
+                    Message = $"Не удалось удалить заметку {ex.Message}",
                     Code = "500"
                 };
             }
@@ -164,7 +164,7 @@ namespace LMPlatform.UI.Services.Notes
             {
                 return new ResultViewData
                 {
-                    Message = "Не удалось сохранить заметку",
+                    Message = $"Не удалось сохранить заметку",
                     Code = "500"
                 };
             }

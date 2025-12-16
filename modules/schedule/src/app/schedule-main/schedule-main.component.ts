@@ -439,6 +439,24 @@ export class ScheduleMainComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result != null) {
         if (result) {
+          if (eventToDelete.meta == 'note') {
+                const noteId = Number(eventToDelete.id);
+                if (noteId) {
+                  this.noteService.deletePersonalNote(noteId).subscribe({
+                    next: () => {
+                      // Удаляем заметку из локального списка событий
+                      this.events = this.events.filter(event => event !== eventToDelete);
+                      this.refresh.next();
+                      console.log(`Заметка ${noteId} успешно удалена`);
+                    },
+                    error: (err) => {
+                      console.error('Ошибка при удалении заметки', err);
+                    }
+                  });
+                }
+                return;
+              }
+
           if (eventToDelete.meta == 'lesson') {
             const a = this.lessonservice
               .getType(eventToDelete.title)
