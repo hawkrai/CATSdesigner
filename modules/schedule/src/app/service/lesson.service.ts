@@ -177,6 +177,7 @@ getLessonTypes(subjectId: number): Observable<string[][]> {
 }
 
   saveLessonNote(params: {
+    id: number,
     subjectId: number,
     text: string,
     lecturesScheduleId?: number,

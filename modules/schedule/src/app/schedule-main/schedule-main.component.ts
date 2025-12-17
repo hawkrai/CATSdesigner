@@ -140,11 +140,7 @@ export class ScheduleMainComponent implements OnInit {
     if (lesson.Building != undefined) {
       building = lesson.Building
     }
-    if (lesson.Notes.length != 0) {
-      memo = lesson.Notes[0].Text
-    } else {
-      memo = ''
-    }
+    memo = this.getLessonNoteText(lesson)
     if (lesson.Teacher != undefined) {
       teacher = lesson.Teacher.FullName
     }
@@ -185,6 +181,28 @@ export class ScheduleMainComponent implements OnInit {
       '|' +
       lesson.Teacher.LectorId
     )
+  }
+
+  getLessonNoteText(lesson: Lesson): string {
+       var global = ''
+       var personal = ''
+
+       if (lesson.Notes && lesson.Notes.length > 0 && lesson.Notes[0] && lesson.Notes[0].Text) {
+         global = lesson.Notes[0].Text
+       }
+       if (lesson.personalNote && lesson.personalNote.note) {
+         personal = lesson.personalNote.note
+       }
+       if (global !== '' && personal !== '') {
+         return global + '\n\n— Ваша заметка —\n' + personal
+       }
+       if (global !== '') {
+         return global
+       }
+       if (personal !== '') {
+         return personal
+       }
+       return ''
   }
 
   getTitleCourseConsultation(consultation: any) {
@@ -455,7 +473,6 @@ export class ScheduleMainComponent implements OnInit {
                 if (noteId) {
                   this.noteService.deletePersonalNote(noteId).subscribe({
                     next: () => {
-                      // Удаляем заметку из локального списка событий
                       this.events = this.events.filter(event => event !== eventToDelete);
                       this.refresh.next();
                       console.log(`Заметка ${noteId} успешно удалена`);
@@ -556,15 +573,48 @@ export class ScheduleMainComponent implements OnInit {
   }
 
   changeLesson(lessonChanged: CalendarEvent) {
+    const lessonObj = this.lessons.find(l => l.Id === lessonChanged.id);
+
+    let globalNoteText = ''
+    let globalNoteId = 0
+    let personalNoteText = ''
+    let personalNoteId = 0
+
+    if(lessonObj){
+      if(lessonObj.Notes && lessonObj.Notes.length > 0){
+          globalNoteText = lessonObj.Notes[0].Text
+          globalNoteId = lessonObj.Notes[0].Id
+      }
+      if(lessonObj.personalNote && lessonObj.personalNote.note !== undefined &&
+        lessonObj.personalNote.note !== null){
+          personalNoteText = lessonObj.personalNote.note
+          personalNoteId = lessonObj.personalNote.id
+      }
+    }
+
     const dialogRef = this.dialog.open(CreateLessonComponent, {
       width: '600px',
       height: '100%',
-      data: { user: this.user, lesson: lessonChanged },
-      position: { top: '0%' },
+      data: {
+        user: this.user,
+        lesson: lessonChanged,
+         notes: {
+           global: { text: globalNoteText, id: globalNoteId },
+           personal: { text: personalNoteText, id: personalNoteId}
+         },
+        position: { top: '0%' },
+      }
     })
     dialogRef.afterClosed().subscribe((result) => {
       if (result != null) {
         this.lesson = result.lesson
+        const index = this.lessons.findIndex(l => l.Id === result.lesson.Id);
+        if (index > -1) {
+          this.lessons[index] = result.lesson;
+        } else {
+          this.lessons.push(result.lesson);
+        }
+
         const startT = new Date(this.lesson.Date)
         const endT = new Date(this.lesson.Date)
         startT.setHours(
@@ -576,8 +626,18 @@ export class ScheduleMainComponent implements OnInit {
           +this.lesson.End.split(':')[1]
         )
         this.events = this.events.filter((event) => event !== lessonChanged)
-        this.lessons.push(this.lesson)
-        let titleLesson = this.calculateTitle(this.lesson)
+
+        let titleLesson = '';
+        if (this.user.role === 'student') {
+          titleLesson = this.calculateTitle(this.lesson)
+        } else {
+          const globalNoteOnlyLesson = { ...this.lesson }
+          if (globalNoteOnlyLesson.personalNote) {
+            delete globalNoteOnlyLesson.personalNote
+          }
+            titleLesson = this.calculateTitle(globalNoteOnlyLesson)
+          }
+
         if (result.type == 'diplom') {
           titleLesson = this.getTitleDiplomConsultation(this.lesson)
         }
@@ -761,76 +821,61 @@ export class ScheduleMainComponent implements OnInit {
       this.noteService
         .GetPersonalNotesBetweenDates(startDate, endDate)
         .subscribe((l) => {
-          if (!l.Notes.length) return
+          if (!l.Notes || !l.Notes.length) return;
 
           l.Notes.forEach((note) => {
-            const lesson = this.lessons.find(ls =>
-              this.isSameLessonAndNote(ls, note)
-            )
-
-            if (lesson) {
-              if (!lesson.Notes) {
-                lesson.Notes = []
-              }
-
-              const personalText = `\n---\n${note.Text}: ${note.Note}`
-              if (
-                lesson.Notes.length === 0 ||
-                !lesson.Notes[0].Text.includes(note.Text)
-              ) {
-                if (lesson.Notes.length > 0) {
-                  lesson.Notes[0].Text += personalText
-                } else {
-                  lesson.Notes.push({
-                    Text: `${note.Text}: ${note.Text}`,
-                  })
-                }
-              }
-
-              const event = this.events.find(
-                e => e.meta === 'lesson' && e.id === lesson.Id
-              )
-
-              if (event) {
-                event.title = this.calculateTitle(lesson)
-              }
-
-              return
+            if (!note) return;
+            const lesson = this.lessons.find(ls => this.isSameLessonAndNote(ls, note));
+            if (lesson && !lesson.Notes) {
+              lesson.Notes = [];
             }
 
-            const dateArray = note.Date.split('.')
+            const dateArray = note.Date.split('.');
             const startT = new Date(
               +dateArray[2],
               +dateArray[1] - 1,
               +dateArray[0],
               +note.StartTime.split(':')[0],
               +note.StartTime.split(':')[1]
-            )
+            );
             const endT = new Date(
               +dateArray[2],
               +dateArray[1] - 1,
               +dateArray[0],
               +note.EndTime.split(':')[0],
               +note.EndTime.split(':')[1]
-            )
+            );
 
-            this.events.push({
-              id: note.Id,
-              start: startT,
-              end: endT,
-              title: note.Text + '|' + note.Note,
-              color: colors.color,
-              resizable: {
-                beforeStart: false,
-                afterEnd: false,
-              },
-              draggable: false,
-              meta: 'note',
-            })
-          })
+            if (lesson) {
+              lesson.personalNote = {
+                id: note.Id,
+                start: startT,
+                end: endT,
+                title: note.Text || '',
+                note: note.Note || ''
+              };
 
-          this.refresh.next()
-        })
+              const event = this.events.find(e => e.meta === 'lesson' && e.id === lesson.Id);
+              if (event) {
+                event.title = this.calculateTitle(lesson);
+              }
+
+            } else {
+              this.events.push({
+                id: note.Id,
+                start: startT,
+                end: endT,
+                title: (note.Text || '') + '|' + (note.Note || ''),
+                color: colors.color,
+                resizable: { beforeStart: false, afterEnd: false },
+                draggable: false,
+                meta: 'note',
+              });
+            }
+          });
+
+          this.refresh.next();
+        });
     })
   }
 
