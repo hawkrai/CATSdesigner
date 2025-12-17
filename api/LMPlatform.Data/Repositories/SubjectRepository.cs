@@ -86,23 +86,31 @@ namespace LMPlatform.Data.Repositories
             };
 
             if (groupId != 0)
-			{
-                return GetSubjectGroupQueryable(context)
-            .Where(e => e.GroupId == groupId && e.IsActiveOnCurrentGroup)
-            .Select(e => e.Subject)
-            .DistinctBy(x => x.Id)
-            .OrderBy(x => latinFirst(x.Name))
-            .ThenBy(x => x.Name)
-            .ToList();
+            {
+                var subjectGroups = GetSubjectGroupQueryable(context)
+                    .Where(e => e.GroupId == groupId && e.IsActiveOnCurrentGroup)
+                    .ToList();
+
+                return subjectGroups
+                    .Select(e => e.Subject)
+                    .Where(s => s != null)
+                    .DistinctBy(s => s.Id)
+                    .OrderBy(s => latinFirst(s.Name))
+                    .ThenBy(s => s.Name)
+                    .ToList();
             }
 
-            return GetSubjectLecturerQueryable(context)
-        .Where(e => e.LecturerId == lecturerId)
-        .Select(e => e.Subject)
-        .DistinctBy(x => x.Id)
-        .OrderBy(x => latinFirst(x.Name))
-        .ThenBy(x => x.Name)
-        .ToList();
+            var subjectLecturers = GetSubjectLecturerQueryable(context)
+                .Where(e => e.LecturerId == lecturerId)
+                .ToList();
+
+            return subjectLecturers
+                .Select(e => e.Subject)
+                .Where(s => s != null)
+                .DistinctBy(s => s.Id)
+                .OrderBy(s => latinFirst(s.Name))
+                .ThenBy(s => s.Name)
+                .ToList();
         }
 
 		public Subject GetSubject(int subjectId, int groupId = 0, int lecturerId = 0)
