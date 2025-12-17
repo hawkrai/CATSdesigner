@@ -3,18 +3,23 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
-  private language$ = new BehaviorSubject<string>('ru'); 
+  private language$ = new BehaviorSubject<'ru' | 'en'>(this.getStoredLanguage());
 
-  get current(): string {
-    return this.language$.value;
+  private getStoredLanguage(): 'ru' | 'en' {
+    const lang = localStorage.getItem('locale');
+    return lang === 'en' ? 'en' : 'ru';
   }
 
-  set(language: string) {
-    this.language$.next(language);
+  get current(): 'ru' | 'en' {
+    return this.language$.value;
   }
 
   observe() {
     return this.language$.asObservable();
   }
-}
 
+  set(lang: 'ru' | 'en') {
+    localStorage.setItem('locale', lang);
+    this.language$.next(lang);
+  }
+}
