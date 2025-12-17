@@ -8,6 +8,7 @@ import { Lesson } from '../../model/lesson.model'
 import { Note } from '../../model/note.model'
 import { LessonService } from '../../service/lesson.service'
 import { NoteService } from '../../service/note.service'
+import { TranslatePipe } from 'educats-translate'
 
 export function flatpickrFactory() {
   flatpickr.localize(Russian)
@@ -65,7 +66,8 @@ export class CreateLessonComponent implements OnInit {
     public dialogRef: MatDialogRef<CreateLessonComponent>,
     @Inject(MAT_DIALOG_DATA) private data: any,
     private lessonservice: LessonService,
-    private noteService: NoteService
+    private noteService: NoteService,
+    private translate: TranslatePipe,
   ) {
     this.eventToChange = data.note
   }
@@ -433,10 +435,10 @@ export class CreateLessonComponent implements OnInit {
                     lesson: this.lesson,
                     type: 'lesson',
                     code: l.Code,
-                    message: l.Message,
+                    message: this.translate.transform(l.Message, l.Message),
                   })
                 } else {
-                  this.dialogRef.close({ code: l.Code, message: l.Message })
+                  this.dialogRef.close({ code: l.Code, message: this.translate.transform(l.Message, l.Message) })
                 }
               })
           } else if (
@@ -472,10 +474,10 @@ export class CreateLessonComponent implements OnInit {
                     lesson: this.lesson,
                     type: 'lesson',
                     code: l.Code,
-                    message: l.Message,
+                    message: this.translate.transform(l.Message, l.Message),
                   })
                 } else {
-                  this.dialogRef.close({ code: l.Code, message: l.Message })
+                  this.dialogRef.close({ code: l.Code, message: this.translate.transform(l.Message, l.Message) })
                 }
               })
           } else if (
@@ -511,10 +513,10 @@ export class CreateLessonComponent implements OnInit {
                     lesson: this.lesson,
                     type: 'lesson',
                     code: l.Code,
-                    message: l.Message,
+                    message: this.translate.transform(l.Message, l.Message),
                   })
                 } else {
-                  this.dialogRef.close({ code: l.Code, message: l.Message })
+                  this.dialogRef.close({ code: l.Code, message: this.translate.transform(l.Message, l.Message) })
                 }
               })
           } else if (
@@ -536,6 +538,10 @@ export class CreateLessonComponent implements OnInit {
               )
               .subscribe((r) => {
                 console.log(r)
+                this.dialogRef.close({
+                  code: r.Code,
+                  message: this.translate.transform(r.StatusDescription, r.StatusDescription),
+                })
               })
             this.lesson.Teacher.FullName = this.lessonservice.cutTeacherName(
               this.lesson.Teacher.FullName
@@ -557,7 +563,7 @@ export class CreateLessonComponent implements OnInit {
             this.dialogRef.close({
               lesson: null,
               code: '500',
-              message: 'Не удалось добавить занятие',
+              message: this.translate.transform('text.date.add.response.failure.unknown', 'text.date.add.response.failure.unknown'),
             })
           }
         })
@@ -592,8 +598,12 @@ export class CreateLessonComponent implements OnInit {
       )
       .subscribe((l) => {
         console.log(l)
+        this.dialogRef.close({
+          note: this.note,
+          type: 'note',
+          message: this.translate.transform(l.Message, l.Message)
+        })
       })
-    this.dialogRef.close({ note: this.note, type: 'note' })
   }
 
   onCancelClick() {

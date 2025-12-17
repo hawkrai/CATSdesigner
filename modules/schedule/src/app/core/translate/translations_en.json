@@ -228,6 +228,15 @@
   "text.schedule.field.must.be.not.empty": "Field must be not empty",
   "text.schedule.field.must.be.more": "Time must be more than 08:00",
 
+  "text.date.add.response.success": "Date has been added successfully",
+  "text.date.edit.response.success": "Lesson has been edited successfully",
+  "text.date.delete.response.success": "Date has been deleted successfully",
+  "text.note.save.response.success": "Note has been successfully saved",
+  "text.date.save.response.unknown": "Could not save the note",
+  "text.date.response.failure.taken": "Time and place are already taken",
+  "text.date.add.response.failure.unknown": "Error occurred while adding data",
+  "text.date.delete.response.failure.unknown": "Error occurred while deleting data",
+
   "text.schedule.building.length": "Building length should be less  4 symbols",
   "text.schedule.audience.length": "Audience length should be less  6 symbols",
   "text.schedule.lecture": "Lecture",

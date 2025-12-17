@@ -238,6 +238,15 @@
   "text.editor.edit.content": "Редактировать содержимое",
   "text.editor.hint.search": "Для поиска по книге нажмите Ctrl + F",
 
+  "text.date.add.response.success": "Дата успешно добавлена",
+  "text.date.edit.response.success": "Занятие успешно отредактировано",
+  "text.date.delete.response.success": "Дата успешно удалена",
+  "text.note.save.response.success": "Заметка успешно сохранена",
+  "text.date.save.response.unknown": "Не удалось сохранить заметку",
+  "text.date.response.failure.taken": "Время и место занято",
+  "text.date.add.response.failure.unknown": "Произошла ошибка при добавлении даты",
+  "text.date.delete.response.failure.unknown": "Произошла ошибка при удалении даты",
+
   "text.news": "Новость",
   "text.news.plural": "Новости",
 

@@ -152,7 +152,7 @@
   "text.subjects.response.success.editClasses": "Данные успешно изменены",
 
   "text.date.add.response.success": "Дата успешно добавлена",
-  "text.date.edit.response.success": "Дата успешно отредактирована",
+  "text.date.edit.response.success": "Занятие успешно отредактировано",
   "text.date.delete.response.success": "Дата успешно удалена",
   "text.date.response.failure.taken": "Время и место занято",
   "text.date.add.response.failure.unknown": "Произошла ошибка при добавлении даты",

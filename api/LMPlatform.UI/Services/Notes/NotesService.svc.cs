@@ -156,14 +156,14 @@ namespace LMPlatform.UI.Services.Notes
                 return new ResultViewData
                 {
                     Code = "200",
-                    Message = "Заметка успешно сохранена"
+                    Message = "text.note.save.response.success"
                 };
             }
             catch (Exception ex)
             {
                 return new ResultViewData
                 {
-                    Message = "Не удалось сохранить заметку",
+                    Message = "text.date.save.response.unknown",
                     Code = "500"
                 };
             }
