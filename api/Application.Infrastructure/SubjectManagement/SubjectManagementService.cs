@@ -1162,20 +1162,33 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
-		public List<Subject> GetSubjectsByStudent(int userId, bool isArchive)
+		public List<Subject> GetSubjectsByStudent(int userId)
 		{
 			List<Subject> model;
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
-				model = repositoriesContainer.SubjectRepository.GetAllSubjectsForGroup(student.GroupId, isArchive).ToList();
+				model = repositoriesContainer.SubjectRepository.GetAllSubjectsForGroup(student.GroupId).ToList();
 			}
 
 			return model;
 		}
 
-		public int GetSubjectsCountByStudent(int userId, bool isActive)
+        public List<Subject> GetSubjectsByStudentChecked(int userId, bool isArchive)
+        {
+            List<Subject> model;
+
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
+                model = repositoriesContainer.SubjectRepository.GetAllSubjectsForGroupChecked(student.GroupId, isArchive).ToList();
+            }
+
+            return model;
+        }
+
+        public int GetSubjectsCountByStudent(int userId, bool isActive)
 		{
 			int count;
 

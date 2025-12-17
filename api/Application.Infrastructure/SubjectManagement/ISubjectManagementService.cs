@@ -126,7 +126,8 @@ namespace Application.Infrastructure.SubjectManagement
         List<Subject> GetSubjectsByLector(int userId, bool isArchive = false);
         List<Subject> GetSubjectsInfoByLector(int userId, bool isArchive = false);
 
-        List<Subject> GetSubjectsByStudent(int userId, bool isArchive = false);
+        List<Subject> GetSubjectsByStudent(int userId);
+        List<Subject> GetSubjectsByStudentChecked(int userId, bool isArchive);
 
         int GetSubjectsCountByStudent(int userId, bool isActive);
         List<Subject> GetSubjectsInfoByStudent(int userId);
