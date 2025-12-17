@@ -90,7 +90,7 @@ namespace LMPlatform.UI.Services.UserFiles
                     Date = userLabFile.Date != null ? userLabFile.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
                     Attachments = FilesManagementService.GetAttachments(userLabFile.Attachments).ToList(),
                     UserId = userLabFile.UserId,
-                    Order = userLabFile.Lab?.Order,
+                    Order = (labId != null) ? userLabFile.Lab?.Order : userLabFile.Practical?.Order,
                     PracticalId = practicalId,
                     PracticalTheme = userLabFile.Practical?.Theme,
                     PracticalShortName = userLabFile.Practical?.ShortName,
