@@ -297,14 +297,14 @@ namespace LMPlatform.UI.Services.Labs
 				SubjectManagementService.RemoveStudentLabsMark(id);
 				return new ResultViewData
 				{
-					Message = "Данные успешно удалены",
+					Message = "text.data.delete.response.success",
 					Code = "200"
 				};
             } catch
             {
 				return new ResultViewData
 				{
-					Message = "Произошла ошибка при удалении данных",
+					Message = "text.data.delete.response.failure.unknown",
 					Code = "500"
 				};
             }

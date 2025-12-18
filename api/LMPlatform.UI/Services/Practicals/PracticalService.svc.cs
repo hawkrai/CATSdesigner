@@ -72,7 +72,7 @@ namespace LMPlatform.UI.Services.Practicals
                 return new PracticalsResult
                 {
                     Practicals = model.OrderBy(x => x.Order).ToList(),
-                    Message = "Практические занятия успешно загружены",
+                    Message = "text.practicals.get.response.success",
                     Code = "200"
                 };
             }
@@ -80,7 +80,7 @@ namespace LMPlatform.UI.Services.Practicals
             {
                 return new PracticalsResult
                 {
-                    Message = "Произошла ошибка при получении практических занятий",
+                    Message = "text.practicals.get.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -96,7 +96,7 @@ namespace LMPlatform.UI.Services.Practicals
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
+                        Message = "text.practical.save.response.failure.unattachedUser"
                     };
                 }
                 var normalizedTheme = theme?.Trim();
@@ -105,7 +105,7 @@ namespace LMPlatform.UI.Services.Practicals
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Ошибка вылидации"
+                        Message = "text.practical.save.response.failure.validation"
                     };
                 }
                 if (duration < 1 || duration > 36)
@@ -113,7 +113,7 @@ namespace LMPlatform.UI.Services.Practicals
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Ошибка вылидации"
+                        Message = "text.practical.save.response.failure.validation"
                     };
                 }
                 var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
@@ -129,7 +129,7 @@ namespace LMPlatform.UI.Services.Practicals
                 }, attachmentsModel, UserContext.CurrentUserId);
                 return new ResultViewData
                 {
-                    Message = "Практическое занятие успешно сохранено",
+                    Message = "text.practical.save.response.success",
                     Code = "200"
                 };
             }
@@ -137,7 +137,7 @@ namespace LMPlatform.UI.Services.Practicals
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при сохранении практического занятия",
+                    Message = "text.practical.save.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -153,13 +153,13 @@ namespace LMPlatform.UI.Services.Practicals
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
+                        Message = "text.practical.delete.response.failure.unattachedUser"
                     };
                 }
                 PracticalManagementService.DeletePracticals(id);
                 return new ResultViewData
                 {
-                    Message = "Практическое занятие успешно удалено",
+                    Message = "text.practical.delete.response.success",
                     Code = "200"
                 };
             }
@@ -167,7 +167,7 @@ namespace LMPlatform.UI.Services.Practicals
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при удалении практического занятия" + e.Message,
+                    Message = "text.practical.delete.response.failure.unknown" + e.Message,
                     Code = "500"
                 };
             }
@@ -228,7 +228,7 @@ namespace LMPlatform.UI.Services.Practicals
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
+                        Message = "text.calendarData.delete.response.failure.unattachedUser"
                     };
                 }
                 var count = studentsId.Count;
@@ -251,7 +251,7 @@ namespace LMPlatform.UI.Services.Practicals
 
                 return new ResultViewData
                 {
-                    Message = "Данные успешно добавлены",
+                    Message = "text.calendarData.add.response.success",
                     Code = "200"
                 };
             }
@@ -259,7 +259,7 @@ namespace LMPlatform.UI.Services.Practicals
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при добавлении данных",
+                    Message = "text.calendarData.add.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -275,7 +275,7 @@ namespace LMPlatform.UI.Services.Practicals
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
+                        Message = "text.calendarData.edit.response.failure.unattachedUser"
                     };
                 }
                 PracticalManagementService.SavePracticalMarks(new List<StudentPracticalMark>
@@ -291,7 +291,7 @@ namespace LMPlatform.UI.Services.Practicals
 
                 return new ResultViewData
                 {
-                    Message = "Данные успешно изменены",
+                    Message = (mark != null && mark != "") ? "text.calendarData.add.response.success" : "text.calendarData.delete.response.success",
                     Code = "200"
                 };
             }
@@ -299,7 +299,7 @@ namespace LMPlatform.UI.Services.Practicals
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при изменении данных",
+                    Message = "text.calendarData.edit.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -315,7 +315,7 @@ namespace LMPlatform.UI.Services.Practicals
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
+                        Message = "text.lectures.save.response.failure.unattachedUser"
                     };
                 }
                 PracticalManagementService.UpdatePracticalsOrder(subjectId, prevIndex, curIndex);
@@ -323,7 +323,7 @@ namespace LMPlatform.UI.Services.Practicals
                 return new ResultViewData
                 {
                     Code = "200",
-                    Message = "Лекции успешно сохранены"
+                    Message = "text.lectures.save.response.success"
                 };
             }
             catch (Exception ex)
@@ -388,7 +388,7 @@ namespace LMPlatform.UI.Services.Practicals
                         }
                         return new ScheduleProtectionPracticalViewData(e);
                     }).ToList(),
-                    Message = "Практические работы успешно загружены",
+                    Message = "text.practicalWorks.get.response.success",
                     Code = "200"
                 };
             }
@@ -396,7 +396,7 @@ namespace LMPlatform.UI.Services.Practicals
             {
                 return new PracticalsResult
                 {
-                    Message = "Произошла ошибка при получении практических работ",
+                    Message = "text.practicalWorks.get.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -412,14 +412,14 @@ namespace LMPlatform.UI.Services.Practicals
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
+                        Message = "text.calendarData.add.response.failure.unattachedUser"
                     };
                 }
                 PracticalManagementService.SaveStudentPracticalMark(new StudentPracticalMark(practicalId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
 
                 return new ResultViewData
                 {
-                    Message = "Данные успешно добавлены",
+                    Message = (mark != null && mark != "") ? "text.calendarData.add.response.success" : "text.calendarData.delete.response.success",
                     Code = "200"
                 };
             }
@@ -427,7 +427,7 @@ namespace LMPlatform.UI.Services.Practicals
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при добавлении данных",
+                    Message = "text.calendarData.add.response.failure.unknown",
                     Code = "500"
                 };
             }
@@ -469,7 +469,7 @@ namespace LMPlatform.UI.Services.Practicals
                 return new UserLabFilesResult
                 {
                     UserLabFiles = model,
-                    Message = "Данные получены",
+                    Message = "text.data.get.response.success",
                     Code = "200"
                 };
             }
@@ -477,7 +477,7 @@ namespace LMPlatform.UI.Services.Practicals
             {
                 return new UserLabFilesResult
                 {
-                    Message = "Произошла ошибка при получении данных",
+                    Message = "text.data.get.response.failure.unknown",
                     Code = "500"
                 };
             }
