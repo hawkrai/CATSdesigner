@@ -226,10 +226,13 @@ export class CreateLessonComponent implements OnInit {
         this.data.lesson.title,
         2
       )
-      this.changedType = this.lessonTypes.find(
-        (type) =>
-          type[1] === this.lessonservice.getType(this.data.lesson.title).trim()
-      )[0]
+      const rawType = this.lessonservice.getType(this.data.lesson.title).trim();
+
+      const found = this.lessonTypes.find(type => type[1] === rawType);
+
+      this.changedType = found
+        ? found[0]
+        : '3';
       this.disableNote = true
     }
     this.formGroupNote = new FormGroup({
