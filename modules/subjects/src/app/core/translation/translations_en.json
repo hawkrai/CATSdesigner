@@ -132,7 +132,7 @@
   "text.subjects.response.success.editClasses": "Data successfully changed",
 
   "text.date.add.response.success": "Date has been added successfully",
-  "text.date.edit.response.success": "Date has been edited successfully",
+  "text.date.edit.response.success": "Lesson has been edited successfully",
   "text.date.delete.response.success": "Date has been deleted successfully",
   "text.date.response.failure.taken": "Time and place are already taken",
   "text.date.add.response.failure.unknown": "Error occurred while adding data",
