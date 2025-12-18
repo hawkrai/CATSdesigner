@@ -28,6 +28,18 @@
       </a>
       <a class="btn clickable" *ngIf="node.TestId" (click)="openTest(node)">
         {{ node.Name }}
+        <span
+          class="test-result-container"
+          *ngIf="node.TestResult && node.TestResult.Points !== null && node.TestResult.Points !== undefined"
+          [ngStyle]="{
+            color: getTestScoreColor(node.TestResult.Points)
+          }"
+          [matTooltip]="getTestTooltip(node)"
+          [matTooltipClass]="'test-tooltip'"
+          matTooltipPosition="right"
+        >
+          &nbsp;({{ getTestScoreText(node.TestResult.Points) }})
+        </span>
       </a>
       <span
         class="btn"
