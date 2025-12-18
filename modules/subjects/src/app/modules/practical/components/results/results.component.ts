@@ -11,7 +11,7 @@ import { Store } from '@ngrx/store'
 import { IAppState } from '../../../../store/state/app.state'
 import { DialogData } from '../../../../models/dialog-data.model'
 import { MarkForm } from '../../../../models/mark-form.model'
-import { filter, map } from 'rxjs/operators'
+import { filter, find, map } from 'rxjs/operators'
 import { SubSink } from 'subsink'
 import { StudentMark } from 'src/app/models/student-mark.model'
 import { Observable, combineLatest } from 'rxjs'
@@ -136,7 +136,20 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     const mark = student.PracticalsMarks.find(
       (mark) => mark.PracticalId === +practicalId
     )
-    if (mark) {
+    const additionalInfo$ = this.state$.pipe(
+      map(state => {
+        const p = state.practicals.find(
+          p => p.PracticalId == practicalId
+        )
+         if(!p) return undefined;
+
+         return {
+          shortName: p.ShortName,
+          fullName: p.Theme
+         }
+      })
+    )
+    if (mark && additionalInfo$) {
       const practicalMark = this.getPracticalMark(mark, student.StudentId)
 
       const dialogData: DialogData = {
@@ -149,7 +162,10 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
         model: {
           recommendedMark,
           lecturerId: mark.LecturerId,
-        },
+          prefix: this.translate.transform('prefix.practical', 'ПЗ'),
+          studentFullName: student.FullName,
+          additionalInfo$: additionalInfo$
+        }
       }
       const dialogRef = this.dialogService.openDialog(
         MarkPopoverComponent,

@@ -17,6 +17,7 @@ import { generateCreateDateException } from 'src/app/utils/exceptions'
 import { UserFilesService } from 'src/app/services/user-files.service'
 import { iif, of } from 'rxjs'
 import { ProtectionType } from 'src/app/models/protection-type.enum'
+import { TranslatePipe } from 'educats-translate'
 import * as protectionActions from '../actions/protection.actions'
 
 @Injectable()
@@ -25,6 +26,7 @@ export class PracticalsEffects {
     private store: Store<IAppState>,
     private actions$: Actions,
     private rest: PracticalRestService,
+    private translate: TranslatePipe,
     private scheduleService: ScheduleService,
     private userFilesService: UserFilesService
   ) {}
@@ -65,6 +67,7 @@ export class PracticalsEffects {
     )
   )
 
+
   updateOrder$ = createEffect(() =>
     this.actions$.pipe(
       ofType(practicalsActions.updateOrder),
@@ -85,6 +88,7 @@ export class PracticalsEffects {
         this.rest
           .deletePractical({ id, subjectId })
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               practicalsActions.loadPracticals(),
@@ -102,6 +106,7 @@ export class PracticalsEffects {
         this.rest
           .savePractical({ ...practical, subjectId })
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               practicalsActions.loadPracticals(),
@@ -122,6 +127,7 @@ export class PracticalsEffects {
         this.scheduleService
           .createPracticalDateVisit({ ...obj, subjectId, groupId })
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({
                 body: {
@@ -139,6 +145,33 @@ export class PracticalsEffects {
     )
   )
 
+  updateDateVisit$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(practicalsActions.updateDateVisit),
+        withLatestFrom(
+          this.store.select(subjectSelectors.getSubjectId),
+          this.store.select(groupSelectors.getCurrentGroupId)
+        ),
+        switchMap(([{ obj }, subjectId, groupId]) =>
+          this.scheduleService.createPracticalDateVisit({ ...obj, subjectId, groupId })
+            .pipe(
+              switchMap((body) => [
+                catsActions.showMessage({
+                  body: {
+                    ...body,
+                    Message:
+                      body.Code === '200'
+                        ? this.translate.transform(body.Message, body.Message)
+                        : generateCreateDateException(body),
+                  },
+                }),
+                practicalsActions.loadSchedule(),
+              ])
+            )
+        )
+      )
+    )
+
   deleteDateVisit$ = createEffect(() =>
     this.actions$.pipe(
       ofType(practicalsActions.deleteDateVisit),
@@ -146,6 +179,7 @@ export class PracticalsEffects {
         this.scheduleService
           .deletePracticalDateVisit(id)
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               practicalsActions.loadSchedule(),
@@ -183,6 +217,7 @@ export class PracticalsEffects {
         this.rest
           .setPracticalsVisitingDate({ ...visiting, subjectId })
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               practicalsActions.loadMarks(),
@@ -200,6 +235,7 @@ export class PracticalsEffects {
         this.rest
           .setPracticalMark({ ...body, subjectId })
           .pipe(
+            map(body => ({ ...body, Message: this.translate.transform(body.Message, body.Message)})),
             switchMap((body) => [
               catsActions.showMessage({ body }),
               practicalsActions.loadMarks(),

@@ -569,6 +569,7 @@ namespace Application.Infrastructure.CPManagement
                 existingTemplate.Univer = template.Univer;
                 existingTemplate.DateStart = template.DateStart;
                 existingTemplate.DateEnd = template.DateEnd;
+                existingTemplate.CathedraName = template.CathedraName;
             }
             else
             {
@@ -830,16 +831,14 @@ namespace Application.Infrastructure.CPManagement
             Context.SaveChanges();
         }
 
-        public HttpResponseMessage DownloadTaskSheet(int courseProjectId)
+        public HttpResponseMessage DownloadTaskSheet(int courseProjectId, string lang)
         {
             var courseProject = Context.CourseProjects
-                .Include(x =>
-                    x.AssignedCourseProjects
-                        .Select(y => y.Student.Group.Secretary.CoursePercentagesGraphs))
+                .Include(x => x.AssignedCourseProjects
+                    .Select(y => y.Student.Group.Secretary.CoursePercentagesGraphs))
                 .Single(x => x.CourseProjectId == courseProjectId);
 
             string docName;
-
             if (courseProject.AssignedCourseProjects.Count == 1)
             {
                 var stud = courseProject.AssignedCourseProjects.Single().Student;
@@ -850,7 +849,7 @@ namespace Application.Infrastructure.CPManagement
                 docName = $"{courseProject.Theme}";
             }
 
-            return WordCourseProject.CourseProjectToWord(docName, courseProject);
+            return WordCourseProject.CourseProjectToWord(docName, courseProject, lang);
         }
 
         public HttpResponseMessage DownloadTaskSheet(int groupId, int subjectId)

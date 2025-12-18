@@ -80,7 +80,7 @@ export class LabsRestService {
       )
   }
 
-  public saveLab(lab: CreateLessonEntity) {
+  public saveLab(lab: CreateLessonEntity): Observable<any> {
     return this.http.post('Services/Labs/LabsService.svc/Save', lab)
   }
   public updateLabsOrder(
@@ -101,7 +101,7 @@ export class LabsRestService {
     })
   }
 
-  public deleteLab(lab: { id: number; subjectId: number }) {
+  public deleteLab(lab: { id: number; subjectId: number }): Observable<any> {
     return this.http.post('Services/Labs/LabsService.svc/Delete', lab)
   }
 

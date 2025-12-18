@@ -20,6 +20,7 @@ import { AutoUnsubscribeBase } from '../../../core/auto-unsubscribe-base'
 import { MatSnackBar } from '@angular/material'
 import { TranslatePipe } from 'educats-translate'
 import { AppToastrService } from '../../../service/toastr.service'
+import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
 
 @AutoUnsubscribe
 @Component({
@@ -134,7 +135,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
           takeUntil(this.unsubscribeStream$),
           catchError(() => {
             const queryParams: any = { testId: this.test.Id }
-            if (sessionStorage.getItem('testFromEUMK') === 'true') {
+            if (sessionStorage.getItem(StorageKeys.TestFromComplex) === 'true') {
               queryParams.fromEUMK = 'true'
             }
             this.router.navigate(['/test-result'], {

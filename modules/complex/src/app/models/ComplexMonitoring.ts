@@ -12,4 +12,10 @@ export class ComplexMonitoring {
   IsGroup?: boolean
   SubjectName?: string
   Color?: string
+  TestId?: number
+  TestResult?: {
+    Points?: number
+    StartTime?: string
+    EndTime?: string
+  }
 }

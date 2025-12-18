@@ -33,4 +33,6 @@ export interface DialogData {
 
   isGroup?: boolean
   parentId?: number
+  testId?: number
+  isMandatoryComponent?: boolean
 }

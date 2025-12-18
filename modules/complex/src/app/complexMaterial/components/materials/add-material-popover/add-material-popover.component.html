@@ -1,9 +1,10 @@
 <ng-container *var="files$ | async as files">
-  <div
-    mat-dialog-content
-    class="complex-grid-component__popover"
-    #popoverContent
-  >
+  <div class="dialog-wrapper">
+    <div
+      mat-dialog-content
+      class="complex-grid-component__popover"
+      #popoverContent
+    >
     <div class="head-container">
       <h1 mat-dialog-title>{{ popupTitle }}</h1>
       <button class="close" (click)="onClose(files, false)">
@@ -11,7 +12,7 @@
       </button>
     </div>
     <form class="example-form" #formElement>
-      <div class="basic-container" *ngIf="navItems?.length">
+      <div class="basic-container" *ngIf="navItems?.length && !isMandatoryEUMKComponent">
         <span *ngFor="let item of navItems">
           <!-- Handle branch node buttons here -->
           <span *ngIf="item.children && item.children.length > 0">
@@ -39,7 +40,7 @@
           ></app-help>
         </div>
       </div>
-      <div class="basic-container-text" *ngIf="selectedConcept">
+      <div class="basic-container-text" *ngIf="selectedConcept && !isMandatoryEUMKComponent">
         {{ selectedConcept }}
       </div>
       <div class="rad-button">
@@ -91,30 +92,32 @@
         </mat-form-field>
       </div>
     </form>
-  </div>
-  <app-file-uploader
-    header="{{
-      'common.pinnedDoc'
-        | translate
-          : 'Прикрепленный материал (Можно добавить только один файл формата .pdf, .docx или .doc)'
-    }}"
-    (delete)="deleteFile($event)"
-    [files]="files"
-    [disabled]="files.length > 0"
-    (upload)="uploadFile($event)"
-  ></app-file-uploader>
-  <div mat-dialog-actions>
-    <button mat-raised-button (click)="onClose(files, false)">
-      {{ 'common.cancel' | translate: 'Отмена' }}
-    </button>
-    <button
-      mat-raised-button
-      (click)="onClose(files, true)"
-      color="primary"
-      [disabled]="!formElement.checkValidity()"
-    >
-      {{ 'common.save' | translate: 'Сохранить' }}
-    </button>
+    <app-file-uploader
+      *ngIf="!shouldHideFileUpload"
+      header="{{
+        'common.pinnedDoc'
+          | translate
+            : 'Прикрепленный материал (Можно добавить только один файл формата .pdf, .docx или .doc)'
+      }}"
+      (delete)="deleteFile($event)"
+      [files]="files"
+      [disabled]="files.length > 0"
+      (upload)="uploadFile($event)"
+    ></app-file-uploader>
+    </div>
+    <div mat-dialog-actions>
+      <button mat-raised-button (click)="onClose(files, false)">
+        {{ 'common.cancel' | translate: 'Отмена' }}
+      </button>
+      <button
+        mat-raised-button
+        (click)="onClose(files, true)"
+        color="primary"
+        [disabled]="!formElement.checkValidity()"
+      >
+        {{ 'common.save' | translate: 'Сохранить' }}
+      </button>
+    </div>
   </div>
 </ng-container>
 <!--[(ngModel)]="data.subjectName"-->

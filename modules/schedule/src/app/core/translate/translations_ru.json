@@ -567,5 +567,9 @@
   "text.schedule.workshop": "Практическое занятие",
   "text.schedule.lab": "Лабораторная работа",
   "text.schedule.course.project": "Консультация по курсовому проектированию",
-  "text.schedule.graduation.project": "Консультация по дипломному проектированию"
+  "text.schedule.graduation.project": "Консультация по дипломному проектированию",
+
+  "text.schedule.subgroup.one": "Подгруппа 1",
+  "text.schedule.subgroup.two": "Подгруппа 2",
+  "text.schedule.subgroup.three": "Подгруппа 3"
 }

@@ -12,6 +12,7 @@ import { DataValues } from '../models/data-values.model'
 import { Constants } from '../models/constanst/DataConstants'
 import * as neuralNetworkV2 from '../core/neuron/neuron1.js'
 import { CatsService } from '../service/cats.service'
+import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
 
 interface Theme {
   name: string
@@ -59,13 +60,13 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
     this.testId = this.route.snapshot.queryParamMap.get('testId')
     
     const fromEUMKParam = this.route.snapshot.queryParamMap.get('fromEUMK')
-    const testFromEUMKFlag = sessionStorage.getItem('testFromEUMK')
-    const eumkRoute = sessionStorage.getItem('eumkRoute')
+    const testFromComplexFlag = sessionStorage.getItem(StorageKeys.TestFromComplex)
+    const complexRoute = sessionStorage.getItem(StorageKeys.ComplexRoute)
     
-    this.isFromEUMK = fromEUMKParam === 'true' || testFromEUMKFlag === 'true' || !!eumkRoute
+    this.isFromEUMK = fromEUMKParam === 'true' || testFromComplexFlag === 'true' || !!complexRoute
     
-    if (sessionStorage.getItem('complexTestId')) {
-      sessionStorage.removeItem('complexTestId')
+    if (sessionStorage.getItem(StorageKeys.ComplexTestId)) {
+      sessionStorage.removeItem(StorageKeys.ComplexTestId)
     }
     
     this.testPassingService
@@ -134,21 +135,21 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
 
   public navigate(): void {
     if (this.isFromEUMK) {
-      const eumkComplexId = sessionStorage.getItem('eumkComplexId')
-      const eumkRoute = sessionStorage.getItem('eumkRoute')
+      const complexId = sessionStorage.getItem(StorageKeys.ComplexId)
+      const complexRoute = sessionStorage.getItem(StorageKeys.ComplexRoute)
 
-      sessionStorage.removeItem('testFromEUMK')
+      sessionStorage.removeItem(StorageKeys.TestFromComplex)
       
-      if (eumkComplexId) {
-        sessionStorage.removeItem('eumkComplexId')
-        localStorage.setItem('selectedComplex', eumkComplexId)
+      if (complexId) {
+        sessionStorage.removeItem(StorageKeys.ComplexId)
+        localStorage.setItem(StorageKeys.SelectedComplex, complexId)
       }
       
-      if (eumkRoute) {
-        sessionStorage.removeItem('eumkRoute')
+      if (complexRoute) {
+        sessionStorage.removeItem(StorageKeys.ComplexRoute)
         this.catsService.sendMessage({
           Type: 'Route',
-          Value: eumkRoute,
+          Value: complexRoute,
         })
       } else {
         this.router.navigate(['/test-control'])

@@ -6,6 +6,7 @@ import { Group } from '../models/group.model'
 import { Student } from '../models/student.model'
 import { CatsMessageService } from '../services/cats-message.service'
 import { Message } from '../models/message.model'
+import { ConfirmationTranslateService } from '../services/confirmation-translate.service'
 
 @Component({
   selector: 'app-confirmation',
@@ -27,7 +28,8 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
 
   constructor(
     private confirmationService: ConfirmationService,
-    private catsMessageService: CatsMessageService
+    private catsMessageService: CatsMessageService,
+    private translate: ConfirmationTranslateService
   ) {}
 
   search: string = ''
@@ -82,7 +84,7 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
             new Message(
               'Toast',
               JSON.stringify({
-                text: response.Message as string,
+                text: this.translate.transform(response.Message as string, response.Message as string),
                 type: response.Code === '200' ? 'success' : 'warning',
               })
             )
