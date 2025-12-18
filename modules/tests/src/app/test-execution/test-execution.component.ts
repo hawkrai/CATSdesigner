@@ -18,8 +18,7 @@ import { StorageKeys } from '../../../../../container/src/app/core/models/storag
 })
 export class TestExecutionComponent
   extends AutoUnsubscribeBase
-  implements OnInit
-{
+  implements OnInit {
   public question: TestQuestion
   public questionNumber: string
   public testId: string
@@ -71,12 +70,10 @@ export class TestExecutionComponent
               queryParams: queryParams,
             })
           }
-          const timezoneOffsetInSeconds = new Date().getTimezoneOffset() * 60
-          const adjustedSeconds =
-            this.question.Seconds + timezoneOffsetInSeconds
-          this.question.Seconds = adjustedSeconds > 0 ? adjustedSeconds : 0
+
           this.questionNumber = question && question.Number.toString()
           this.allAnswersArray = question && question.IncompleteQuestionsNumbers
+
           this.counter$ = timer(0, 1000).pipe(
             map(() => {
               if (this.question.Seconds && this.question.Seconds != 0) {
@@ -184,7 +181,6 @@ export class TestExecutionComponent
       }
     } else {
       const queryParams: any = { testId: this.test.Id }
-      // Передаем информацию о запуске из ЭУМК через query параметры
       if (sessionStorage.getItem(StorageKeys.TestFromComplex) === 'true') {
         queryParams.fromEUMK = 'true'
       }
