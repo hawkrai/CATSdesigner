@@ -1,4 +1,5 @@
 import { Memo } from './memo.model'
+import { Note } from './note.model'
 
 export class Lesson {
   Id: string
@@ -14,6 +15,7 @@ export class Lesson {
   Color: string
   SubjectId: string
   Notes: Memo[]
+  personalNote?: Note
   GroupId: number
   SubGroupId: number
   GroupName: string

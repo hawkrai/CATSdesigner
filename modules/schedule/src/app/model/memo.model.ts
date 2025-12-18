@@ -1,3 +1,5 @@
 export class Memo {
-  message: string
+   Id?: number
+   Text: string
+   UserId?: number
 }

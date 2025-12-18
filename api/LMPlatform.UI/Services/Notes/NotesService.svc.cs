@@ -8,6 +8,7 @@ using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Notes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -38,7 +39,7 @@ namespace LMPlatform.UI.Services.Notes
                     return new ResultViewData
                     {
                         Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
+                        Message = $"Пользователь не присоединён к предмету: {subjectId}"
                     };
                 }
                 NoteManagementService.SaveNote(new Note
@@ -56,11 +57,11 @@ namespace LMPlatform.UI.Services.Notes
                     Message = "Заметка успешно сохранена"
                 };
             }
-            catch (Exception ex)
+            catch
             {
                 return new ResultViewData
                 {
-                    Message = "Не удалось сохранить заметку" + $", Error: {ex}",
+                    Message = "Не удалось сохранить заметку",
                     Code = "500"
                 };
             }
@@ -159,7 +160,7 @@ namespace LMPlatform.UI.Services.Notes
                     Message = "text.note.save.response.success"
                 };
             }
-            catch (Exception ex)
+            catch
             {
                 return new ResultViewData
                 {

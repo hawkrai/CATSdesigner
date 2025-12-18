@@ -176,11 +176,14 @@ getLessonTypes(subjectId: number): Observable<string[][]> {
   );
 }
 
-  saveLessonNote(lessonId: number, message: string): Observable<any> {
-    return this.http.post<any>('/Services/Notes/NotesService.svc/SaveNote', {
-      subjectId: lessonId,
-      text: message,
-    })
+  saveLessonNote(params: {
+    id: number,
+    subjectId: number,
+    text: string,
+    lecturesScheduleId?: number,
+    labsScheduleId?: number,
+    practicalScheduleId?: number}): Observable<any> {
+    return this.http.post<any>('/Services/Notes/NotesService.svc/SaveNote', { ...params })
   }
 
   getType(title: string): any {
