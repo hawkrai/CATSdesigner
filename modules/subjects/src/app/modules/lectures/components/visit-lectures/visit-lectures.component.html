@@ -76,7 +76,12 @@
           "
         >
           <div
-            *ngIf="element.Marks[i] && element.Marks[i].Comment"
+            *ngIf="
+            element.Marks[i] &&
+            element.Marks[i].Comment &&
+            (state.isTeacher || 
+              (element.Marks[i].ShowForStudent &&
+                element.StudentId === state.userId))"
             class="comment"
             [matTooltip]="element.Marks[i].Comment"
             matTooltipPosition="above"

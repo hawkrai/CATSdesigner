@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { NestedTreeControl } from '@angular/cdk/tree'
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core'
 import { MatSnackBar } from '@angular/material'
 import { MatTreeNestedDataSource } from '@angular/material/tree'
 import { MatDialog } from '@angular/material/dialog'
@@ -22,13 +22,17 @@ import { Subject } from 'rxjs'
 import { MenuService } from '../../../../../../../container/src/app/core/services/menu.service'
 import { ModuleType } from '../../../../../../../container/src/app/core/models/module.model'
 import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
+import { TestService } from '../../../service/test.service'
+import { ConverterService } from '../../../service/converter.service'
+import { TestResultsLoaderService } from '../../../service/test-results-loader.service'
+import { ChangeDetectorRef } from '@angular/core'
 
 @Component({
   selector: 'app-material-tree',
   templateUrl: './materials.component.html',
   styleUrls: ['./materials.component.less'],
 })
-export class MaterialComponent implements OnInit {
+export class MaterialComponent implements OnInit, OnChanges {
   @Input() complexId: string
   isLecturer: boolean
   treeControl = new NestedTreeControl<ComplexCascade>((node) => node.children)
@@ -50,7 +54,11 @@ export class MaterialComponent implements OnInit {
     private translatePipe: TranslatePipe,
     private catsService: CatsService,
     private snackBar: MatSnackBar,
-    private menuService: MenuService
+    private menuService: MenuService,
+    private testService: TestService,
+    public converterService: ConverterService,
+    private testResultsLoaderService: TestResultsLoaderService,
+    private cdr: ChangeDetectorRef
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -62,12 +70,64 @@ export class MaterialComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loadConceptCascade()
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.complexId && !changes.complexId.firstChange && 
+        changes.complexId.currentValue !== changes.complexId.previousValue) {
+      this.loadConceptCascade()
+    }
+  }
+
+  private loadConceptCascade(): void {
+    if (!this.complexId) {
+      return
+    }
     this.complexService.getConceptCascade(this.complexId).subscribe((res) => {
       const localizedData = this.localizeTree(res.children)
       this.dataSource.data = localizedData
       this.treeControl.dataNodes = localizedData
       this.treeControl.expandAll()
+      this.loadTestResults(localizedData)
     })
+  }
+
+  loadTestResults(nodes: ComplexCascade[]): void {
+    const user = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser))
+    if (!user || !user.id) {
+      return
+    }
+
+    this.testResultsLoaderService.loadTestResults(
+      nodes,
+      user.id,
+      (nodes, testNodes) => this.collectTestNodes(nodes, testNodes),
+      this.cdr
+    )
+  }
+
+  collectTestNodes(nodes: any[], testNodes: any[]): void {
+    nodes.forEach((node) => {
+      if (node.TestId) {
+        testNodes.push(node)
+      }
+      if (node.children || node.Children) {
+        this.collectTestNodes(node.children || node.Children, testNodes)
+      }
+    })
+  }
+
+  getTestScoreColor(points: number): string {
+    return this.testResultsLoaderService.getTestScoreColor(points)
+  }
+
+  getTestTooltip(node: ComplexCascade): string {
+    return this.testResultsLoaderService.getTestTooltip(node)
+  }
+
+  getTestScoreText(points: number): string {
+    return this.testResultsLoaderService.getTestScoreText(points)
   }
 
   localizeTree(nodes: any[]): any[] {
@@ -159,9 +219,9 @@ export class MaterialComponent implements OnInit {
 
       sessionStorage.setItem(StorageKeys.ComplexTestId, node.TestId)
       sessionStorage.setItem(StorageKeys.TestFromComplex, 'true')
-      sessionStorage.setItem(StorageKeys.EumkComplexId, this.complexId)
+      sessionStorage.setItem(StorageKeys.ComplexId, this.complexId)
       sessionStorage.setItem(
-        StorageKeys.EumkRoute,
+        StorageKeys.ComplexRoute,
         `web/viewer/subject/${subject.id}#${eumkItem}`
       )
 
@@ -187,6 +247,28 @@ export class MaterialComponent implements OnInit {
     const attachments = node
       ? node.Attachments.map((x) => this.attachmentConverter(x))
       : []
+    
+    const mandatoryComponents = [
+      'Титульный экран',
+      'Программа курса',
+      'Теоретический раздел',
+      'Практический раздел',
+      'Блок контроля знаний',
+    ]
+    const translatedComponents = [
+      this.translatePipe.transform('complex.titleScreen', 'Титульный экран'),
+      this.translatePipe.transform('complex.courseProgram', 'Программа курса'),
+      this.translatePipe.transform('complex.section.theoretical', 'Теоретический раздел'),
+      this.translatePipe.transform('complex.section.practical', 'Практический раздел'),
+      this.translatePipe.transform('complex.section.control', 'Блок контроля знаний'),
+    ]
+    const nodeName = node.Name || ''
+    const isMandatoryComponent = mandatoryComponents.some((comp) =>
+      nodeName.includes(comp)
+    ) || translatedComponents.some((comp) =>
+      nodeName.includes(comp)
+    )
+    
     const dialogRef = this.dialog.open(AddMaterialPopoverComponent, {
       width: '600px',
       position: {
@@ -198,6 +280,8 @@ export class MaterialComponent implements OnInit {
         isGroup: node.IsGroup,
         parentId: node.ParentId,
         attachments: attachments,
+        testId: node.TestId,
+        isMandatoryComponent: isMandatoryComponent,
       },
     })
 

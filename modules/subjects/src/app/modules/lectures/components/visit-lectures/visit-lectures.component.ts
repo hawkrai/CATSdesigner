@@ -41,6 +41,7 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
   state$: Observable<{
     calendar: Calendar[]
     groupsVisiting: GroupsVisiting
+    userId: number
     isTeacher: boolean
     lectures: Lecture[]
   }>
@@ -57,12 +58,14 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
     this.state$ = combineLatest(
       this.store.select(lecturesSelectors.getCalendar),
       this.store.select(lecturesSelectors.getGroupsVisiting),
+      this.store.select(subjectSelectors.getUserId),
       this.store.select(subjectSelectors.isTeacher),
       this.store.select(lecturesSelectors.getLectures)
     ).pipe(
-      map(([calendar, groupsVisiting, isTeacher, lectures]) => ({
+      map(([calendar, groupsVisiting, userId, isTeacher, lectures]) => ({
         calendar,
         groupsVisiting,
+        userId,
         isTeacher,
         lectures: lectures ? lectures : [],
       }))
@@ -145,6 +148,7 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
         name: student.StudentName,
         mark: student.Marks[index].Mark,
         comment: student.Marks[index].Comment,
+        showForStudent: student.Marks[index].ShowForStudent
       })),
     }
 
@@ -183,7 +187,7 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
   getModelVisitLabs(
     lecturesMarksVisiting: LecturesMarksVisiting[],
     index: number,
-    students: { name: string; mark: string; comment: string }[]
+    students: { name: string; mark: string; comment: string; showForStudent: boolean }[]
   ): LecturesMarksVisiting[] {
     students.forEach((student, i) => {
       lecturesMarksVisiting[i].Marks[index].Mark = student.mark
@@ -192,6 +196,9 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
       lecturesMarksVisiting[i].Marks[index].Comment = student.comment
         ? student.comment
         : ''
+        lecturesMarksVisiting[i].Marks[index].ShowForStudent = student.showForStudent
+        ? student.showForStudent
+        : false
     })
     return lecturesMarksVisiting
   }

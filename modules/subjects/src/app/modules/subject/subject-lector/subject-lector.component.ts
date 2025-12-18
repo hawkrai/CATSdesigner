@@ -8,6 +8,7 @@ import * as subjectSelectors from '../../../store/selectors/subject.selector'
 import { IAppState } from '../../../store/state/app.state'
 import * as catsActions from '../../../store/actions/cats.actions'
 import { Lector } from 'src/app/models/lector.model'
+import { TranslatePipe } from 'educats-translate'
 
 @Component({
   selector: 'app-news-popover',
@@ -25,6 +26,7 @@ export class SubjectLectorComponent implements OnInit {
     public dialogRef: MatDialogRef<SubjectLectorComponent>,
     public subjectService: SubjectService,
     private store: Store<IAppState>,
+    private translate: TranslatePipe,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private changeDetectorRef: ChangeDetectorRef
   ) {
@@ -81,6 +83,7 @@ export class SubjectLectorComponent implements OnInit {
           this.selectedLector = null
           this.changeDetectorRef.detectChanges()
         }
+        body.Message = this.translate.transform(body.Message, body.Message)
         this.store.dispatch(catsActions.showMessage({ body }))
       })
   }
@@ -95,6 +98,7 @@ export class SubjectLectorComponent implements OnInit {
           )
           this.allLectors = this.sortLectors([...this.allLectors, lector])
         }
+        body.Message = this.translate.transform(body.Message, body.Message)
         this.store.dispatch(catsActions.showMessage({ body }))
       })
   }

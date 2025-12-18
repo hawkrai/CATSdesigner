@@ -61,6 +61,21 @@ export const createDateVisit = createAction(
   }>()
 )
 
+export const updateDateVisit = createAction(
+  '[Labs] Update Date Visit',
+  props<{
+    obj: {
+      subGroupId: number
+      date: string
+      startTime: string
+      endTime: string
+      building: string
+      audience: string
+      lecturerId: number
+    }
+  }>()
+)
+
 export const deleteDateVisit = createAction(
   '[Labs] Delete Date Visit',
   props<{ id: number }>()

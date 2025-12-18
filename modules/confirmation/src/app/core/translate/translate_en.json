@@ -7,5 +7,11 @@
   "confirmation.title": "Students confirmation",
   "new.students": "New students",
   "confirm.at": "Date, time confirmation",
-  "confirm.by": "Lector"
+  "confirm.by": "Lector",
+  "text.core.confirmStudent.response.success": "Student successfully confirmed",
+  "text.core.confirmStudent.response.failure.noAccess": "No permission to confirm",
+  "text.core.unconfirmStudent.response.success": "Confirmation revoked",
+  "text.core.unconfirmStudent.response.failure.noAccess": "No permission to revoke",
+  "text.confirmation.access.open": "Open access",
+  "text.confirmation.access.close": "Close access"
 }

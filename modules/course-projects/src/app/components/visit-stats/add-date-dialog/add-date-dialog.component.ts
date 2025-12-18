@@ -51,7 +51,6 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   ])
 
   public dateControl = new FormControl(null)
-
   public lecturerIdControl = new FormControl('', [Validators.required])
 
   public lectors: {
@@ -61,6 +60,10 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   }[] = []
 
   private readonly subscription: Subscription = new Subscription()
+
+  selectedDay: any
+  isEditing = false
+  showEditPopover = false
 
   constructor(
     public dialogRef: MatDialogRef<AddDateDialogComponent>,
@@ -77,13 +80,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscription.add(
       this.visitStatsService.getJoinedLector(this.data.subjectId).subscribe(
-        (
-          lectors: {
-            LectorId: number
-            UserName: string
-            FullName: string
-          }[]
-        ) => (this.lectors = lectors)
+        (lectors) => (this.lectors = lectors)
       )
     )
   }
@@ -149,8 +146,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
           if (response.StatusCode === 200) {
             const consultation: Consultation = {
               Id: this.data.consultations[this.data.consultations.length - 1]
-                ? this.data.consultations[this.data.consultations.length - 1]
-                    .Id + 1
+                ? this.data.consultations[this.data.consultations.length - 1].Id + 1
                 : '0',
               Teacher: {
                 LectorId: +this.data.lecturerId,
@@ -196,9 +192,6 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
       )
     }
   }
-  selectedDay: any
-  isEditing: boolean = false
-  showEditPopover: boolean = false
 
   editPopover(day: any) {
     this.selectedDay = day
@@ -250,6 +243,20 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
     })
   }
 
+  onDataUpdated(updatedDay: any) {
+    const index = this.data.consultations.findIndex(
+      (c) => c.Id == updatedDay.Id
+    )
+    if (index !== -1) {
+      this.data.consultations[index] = updatedDay
+    }
+    this.data.consultations = [...this.data.consultations].sort((a, b) =>
+      a.Day > b.Day ? 1 : -1
+    )
+    this.isEditing = false
+    this.showEditPopover = false
+  }
+
   public noWhitespaceValidator(control: FormControl) {
     const isWhitespace = (control.value || '').trim().length === 0
     const isValid = !isWhitespace
@@ -258,7 +265,6 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
 
   parseDate(dateString: string): Date {
     const [day, month, year] = dateString.split('.')
-
     const dayNum = parseInt(day, 10)
     const monthNum = parseInt(month, 10) - 1
     const yearNum = parseInt(year, 10)

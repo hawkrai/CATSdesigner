@@ -72,6 +72,12 @@ export class ScheduleMainComponent implements OnInit {
     'нажмите на нужную ячейку. Также Вы можете добавить даты занятий с помощью аналогичных ' +
     'модулей через пункт меню Предметы'
 
+  subGroupMap: Record<string, string> = {
+    first: 'text.schedule.subgroup.one',
+    second: 'text.schedule.subgroup.two',
+    third: 'text.schedule.subgroup.three',
+  }
+
   action = 'Понятно'
 
   public isMobile(): boolean {
@@ -264,21 +270,23 @@ export class ScheduleMainComponent implements OnInit {
     )
   }
 
-  getToolTip(title: string): any {
-    let group = this.lessonservice.getTitlePart(title, 12)
-    let subGroup = this.lessonservice.getTitlePart(title, 13)
-    if (group != 'null') {
-      group += ' \n'
-    } else {
-      group = ''
+  getToolTip(title: string): string {
+    const group = this.lessonservice.getTitlePart(title, 12)
+    const subGroupKey = this.lessonservice.getTitlePart(title, 13)
+    let message = this.lessonservice.getTitlePart(title, 7)
+
+    if (group && group !== 'null') {
+      message += '\n' + group + ' '
     }
 
-    if (subGroup != 'null') {
-      subGroup += ' \n'
-    } else {
-      subGroup = ''
+    if (subGroupKey && subGroupKey !== 'null') {
+      const key = this.subGroupMap[subGroupKey]
+      if (key) {
+        message += this.translatePipe.transform(key, key) + '\n'
+      }
     }
-    return this.lessonservice.getTitlePart(title, 7) + group + subGroup
+
+    return message
   }
 
   isNote(event): boolean {

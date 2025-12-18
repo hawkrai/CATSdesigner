@@ -193,7 +193,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <div *ngIf="courseUser.IsStudent">
+        <div class="group-info" *ngIf="courseUser.IsStudent">
           {{ ('text.group' | translate: 'Группа: ') + groupNumber }}
         </div>
         <div
@@ -273,7 +273,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <div *ngIf="courseUser.IsStudent">
+        <div class="group-info" *ngIf="courseUser.IsStudent">
           {{ ('text.group' | translate: 'Группа: ') + groupNumber }}
         </div>
         <div

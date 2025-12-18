@@ -63,6 +63,17 @@ export class VisitDateLecturesPopoverComponent implements OnInit {
     this.store.dispatch(lecturesActions.createDateVisit({ obj }))
   }
 
+  onUpdateDate(obj: {
+      date: string
+      startTime: string
+      endTime: string
+      building: string
+      audience: string
+      lecturerId: number
+    }): void {
+      this.store.dispatch(lecturesActions.updateDateVisit({ obj }))
+    }
+
   onClose(): void {
     this.dialogRef.close()
   }

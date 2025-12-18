@@ -1,21 +1,22 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using Ap = DocumentFormat.OpenXml.ExtendedProperties;
-using Vt = DocumentFormat.OpenXml.VariantTypes;
-using DocumentFormat.OpenXml;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using M = DocumentFormat.OpenXml.Math;
-using Ovml = DocumentFormat.OpenXml.Vml.Office;
-using V = DocumentFormat.OpenXml.Vml;
-using W14 = DocumentFormat.OpenXml.Office2010.Word;
-using W15 = DocumentFormat.OpenXml.Office2013.Word;
-using Ds = DocumentFormat.OpenXml.CustomXmlDataProperties;
-using A = DocumentFormat.OpenXml.Drawing;
-using Thm15 = DocumentFormat.OpenXml.Office2013.Theme;
 using LMPlatform.Models.CP;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Linq;
+using System.Text;
+using A = DocumentFormat.OpenXml.Drawing;
+using Ap = DocumentFormat.OpenXml.ExtendedProperties;
+using Ds = DocumentFormat.OpenXml.CustomXmlDataProperties;
+using M = DocumentFormat.OpenXml.Math;
+using Ovml = DocumentFormat.OpenXml.Vml.Office;
+using Thm15 = DocumentFormat.OpenXml.Office2013.Theme;
+using V = DocumentFormat.OpenXml.Vml;
+using Vt = DocumentFormat.OpenXml.VariantTypes;
+using W14 = DocumentFormat.OpenXml.Office2010.Word;
+using W15 = DocumentFormat.OpenXml.Office2013.Word;
 
 namespace Application.Infrastructure.Export
 {
@@ -24,17 +25,50 @@ namespace Application.Infrastructure.Export
         private AssignedCourseProject awork;
         private CourseProject work;
         private CultureInfo cultureInfo;
+        private string lang;
 
-        public GenerateCPDocument(AssignedCourseProject awork, CultureInfo cultureInfo)
+        public GenerateCPDocument(AssignedCourseProject awork, CultureInfo cultureInfo, string lang = "ru")
         {
             this.awork = awork;
             this.cultureInfo = cultureInfo;
+            this.lang = lang;
         }
 
-        public GenerateCPDocument(CourseProject work, CultureInfo cultureInfo)
+        public GenerateCPDocument(CourseProject work, CultureInfo cultureInfo, string lang = "ru")
         {
             this.work = work;
             this.cultureInfo = cultureInfo;
+            this.lang = lang;
+        }
+        private static readonly Dictionary<string, string> TextsRuEn = new Dictionary<string, string>()
+{
+    { "УТВЕРЖДАЮ", "APPROVED" },
+    { "Заведующий кафедрой", "Head of the Department" },
+    { "подпись", "Signature" },
+    { "фамилия, инициалы", "Surname, initials" },
+    { "Задание на курсовой проект (курсовую работу)", "Assignment for course project" },
+    { "Обучающемуся группы", "To the student of group" },
+    { "ФИО", "Full Name" },
+    { "1. Тема", "1.Theme" },
+    { "2. Срок сдачи законченного проекта (работы)     ", "2.Deadline for submission of completed project     " },
+    { "3. Исходные данные", "3. Input Data" },
+    { "4. Содержание пояснительной записки (перечень вопросов, которые подлежат разработке)", "4.Content of explanatory note (list of questions to be developed)" },
+    { "5. Перечень графического материала (с точным указанием обязательных чертежей и графиков)", "5.List of graphic materials (with exact specification of mandatory drawings and charts)" },
+    { "6. Дата выдачи задания", "6.Task issue date" },
+    { "7. Календарный график выполнения с указанием сроков выполнения и трудоемкости отдельных этапов", "7.Work schedule indicating deadlines and labor intensity of individual stages" },
+    { "Руководитель", "Supervisor" },
+    { "подпись, дата", "Signature, date" },
+    { "инициалы, фамилия", "Initials, surname" },
+    { "Обучающийся", "Student" },
+    { "дата", "date" },
+    { "номер группы", "group number" },
+};
+
+        private string GetText(string ruText, string lang)
+        {
+            if (lang == "en" && TextsRuEn.ContainsKey(ruText))
+                return TextsRuEn[ruText];
+            return ruText;
         }
 
         // Creates a WordprocessingDocument.
@@ -376,7 +410,7 @@ namespace Application.Infrastructure.Export
             runProperties3.Append(fontSize6);
             runProperties3.Append(fontSizeComplexScript8);
             Text text3 = new Text();
-            text3.Text = "УТВЕРЖДАЮ";
+            text3.Text = GetText("УТВЕРЖДАЮ", lang);
 
             run3.Append(runProperties3);
             run3.Append(text3);
@@ -412,7 +446,7 @@ namespace Application.Infrastructure.Export
             runProperties4.Append(fontSize8);
             runProperties4.Append(fontSizeComplexScript10);
             Text text4 = new Text();
-            text4.Text = "Заведующий кафедрой";
+            text4.Text = GetText("Заведующий кафедрой", lang);
 
             run4.Append(runProperties4);
             run4.Append(text4);
@@ -519,7 +553,7 @@ namespace Application.Infrastructure.Export
             runProperties8.Append(fontSize13);
             runProperties8.Append(fontSizeComplexScript16);
             Text text8 = new Text();
-            text8.Text = "подпись";
+            text8.Text = GetText("подпись", lang);
 
             run8.Append(runProperties8);
             run8.Append(text8);
@@ -559,7 +593,7 @@ namespace Application.Infrastructure.Export
             runProperties11.Append(fontSize16);
             runProperties11.Append(fontSizeComplexScript19);
             Text text9 = new Text();
-            text9.Text = "фамилия, инициалы";
+            text9.Text = GetText("фамилия, инициалы", lang);
 
             run11.Append(runProperties11);
             run11.Append(text9);
@@ -1103,7 +1137,7 @@ namespace Application.Infrastructure.Export
             runProperties27.Append(fontSize40);
             runProperties27.Append(fontSizeComplexScript43);
             Text text15 = new Text();
-            text15.Text = "дата";
+            text15.Text = GetText("дата", lang);
 
             run27.Append(runProperties27);
             run27.Append(text15);
@@ -1167,7 +1201,7 @@ namespace Application.Infrastructure.Export
             runProperties29.Append(fontSize43);
             runProperties29.Append(fontSizeComplexScript46);
             Text text16 = new Text();
-            text16.Text = "Задание на курсовой проект (курсовую работу)";
+            text16.Text = GetText("Задание на курсовой проект (курсовую работу)", lang);
 
             run29.Append(runProperties29);
             run29.Append(text16);
@@ -1334,7 +1368,7 @@ namespace Application.Infrastructure.Export
             runProperties31.Append(fontSize47);
             runProperties31.Append(fontSizeComplexScript50);
             Text text18 = new Text();
-            text18.Text = "Обучающемуся группы";
+            text18.Text = GetText("Обучающемуся группы", lang);
 
             run31.Append(runProperties31);
             run31.Append(text18);
@@ -1714,7 +1748,7 @@ namespace Application.Infrastructure.Export
             runProperties40.Append(fontSize61);
             runProperties40.Append(fontSizeComplexScript64);
             Text text26 = new Text();
-            text26.Text = "номер группы";
+            text26.Text = GetText("номер группы", lang);
 
             run40.Append(runProperties40);
             run40.Append(text26);
@@ -1857,7 +1891,7 @@ namespace Application.Infrastructure.Export
             runProperties44.Append(fontSize67);
             runProperties44.Append(fontSizeComplexScript70);
             Text text30 = new Text();
-            text30.Text = "ФИО";
+            text30.Text = GetText("ФИО", lang);
 
             run44.Append(runProperties44);
             run44.Append(text30);
@@ -1982,7 +2016,7 @@ namespace Application.Infrastructure.Export
             runProperties46.Append(fontSize71);
             runProperties46.Append(fontSizeComplexScript74);
             Text text31 = new Text();
-            text31.Text = "1. Тема";
+            text31.Text = GetText("1. Тема", lang);
 
             run46.Append(runProperties46);
             run46.Append(text31);
@@ -2185,7 +2219,7 @@ namespace Application.Infrastructure.Export
             runProperties51.Append(fontSize75);
             runProperties51.Append(fontSizeComplexScript78);
             Text text36 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text36.Text = "2. Срок сдачи законченного проекта (работы)     ";
+            text36.Text = GetText("2. Срок сдачи законченного проекта (работы)     ", lang);
 
             run51.Append(runProperties51);
             run51.Append(text36);
@@ -2300,7 +2334,7 @@ namespace Application.Infrastructure.Export
             runProperties67.Append(fontSize91);
             runProperties67.Append(fontSizeComplexScript94);
             Text text52 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text52.Text = "3. Исходные данные";
+            text52.Text = GetText("3. Исходные данные", lang);
 
             run67.Append(runProperties67);
             run67.Append(text52);
@@ -3361,7 +3395,7 @@ namespace Application.Infrastructure.Export
             runProperties84.Append(fontSize94);
             runProperties84.Append(fontSizeComplexScript97);
             Text text69 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text69.Text = "4. Содержание пояснительной записки (перечень вопросов, которые подлежат разработке)";
+            text69.Text = GetText("4. Содержание пояснительной записки (перечень вопросов, которые подлежат разработке)", lang);
 
             run84.Append(runProperties84);
             run84.Append(text69);
@@ -4795,7 +4829,7 @@ namespace Application.Infrastructure.Export
             runProperties107.Append(fontSize98);
             runProperties107.Append(fontSizeComplexScript101);
             Text text92 = new Text();
-            text92.Text = "5. Перечень графического материала (с точным указанием обязательных чертежей и графиков)";
+            text92.Text = GetText("5. Перечень графического материала (с точным указанием обязательных чертежей и графиков)", lang);
 
             run107.Append(runProperties107);
             run107.Append(text92);
@@ -5503,7 +5537,7 @@ namespace Application.Infrastructure.Export
             runProperties121.Append(fontSize103);
             runProperties121.Append(fontSizeComplexScript107);
             Text text106 = new Text();
-            text106.Text = "6. Дата выдачи задания";
+            text106.Text = GetText("6. Дата выдачи задания", lang);
 
             run121.Append(runProperties121);
             run121.Append(text106);
@@ -5651,7 +5685,7 @@ namespace Application.Infrastructure.Export
             runProperties127.Append(fontSize107);
             runProperties127.Append(fontSizeComplexScript111);
             Text text113 = new Text();
-            text113.Text = "7. Календарный график выполнения с указанием сроков выполнения и трудоемкости отдельных этапов";
+            text113.Text = GetText("7. Календарный график выполнения с указанием сроков выполнения и трудоемкости отдельных этапов", lang);
 
             run128.Append(runProperties127);
             run128.Append(text113);
@@ -6800,7 +6834,7 @@ namespace Application.Infrastructure.Export
 
             Run run150 = new Run() { RsidRunProperties = "000806E4" };
             Text text135 = new Text();
-            text135.Text = "Руководитель";
+            text135.Text = GetText("Руководитель", lang);
 
             run150.Append(text135);
 
@@ -6995,7 +7029,7 @@ namespace Application.Infrastructure.Export
 
             runProperties149.Append(verticalTextAlignment3);
             Text text138 = new Text();
-            text138.Text = "подпись, дата";
+            text138.Text = GetText("подпись, дата", lang);
 
             run153.Append(runProperties149);
             run153.Append(text138);
@@ -7074,7 +7108,7 @@ namespace Application.Infrastructure.Export
             runProperties150.Append(fontSize112);
             runProperties150.Append(fontSizeComplexScript116);
             Text text139 = new Text();
-            text139.Text = "инициалы, фамилия";
+            text139.Text = GetText("инициалы, фамилия", lang);
 
             run154.Append(runProperties150);
             run154.Append(text139);
@@ -7189,7 +7223,7 @@ namespace Application.Infrastructure.Export
 
             Run run155 = new Run() { RsidRunProperties = "00FB35FE" };
             Text text140 = new Text();
-            text140.Text = "Обучающийся";
+            text140.Text = GetText("Обучающийся", lang);
 
             run155.Append(text140);
 
@@ -7468,7 +7502,7 @@ namespace Application.Infrastructure.Export
             runProperties152.Append(fontSize116);
             runProperties152.Append(fontSizeComplexScript120);
             Text text144 = new Text();
-            text144.Text = "подпись, дата";
+            text144.Text = GetText("подпись, дата", lang);
 
             run159.Append(runProperties152);
             run159.Append(text144);
@@ -7569,7 +7603,7 @@ namespace Application.Infrastructure.Export
             runProperties153.Append(fontSize119);
             runProperties153.Append(fontSizeComplexScript123);
             Text text145 = new Text();
-            text145.Text = "инициалы, фамилия";
+            text145.Text = GetText("инициалы, фамилия", lang);
 
             run160.Append(runProperties153);
             run160.Append(text145);

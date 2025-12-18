@@ -79,6 +79,17 @@ export class VisitDatePracticalsPopoverComponent implements OnInit {
     this.store.dispatch(practicalsActions.createDateVisit({ obj }))
   }
 
+  onUpdateDate(obj: {
+      date: string
+      startTime: string
+      endTime: string
+      building: string
+      audience: string
+      lecturerId: number
+    }): void {
+      this.store.dispatch(practicalsActions.updateDateVisit({ obj }))
+    }
+
   onClose(): void {
     this.dialogRef.close()
   }

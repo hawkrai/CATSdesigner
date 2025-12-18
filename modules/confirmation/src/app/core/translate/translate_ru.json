@@ -7,5 +7,11 @@
   "confirmation.title": "Подтверждение студентов",
   "new.students": "Новые студенты",
   "confirm.at": "Дата, время подтверждение",
-  "confirm.by": "Преподаватель"
+  "confirm.by": "Преподаватель",
+  "text.core.confirmStudent.response.success": "Студент успешно подтвержден",
+  "text.core.confirmStudent.response.failure.noAccess": "Нет прав для подтверждения",
+  "text.core.unconfirmStudent.response.success": "Подтверждение отменено",
+  "text.core.unconfirmStudent.response.failure.noAccess": "Нет прав для отмены",
+  "text.confirmation.access.open": "Открыть доступ",
+  "text.confirmation.access.close": "Закрыть доступ"
 }

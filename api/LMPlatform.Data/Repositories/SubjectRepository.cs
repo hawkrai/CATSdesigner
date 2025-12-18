@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Migrations;
-using System.Linq;
-using Application.Core.Data;
+﻿using Application.Core.Data;
 using Application.Core.Extensions;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Data.Repositories.RepositoryContracts;
 using LMPlatform.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Migrations;
+using System.Linq;
 
 namespace LMPlatform.Data.Repositories
 {
@@ -64,23 +65,45 @@ namespace LMPlatform.Data.Repositories
 				.Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(v => v.SubjectStudents)))
 				.Include(e => e.Subject.SubjectLecturers.Select(x => x.Lecturer))
 				.Include(e => e.Subject.LecturesScheduleVisitings)
-				.Where(e => e.GroupId == groupId && (e.Subject == null || e.Subject.IsArchive == isArchive)).ToList();
+				.Where(e => e.GroupId == groupId && (e.Subject == null || (isArchive) ? !e.IsActiveOnCurrentGroup : (!e.Subject.IsArchive && e.IsActiveOnCurrentGroup))).ToList();
 				return subjectGroup.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
 		}
-			public List<Subject> GetSubjects(int groupId = 0, int lecturerId = 0)
+		public List<Subject> GetSubjects(int groupId = 0, int lecturerId = 0)
 		{
 			using var context = new LmPlatformModelsContext();
-			if (groupId != 0)
-			{
-				var subjectGroup = GetSubjectGroupQueryable(context)
-					.Where(e => e.GroupId == groupId && e.IsActiveOnCurrentGroup).ToList();
-				return subjectGroup.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
-			}
 
-			var subjectLecturer = GetSubjectLecturerQueryable(context)
-					.Where(e => e.LecturerId == lecturerId).ToList();
-			return subjectLecturer.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
-		}
+            Func<string, int> latinFirst = name =>
+            {
+                if (string.IsNullOrWhiteSpace(name))
+                    return 1;
+
+                char firstChar = name.Trim()[0];
+
+                return (firstChar >= 'A' && firstChar <= 'Z') ||
+                       (firstChar >= 'a' && firstChar <= 'z')
+                    ? 0   
+                    : 1;
+            };
+
+            if (groupId != 0)
+			{
+                return GetSubjectGroupQueryable(context)
+            .Where(e => e.GroupId == groupId && e.IsActiveOnCurrentGroup)
+            .Select(e => e.Subject)
+            .DistinctBy(x => x.Id)
+            .OrderBy(x => latinFirst(x.Name))
+            .ThenBy(x => x.Name)
+            .ToList();
+            }
+
+            return GetSubjectLecturerQueryable(context)
+        .Where(e => e.LecturerId == lecturerId)
+        .Select(e => e.Subject)
+        .DistinctBy(x => x.Id)
+        .OrderBy(x => latinFirst(x.Name))
+        .ThenBy(x => x.Name)
+        .ToList();
+        }
 
 		public Subject GetSubject(int subjectId, int groupId = 0, int lecturerId = 0)
         {

@@ -1,10 +1,10 @@
 export enum StorageKeys {
   // SessionStorage keys
-  TestFromComplex = 'testFromEUMK',
+  TestFromComplex = 'testFromComplex',
   ComplexTestId = 'complexTestId',
-  EumkRoute = 'eumkRoute',
-  EumkComplexId = 'eumkComplexId',
-  MonitoringComplexId = 'complexId', // Для мониторинга студентов в Complex Grid
+  ComplexRoute = 'complexRoute',
+  ComplexId = 'ComplexId',
+  MonitoringComplexId = 'monitoringComplexId', // Для мониторинга студентов в Complex Grid
   
   // LocalStorage keys
   CurrentUser = 'currentUser',

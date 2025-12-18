@@ -19,5 +19,8 @@ namespace LMPlatform.UI.Services.Modules
 
         [DataMember]
         public string Comment { get; set; }
+
+        [DataMember]
+        public bool ShowForStudent {  get; set; }
     }
 }

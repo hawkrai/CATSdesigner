@@ -9,9 +9,12 @@
         (selectionChange)="onGroupValueChange($event.source.value)"
       >
         <mat-option
-          *ngFor="let group of groups | groupSort"
+          *ngFor="let group of groups | groupSort; let i = index"
           [value]="group.GroupId"
         >
+          <mat-divider
+            *ngIf="group.CountUnconfirmedStudents == 0 && groups[i ? i-1 : 0].CountUnconfirmedStudents != 0"
+          ></mat-divider>
           <span class="confirmation-group-option">
             {{ group.GroupName }}
             <span *ngIf="group.CountUnconfirmedStudents">
@@ -19,9 +22,6 @@
               {{ group.CountUnconfirmedStudents }})</span
             ></span
           >
-          <mat-divider
-            *ngIf="group.lastGroupWithUnconfirmedStudents"
-          ></mat-divider>
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -85,7 +85,7 @@
             mat-icon-button
             (click)="confirm(element, false)"
             *ngIf="element.Confirmed"
-            matTooltip="Закрыть доступ"
+            matTooltip="{{ 'text.confirmation.access.close' | translate: 'Закрыть доступ' }}"
             matTooltipClass="example-tooltip-blue"
           >
             <mat-icon class="icon-done">done </mat-icon>
@@ -94,7 +94,7 @@
             mat-icon-button
             (click)="confirm(element)"
             *ngIf="!element.Confirmed"
-            matTooltip="Открыть доступ"
+            matTooltip="{{ 'text.confirmation.access.open' | translate: 'Открыть доступ' }}"
             matTooltipClass="example-tooltip-blue"
           >
             <mat-icon class="icon-clear">clear </mat-icon>

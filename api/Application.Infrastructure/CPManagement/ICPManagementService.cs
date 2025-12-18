@@ -68,7 +68,7 @@ namespace Application.Infrastructure.CPManagement
 
         void SetSelectedGroupsToCourseProjects(int subjectId, List<int> groupIds);
 
-        HttpResponseMessage DownloadTaskSheet(int courseProjectId);
+        HttpResponseMessage DownloadTaskSheet(int courseProjectId, string lang);
 
         HttpResponseMessage DownloadTaskSheet(int groupId, int subjectId);
 

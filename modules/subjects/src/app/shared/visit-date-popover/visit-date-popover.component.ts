@@ -59,6 +59,7 @@ export class VisitDatePopoverComponent {
     Lector: Lector
   }[]
   @Output() createDate = new EventEmitter<string>()
+  @Output() updateDate = new EventEmitter<any>()
   @Output() close = new EventEmitter<void>()
   @Output() deleteDay = new EventEmitter<any>()
   @Input() data: { title: string; buttonText: string }
@@ -148,6 +149,10 @@ export class VisitDatePopoverComponent {
       buildingNumber: this.dateForm.get('building').value.toUpperCase(),
     })
   }
+
+  onUpdateDate(obj): void {
+      this.updateDate.emit(obj)
+    }
 
   onDeleteDate(day: any): void {
     this.deleteDay.emit(day)

@@ -1,6 +1,9 @@
 <app-popover-dialog>
   <ng-container title>
-    {{ data.title }}
+    {{ data.title }}<br/>
+    <mat-hint style="font-size:80%;">
+      {{ data.model.studentFullName | initials }}
+    </mat-hint>
   </ng-container>
   <ng-container body>
     <form class="example-form" [formGroup]="markForm">
@@ -34,6 +37,12 @@
         />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
+        <mat-hint *ngIf="data.model.additionalInfo$ | async as info"
+          matTooltip="{{ info.fullName }}" matTooltipClass="example-tooltip-blue"
+          ><span *ngIf="info.shortName"></span
+          >{{ data.model.prefix }}{{ info.shortName }}
+          </mat-hint
+        >
       </mat-form-field>
       <mat-form-field class="example-full-width">
         <mat-label>{{ 'comment' | translate: 'Комментарий' }}</mat-label>

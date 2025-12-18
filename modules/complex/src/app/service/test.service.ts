@@ -60,4 +60,10 @@ export class TestService {
       answer
     )
   }
+
+  getTestResult(testId: number, studentId: number): Observable<any> {
+    return this.http.get<any>(
+      '/TestPassing/GetUserAnswers?studentId=' + studentId + '&testId=' + testId
+    )
+  }
 }

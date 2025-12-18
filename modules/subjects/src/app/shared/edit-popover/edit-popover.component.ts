@@ -13,6 +13,7 @@ import { LecturesRestService } from '../../services/lectures/lectures-rest.servi
 export class EditPopoverComponent implements OnInit {
   dateForm: FormGroup
   @Output() close = new EventEmitter()
+  @Output() updateDate = new EventEmitter<any>()
   @Input() day: any
   @Input() lectors: Lector[]
 
@@ -75,6 +76,7 @@ export class EditPopoverComponent implements OnInit {
       const month = (parsedDate.getMonth() + 1).toString().padStart(2, '0')
       const year = parsedDate.getFullYear().toString()
       const formattedDate = `${day}/${month}/${year}`
+      const formattedDateForForm = `${day}.${month}.${year}`
 
       const formData = {
         ...this.dateForm.value,
@@ -91,73 +93,14 @@ export class EditPopoverComponent implements OnInit {
       }
 
       if (this.day.ScheduleProtectionLabId) {
-        this.labsRestService.updateLabs(formData).subscribe(
-          (response) => {
-            console.log(
-              'Данные успешно обновлены (Лабораторная работа)',
-              response
-            )
-            this.day.Lector = this.lectors.find(
-              (lector) => lector.LectorId === formData.lecturerId
-            )
-            this.day.StartTime = formData.startTime
-            this.day.EndTime = formData.endTime
-            this.day.Building = formData.building
-            this.day.Audience = formData.audience
-
-            this.close.emit()
-          },
-          (error) => {
-            console.error(
-              'Произошла ошибка при обновлении данных (Лабораторная работа)',
-              error
-            )
-          }
-        )
+        this.updateDate.emit(formData)
+        this.close.emit();
       } else if (this.day.ScheduleProtectionPracticalId) {
-        this.practicalRestService.updatePractical(formData).subscribe(
-          (response) => {
-            console.log(
-              'Данные успешно обновлены (Практическая работа)',
-              response
-            )
-            this.day.Lector = this.lectors.find(
-              (lector) => lector.LectorId === formData.lecturerId
-            )
-            this.day.StartTime = formData.startTime
-            this.day.EndTime = formData.endTime
-            this.day.Building = formData.building
-            this.day.Audience = formData.audience
-
-            this.close.emit()
-          },
-          (error) => {
-            console.error(
-              'Произошла ошибка при обновлении данных (Практическая работа)',
-              error
-            )
-          }
-        )
+        this.updateDate.emit(formData)
+        this.close.emit();
       } else {
-        this.lecturesRestService.updateLectures(formData).subscribe(
-          (response) => {
-            this.day.Lector = this.lectors.find(
-              (lector) => lector.LectorId === formData.lecturerId
-            )
-            this.day.StartTime = formData.startTime
-            this.day.EndTime = formData.endTime
-            this.day.Building = formData.building
-            this.day.Audience = formData.audience
-
-            this.close.emit()
-          },
-          (error) => {
-            console.error(
-              'Произошла ошибка при обновлении данных (Практическая работа)',
-              error
-            )
-          }
-        )
+        this.updateDate.emit(formData)
+        this.close.emit();
       }
     } else {
       this.dateForm.markAllAsTouched()

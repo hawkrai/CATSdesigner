@@ -27,5 +27,6 @@ namespace LMPlatform.Models.CP
         public DateTime? DateEnd { get; set; }
 
         public DateTime? DateStart { get; set; }
+        public string CathedraName { get; set; }
     }
 }
