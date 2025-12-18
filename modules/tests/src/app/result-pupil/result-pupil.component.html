@@ -17,6 +17,9 @@
     <div class="result-pupil-table-name">
       {{ 'text.tests.for.control' | translate: 'Тесты для контроля знаний' }}
     </div>
+    <div class="test-warning-text">
+      {{ 'text.test.control.warning' | translate: 'Тесты открываются преподавателем однократно. Прохождение теста возможно только на одном устройстве. Запрещено обновлять и покидать страницу с начатым тестом' }}
+    </div>
     <app-result-test-table-pupil
       [tests]="knowledgeControlTests"
     ></app-result-test-table-pupil>

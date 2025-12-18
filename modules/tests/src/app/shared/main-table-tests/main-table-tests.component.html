@@ -1,6 +1,9 @@
 <div class="main-table-title" [class.blackTitle]="black" *ngIf="title">
   {{ title }}
 </div>
+<div class="test-warning-text" *ngIf="isKnowledgeControlTests()">
+  {{ 'text.test.control.warning' | translate: 'Тесты открываются преподавателем однократно. Прохождение теста возможно только на одном устройстве. Запрещено обновлять и покидать страницу с начатым тестом' }}
+</div>
 <ng-container *ngIf="tests; else loading">
   <div>
     <mat-table
