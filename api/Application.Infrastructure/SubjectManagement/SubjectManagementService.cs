@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Application.Core;
+﻿using Application.Core;
 using Application.Core.Data;
+using Application.Infrastructure.ConceptManagement;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.StudentManagement;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
-using Application.Infrastructure.ConceptManagement;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Application.Infrastructure.SubjectManagement
 {
 	using Application.Core.Helpers;
 	using Application.Infrastructure.Extensions;
+    using LMPlatform.Models.CP;
     using Models;
+    using Newtonsoft.Json;
 
 	public class SubjectManagementService : ISubjectManagementService
 	{
@@ -806,6 +808,18 @@ namespace Application.Infrastructure.SubjectManagement
 			return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId && (e.LabId.Value > 0 || e.LabId.Value <= 0 && e.PracticalId.Value <= 0) && !e.IsCoursProject)).ToList();
 		}
 
+        public List<UserLabFiles> GetCourseProjectFiles(int userId, int subjectId)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            if (userId == 0)
+            {
+                return repositoriesContainer.RepositoryFor<UserLabFiles>()
+                    .GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && e.IsCoursProject)).ToList();
+            }
+
+            return repositoriesContainer.RepositoryFor<UserLabFiles>()
+                .GetAll(new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId && e.IsCoursProject)).ToList();
+        }
         public List<UserLabFiles> GetUserPracticalFiles(int userId, int subjectId)
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();

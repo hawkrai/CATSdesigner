@@ -1,4 +1,4 @@
-<div class="check-plagiarism" [ngClass]="{ result: result }">
+<div class="check-plagiarism result">
   <div class="dialog-header">
     <h1 mat-dialog-title>
       {{
@@ -6,11 +6,10 @@
           | translate: 'Проверка на плагиат'
       }}
     </h1>
-    <button mat-icon-button (click)="onClick()" class="close-button">
+    <button mat-icon-button class="close-button" (click)="onClick()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
-
   <div class="warning-messages">
     <div class="added-message">
       {{
@@ -25,7 +24,6 @@
       }}
     </div>
   </div>
-
   <div class="dialog-body">
     <ng-container *ngIf="!isLoad; else load">
       <div *ngIf="hasData; else noDataMessage">
@@ -36,88 +34,106 @@
             class="mat-elevation-z14 example-list"
           >
             <ng-container matColumnDef="coeff">
-              <th mat-header-cell *matHeaderCellDef>
+              <th mat-header-cell *matHeaderCellDef class="col-coeff">
                 {{
                   'text.course.defence.plagiarism.percentage'
                     | translate: 'Процент схожести'
                 }}, %
               </th>
-              <td mat-cell *matCellDef="let element">{{ element.coeff }}</td>
+              <td mat-cell *matCellDef="let element" class="col-coeff">
+                {{ element.coeff }}
+              </td>
             </ng-container>
-
             <ng-container matColumnDef="author">
-              <th mat-header-cell *matHeaderCellDef>
-                {{
-                  'text.course.defence.plagiarism.author' | translate: 'Автор'
-                }}
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="col-author-header"
+              >
+                {{ 'text.course.defence.plagiarism.author' | translate: 'Автор' }}
               </th>
-              <td mat-cell *matCellDef="let element">{{ element.author }}</td>
+              <td mat-cell *matCellDef="let element" class="col-author-cell">
+                {{ element.author }}
+              </td>
             </ng-container>
-
             <ng-container matColumnDef="group">
-              <th mat-header-cell *matHeaderCellDef>
-                {{
-                  'text.course.defence.plagiarism.group' | translate: 'Группа'
-                }}
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="col-group-header"
+              >
+                {{ 'text.course.defence.plagiarism.group' | translate: 'Группа' }}
               </th>
-              <td mat-cell *matCellDef="let element">
+              <td mat-cell *matCellDef="let element" class="col-group-cell">
                 {{ element.groupName }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="subject">
-              <th mat-header-cell *matHeaderCellDef>
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="col-subject-header"
+              >
                 {{
                   'text.course.defence.plagiarism.subject'
                     | translate: 'Предмет'
                 }}
               </th>
-              <td mat-cell *matCellDef="let element">
+              <td
+                mat-cell
+                *matCellDef="let element"
+                class="col-subject-cell"
+                [matTooltip]="element.Name"
+              >
                 {{ element.subjectName }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="file">
-              <th mat-header-cell *matHeaderCellDef>
+              <th mat-header-cell *matHeaderCellDef class="col-file-header">
                 {{ 'text.file' | translate: 'Файл' }}
               </th>
               <td
                 mat-cell
                 *matCellDef="let element"
-                class="link"
+                class="col-file-cell link"
                 (click)="downloadFile(element)"
               >
                 {{ element.doc }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="sizefile">
-              <th mat-header-cell *matHeaderCellDef>
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="col-filesize-header"
+              >
                 {{ 'common.fileSize' | translate: 'Размер файла' }}
               </th>
-              <td mat-cell *matCellDef="let element">{{ element.sizeFile }}</td>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                class="col-filesize-cell"
+              >
+                {{ element.sizeFile }}
+              </td>
             </ng-container>
-
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
         </div>
       </div>
-
       <ng-template #noDataMessage>
         <div class="no-data-message">
           {{ 'no.matches.found' | translate: 'Совпадений не найдено' }}
         </div>
       </ng-template>
     </ng-container>
-
     <ng-template #load>
       <div class="spinner">
         <mat-spinner></mat-spinner>
       </div>
     </ng-template>
   </div>
-
   <div class="dialog-actions">
     <button mat-raised-button (click)="onClick()">
       {{ 'button.close' | translate: 'Закрыть' }}

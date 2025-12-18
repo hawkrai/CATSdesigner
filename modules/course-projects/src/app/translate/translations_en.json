@@ -18,7 +18,7 @@
   "text.edit": "Edit",
   "text.delete": "Delete",
   "text.correct": "Correct",
-  "text.date": "Date",
+  "text.date": "Date, time",
   "text.accept": "Accept work",
   "text.return": "Return work",
   "text.check": "Check work on plagiarism",
@@ -215,5 +215,6 @@
   "course": "Course",
   "group": "Group",
   "no.matches.found": "No matches found",
-  "text.course.add.theme": "Add theme"
+  "text.course.add.theme": "Add theme",
+  "button.close": "Close"
 }

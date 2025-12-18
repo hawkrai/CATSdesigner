@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using Application.Core.Data;
+﻿using Application.Core.Data;
 using LMPlatform.Models;
+using System.Collections.Generic;
 
 namespace Application.Infrastructure.SubjectManagement
 {
-    using System;
+    using LMPlatform.Models.CP;
     using Models;
+    using System;
 
     public interface ISubjectManagementService
     {
@@ -168,6 +169,6 @@ namespace Application.Infrastructure.SubjectManagement
         SubjectGroup GetSubjectGroup(IQuery<SubjectGroup> query);
 
         IEnumerable<SubjectGroup> GetSubjectGroups(IQuery<SubjectGroup> query);
-
+        List<UserLabFiles> GetCourseProjectFiles(int v, int subjectId);
     }
 }
