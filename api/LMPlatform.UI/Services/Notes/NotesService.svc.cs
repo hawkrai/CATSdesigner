@@ -164,11 +164,7 @@ namespace LMPlatform.UI.Services.Notes
             {
                 return new ResultViewData
                 {
-<<<<<<< HEAD
                     Message = "text.date.save.response.unknown",
-=======
-                    Message = "Не удалось сохранить заметку",
->>>>>>> 9ad0e3797 (fix decor code)
                     Code = "500"
                 };
             }
