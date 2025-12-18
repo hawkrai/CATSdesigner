@@ -3,21 +3,6 @@
   display: inline-block;
 }
 
-.expected-time {
-  display: none;
-  position: fixed;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  padding: 5px;
-  border-radius: 3px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-  white-space: nowrap;
-  z-index: 1000;
-}
-
-.time-container:hover .expected-time {
-  display: block;
-}
 .info {
   font-family: 'Roboto', sans-serif;
   color: #363636;
@@ -187,7 +172,7 @@ span.clickable {
 }
 
 ::ng-deep .test-tooltip {
-  white-space: nowrap;
-  max-width: none;
-  word-break: keep-all;
+  white-space: normal;
+  max-width: 420px;
+  word-break: break-word;
 }
