@@ -821,6 +821,7 @@ export class ScheduleMainComponent implements OnInit {
       this.isLoadActive = false
       this.refresh.next()
              this.lessons.forEach((lesson) => {
+               console.log(lesson.Type)
                if(lesson.Type === 'Лекция'){
                  this.lessonservice.getGroupsBySubjectId(+lesson.SubjectId).subscribe({
                    next: (res) => {
@@ -831,13 +832,20 @@ export class ScheduleMainComponent implements OnInit {
 
                      const event = this.events.find(e => e.id === lesson.Id && e.meta === 'lesson');
                      if (event) {
-                       console.log(lesson.GroupName)
                        event.title = this.calculateTitle(lesson);
                        this.refresh.next();
                      }
                    },
                    error: (err) => console.error(err)
                  });
+               }
+               if(lesson.Type === 'Практ. зан.'){
+                 lesson.SubGroupName = 'first'
+                 const event = this.events.find(e => e.id === lesson.Id && e.meta === 'lesson');
+                 if (event) {
+                   event.title = this.calculateTitle(lesson);
+                   this.refresh.next();
+                 }
                }
              });
 

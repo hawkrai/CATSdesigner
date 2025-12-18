@@ -474,6 +474,11 @@ export class CreateLessonComponent implements OnInit {
                       ),
                     }
                   }
+
+                  this.lesson.GroupName = this.groups
+                     .slice(0, this.groups.length - 1)
+                    .map(g => g.GroupName).join('\n');
+
                   this.dialogRef.close({
                     lesson: this.lesson,
                     type: 'lesson',
@@ -508,6 +513,8 @@ export class CreateLessonComponent implements OnInit {
                       })
                   }
                   this.lesson.Id = l.Schedule.Id
+                  this.lesson.GroupName = l.Schedule.GroupName
+                  this.lesson.SubGroupName = l.Schedule.SubGroupName
                   if (l.Schedule.Teacher != undefined) {
                     this.lesson.Teacher = {
                       FullName: this.lessonservice.cutTeacherName(
@@ -549,6 +556,8 @@ export class CreateLessonComponent implements OnInit {
                       })
                   }
                   this.lesson.Id = l.Schedule.Id
+                  this.lesson.GroupName = l.Schedule.GroupName
+                  this.lesson.SubGroupName = 'first'
                   if (l.Schedule.Teacher != undefined) {
                     this.lesson.Teacher = {
                       FullName: this.lessonservice.cutTeacherName(
