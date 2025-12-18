@@ -88,6 +88,7 @@
   "text.test.question.changed": "Question changed",
   "text.test.internal.server.error": "Server response error",
   "text.test.back.to.test": "< Tests",
+  "text.test.back.to.eumk": "< Educational Complex",
   "text.test.questions": "Questions",
   "text.test.cant.delete.question": "Failed to delete question",
   "text.test.choose.group": "Select group",

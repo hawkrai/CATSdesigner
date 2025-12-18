@@ -72,6 +72,7 @@
   "text.test.question.changed": "Вопрос изменен",
   "text.test.internal.server.error": "Ошибка ответа сервера",
   "text.test.back.to.test": "< К тестам",
+  "text.test.back.to.eumk": "< В ЭУМК",
   "text.test.questions": "Вопросы",
   "text.test.cant.delete.question": "Не удалось удалить вопрос",
   "text.test.choose.group": "Выберите группу",
