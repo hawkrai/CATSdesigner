@@ -798,7 +798,6 @@ export class ScheduleMainComponent implements OnInit {
             lesson.End
         )
         lesson.Type = this.lessonservice.getLessonTypeById(lesson.Type)
-
         if (lesson.Teacher != null) {
           lesson.Teacher.FullName = this.lessonservice.cutTeacherName(
             lesson.Teacher.FullName
@@ -821,6 +820,26 @@ export class ScheduleMainComponent implements OnInit {
 
       this.isLoadActive = false
       this.refresh.next()
+             this.lessons.forEach((lesson) => {
+               if(lesson.Type === 'Лекция'){
+                 this.lessonservice.getGroupsBySubjectId(+lesson.SubjectId).subscribe({
+                   next: (res) => {
+                     lesson.GroupName = res.Groups
+                       .slice(0, res.Groups.length - 1)
+                       .map(g => g.GroupName)
+                       .join('\n');
+
+                     const event = this.events.find(e => e.id === lesson.Id && e.meta === 'lesson');
+                     if (event) {
+                       console.log(lesson.GroupName)
+                       event.title = this.calculateTitle(lesson);
+                       this.refresh.next();
+                     }
+                   },
+                   error: (err) => console.error(err)
+                 });
+               }
+             });
 
       this.noteService
         .GetPersonalNotesBetweenDates(startDate, endDate)
