@@ -32,7 +32,7 @@ namespace LMPlatform.UI.Services.Notes
         public ResultViewData SaveNote(int id, string text, int subjectId, int? lecturesScheduleId, int? labsScheduleId, int? practicalScheduleId)
         {
             try
-            {   
+            {
                 var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
@@ -57,11 +57,11 @@ namespace LMPlatform.UI.Services.Notes
                     Message = "Заметка успешно сохранена"
                 };
             }
-            catch (Exception ex)
+            catch
             {
                 return new ResultViewData
                 {
-                    Message = "Не удалось сохранить заметку" + $", Error: {ex}",
+                    Message = "Не удалось сохранить заметку",
                     Code = "500"
                 };
             }
@@ -107,11 +107,11 @@ namespace LMPlatform.UI.Services.Notes
                     Message = "Заметка успешно удалена"
                 };
             }
-            catch(Exception ex) 
+            catch
             {
                 return new ResultViewData
                 {
-                    Message = $"Не удалось удалить заметку {ex.Message}",
+                    Message = "Не удалось удалить заметку",
                     Code = "500"
                 };
             }
@@ -160,11 +160,15 @@ namespace LMPlatform.UI.Services.Notes
                     Message = "text.note.save.response.success"
                 };
             }
-            catch (Exception ex)
+            catch
             {
                 return new ResultViewData
                 {
+<<<<<<< HEAD
                     Message = "text.date.save.response.unknown",
+=======
+                    Message = "Не удалось сохранить заметку",
+>>>>>>> 9ad0e3797 (fix decor code)
                     Code = "500"
                 };
             }
