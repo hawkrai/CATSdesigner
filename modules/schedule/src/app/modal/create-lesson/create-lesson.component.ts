@@ -667,22 +667,28 @@ export class CreateLessonComponent implements OnInit {
     this.dialogRef.close(null)
   }
 
-  getTypeTooltip(): string {
-    if (!this.formGroup) {
-        return '';
-      }
-
-    const value = this.formGroup.get('type').value
-
-    if (value === '3') {
+  getTypeTooltipByType(typeId: string | number): string {
+    if (typeId === '3') {
       return 'text.schedule.course.project'
     }
-
-    if (value === '4') {
+    if (typeId === '4') {
       return 'text.schedule.graduation.project'
     }
-
     return ''
+  }
+
+  getTypeTooltip(): string {
+    if (!this.formGroup) {
+      return '';
+    }
+    const value = this.formGroup.get('type').value;
+    if (value === '3') {
+      return 'text.schedule.course.project';
+    }
+    if (value === '4') {
+      return 'text.schedule.graduation.project';
+    }
+    return '';
   }
 
   subjectChange(event): void {
