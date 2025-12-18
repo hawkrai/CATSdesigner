@@ -73,7 +73,7 @@ export class CreateLessonComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isEditMode = !!this.data.lesson
+    this.isEditMode = !!this.data.lesson || !!this.data.note
 
     if (this.isEditMode) {
       this.dialogTitle = 'text.schedule.edit.event.to.schedule'
