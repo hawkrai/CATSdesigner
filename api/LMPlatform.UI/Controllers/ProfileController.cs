@@ -167,7 +167,7 @@ namespace LMPlatform.UI.Controllers
             List<Subject> model;
 
             if (user.Lecturer == null)
-                model = subjectService.GetSubjectsByStudent(user.Id, isArchive);
+                model = subjectService.GetSubjectsByStudentChecked(user.Id, isArchive);
             else
                 model = subjectService.GetSubjectsByLector(user.Id, isArchive);
 

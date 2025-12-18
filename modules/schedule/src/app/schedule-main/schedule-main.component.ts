@@ -615,6 +615,10 @@ export class ScheduleMainComponent implements OnInit {
           this.lessons.push(result.lesson);
         }
 
+        if (result.code) {
+              const type = result.code === '200' ? 'success' : 'error'
+              this.notifierService.notify(type, result.message)
+            }
         const startT = new Date(this.lesson.Date)
         const endT = new Date(this.lesson.Date)
         startT.setHours(

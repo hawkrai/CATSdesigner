@@ -144,4 +144,12 @@ export class MainTableTestsComponent
     //todo always called. fix drag and drop
     this.cdr.detectChanges()
   }
+
+  public isKnowledgeControlTests(): boolean {
+    return (
+      this.title === 'Тесты для контроля знаний' ||
+      this.title === 'Tests to control knowledge' ||
+      this.title?.includes('text.tests.for.control')
+    )
+  }
 }

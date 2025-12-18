@@ -65,46 +65,11 @@
               node.Estimated
             )
           }"
+          [matTooltip]="getExpectedActualTooltip(node)"
+          matTooltipPosition="right"
         >
-          <span
-            >(
-            <ng-container *ngIf="node.WatchingTime > 0">
-              <ng-container *ngIf="node.WatchingTimeMinutes != 0">
-                {{ node.WatchingTimeMinutes }}&nbsp;{{
-                  'common.minutes' | translate
-                }}&nbsp;
-              </ng-container>
-              <ng-container *ngIf="node.WatchingTimeSeconds != 0">
-                {{ node.WatchingTimeSeconds }}&nbsp;{{
-                  'common.seconds' | translate
-                }}&nbsp;
-              </ng-container>
-            </ng-container> </span
-          >)
-          <span class="expected-time">
-            <span *ngIf="node.Estimated > 0" [ngStyle]="{ color: '#363636' }">
-              &nbsp;{{ 'complex.time.expected' | translate }} -
-              <span>
-                <ng-container *ngIf="node.EstimatedMinutes > 0">
-                  {{ node.EstimatedMinutes }}&nbsp;{{
-                    'common.minutes' | translate
-                  }}&nbsp;
-                </ng-container>
-                {{ node.EstimatedSeconds }}&nbsp;{{
-                  'common.seconds' | translate
-                }} </span
-              >, &nbsp;{{ 'complex.time.actual' | translate }} -
-              <span>
-                <ng-container *ngIf="node.WatchingTimeMinutes > 0">
-                  {{ node.WatchingTimeMinutes }}&nbsp;{{
-                    'common.minutes' | translate
-                  }}&nbsp;
-                </ng-container>
-                {{ node.WatchingTimeSeconds }}&nbsp;{{
-                  'common.seconds' | translate
-                }}
-              </span>
-            </span>
+          <span *ngIf="node.WatchingTime > 0">
+            &nbsp;({{ getWatchingTimeText(node) }})
           </span>
         </span>
       </li>

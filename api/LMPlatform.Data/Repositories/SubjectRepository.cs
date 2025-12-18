@@ -53,7 +53,7 @@ namespace LMPlatform.Data.Repositories
 			}
 		}
 
-		public List<Subject> GetAllSubjectsForGroup(int groupId, bool isArchive = false)
+		public List<Subject> GetAllSubjectsForGroup(int groupId)
 		{
 			using var context = new LmPlatformModelsContext();
 			var subjectGroup = context.Set<SubjectGroup>()
@@ -65,10 +65,27 @@ namespace LMPlatform.Data.Repositories
 				.Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(v => v.SubjectStudents)))
 				.Include(e => e.Subject.SubjectLecturers.Select(x => x.Lecturer))
 				.Include(e => e.Subject.LecturesScheduleVisitings)
-				.Where(e => e.GroupId == groupId && (e.Subject == null || (isArchive) ? !e.IsActiveOnCurrentGroup : (!e.Subject.IsArchive && e.IsActiveOnCurrentGroup))).ToList();
+				.Where(e => e.GroupId == groupId && (e.Subject == null || e.Subject.IsArchive == false)).ToList();
 				return subjectGroup.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
 		}
-		public List<Subject> GetSubjects(int groupId = 0, int lecturerId = 0)
+
+        public List<Subject> GetAllSubjectsForGroupChecked(int groupId, bool isArchive)
+        {
+            using var context = new LmPlatformModelsContext();
+            var subjectGroup = context.Set<SubjectGroup>()
+                .Include(e => e.Subject.SubjectGroups.Select(x => x.SubjectStudents))
+                .Include(e => e.Subject.Labs)
+                .Include(e => e.Subject.SubjectGroups.Select(x => x.Group))
+                .Include(e => e.Subject.SubjectLecturers.Select(x => x.Lecturer))
+                .Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(t => t.ScheduleProtectionLabs)))
+                .Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(v => v.SubjectStudents)))
+                .Include(e => e.Subject.SubjectLecturers.Select(x => x.Lecturer))
+                .Include(e => e.Subject.LecturesScheduleVisitings)
+                .Where(e => e.GroupId == groupId && (e.Subject == null || (isArchive) ? !e.IsActiveOnCurrentGroup : (!e.Subject.IsArchive && e.IsActiveOnCurrentGroup))).ToList();
+            return subjectGroup.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
+        }
+
+        public List<Subject> GetSubjects(int groupId = 0, int lecturerId = 0)
 		{
 			using var context = new LmPlatformModelsContext();
 
@@ -86,23 +103,31 @@ namespace LMPlatform.Data.Repositories
             };
 
             if (groupId != 0)
-			{
-                return GetSubjectGroupQueryable(context)
-            .Where(e => e.GroupId == groupId && e.IsActiveOnCurrentGroup)
-            .Select(e => e.Subject)
-            .DistinctBy(x => x.Id)
-            .OrderBy(x => latinFirst(x.Name))
-            .ThenBy(x => x.Name)
-            .ToList();
+            {
+                var subjectGroups = GetSubjectGroupQueryable(context)
+                    .Where(e => e.GroupId == groupId && e.IsActiveOnCurrentGroup)
+                    .ToList();
+
+                return subjectGroups
+                    .Select(e => e.Subject)
+                    .Where(s => s != null)
+                    .DistinctBy(s => s.Id)
+                    .OrderBy(s => latinFirst(s.Name))
+                    .ThenBy(s => s.Name)
+                    .ToList();
             }
 
-            return GetSubjectLecturerQueryable(context)
-        .Where(e => e.LecturerId == lecturerId)
-        .Select(e => e.Subject)
-        .DistinctBy(x => x.Id)
-        .OrderBy(x => latinFirst(x.Name))
-        .ThenBy(x => x.Name)
-        .ToList();
+            var subjectLecturers = GetSubjectLecturerQueryable(context)
+                .Where(e => e.LecturerId == lecturerId)
+                .ToList();
+
+            return subjectLecturers
+                .Select(e => e.Subject)
+                .Where(s => s != null)
+                .DistinctBy(s => s.Id)
+                .OrderBy(s => latinFirst(s.Name))
+                .ThenBy(s => s.Name)
+                .ToList();
         }
 
 		public Subject GetSubject(int subjectId, int groupId = 0, int lecturerId = 0)

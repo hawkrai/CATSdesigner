@@ -1,9 +1,7 @@
 <app-popover-dialog>
   <ng-container title>
     {{ data.title }}<br/>
-    <mat-hint style="font-size:80%;">
-      {{ data.model.studentFullName | initials }}
-    </mat-hint>
+    <span id="title-initials">{{ data.model.studentFullName | initials }}</span>
   </ng-container>
   <ng-container body>
     <form class="example-form" [formGroup]="markForm">

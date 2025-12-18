@@ -72,6 +72,7 @@
   "text.test.question.changed": "Вопрос изменен",
   "text.test.internal.server.error": "Ошибка ответа сервера",
   "text.test.back.to.test": "< К тестам",
+  "text.test.back.to.eumk": "< В ЭУМК",
   "text.test.questions": "Вопросы",
   "text.test.cant.delete.question": "Не удалось удалить вопрос",
   "text.test.choose.group": "Выберите группу",
@@ -155,5 +156,6 @@
   "text.text.type": "Тип теста",
   "text.test.CM.required": "Для создания этого типа теста необходимо добавить модуль ЭУМК к текущему учебному предмету",
   "validation.whitespace": "Поле не может содержать только пробелы",
-  "text.test.theme.eumk": "Тема в ЭУМК"
+  "text.test.theme.eumk": "Тема в ЭУМК",
+  "text.test.control.warning": "Тесты открываются преподавателем однократно. Прохождение теста возможно только на одном устройстве. Запрещено обновлять и покидать страницу с начатым тестом"
 }

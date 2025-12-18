@@ -10,6 +10,7 @@ import { TranslatePipe } from 'educats-translate'
 import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
 import { TestService } from '../../../service/test.service'
 import { TestResultsLoaderService } from '../../../service/test-results-loader.service'
+import { WatchingTimeService } from '../../../service/watching-time.service'
 
 @Component({
   selector: 'app-monitoring-tree',
@@ -36,6 +37,7 @@ export class MonitoringTreeComponent implements OnInit {
     private translatePipe: TranslatePipe,
     private testService: TestService,
     private testResultsLoaderService: TestResultsLoaderService,
+    private watchingTimeService: WatchingTimeService,
     private cdr: ChangeDetectorRef
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -113,5 +115,13 @@ export class MonitoringTreeComponent implements OnInit {
 
   getTestScoreText(points: number): string {
     return this.testResultsLoaderService.getTestScoreText(points)
+  }
+
+  getWatchingTimeText(node: ComplexMonitoring): string {
+    return this.watchingTimeService.getWatchingTimeText(node)
+  }
+
+  getExpectedActualTooltip(node: ComplexMonitoring): string {
+    return this.watchingTimeService.getExpectedActualTooltip(node)
   }
 }
