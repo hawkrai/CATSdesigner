@@ -401,7 +401,7 @@ export class CreateLessonComponent implements OnInit {
                 id: this.note.id,
                 start: new Date(this.lesson.Date + 'T' + this.lesson.Start),
                 end: new Date(this.lesson.Date + 'T' + this.lesson.End),
-                title: 'Ваша заметка',
+                title: '',
                 note: this.memo,
               };
 
