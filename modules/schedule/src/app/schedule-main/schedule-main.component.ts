@@ -821,7 +821,6 @@ export class ScheduleMainComponent implements OnInit {
       this.isLoadActive = false
       this.refresh.next()
              this.lessons.forEach((lesson) => {
-               console.log(lesson.Type)
                if(lesson.Type === 'Лекция'){
                  this.lessonservice.getGroupsBySubjectId(+lesson.SubjectId).subscribe({
                    next: (res) => {
