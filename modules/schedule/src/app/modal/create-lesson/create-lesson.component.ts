@@ -161,6 +161,7 @@ export class CreateLessonComponent implements OnInit {
       .getAllSubjects(this.user.userName)
       .subscribe((subjects) => {
         this.subjects = subjects
+        console.log(this.data.lesson)
         if (this.data.lesson != null) {
           this.lesson.Id = this.data.lesson.id
           this.lesson.SubjectId = this.lessonservice.getTitlePart(
@@ -180,7 +181,7 @@ export class CreateLessonComponent implements OnInit {
             11
           )
           this.formGroup.get('subjectF').setValue(+this.lesson.SubjectId)
-
+                        console.log(teacherId)
           if (teacherId != null) {
             this.lessonservice
               .getJoinedLector(this.lesson.SubjectId, true)
@@ -193,6 +194,7 @@ export class CreateLessonComponent implements OnInit {
                 this.lesson.Teacher = this.teachers.find(
                   (teacher) => teacher.LectorId === teacherId
                 )
+              console.log( this.lesson.Teacher)
                 this.formGroup
                   .get('teacher')
                   .setValue(this.lesson.Teacher.LectorId)
@@ -469,6 +471,7 @@ export class CreateLessonComponent implements OnInit {
                   this.lesson.Id = l.Schedule.Id
                   if (l.Schedule.Teacher != undefined) {
                     this.lesson.Teacher = {
+                      LectorId: l.Schedule.Teacher.LectorId,
                       FullName: this.lessonservice.cutTeacherName(
                         l.Schedule.Teacher.FullName
                       ),
@@ -510,6 +513,7 @@ export class CreateLessonComponent implements OnInit {
                   this.lesson.Id = l.Schedule.Id
                   if (l.Schedule.Teacher != undefined) {
                     this.lesson.Teacher = {
+                      LectorId: l.Schedule.Teacher.LectorId,
                       FullName: this.lessonservice.cutTeacherName(
                         l.Schedule.Teacher.FullName
                       ),
@@ -551,6 +555,7 @@ export class CreateLessonComponent implements OnInit {
                   this.lesson.Id = l.Schedule.Id
                   if (l.Schedule.Teacher != undefined) {
                     this.lesson.Teacher = {
+                      LectorId: l.Schedule.Teacher.LectorId,
                       FullName: this.lessonservice.cutTeacherName(
                         l.Schedule.Teacher.FullName
                       ),
