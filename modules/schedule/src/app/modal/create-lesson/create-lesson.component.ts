@@ -573,7 +573,7 @@ export class CreateLessonComponent implements OnInit {
                   }
                   this.lesson.Id = l.Schedule.Id
                   this.lesson.GroupName = l.Schedule.GroupName
-                  this.lesson.SubGroupName = 'first'
+                  this.lesson.SubGroupName = l.Schedule.SubGroupName
                   if (l.Schedule.Teacher != undefined) {
                     this.lesson.Teacher = {
                       FullName: this.lessonservice.cutTeacherName(

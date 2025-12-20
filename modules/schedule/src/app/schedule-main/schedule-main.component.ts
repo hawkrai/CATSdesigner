@@ -837,14 +837,6 @@ export class ScheduleMainComponent implements OnInit {
                    error: (err) => console.error(err)
                  });
                }
-               if(lesson.Type === 'Практ. зан.'){
-                 lesson.SubGroupName = 'first'
-                 const event = this.events.find(e => e.id === lesson.Id && e.meta === 'lesson');
-                 if (event) {
-                   event.title = this.calculateTitle(lesson);
-                   this.refresh.next();
-                 }
-               }
              });
 
       this.noteService

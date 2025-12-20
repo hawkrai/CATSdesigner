@@ -37,7 +37,7 @@ namespace LMPlatform.UI.Services.Schedule
 
         [OperationContract]
         [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveDatePractical")]
-        ScheduleViewResultSingle SaveDatePractical(int id, int subjectId, int groupId, string date, string startTime, string endTime, string building, string audience, Note note, int? lecturerId);
+        ScheduleViewResultSingle SaveDatePractical(int id, int subjectId, int groupId, int? subGroupId, string date, string startTime, string endTime, string building, string audience, Note note, int? lecturerId);
 
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/GetSchedule?dateStart={dateStart}&dateEnd={dateEnd}")]
