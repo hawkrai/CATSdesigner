@@ -221,7 +221,7 @@ export class ScheduleMainComponent implements OnInit {
       '|' +
       consultation.Subject.ShortName +
       '|' +
-      'КП' +
+      this.translatePipe.transform('text.schedule.course.project.cut', 'КП') +
       '|' +
       consultation.Teacher.FullName +
       '|' +
@@ -256,7 +256,7 @@ export class ScheduleMainComponent implements OnInit {
       consultation.Building +
       '|' +
       '|' +
-      'ДП' +
+      this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
       '|' +
       '|' +
       '363636' +
@@ -421,7 +421,7 @@ export class ScheduleMainComponent implements OnInit {
         } else if (result.type === 'diplom' || result.type === 'course') {
           let titleCon = ''
           if (result.type === 'course') {
-            titleCon = this.calculateTitle(result.lesson)
+            titleCon = this.getTitleCourseConsultation(result.lesson)
           } else {
             titleCon = this.getTitleDiplomConsultation(result.lesson)
           }
@@ -489,7 +489,6 @@ export class ScheduleMainComponent implements OnInit {
             const a = this.lessonservice
               .getType(eventToDelete.title)
               .replaceAll(' ', '')
-            console.log(a)
             if (a == 'Лекция' || a == 'Lect.') {
               this.lessonservice
                 .deleteLecture(

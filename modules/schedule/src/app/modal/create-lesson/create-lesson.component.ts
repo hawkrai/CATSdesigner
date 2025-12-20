@@ -180,7 +180,6 @@ export class CreateLessonComponent implements OnInit {
             11
           )
           this.formGroup.get('subjectF').setValue(+this.lesson.SubjectId)
-
           if (teacherId != null) {
             this.lessonservice
               .getJoinedLector(this.lesson.SubjectId, true)
@@ -190,12 +189,32 @@ export class CreateLessonComponent implements OnInit {
                 if (this.isStudentUpdateLesson) {
                   this.formGroup.controls.teacher.disable()
                 }
-                this.lesson.Teacher = this.teachers.find(
-                  (teacher) => teacher.LectorId === teacherId
-                )
-                this.formGroup
-                  .get('teacher')
-                  .setValue(this.lesson.Teacher.LectorId)
+                if (this.teachers.length > 0) {
+                  const currentLector = this.teachers.find(
+                    t => t.LectorId === +this.user.id
+                  );
+                  if (currentLector) {
+                    this.formGroup.controls.teacher.setValue(currentLector.LectorId)
+                    this.lesson.Teacher = currentLector
+                  } else {
+                    this.formGroup.controls.teacher.reset()
+                  }
+                }
+                if (
+                  this.teachers.length === 0 &&
+                  this.isDiplomAvailable &&
+                  this.changedType === '4' &&
+                  this.user.role === 'lector'
+                ) {
+                  const fallbackTeacher = {
+                    LectorId: +this.user.id,
+                    FullName: this.user.userName,
+                  };
+
+                  this.teachers = [fallbackTeacher]
+                  this.lesson.Teacher = fallbackTeacher
+                  this.formGroup.controls.teacher.setValue(fallbackTeacher.LectorId)
+                }
               })
           }
 
@@ -244,9 +263,6 @@ export class CreateLessonComponent implements OnInit {
 
       const found = this.lessonTypes.find(type => type[1] === rawType);
 
-      this.changedType = found
-        ? found[0]
-        : '3';
       this.disableNote = true
     }
     this.formGroupNote = new FormGroup({
@@ -724,6 +740,22 @@ export class CreateLessonComponent implements OnInit {
         this.lesson.Teacher = currentLector;
         } else {
           this.formGroup.controls.teacher.reset();
+        }
+
+      if (
+          this.teachers.length === 0 &&
+          this.isDiplomAvailable &&
+          this.changedType === '4' &&
+          this.user.role === 'lector'
+        ) {
+          const fallbackTeacher = {
+            LectorId: +this.user.id,
+            FullName: this.user.userName,
+          };
+
+          this.teachers = [fallbackTeacher];
+          this.formGroup.controls.teacher.setValue(fallbackTeacher.LectorId);
+          this.lesson.Teacher = fallbackTeacher;
         }
 
       this.formGroup.controls.teacher.enable()
