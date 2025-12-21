@@ -188,7 +188,11 @@
     </ng-container>
     <ng-container *ngIf="courseUser.IsLecturer">
       <mat-accordion *ngIf="studentFiles">
-        <mat-expansion-panel *ngFor="let student of studentFiles">
+        <mat-expansion-panel
+            *ngFor="let student of studentFiles; trackBy: trackByStudentId"
+            [expanded]="student.isExpanded"
+            (opened)="toggleStudentExpanded(student.StudentId, true)"
+            (closed)="toggleStudentExpanded(student.StudentId, false)">
           <mat-expansion-panel-header>
             <mat-panel-title>
               {{ student.FullName }}

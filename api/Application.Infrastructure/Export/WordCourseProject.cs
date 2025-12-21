@@ -247,7 +247,11 @@ namespace Application.Infrastructure.Export
 
             var student = doc.CreateElement("item");
             student.SetAttribute("name", "Student");
-            student.InnerText = string.Format("{0} {1} {2}", awork.Student.LastName, awork.Student.FirstName, awork.Student.MiddleName);
+            student.InnerText = string.Format("{0} {1} {2}",
+            awork.Student.LastName ?? "",
+            awork.Student.FirstName ?? "",
+            string.IsNullOrEmpty(awork.Student.MiddleName) ? " " : awork.Student.MiddleName);
+
             children.Add(student);
 
             var group = doc.CreateElement("item");
@@ -339,9 +343,19 @@ namespace Application.Infrastructure.Export
 
             var shortStudentName = doc.CreateElement("item");
             shortStudentName.SetAttribute("name", "ShortStudentName");
-            shortStudentName.InnerText = string.Format("{0}.{1}. {2}", awork.Student.FirstName == null ? "" : awork.Student.FirstName[0], 
-                awork.Student.MiddleName == null ? "" : awork.Student.MiddleName[0], 
-                awork.Student.LastName);
+            var firstInitial = !string.IsNullOrEmpty(awork.Student.FirstName)
+                ? awork.Student.FirstName[0].ToString()
+                : "";
+
+            var middleInitial = !string.IsNullOrEmpty(awork.Student.MiddleName)
+                ? awork.Student.MiddleName[0].ToString()
+                : "";
+
+            shortStudentName.InnerText = string.IsNullOrEmpty(middleInitial)
+                ? $"{firstInitial}.{" "}{awork.Student.LastName ?? ""}"       
+                : $"{firstInitial}.{middleInitial}.{awork.Student.LastName ?? ""}"; 
+
+
             children.Add(shortStudentName);
 
             var shortLecturerName = doc.CreateElement("item");
