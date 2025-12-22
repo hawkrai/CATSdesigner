@@ -25,6 +25,7 @@ using LMPlatform.UI.ViewModels.KnowledgeTestingViewModels;
 using Nest;
 using Newtonsoft.Json;
 using WebMatrix.WebData;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LMPlatform.UI.Controllers
 {
@@ -53,26 +54,27 @@ namespace LMPlatform.UI.Controllers
             var test = this.TestsManagementService.GetTest(testId);
             var description = new
             {
-              
-                test.Title, test.Description, OngoingTestId = 0
-               
+                test.Title,
+                test.Description,
+                OngoingTestId = 0
             };
+
             int idUser = UserContext.CurrentUserId;
             var _context = new UsersManagementService();
             var user = _context.GetUserById(idUser);
+
             if (UserContext.Role == Constants.Roles.Student && user.OngoingTest != null)
             {
+                var ongoingTest = TestsManagementService.GetTest(user.OngoingTest.Value);
+
                 description = new
                 {
-                    Title = $"Тест \"{TestsManagementService.GetTest(user.OngoingTest.Value).Title}\" уже запущен в Вашей учетной записи",
-                    Description = "Продолжайте проходить тест на запущенном устройстве. Если Вы хотите прервать прохождение теста, то нажмите на кнопку \"Завершить тест\"." +
-                    "В таком случае вопросы, оставшиеся без ответа, будут считаться неверно отвеченными. Для повторного прохождения теста обратитесь к преподавателю.\r\n\r\n" +
-                    "Continue taking the test on the running device. If you want to interrupt the test, click on the \"Finish test\" button. In this case, questions left unanswered " +
-                    "will be considered as incorrectly answered.. To retake the test, contact the lecturer.",
-                    OngoingTestId = user.OngoingTest.Value
+                    Title = $"{ongoingTest.Title}",
+                    Description = "text.test.already.launched",
+                OngoingTestId = user.OngoingTest.Value
                 };
-            }                      
-            
+            }
+
             return JsonResponse(description) as JsonResult;
         }
 
@@ -105,7 +107,7 @@ namespace LMPlatform.UI.Controllers
                     test.Description,
                     test.ForSelfStudy
                 });
-      
+
             return JsonResponse(availableTests) as JsonResult;
         }
 
@@ -151,7 +153,7 @@ namespace LMPlatform.UI.Controllers
                 {
                     this.ViewBag.Message = "Тест не содержит ни одного вопроса";
                     return StatusCode(HttpStatusCode.BadRequest);
-                }                
+                }
 
                 var nextQuestion =
                     this.TestPassingService.GetNextQuestion(testId, UserContext.CurrentUserId, questionNumber);
@@ -162,7 +164,7 @@ namespace LMPlatform.UI.Controllers
                 }
 
                 return GetCloseTestResult(testId, nextQuestion.Mark, nextQuestion.Percent, GetAnswersAsBinary);
-               
+
             }
             catch (Exception ex)
             {
@@ -260,7 +262,7 @@ namespace LMPlatform.UI.Controllers
         {
             var userAnswers = this.TestPassingService.GetAnswersForEndedTest(testId, studentId);
             var test = this.TestsManagementService.GetTest(testId, true);
-            
+
             dynamic result = new ExpandoObject();
             result.TestInfo = this.TestPassingService.GetTestPassResult(testId, studentId);
             result.UserAnswers = GetAnswersAsUserAnswer(userAnswers, test.Questions);
@@ -357,7 +359,7 @@ namespace LMPlatform.UI.Controllers
                 {
                     var pointsSum =
                         Math.Round(
-                            (decimal) result.TestPassResults.Sum(e => e.Points).Value /
+                            (decimal)result.TestPassResults.Sum(e => e.Points).Value /
                             result.TestPassResults.Count(e => e.Points != null), 0, MidpointRounding.AwayFromZero);
                     //var percentSum = Math.Round((decimal)result.TestPassResults.Sum(e => e.Percent).Value / result.TestPassResults.Count(e => e.Percent != null), 0);
                     //datas.Add(pointsSum + " (" + percentSum + "%)");
@@ -437,7 +439,7 @@ namespace LMPlatform.UI.Controllers
                 thems.Add(new { name = concept.Name, id = concept.Id, container = concept.Container, filePath });
             }
 
-            var answers = this.TestPassingService.GetAnswersForEndedTest(testId, UserContext.CurrentUserId);            
+            var answers = this.TestPassingService.GetAnswersForEndedTest(testId, UserContext.CurrentUserId);
 
             dynamic results = new ExpandoObject();
             results.TestName = test.Title;

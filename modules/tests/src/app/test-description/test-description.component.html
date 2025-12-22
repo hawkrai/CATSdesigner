@@ -7,7 +7,7 @@
     </div>
     <div class="test-description-wrapper-description">
       <div class="test-description-block">
-        <div class="test-description-text">{{ test.Description }}</div>
+        <div class="test-description-text">{{ test.Description | translate:test.Description }}</div>
         <div class="test-description-button">
           <button
             *ngIf="test.OngoingTestId === 0"
