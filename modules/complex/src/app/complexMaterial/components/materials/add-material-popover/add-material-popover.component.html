@@ -1,18 +1,15 @@
 <ng-container *var="files$ | async as files">
-  <div class="dialog-wrapper">
-    <div
-      mat-dialog-content
-      class="complex-grid-component__popover"
-      #popoverContent
-    >
-    <div class="head-container">
-      <h1 mat-dialog-title>{{ popupTitle }}</h1>
-      <button class="close" (click)="onClose(files, false)">
-        <mat-icon>close</mat-icon>
+  <div class="title">
+    <h1 mat-dialog-title>{{ popupTitle }}</h1>
+    <div class="cancel-button">
+      <button mat-icon-button (click)="onClose(files, false)">
+        <mat-icon>clear</mat-icon>
       </button>
     </div>
+  </div>
+  <div mat-dialog-content class="complex-grid-component__popover" #popoverContent>
     <form class="example-form" #formElement>
-      <div class="basic-container" *ngIf="navItems?.length && !isMandatoryEUMKComponent">
+      <div class="basic-container" *ngIf="navItems?.length">
         <span *ngFor="let item of navItems">
           <!-- Handle branch node buttons here -->
           <span *ngIf="item.children && item.children.length > 0">
@@ -20,6 +17,7 @@
               mat-raised-button
               class="drop_button"
               [matMenuTriggerFor]="menu.childMenu"
+              [disabled]="shouldDisableConceptSelector"
               (click)="selectConcept(item.Id)"
             >
               {{ item.Name }}
@@ -29,6 +27,7 @@
           <app-menu-item
             #menu
             [items]="item.children"
+            [disabled]="shouldDisableConceptSelector"
             (onSelectConcept)="selectConcept($event)"
           ></app-menu-item>
         </span>
@@ -40,7 +39,7 @@
           ></app-help>
         </div>
       </div>
-      <div class="basic-container-text" *ngIf="selectedConcept && !isMandatoryEUMKComponent">
+      <div class="basic-container-text" *ngIf="selectedConcept">
         {{ selectedConcept }}
       </div>
       <div class="rad-button">
@@ -104,20 +103,20 @@
       [disabled]="files.length > 0"
       (upload)="uploadFile($event)"
     ></app-file-uploader>
-    </div>
-    <div mat-dialog-actions>
-      <button mat-raised-button (click)="onClose(files, false)">
-        {{ 'common.cancel' | translate: 'Отмена' }}
-      </button>
-      <button
-        mat-raised-button
-        (click)="onClose(files, true)"
-        color="primary"
-        [disabled]="!formElement.checkValidity()"
-      >
-        {{ 'common.save' | translate: 'Сохранить' }}
-      </button>
-    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button (click)="onClose(files, false)">
+      {{ 'common.cancel' | translate: 'Отмена' }}
+    </button>
+    <button
+      mat-raised-button
+      (click)="onClose(files, true)"
+      color="primary"
+      [disabled]="!formElement.checkValidity() || (editMode && !hasChanges() && !hasFileChanges(files))
+            || (addMode && !hasChanges() && !hasFileChanges(files))"
+    >
+      {{ 'common.save' | translate: 'Сохранить' }}
+    </button>
   </div>
 </ng-container>
 <!--[(ngModel)]="data.subjectName"-->

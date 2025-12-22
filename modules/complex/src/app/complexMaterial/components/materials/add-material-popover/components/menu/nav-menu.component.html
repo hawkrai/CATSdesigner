@@ -6,6 +6,7 @@
         mat-menu-item
         color="primary"
         [matMenuTriggerFor]="menu.childMenu"
+        [disabled]="disabled"
         (click)="selectConcept(child.Id)"
       >
         <span>{{ child.Name }}</span>
@@ -13,6 +14,7 @@
       <app-menu-item
         #menu
         [items]="child.children"
+        [disabled]="disabled"
         (onSelectConcept)="selectConcept($event)"
       ></app-menu-item>
     </span>
@@ -23,6 +25,7 @@
         [routerLink]="child.route"
         [matTooltip]="child.Name"
         matTooltipPosition="above"
+        [disabled]="disabled"
         (click)="selectConcept(child.Id)"
       >
         <span>{{ child.Name }}</span>

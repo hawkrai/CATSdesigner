@@ -15,54 +15,51 @@
   margin-left: 10px;
 }
 
-.close {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  margin: 0 0 15px;
-}
-
 .basic-container-text {
   margin-top: 10px;
   font:
-    400 16px/32px Roboto,
+    400 16px/24px Roboto,
     'Helvetica Neue',
     sans-serif;
 }
 
 .mat-dialog-title {
   font:
-    400 20px/32px Roboto,
+    20px / 32px Roboto,
     'Helvetica Neue',
     sans-serif;
+  margin-bottom: 40px;
 }
 
-.head-container {
+.title {
   display: flex;
   justify-content: space-between;
-  flex-shrink: 0;
+}
+
+.cancel-button {
+  position: relative;
+  right: 0;
+  top: -5px;
 }
 
 .rad-button {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   margin-top: 20px;
 }
 
 .drop_button {
   background-color: white;
   color: black;
+  font-weight: 400;
 }
 
-.dialog-wrapper .mat-dialog-actions {
-  margin: 0;
-  padding: 16px 24px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-  flex-shrink: 0;
-  gap: 8px;
-  margin-top: auto;
+.example-form {
+  width: 550px;
+  margin-bottom: 10px;
+
+  .example-full-width {
+    width: 100%;
+  }
 }
 
 .complex-grid-component__popover {
@@ -70,51 +67,14 @@
   flex-direction: column;
   min-height: 0;
   flex: 1 1 auto;
-  overflow-y: auto;
+  overflow-y: hidden;
   flex-grow: 1;
 }
 
-.dialog-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 500px;
-  max-height: 90vh;
-}
-
-:host {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-:host ::ng-deep .mat-dialog-container {
-  display: flex;
-  flex-direction: column;
-  max-height: 90vh;
-  min-height: 500px;
-  padding: 0;
-}
-
-:host ::ng-deep .mat-dialog-content {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  margin: 0;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-:host ::ng-deep .cdk-dialog-container {
-  display: flex;
-  flex-direction: column;
-}
-
-:host ::ng-deep .mat-dialog-actions {
-  margin-top: auto;
-}
-
-.cdk-global-overlay-wrapper {
-  justify-content: center;
+.mat-dialog {
+  &-actions {
+    justify-content: flex-end;
+    min-height: 160px;
+    align-items: flex-end;
+  }
 }
