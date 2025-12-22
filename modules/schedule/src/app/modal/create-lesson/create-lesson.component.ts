@@ -189,13 +189,32 @@ export class CreateLessonComponent implements OnInit {
                 if (this.isStudentUpdateLesson) {
                   this.formGroup.controls.teacher.disable()
                 }
-                this.lesson.Teacher = this.teachers.find(
-                  (teacher) => teacher.LectorId === teacherId
-                )
-              console.log( this.lesson.Teacher)
-                this.formGroup
-                  .get('teacher')
-                  .setValue(this.lesson.Teacher.LectorId)
+                if (this.teachers.length > 0) {
+                  const currentLector = this.teachers.find(
+                    t => t.LectorId === +this.user.id
+                  );
+                  if (currentLector) {
+                    this.formGroup.controls.teacher.setValue(currentLector.LectorId)
+                    this.lesson.Teacher = currentLector
+                  } else {
+                    this.formGroup.controls.teacher.reset()
+                  }
+                }
+                if (
+                  this.teachers.length === 0 &&
+                  this.isDiplomAvailable &&
+                  this.changedType === '4' &&
+                  this.user.role === 'lector'
+                ) {
+                  const fallbackTeacher = {
+                    LectorId: +this.user.id,
+                    FullName: this.user.userName,
+                  };
+
+                  this.teachers = [fallbackTeacher]
+                  this.lesson.Teacher = fallbackTeacher
+                  this.formGroup.controls.teacher.setValue(fallbackTeacher.LectorId)
+                }
               })
           }
 
@@ -244,9 +263,6 @@ export class CreateLessonComponent implements OnInit {
 
       const found = this.lessonTypes.find(type => type[1] === rawType);
 
-      this.changedType = found
-        ? found[0]
-        : '3';
       this.disableNote = true
     }
     this.formGroupNote = new FormGroup({
@@ -401,7 +417,7 @@ export class CreateLessonComponent implements OnInit {
                 id: this.note.id,
                 start: new Date(this.lesson.Date + 'T' + this.lesson.Start),
                 end: new Date(this.lesson.Date + 'T' + this.lesson.End),
-                title: 'Ваша заметка',
+                title: '',
                 note: this.memo,
               };
 
@@ -475,6 +491,11 @@ export class CreateLessonComponent implements OnInit {
                       ),
                     }
                   }
+
+                  this.lesson.GroupName = this.groups
+                     .slice(0, this.groups.length - 1)
+                    .map(g => g.GroupName).join('\n');
+
                   this.dialogRef.close({
                     lesson: this.lesson,
                     type: 'lesson',
@@ -509,6 +530,8 @@ export class CreateLessonComponent implements OnInit {
                       })
                   }
                   this.lesson.Id = l.Schedule.Id
+                  this.lesson.GroupName = l.Schedule.GroupName
+                  this.lesson.SubGroupName = l.Schedule.SubGroupName
                   if (l.Schedule.Teacher != undefined) {
                     this.lesson.Teacher = {
                       LectorId: l.Schedule.Teacher.LectorId,
@@ -551,6 +574,8 @@ export class CreateLessonComponent implements OnInit {
                       })
                   }
                   this.lesson.Id = l.Schedule.Id
+                  this.lesson.GroupName = l.Schedule.GroupName
+                  this.lesson.SubGroupName = l.Schedule.SubGroupName
                   if (l.Schedule.Teacher != undefined) {
                     this.lesson.Teacher = {
                       LectorId: l.Schedule.Teacher.LectorId,
@@ -661,22 +686,28 @@ export class CreateLessonComponent implements OnInit {
     this.dialogRef.close(null)
   }
 
-  getTypeTooltip(): string {
-    if (!this.formGroup) {
-        return '';
-      }
-
-    const value = this.formGroup.get('type').value
-
-    if (value === '3') {
+  getTypeTooltipByType(typeId: string | number): string {
+    if (typeId === '3') {
       return 'text.schedule.course.project'
     }
-
-    if (value === '4') {
+    if (typeId === '4') {
       return 'text.schedule.graduation.project'
     }
-
     return ''
+  }
+
+  getTypeTooltip(): string {
+    if (!this.formGroup) {
+      return '';
+    }
+    const value = this.formGroup.get('type').value;
+    if (value === '3') {
+      return 'text.schedule.course.project';
+    }
+    if (value === '4') {
+      return 'text.schedule.graduation.project';
+    }
+    return '';
   }
 
   subjectChange(event): void {
@@ -712,6 +743,22 @@ export class CreateLessonComponent implements OnInit {
         this.lesson.Teacher = currentLector;
         } else {
           this.formGroup.controls.teacher.reset();
+        }
+
+      if (
+          this.teachers.length === 0 &&
+          this.isDiplomAvailable &&
+          this.changedType === '4' &&
+          this.user.role === 'lector'
+        ) {
+          const fallbackTeacher = {
+            LectorId: +this.user.id,
+            FullName: this.user.userName,
+          };
+
+          this.teachers = [fallbackTeacher];
+          this.formGroup.controls.teacher.setValue(fallbackTeacher.LectorId);
+          this.lesson.Teacher = fallbackTeacher;
         }
 
       this.formGroup.controls.teacher.enable()

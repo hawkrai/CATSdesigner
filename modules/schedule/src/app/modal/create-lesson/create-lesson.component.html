@@ -66,6 +66,7 @@
               [disabled]
               *ngFor="let type of lessonTypesFull"
               [value]="type[0]"
+              [matTooltip]="getTypeTooltipByType(type[0]) | translate"
               >{{ type[1] | translate }}</mat-option
             >
           </mat-select>

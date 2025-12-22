@@ -194,13 +194,13 @@ export class ScheduleMainComponent implements OnInit {
          personal = lesson.personalNote.note
        }
        if (global !== '' && personal !== '') {
-         return global + '\n\n— Ваша заметка —\n' + personal
+         return global + '\n\n' + personal
        }
        if (global !== '') {
          return global
        }
        if (personal !== '') {
-         return personal
+         return '\n\n' + personal
        }
        return ''
   }
@@ -221,7 +221,7 @@ export class ScheduleMainComponent implements OnInit {
       '|' +
       consultation.Subject.ShortName +
       '|' +
-      'КП' +
+      this.translatePipe.transform('text.schedule.course.project.cut', 'КП') +
       '|' +
       consultation.Teacher.FullName +
       '|' +
@@ -256,7 +256,7 @@ export class ScheduleMainComponent implements OnInit {
       consultation.Building +
       '|' +
       '|' +
-      'ДП' +
+      this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
       '|' +
       '|' +
       '363636' +
@@ -421,7 +421,7 @@ export class ScheduleMainComponent implements OnInit {
         } else if (result.type === 'diplom' || result.type === 'course') {
           let titleCon = ''
           if (result.type === 'course') {
-            titleCon = this.calculateTitle(result.lesson)
+            titleCon = this.getTitleCourseConsultation(result.lesson)
           } else {
             titleCon = this.getTitleDiplomConsultation(result.lesson)
           }
@@ -489,7 +489,6 @@ export class ScheduleMainComponent implements OnInit {
             const a = this.lessonservice
               .getType(eventToDelete.title)
               .replaceAll(' ', '')
-            console.log(a)
             if (a == 'Лекция' || a == 'Lect.') {
               this.lessonservice
                 .deleteLecture(
@@ -798,7 +797,6 @@ export class ScheduleMainComponent implements OnInit {
             lesson.End
         )
         lesson.Type = this.lessonservice.getLessonTypeById(lesson.Type)
-
         if (lesson.Teacher != null) {
           lesson.Teacher.FullName = this.lessonservice.cutTeacherName(
             lesson.Teacher.FullName
@@ -821,6 +819,25 @@ export class ScheduleMainComponent implements OnInit {
 
       this.isLoadActive = false
       this.refresh.next()
+             this.lessons.forEach((lesson) => {
+               if(lesson.Type === 'Лекция'){
+                 this.lessonservice.getGroupsBySubjectId(+lesson.SubjectId).subscribe({
+                   next: (res) => {
+                     lesson.GroupName = res.Groups
+                       .slice(0, res.Groups.length - 1)
+                       .map(g => g.GroupName)
+                       .join('\n');
+
+                     const event = this.events.find(e => e.id === lesson.Id && e.meta === 'lesson');
+                     if (event) {
+                       event.title = this.calculateTitle(lesson);
+                       this.refresh.next();
+                     }
+                   },
+                   error: (err) => console.error(err)
+                 });
+               }
+             });
 
       this.noteService
         .GetPersonalNotesBetweenDates(startDate, endDate)

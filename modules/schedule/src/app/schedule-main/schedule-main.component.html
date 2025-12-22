@@ -341,7 +341,7 @@
                   </button>
                 </div>
               </tr>
-              <div *ngIf="lessonservice.getMemo(event.title)">
+              <div *ngIf="lessonservice.getMemo(event.title) as memo">
                 <p
                   style="
                     padding-top: 5px;
@@ -356,7 +356,73 @@
                     white-space: pre-wrap;
                   "
                 >
-                  {{ lessonservice.getMemo(event.title) }}
+                  <ng-container *ngIf="memo?.startsWith('\n\n'); else notOnlyPersonal">
+                    <span
+                      style="
+                        color: #383838;
+                        font-family:
+                          Roboto,
+                          Helvetica Neue,
+                          sans-serif;
+                        font-size: 12px;
+                        line-height: 100%;
+                        white-space: pre-wrap;
+                      "
+                    >
+                      {{ memo.replace('\n\n', '') }}
+                    </span>
+                  </ng-container>
+                  <ng-template #notOnlyPersonal>
+                    <ng-container
+                      *ngIf="memo?.includes('\n\n'); else singleMemo"
+                    >
+                      <span
+                        style="
+                          color: #808080;
+                          font-family:
+                            Roboto,
+                            Helvetica Neue,
+                            sans-serif;
+                          font-size: 12px;
+                          line-height: 100%;
+                          white-space: pre-wrap;
+                        "
+                      >
+                        {{ lessonservice.getMemo(event.title).split('\n\n')[0] }}
+                      </span>
+                      <br /><br />
+                      <span
+                        style="
+                          color: #383838;
+                          font-family:
+                            Roboto,
+                            Helvetica Neue,
+                            sans-serif;
+                          font-size: 12px;
+                          line-height: 100%;
+                          white-space: pre-wrap;
+                        "
+                      >
+                        {{ lessonservice.getMemo(event.title).split('\n\n')[1] }}
+                      </span>
+                    </ng-container>
+                    <ng-template #singleMemo>
+                      <span
+                        style="
+                          color: #808080;
+                          font-family:
+                            Roboto,
+                            Helvetica Neue,
+                            sans-serif;
+                          font-size: 12px;
+                          line-height: 100%;
+                          white-space: pre-wrap;
+                        "
+                      >
+                        {{ lessonservice.getMemo(event.title) }}
+                      </span>
+                    </ng-template>
+                  </ng-template>
                 </p>
               </div>
             </thead>

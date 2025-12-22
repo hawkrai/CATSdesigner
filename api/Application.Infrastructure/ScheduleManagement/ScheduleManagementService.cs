@@ -77,7 +77,8 @@ namespace Application.Infrastructure.ScheduleManagement
 				var practicalsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetAll(new Query<ScheduleProtectionPractical>(x => x.Date >= startDate && x.Date <= endDate)
 					.Include(x => x.Subject.ScheduleProtectionPracticals.Select(x => x.Notes))
 					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group)))
-					.Include(x => x.Lecturer.User)
+					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.SubGroups))
+                    .Include(x => x.Lecturer.User)
                     .ToList()
 					.Select(PracticalScheduleToModel)
 					.ToList();
@@ -200,7 +201,9 @@ namespace Application.Infrastructure.ScheduleManagement
 				Id = practicalSchedule.Id,
 				GroupId = practicalSchedule.Group == null ? new int?() : practicalSchedule.GroupId,
 				GroupName = practicalSchedule.Group == null ? string.Empty : practicalSchedule.Group.Name,
-				Notes = practicalSchedule.Subject?.ScheduleProtectionPracticals?.FirstOrDefault(x => x.Id == practicalSchedule.Id)?.Notes ?? Enumerable.Empty<Note>()
+                SubGroupId = practicalSchedule.SubGroup == null ? new int?() : practicalSchedule.SubGroupId,
+                SubGroupName = practicalSchedule.SubGroup == null ? string.Empty : practicalSchedule.SubGroup.Name,
+                Notes = practicalSchedule.Subject?.ScheduleProtectionPracticals?.FirstOrDefault(x => x.Id == practicalSchedule.Id)?.Notes ?? Enumerable.Empty<Note>()
 			};
         }
 
@@ -299,7 +302,8 @@ namespace Application.Infrastructure.ScheduleManagement
 						.GetBy(new Query<ScheduleProtectionPractical>(x => x.Id == scheduleId)
                         .Include(x => x.Lecturer)
                         .Include(x => x.Subject.ScheduleProtectionPracticals.Select(x => x.Notes))
-						.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group))));
+						.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group))
+                        .Include(x => x.Subject.SubjectGroups.Select(sg => sg.SubGroups))));
 				}
 				return null;
 			}
