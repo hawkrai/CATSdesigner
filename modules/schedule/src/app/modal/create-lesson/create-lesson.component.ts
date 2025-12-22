@@ -485,6 +485,7 @@ export class CreateLessonComponent implements OnInit {
                   this.lesson.Id = l.Schedule.Id
                   if (l.Schedule.Teacher != undefined) {
                     this.lesson.Teacher = {
+                      LectorId: l.Schedule.Teacher.LectorId,
                       FullName: this.lessonservice.cutTeacherName(
                         l.Schedule.Teacher.FullName
                       ),
@@ -533,6 +534,7 @@ export class CreateLessonComponent implements OnInit {
                   this.lesson.SubGroupName = l.Schedule.SubGroupName
                   if (l.Schedule.Teacher != undefined) {
                     this.lesson.Teacher = {
+                      LectorId: l.Schedule.Teacher.LectorId,
                       FullName: this.lessonservice.cutTeacherName(
                         l.Schedule.Teacher.FullName
                       ),
@@ -576,6 +578,7 @@ export class CreateLessonComponent implements OnInit {
                   this.lesson.SubGroupName = l.Schedule.SubGroupName
                   if (l.Schedule.Teacher != undefined) {
                     this.lesson.Teacher = {
+                      LectorId: l.Schedule.Teacher.LectorId,
                       FullName: this.lessonservice.cutTeacherName(
                         l.Schedule.Teacher.FullName
                       ),
