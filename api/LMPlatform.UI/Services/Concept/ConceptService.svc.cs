@@ -356,14 +356,14 @@ namespace LMPlatform.UI.Services.Concept
                 var student = StudentManagementService.GetStudent(studentId);
                 var rootConcept = ConceptManagementService.GetTreeConceptByElementId(complexId);
 
-                return 
-                    new ConceptStudentMonitoringData()
-                      {
-                            ComplexName = rootConcept.Name,
-                            StudentGroup = student.Group.Name,
-                            StudentName = student.FullName,
-                            ConceptMonitorings = GetMonitoringInfo(rootConcept, studentId)
-                    };
+
+                return new ConceptStudentMonitoringData()
+                {
+                    ComplexName = rootConcept.Name,
+                    StudentGroup = student.Group.Name,
+                    StudentName = student.FullName,
+                    ConceptMonitorings = GetMonitoringInfo(rootConcept, studentId)
+                };
             }
             catch (Exception ex)
             {
@@ -376,14 +376,28 @@ namespace LMPlatform.UI.Services.Concept
         {
             var resultList = new List<ConceptMonitoring>();
 
-            foreach (var children in rootConcept.Children)
+            if (rootConcept.Children == null || !rootConcept.Children.Any())
             {
-                var resultItem = ConceptMonitoring.FromConcept(children);
+                return resultList;
+            }
+
+            var sortedChildren = rootConcept.Children.Select(c => new ConceptViewData(c)).ToList().SortDoubleLinkedList();
+            var conceptDict = rootConcept.Children.ToDictionary(c => c.Id);
+
+            foreach (var childViewData in sortedChildren)
+            {
+                if (!conceptDict.ContainsKey(childViewData.Id))
+                    continue;
+
+                var children = conceptDict[childViewData.Id];
 
                 if (!children.Published)
                 {
                     continue;
                 }
+
+                var resultItem = ConceptMonitoring.FromConcept(children);
+                resultItem.Id = children.Id;
 
                 if (children.Children?.Any() == true)
                 {

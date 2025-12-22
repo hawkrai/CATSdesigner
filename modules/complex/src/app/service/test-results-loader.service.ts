@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core'
 import { TestService } from './test.service'
 import { ConverterService } from './converter.service'
 import { ChangeDetectorRef } from '@angular/core'
-import { of } from 'rxjs'
-import { catchError } from 'rxjs/operators'
+import { forkJoin } from 'rxjs'
+import { map } from 'rxjs/operators'
 import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
 import { TranslatePipe } from 'educats-translate'
 
@@ -55,93 +55,71 @@ export class TestResultsLoaderService {
       return
     }
 
-    this.testService.getStudentResults(subject.id).subscribe((testResults) => {
-      if (!testResults || !Array.isArray(testResults)) {
-        return
+    const testRequests = testNodes.filter(node => node.TestId).map(node => 
+        this.testService.getTestResult(node.TestId, studentId).pipe(map(response => ({ node, response }))))
+
+    if (testRequests.length === 0) {
+      return
+    }
+
+    forkJoin(testRequests).subscribe(results => {
+      let processedCount = 0
+
+      results.forEach(({ node, response }) => {
+        if (response) {
+          const testInfo = this.extractTestInfo(response)
+          
+          if (testInfo && testInfo.Points != null) {
+            const startTime =
+              testInfo.StartTime ||
+              testInfo.startTime ||
+              testInfo.StartDate ||
+              testInfo.startDate
+            const endTime =
+              testInfo.EndTime ||
+              testInfo.endTime ||
+              testInfo.EndDate ||
+              testInfo.endDate
+
+            node.TestResult = {
+              Points: testInfo.Points,
+              StartTime: startTime,
+              EndTime: endTime,
+            }
+            processedCount++
+          }
+        }
+      })
+
+      if (cdr) {
+        cdr.detectChanges()
       }
-
-      const resultsMap = new Map<string, any>()
-      testResults.forEach((test: any) => {
-        if (test.Title && test.Points != null) {
-          const normalizedTitle = test.Title.trim().toLowerCase()
-          resultsMap.set(normalizedTitle, test)
-        }
-      })
-
-      testNodes.forEach((node) => {
-        const normalizedNodeName = node.Name.trim().toLowerCase()
-        const result = resultsMap.get(normalizedNodeName)
-
-        if (result && result.Points != null && node.TestId) {
-          this.testService
-            .getTestResult(node.TestId, studentId)
-            .pipe(
-              catchError((error) => {
-                console.error('Error getting test result:', error)
-                return of(null)
-              })
-            )
-            .subscribe((testInfoResponse) => {
-              if (testInfoResponse) {
-                let testInfo = null
-                if (testInfoResponse.TestInfo) {
-                  testInfo = testInfoResponse.TestInfo
-                } else if (Array.isArray(testInfoResponse)) {
-                  const testInfoData = testInfoResponse.find(
-                    (item: any) =>
-                      item.Key === 'TestInfo' || item.Key === 'TEST_INFO'
-                  )
-                  if (testInfoData && testInfoData.Value) {
-                    testInfo = testInfoData.Value
-                  }
-                } else if (testInfoResponse.Points != null) {
-                  testInfo = testInfoResponse
-                }
-
-                if (testInfo && testInfo.Points != null) {
-                  const startTime =
-                    testInfo.StartTime ||
-                    testInfo.startTime ||
-                    testInfo.StartDate ||
-                    testInfo.startDate
-                  const endTime =
-                    testInfo.EndTime ||
-                    testInfo.endTime ||
-                    testInfo.EndDate ||
-                    testInfo.endDate
-
-                  node.TestResult = {
-                    Points: testInfo.Points,
-                    StartTime: startTime,
-                    EndTime: endTime,
-                  }
-                  if (cdr) {
-                    cdr.detectChanges()
-                  }
-                } else if (result.Points != null) {
-                  node.TestResult = {
-                    Points: result.Points,
-                    StartTime: null,
-                    EndTime: null,
-                  }
-                  if (cdr) {
-                    cdr.detectChanges()
-                  }
-                }
-              } else if (result.Points != null) {
-                node.TestResult = {
-                  Points: result.Points,
-                  StartTime: null,
-                  EndTime: null,
-                }
-                if (cdr) {
-                  cdr.detectChanges()
-                }
-              }
-            })
-        }
-      })
     })
+  }
+
+  private extractTestInfo(response: any): any {
+    if (!response) {
+      return null
+    }
+
+    if (response.TestInfo) {
+      return response.TestInfo
+    }
+
+    if (Array.isArray(response)) {
+      const testInfoData = response.find(
+        (item: any) => item.Key === 'TestInfo' || item.Key === 'TEST_INFO'
+      )
+      if (testInfoData && testInfoData.Value) {
+        return testInfoData.Value
+      }
+    }
+
+    if (response.Points != null) {
+      return response
+    }
+
+    return null
   }
 
   getTestScoreColor(points: number): string {
