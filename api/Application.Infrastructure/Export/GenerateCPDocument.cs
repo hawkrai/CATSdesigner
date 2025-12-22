@@ -7370,19 +7370,31 @@ namespace Application.Infrastructure.Export
             Run run157 = new Run();
             Text text142 = new Text() { Space = SpaceProcessingModeValues.Preserve };
 
-            if (string.IsNullOrWhiteSpace(awork?.Student?.MiddleName))
+            if (awork?.Student != null)
             {
-                var firstName = awork?.Student?.FirstName;
-                var lastName = awork?.Student?.LastName;
+                var firstName = awork.Student.FirstName;
+                var middleName = awork.Student.MiddleName;
+                var lastName = awork.Student.LastName;
 
                 if (!string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName))
                 {
-                    text142.Text = $"{firstName[0]}. {lastName}";
+                    if (!string.IsNullOrEmpty(middleName))
+                    {
+                        text142.Text = $"{firstName[0]}.{middleName[0]}. {lastName}";
+                    }
+                    else
+                    {
+                        text142.Text = $"{firstName[0]}. {lastName}";
+                    }
                 }
                 else
                 {
                     text142.Text = "";
                 }
+            }
+            else
+            {
+                text142.Text = "";
             }
 
 

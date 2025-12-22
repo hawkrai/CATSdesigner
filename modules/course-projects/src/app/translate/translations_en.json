@@ -216,5 +216,7 @@
   "group": "Group",
   "no.matches.found": "No matches found",
   "text.course.add.theme": "Add theme",
-  "button.close": "Close"
+  "button.close": "Close",
+  "text.course.defence.notification.approved": "Your work has been accepted by the teacher",
+  "text.course.defence.notification.returned": "The work has been returned for revision"
 }
