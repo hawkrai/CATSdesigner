@@ -20,9 +20,13 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
   isFile: boolean
   isFolder: boolean
   editMode: boolean
+  addMode: boolean
   conceptId: any
   popupTitle: string
   public selectedConcept: string
+  private initialName: string = ''
+  private initialParentId: any = null
+  private initialFiles: any[] = []
 
   addComponentHelp: Help = {
     message: '',
@@ -41,13 +45,14 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     this.isFile = false
     this.isFolder = false
     this.editMode = false
+    this.addMode = false
     this.selectedConcept = ''
     this.addComponentHelp = {
       message: this.translatePipe.transform(
         'text.help.addComponent',
         'Чтобы добавить элемент электронного учебно-методического комплекса, необходимо выбрать для него раздел и тему. Далее отметьте тип элемента: Папка может иметь вложения, а Файл нет. Введите название элемента (темы ЭУМК). Для типа элемента Файл прикрепите файл в формате .pdf.'
       ),
-      action: this.translatePipe.transform('common.understand', 'Понятно'),
+      action: this.translatePipe.transform('common.clear', 'Понятно'),
     }
   }
 
@@ -70,7 +75,14 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
             this.selectConcept(this.data.parentId)
           }
         }
-        this.editMode = this.data.id !== null && this.data.id !== '0'
+        if (this.data.id !== null && this.data.id !== '0') {
+          this.editMode = true;
+          this.addMode = false;
+        }
+        else {
+          this.addMode = true;
+          this.editMode = false;
+        }
         this.popupTitle = this.editMode
           ? this.translatePipe.transform(
               'complex.editComponent',
@@ -81,13 +93,18 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
               'Добавить элемент ЭУМК'
             )
         if (this.editMode) {
+          this.initialName = this.data.name || ''
+          this.initialParentId = this.data.parentId || null
+          if (this.data.attachments) {
+            this.initialFiles = JSON.parse(JSON.stringify(this.data.attachments))
+          }
           this.addComponentHelp = {
             message: this.translatePipe.transform(
               'text.help.editComponent',
               'To edit an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.'
             ),
             action: this.translatePipe.transform(
-              'common.understand',
+              'common.clear',
               'Понятно'
             ),
           }
@@ -98,7 +115,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
               'To add an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.'
             ),
             action: this.translatePipe.transform(
-              'common.understand',
+              'common.clear',
               'Понятно'
             ),
           }
@@ -145,6 +162,17 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
 
   get isMandatoryEUMKComponent(): boolean {
     return this.data.isMandatoryComponent === true
+  }
+
+  get shouldDisableConceptSelector(): boolean {
+    if (this.isMandatoryEUMKComponent) {
+      return true
+    }
+
+    if (this.editMode && this.data.testId) {
+      return true
+    }
+    return false
   }
 
   get isTestOrKnowledgeControlBlock(): boolean {
@@ -259,6 +287,54 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
       }
     }
     
+    return false
+  }
+
+  hasChanges(): boolean {
+    const currentName = this.data.name || ''
+    if (currentName !== this.initialName) {
+      return true
+    }
+
+    const currentParentId = this.data.parentId || null
+    if (currentParentId !== this.initialParentId) {
+      return true
+    }
+
+    return false
+  }
+
+  hasFileChanges(files: any[]): boolean {
+    if (!files) {
+      return false
+    }
+
+    if (files.length !== this.initialFiles.length) {
+      return true
+    }
+
+    if (files.length === 0 && this.initialFiles.length === 0) {
+      return false
+    }
+
+    const currentFileIds = files
+      .map(f => f.IdFile || (f.id && f.id > 0 ? f.id : null))
+      .filter(id => id !== null)
+      .sort()
+    const initialFileIds = this.initialFiles
+      .map(f => (f.id && f.id > 0 ? f.id : null))
+      .filter(id => id !== null)
+      .sort()
+    
+    if (JSON.stringify(currentFileIds) !== JSON.stringify(initialFileIds)) {
+      return true
+    }
+
+    const hasNewFiles = files.some(f => !f.IdFile || f.IdFile <= 0)
+    if (hasNewFiles) {
+      return true
+    }
+
     return false
   }
 }

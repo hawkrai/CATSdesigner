@@ -16,6 +16,7 @@ import { ComplexCascade } from '../../../../../../models/ComplexCascade'
 })
 export class MenuItemComponent implements OnInit {
   @Input() items: ComplexCascade[]
+  @Input() disabled: boolean = false
   @ViewChild('childMenu', { static: true }) public childMenu
 
   @Output()
@@ -26,6 +27,8 @@ export class MenuItemComponent implements OnInit {
   ngOnInit() {}
 
   selectConcept(id) {
-    this.onSelectConcept.emit(id)
+    if (!this.disabled) {
+      this.onSelectConcept.emit(id)
+    }
   }
 }
