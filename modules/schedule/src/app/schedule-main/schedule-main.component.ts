@@ -194,13 +194,13 @@ export class ScheduleMainComponent implements OnInit {
          personal = lesson.personalNote.note
        }
        if (global !== '' && personal !== '') {
-         return global + '\n\n— Ваша заметка —\n' + personal
+         return global + '\n\n' + personal
        }
        if (global !== '') {
          return global
        }
        if (personal !== '') {
-         return personal
+         return '\n\n' + personal
        }
        return ''
   }
