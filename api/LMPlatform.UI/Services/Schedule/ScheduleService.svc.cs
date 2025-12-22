@@ -128,12 +128,12 @@ namespace LMPlatform.UI.Services.Schedule
 			}
 		}
 
-        public ScheduleViewResultSingle SaveDatePractical(int id, int subjectId, int groupId, string date, string startTime, string endTime, string building, string audience, Note note, int? lecturerId)
+        public ScheduleViewResultSingle SaveDatePractical(int id, int subjectId, int groupId, int? subGroupId, string date, string startTime, string endTime, string building, string audience, Note note, int? lecturerId)
         {
             try
             {
-                var practicalsSchedule = SaveDateValidate(id, subjectId, groupId,0, date, startTime, endTime, building, audience, note, lecturerId);
-                var schedule = ScheduleManagementService.SaveDatePractical(new ScheduleProtectionPractical(practicalsSchedule) {Id = id, GroupId = groupId, SubjectId = subjectId });
+                var practicalsSchedule = SaveDateValidate(id, subjectId, groupId, subGroupId, date, startTime, endTime, building, audience, note, lecturerId);
+                var schedule = ScheduleManagementService.SaveDatePractical(new ScheduleProtectionPractical(practicalsSchedule) {Id = id, GroupId = groupId, SubGroupId = subGroupId, SubjectId = subjectId });
                 return new ScheduleViewResultSingle
                 {
                     Message = id == 0 ? "text.date.add.response.success" : "text.date.edit.response.success",

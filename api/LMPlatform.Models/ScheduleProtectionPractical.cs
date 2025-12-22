@@ -9,8 +9,10 @@ namespace LMPlatform.Models
         public int SubjectId { get; set; }
         public Subject Subject { get; set; }
         public int GroupId { get; set; }
+        public int? SubGroupId { get; set; }
 
         public Group Group { get; set; }
+        public SubGroup SubGroup { get; set; }
 
         public ICollection<ScheduleProtectionPracticalMark> ScheduleProtectionPracticalMarks { get; set; }
 

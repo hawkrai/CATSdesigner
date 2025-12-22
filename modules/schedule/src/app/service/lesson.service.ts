@@ -99,6 +99,7 @@ export class LessonService {
         building: pract.Building,
         audience: pract.Audience,
         groupId: pract.GroupId,
+        subGroupId: pract.SubGroupId,
         lecturerId: pract.Teacher.LectorId
       }
     )
