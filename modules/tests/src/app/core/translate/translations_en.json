@@ -183,6 +183,8 @@
   "text.test.theme.eumk": "Theme in EUMK",
   "text.test.control.warning": "Tests are opened by the lecturer once. The test can only be taken on one device. It is prohibited to refresh or leave the page with the started test",
   "text.test.finish": "End Test",
-  "text.test.already.launched": "The test has already been launched in your account.\nContinue taking the test on the first device.\nIf you want to stop taking the test on the first device, click the \"End Test\" button.\nIn this case, your test score will be zero.\nTo retake the test, you will need to contact your lecturer."
+  "text.test.already.launched": "The test has already been launched in your account.\nContinue taking the test on the first device.\nIf you want to stop taking the test on the first device, click the \"End Test\" button.\nIn this case, your test score will be zero.\nTo retake the test, you will need to contact your lecturer.",
+  "text.test.pass.date": "Submission Date",
+  "text.test.pass.time": "Submission Time"
 }
 

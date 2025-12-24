@@ -3,28 +3,48 @@
     <!-- Position Column -->
     <ng-container matColumnDef="Id">
       <mat-header-cell *matHeaderCellDef class="mat-header-cell-id">
-        №</mat-header-cell
-      >
-      <mat-cell *matCellDef="let index = index" class="mat-header-cell-id">
-        {{ index + 1 }}</mat-cell
-      >
+        №
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element; let i = index" class="mat-header-cell-id">
+        {{ i + 1 }}
+      </mat-cell>
     </ng-container>
 
     <!-- Name Column -->
     <ng-container matColumnDef="Title">
-      <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">{{
-        'text.test.name' | translate: 'Название теста'
-      }}</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">
+        {{ 'text.test.name' | translate: 'Название теста' }}
+      </mat-header-cell>
       <mat-cell *matCellDef="let element" class="mat-header-cell-description">
-        {{ element.Title }}</mat-cell
-      >
+        {{ element.Title }}
+      </mat-cell>
     </ng-container>
 
-    <!-- Weight Column -->
+    <!-- Date Column -->
+    <ng-container matColumnDef="passDate">
+      <mat-header-cell *matHeaderCellDef class="mat-header-cell-date">
+        {{ 'text.test.pass.date' | translate: 'Дата прохождения' }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="mat-header-cell-date">
+        {{ getPassDate(element) }}
+      </mat-cell>
+    </ng-container>
+
+    <!-- Time Column -->
+    <ng-container matColumnDef="passTime">
+      <mat-header-cell *matHeaderCellDef class="mat-header-cell-time">
+        {{ 'text.test.pass.time' | translate: 'Время прохождения' }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="mat-header-cell-time">
+        {{ getPassTime(element) }}
+      </mat-cell>
+    </ng-container>
+
+    <!-- Score Column -->
     <ng-container matColumnDef="action">
-      <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">{{
-        'text.test.mark' | translate: 'Оценка'
-      }}</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">
+        {{ 'text.test.mark' | translate: 'Оценка' }}
+      </mat-header-cell>
       <mat-cell *matCellDef="let element" class="mat-header-cell-action">
         {{
           (element.Points ? element.Points : 0) +
@@ -40,16 +60,14 @@
   </mat-table>
 
   <div class="result-test-table-chart">
-    <canvas
-      baseChart
-      [datasets]="barChartData"
-      [labels]="barChartLabels"
-      [options]="barChartOptions"
-      [plugins]="barChartPlugins"
-      [colors]="barChartColors"
-      [legend]="barChartLegend"
-      [chartType]="barChartType"
-    >
+    <canvas baseChart
+            [datasets]="barChartData"
+            [labels]="barChartLabels"
+            [options]="barChartOptions"
+            [plugins]="barChartPlugins"
+            [colors]="barChartColors"
+            [legend]="barChartLegend"
+            [chartType]="barChartType">
     </canvas>
   </div>
 </ng-container>
@@ -58,11 +76,9 @@
   <mat-card>
     <mat-card-content>
       <section class="example-section">
-        <mat-progress-bar
-          class="example-margin"
-          [color]="'primary'"
-          [mode]="'indeterminate'"
-        >
+        <mat-progress-bar class="example-margin"
+                          [color]="'primary'"
+                          [mode]="'indeterminate'">
         </mat-progress-bar>
       </section>
     </mat-card-content>
