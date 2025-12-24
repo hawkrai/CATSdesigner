@@ -20,6 +20,9 @@ import { takeUntil } from 'rxjs/operators'
 import { TestPassingService } from '../../service/test-passing.service'
 import { TranslatePipe } from 'educats-translate'
 import { Help } from '../../models/help.model'
+import { Constants } from '../../models/constanst/DataConstants'
+import { DataValues } from '../../models/data-values.model'
+import moment from 'moment'
 
 @AutoUnsubscribe
 @Component({
@@ -31,6 +34,7 @@ export class ResultTestTableComponent
   extends AutoUnsubscribeBase
   implements OnInit, OnChanges
 {
+  private tooltipDatesCache = new Map<string, { startTime: string, endTime: string }>();
   public barChartColors: any[] = [{ backgroundColor: '#1976D2' }]
   public barChartOptions: ChartOptions = {
     responsive: true,
@@ -320,5 +324,123 @@ export class ResultTestTableComponent
       `Написано ${passedTests} тестов из ${testsCount}`,
       { actualCount: passedTests.toString(), testsCount: testsCount.toString() }
     )
+  }
+
+  getTestTooltip(testResult: any): string {
+    if (!testResult) return 'Нет данных о тесте';
+
+    let tooltip = testResult.testName || 'Тест';
+
+    if (testResult.points !== null && testResult.points !== undefined) {
+      tooltip += `\nОценка: ${testResult.points}`;
+
+      if (testResult.percent !== null && testResult.percent !== undefined) {
+        tooltip += ` (${testResult.percent}%)`;
+      }
+
+      if (testResult.startTime && !testResult.startTime.includes('/Date(-62135596800000)/')) {
+        const formattedDateTime = this.formatDateTimeForTooltip(testResult.startTime);
+        if (formattedDateTime) {
+          tooltip += `\nДата и время прохождения: ${formattedDateTime}`;
+          return tooltip;
+        }
+      }
+      const cacheKey = `${testResult.testId}_${testResult.studentId}`;
+
+      if (this.tooltipDatesCache.has(cacheKey)) {
+        const dates = this.tooltipDatesCache.get(cacheKey)!;
+        if (dates.startTime) {
+          const formattedDateTime = this.formatDateTimeForTooltip(dates.startTime);
+          if (formattedDateTime) {
+            tooltip += `\nДата и время прохождения: ${formattedDateTime}`;
+          }
+        }
+      } else if (testResult.testId && testResult.studentId) {
+        this.loadDatesForTooltip(testResult.testId, testResult.studentId, cacheKey);
+        tooltip += '\nЗагрузка данных о времени...';
+      }
+    } else {
+      tooltip += '\nСтатус: тест не пройден';
+    }
+
+    return tooltip;
+  }
+
+  private formatDateTimeForTooltip(dateTimeString: string): string {
+    if (!dateTimeString ||
+      dateTimeString === 'null' ||
+      dateTimeString === 'undefined' ||
+      dateTimeString.includes('/Date(-62135596800000)/')) {
+      return '';
+    }
+
+    try {
+      if (typeof moment !== 'undefined') {
+        const dateTime = moment(dateTimeString);
+        return dateTime.format('DD.MM.YYYY HH:mm:ss');
+      }
+
+      const date = new Date(dateTimeString);
+      if (isNaN(date.getTime())) {
+        return '';
+      }
+
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      const seconds = date.getSeconds().toString().padStart(2, '0');
+
+      return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+    } catch (error) {
+      console.error('Ошибка форматирования даты и времени для tooltip:', error);
+      return '';
+    }
+  }
+
+  private loadDatesForTooltip(testId: number, studentId: number, cacheKey: string): void {
+    this.testPassingService
+      .getAnswersByStudentAndTest(studentId.toString(), testId.toString())
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe({
+        next: (answers: DataValues[]) => {
+          const testInfo = answers.find(
+            (res: DataValues) => res.Key === Constants.TEST_INFO
+          )?.Value;
+
+          if (testInfo?.StartTime) {
+            this.tooltipDatesCache.set(cacheKey, {
+              startTime: testInfo.StartTime,
+              endTime: testInfo.EndTime || null
+            });
+
+            this.updateTestDateInScareThing(testId, studentId, testInfo.StartTime);
+          } else {
+            console.warn('Нет StartTime в ответе');
+            this.tooltipDatesCache.set(cacheKey, { startTime: null, endTime: null });
+          }
+        },
+        error: (error) => {
+          console.error('Ошибка загрузки дат для tooltip:', error);
+          this.tooltipDatesCache.set(cacheKey, { startTime: null, endTime: null });
+        }
+      });
+  }
+
+  private updateTestDateInScareThing(testId: number, studentId: number, startTime: string): void {
+    this.scareThing.forEach(subGroup => {
+      subGroup.forEach(student => {
+        if (student[1]?.id === studentId) {
+          student[1].test?.forEach((test: any) => {
+            if (test.testId === testId) {
+              test.startTime = startTime;
+
+              this.cdr.detectChanges();
+            }
+          });
+        }
+      });
+    });
   }
 }

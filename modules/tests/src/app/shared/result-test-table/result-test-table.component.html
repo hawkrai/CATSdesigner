@@ -99,13 +99,11 @@
                     element[1].id
                   )
               "
-              [matTooltip]="element[1].test[i].testName"
+              [matTooltip]="getTestTooltip(element[1].test[i])"
             >
               {{
                 index === studentResults.length - 1
-                  ? averageMarkForTest[iq][element[1].test[i].testId]?.toFixed(
-                      1
-                    ) +
+                  ? averageMarkForTest[iq][element[1].test[i].testId]?.toFixed(1) +
                     ' (' +
                     averagePercentForTest[iq][
                       element[1].test[i].testId
@@ -115,7 +113,10 @@
                     ? element[1].test[i].points +
                       ' (' +
                       element[1].test[i].percent +
-                      '%)'
+                      '%)' +
+                      (element[1].test[i].endTime 
+                        ? ' ' + (element[1].test[i].endTime | date:'dd.MM')
+                        : '')
                     : ('text.test.not.passed' | translate: 'тест не пройден')
               }}
             </mat-cell>
