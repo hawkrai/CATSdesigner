@@ -11,53 +11,47 @@
         <mat-icon>close</mat-icon>
       </button>
     </div>
-    <div>{{ data.name }}</div>
+    <div class="question-other-test-description">
+      <span>{{ data.name }}</span>
+    </div>
     <div class="question-other-dropdowns">
       <div class="question-other-dropdown">
         <form class="example-form">
           <mat-form-field class="example-full-width">
-            <mat-label>{{
+            <mat-label>
+              {{
               'text.test.name' | translate: 'Название теста'
-            }}</mat-label>
-            <input
-              type="text"
-              matInput
-              [formControl]="myControl"
-              [matAutocomplete]="auto"
-            />
-            <mat-autocomplete
-              #auto="matAutocomplete"
-              [displayWith]="displayFn"
-              (optionSelected)="onValueChange($event)"
-            >
-              <mat-option
-                *ngFor="let option of filteredOptions | async"
-                [value]="option"
-                [matTooltip]="option.Title"
-              >
+              }}
+            </mat-label>
+            <input type="text"
+                   matInput
+                   [formControl]="myControl"
+                   [matAutocomplete]="auto" />
+            <mat-autocomplete #auto="matAutocomplete"
+                              [displayWith]="displayFn"
+                              (optionSelected)="onValueChange($event)">
+              <mat-option *ngFor="let option of filteredOptions | async"
+                          [value]="option"
+                          [matTooltip]="option.Title">
                 {{ option.Title }}
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
         </form>
         <mat-form-field *ngIf="filteredQuestions?.length">
-          <input
-            matInput
-            [placeholder]="
+          <input matInput
+                 [placeholder]="
               'text.test.search.question' | translate: 'Поиск вопроса'
             "
-            (keyup)="filterQuestions($event)"
-          />
+                 (keyup)="filterQuestions($event)" />
         </mat-form-field>
       </div>
     </div>
     <div class="question-other-test-results" *ngIf="filteredQuestions?.length">
-      <mat-checkbox
-        class="example-margin question-other-test-answers"
-        [(ngModel)]="chosenQuestions[question.Id]"
-        *ngFor="let question of filteredQuestions; let i = index"
-        [matTooltip]="question.Title"
-      >
+      <mat-checkbox class="example-margin question-other-test-answers"
+                    [(ngModel)]="chosenQuestions[question.Id]"
+                    *ngFor="let question of filteredQuestions; let i = index"
+                    [matTooltip]="question.Title">
         {{ question.tooltipTitle }}
       </mat-checkbox>
     </div>
