@@ -86,10 +86,24 @@ export class DefenseComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res && res.UserLabFiles) {
           const oldFiles = this.userLabFiles;
-          this.userLabFiles = res.UserLabFiles;
+          
+          const returnedFiles = JSON.parse(localStorage.getItem('returnedFiles') || '{}');
+          
+          this.userLabFiles = res.UserLabFiles.map(file => {
+            if (returnedFiles[file.Id]) {
+              return {
+                ...file,
+                IsReturned: true,
+                Attachments: returnedFiles[file.Id].Attachments,
+                isOldReturned: true
+              };
+            }
+            return file;
+          });
+          
           this.canAddJob = !this.userLabFiles.find((file) => !file.IsReturned);
 
-          this.checkForStudentUpdates(oldFiles, res.UserLabFiles);
+          this.checkForStudentUpdates(oldFiles, this.userLabFiles);
         } else {
           this.canAddJob = true;
         }
@@ -118,6 +132,8 @@ export class DefenseComponent implements OnInit, OnDestroy {
   private checkForStudentUpdates(oldFiles: UserLabFile[], newFiles: UserLabFile[]) {
     if (!oldFiles || oldFiles.length === 0) return;
 
+    const returnedFiles = JSON.parse(localStorage.getItem('returnedFiles') || '{}');
+
     newFiles.forEach(newFile => {
       const oldFile = oldFiles.find(f => f.Id === newFile.Id);
       
@@ -132,6 +148,12 @@ export class DefenseComponent implements OnInit, OnDestroy {
         }
         
         if (!oldFile.IsReturned && newFile.IsReturned) {
+          returnedFiles[oldFile.Id] = {
+            Id: oldFile.Id,
+            Attachments: oldFile.Attachments
+          };
+          localStorage.setItem('returnedFiles', JSON.stringify(returnedFiles));
+          
           this.toastr.warning(
             this.translatePipe.transform(
               'text.course.defence.notification.returned',
@@ -160,21 +182,43 @@ export class DefenseComponent implements OnInit, OnDestroy {
         }
 
         const oldStudentFiles = this.studentFiles;
+        
+        const returnedFiles = JSON.parse(localStorage.getItem('returnedFiles') || '{}');
+        
         const mappedStudents: (StudentFilesModel & { hasNewWork?: boolean; isExpanded?: boolean })[] = [];
 
         for (let i = 0; i < res.Students.length; i++) {
           const student = res.Students[i];
           let hasNewWork = false;
 
-          if (student.FileLabs && student.FileLabs.length > 0) {
-            hasNewWork = student.FileLabs.some(file => 
+          let fileLabs = student.FileLabs || [];
+          
+          fileLabs = fileLabs.map(file => {
+            if (returnedFiles[file.Id]) {
+              return {
+                ...file,
+                IsReturned: true,
+                Attachments: returnedFiles[file.Id].Attachments,
+                isOldReturned: true
+              };
+            }
+            return file;
+          });
+
+          if (fileLabs && fileLabs.length > 0) {
+            hasNewWork = fileLabs.some(file => 
               !file.IsReceived && !file.IsReturned
             );
           }
 
           const isExpanded = this.expandedStudentIds.has(student.StudentId);
 
-          mappedStudents.push({ ...student, hasNewWork, isExpanded });
+          mappedStudents.push({ 
+            ...student, 
+            FileLabs: fileLabs,
+            hasNewWork, 
+            isExpanded 
+          });
         }
 
         this.checkForNewStudentSubmissions(oldStudentFiles, mappedStudents);
@@ -196,7 +240,20 @@ export class DefenseComponent implements OnInit, OnDestroy {
       .getCourseProjectFilesForUser(this.subjectId, this.courseUser.UserId)
       .subscribe((res) => {
         if (res && res.UserLabFiles) {
-          this.userLabFiles = res.UserLabFiles;
+          const returnedFiles = JSON.parse(localStorage.getItem('returnedFiles') || '{}');
+          
+          this.userLabFiles = res.UserLabFiles.map(file => {
+            if (returnedFiles[file.Id]) {
+              return {
+                ...file,
+                IsReturned: true,
+                Attachments: returnedFiles[file.Id].Attachments,
+                isOldReturned: true
+              };
+            }
+            return file;
+          });
+          
           this.canAddJob = !this.userLabFiles.find((file) => !file.IsReturned);
         } else {
           this.canAddJob = true;
@@ -244,21 +301,42 @@ export class DefenseComponent implements OnInit, OnDestroy {
           return;
         }
 
+        const returnedFiles = JSON.parse(localStorage.getItem('returnedFiles') || '{}');
+
         const mappedStudents: (StudentFilesModel & { hasNewWork?: boolean; isExpanded?: boolean })[] = [];
 
         for (let i = 0; i < res.Students.length; i++) {
           const student = res.Students[i];
           let hasNewWork = false;
 
-          if (student.FileLabs && student.FileLabs.length > 0) {
-            hasNewWork = student.FileLabs.some(file => 
+          let fileLabs = student.FileLabs || [];
+          
+          fileLabs = fileLabs.map(file => {
+            if (returnedFiles[file.Id]) {
+              return {
+                ...file,
+                IsReturned: true,
+                Attachments: returnedFiles[file.Id].Attachments,
+                isOldReturned: true
+              };
+            }
+            return file;
+          });
+
+          if (fileLabs && fileLabs.length > 0) {
+            hasNewWork = fileLabs.some(file => 
               !file.IsReceived && !file.IsReturned
             );
           }
 
           const isExpanded = this.expandedStudentIds.has(student.StudentId);
 
-          mappedStudents.push({ ...student, hasNewWork, isExpanded });
+          mappedStudents.push({ 
+            ...student, 
+            FileLabs: fileLabs,
+            hasNewWork, 
+            isExpanded 
+          });
         }
 
         this.studentFiles = mappedStudents;
@@ -277,6 +355,10 @@ export class DefenseComponent implements OnInit, OnDestroy {
 
   trackByStudentId(index: number, student: StudentFilesModel & { hasNewWork?: boolean; isExpanded?: boolean }): string {
     return student.StudentId;
+  }
+
+  trackByFileId(index: number, file: UserLabFile): string {
+    return file.Id;
   }
 
   _selectedGroup(event: MatOptionSelectionChange) {
@@ -336,12 +418,29 @@ export class DefenseComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (index === -1) return;
+    if (index === -1) {
+      return;
+    }
 
     this.labFilesService
       .getCourseProjectFilesForUser(this.subjectId, studentId)
       .subscribe((res) => {
-        const newLabs = res && res.UserLabFiles ? res.UserLabFiles : [];
+        let newLabs = res && res.UserLabFiles ? res.UserLabFiles : [];
+        
+        const returnedFiles = JSON.parse(localStorage.getItem('returnedFiles') || '{}');
+        
+        newLabs = newLabs.map(file => {
+          if (returnedFiles[file.Id]) {
+            return {
+              ...file,
+              IsReturned: true,
+              Attachments: returnedFiles[file.Id].Attachments,
+              isOldReturned: true
+            };
+          }
+          return file;
+        });
+
         const hasNew = newLabs.some(f => !f.IsReceived && !f.IsReturned);
 
         const isExpanded = this.expandedStudentIds.has(studentId);
@@ -488,6 +587,8 @@ export class DefenseComponent implements OnInit, OnDestroy {
     const isLecturer = this.courseUser.IsLecturer;
 
     let attachmentId = '0';
+    let fileName = '';
+    let guidFileName = '';
     if (
       dialogResult &&
       dialogResult.uploadedFile &&
@@ -497,7 +598,6 @@ export class DefenseComponent implements OnInit, OnDestroy {
       attachmentId = dialogResult.uploadedFile.IdFile;
     }
 
-    let fileName = '';
     if (dialogResult && dialogResult.uploadedFile) {
       fileName =
         dialogResult.uploadedFile.Name ||
@@ -506,7 +606,6 @@ export class DefenseComponent implements OnInit, OnDestroy {
           : dialogResult.uploadedFile.FileName || '');
     }
 
-    let guidFileName = '';
     if (dialogResult && dialogResult.uploadedFile) {
       guidFileName =
         dialogResult.uploadedFile.GuidFileName || dialogResult.uploadedFile.FileName || '';
@@ -531,17 +630,28 @@ export class DefenseComponent implements OnInit, OnDestroy {
     };
 
     this.labFilesService.sendJob(payload).subscribe((res) => {
-      if (isLecturer) this.updateStudentJobs(studentId);
-      else this.ngOnInit();
+      if (isLecturer && userLabFile) {
+        userLabFile.IsReturned = true;
+        (userLabFile as any).isOldReturned = true;
+        
+        const returnedFiles = JSON.parse(localStorage.getItem('returnedFiles') || '{}');
+        returnedFiles[userLabFile.Id] = {
+          Id: userLabFile.Id,
+          Attachments: userLabFile.Attachments
+        };
+        localStorage.setItem('returnedFiles', JSON.stringify(returnedFiles));
+        
+        this.updateStudentJobs(studentId);
+      } else if (!isLecturer) {
+        this.loadStudentFiles();
+      }
 
-      this.updateGroupHasNewWork();
-      this.updateGlobalWorkStatusForAllGroups();
       this.canAddJob = false;
 
       this.toastr.success(
         isLecturer
           ? this.translatePipe.transform(
-              'text.course.defence.dialog.correct',
+              'text.course.defence.correct',
               'Работа отправлена для исправления'
             )
           : this.translatePipe.transform(
@@ -549,8 +659,6 @@ export class DefenseComponent implements OnInit, OnDestroy {
               'Работа успешно добавлена'
             )
       );
-    }, (err) => {
-      console.error(err);
     });
   }
 
@@ -609,5 +717,9 @@ export class DefenseComponent implements OnInit, OnDestroy {
     this.dialog.open(CheckPlagiarismStudentComponent, {
       data: { body: { subjectId: this.subjectId, userFileId: file.Id } },
     });
+  }
+
+  canCheckPlagiarism(file: UserLabFile): boolean {
+    return file.IsReceived === true;
   }
 }
