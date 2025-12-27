@@ -5,6 +5,21 @@
   justify-content: space-between;
 }
 
+::ng-deep {
+  .cdk-overlay-pane {
+    width: 548px !important;
+    max-width: 80vw !important;
+    height: 90vh !important;
+    max-height: 90vh !important;
+  }
+
+  .mat-dialog-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
 .question-other-test {
   &-title {
     display: flex;
