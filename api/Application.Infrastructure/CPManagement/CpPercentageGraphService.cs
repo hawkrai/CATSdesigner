@@ -324,9 +324,16 @@ namespace Application.Infrastructure.CPManagement
                 .Where(x => x.Audience == audience && x.Building == buildingNumber)
                 .FirstOrDefault();
 
-            if (conflict == null && consultationId == null)
+            if (conflict != null && consultationId == null)
             {
-                Context.CourseProjectConsultationDates.Add(new CourseProjectConsultationDate
+                return null;
+            }
+
+            CourseProjectConsultationDate entity;
+
+            if (consultationId == null)
+            {
+                entity = new CourseProjectConsultationDate
                 {
                     Day = dateTime,
                     LecturerId = lecturerId,
@@ -336,29 +343,36 @@ namespace Application.Infrastructure.CPManagement
                     Audience = audience,
                     Building = buildingNumber,
                     GroupId = groupId
-                });
-            }
+                };
 
-            if ((conflict == null && consultationId != null) ||
-                (conflict != null && conflict.Id == consultationId))
+                Context.CourseProjectConsultationDates.Add(entity);
+            }
+            else
             {
-                var item = Context.CourseProjectConsultationDates.Find(consultationId.Value);
-                if (item != null)
+                entity = Context.CourseProjectConsultationDates.Find(consultationId.Value);
+
+                if (entity == null)
                 {
-                    item.Day = dateTime;
-                    item.LecturerId = lecturerId;
-                    item.SubjectId = subjectId;
-                    item.StartTime = start;
-                    item.EndTime = end;
-                    item.Audience = audience;
-                    item.Building = buildingNumber;
-                    item.GroupId = groupId;
+                    return null;
                 }
-                conflict = null;
+
+                if (conflict != null && conflict.Id != entity.Id)
+                {
+                    return null;
+                }
+
+                entity.Day = dateTime;
+                entity.LecturerId = lecturerId;
+                entity.SubjectId = subjectId;
+                entity.StartTime = start;
+                entity.EndTime = end;
+                entity.Audience = audience;
+                entity.Building = buildingNumber;
+                entity.GroupId = groupId;
             }
 
             Context.SaveChanges();
-            return conflict;
+            return entity;
         }
 
         public void DeleteConsultationDate(int userId, int id)
