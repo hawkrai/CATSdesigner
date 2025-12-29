@@ -685,7 +685,7 @@ export class CreateLessonComponent implements OnInit {
         noteId,
       )
       .subscribe((l) => {
-        console.log(l)
+        this.note.id = l.Note.Id
         this.dialogRef.close({
           note: this.note,
           type: 'note',

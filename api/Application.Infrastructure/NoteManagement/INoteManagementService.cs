@@ -18,7 +18,7 @@ namespace Application.Infrastructure.NoteManagement
 
         public List<UserNote> GetPersonalNotes(int userId);
 
-        public void SavePersonalNote(UserNote note);
+        public UserNote SavePersonalNote(UserNote note);
 
         public void DeletePersonalNote(int noteId);
     }
