@@ -627,6 +627,7 @@ export class CreateLessonComponent implements OnInit {
                         Building: schedule.Building,
                         Audience: schedule.Audience,
                         GroupId: schedule.GroupId,
+                        GroupName: this.currentGroup ? this.currentGroup.GroupName : ""
                       },
                   type: 'course',
                   code: res.Code,
