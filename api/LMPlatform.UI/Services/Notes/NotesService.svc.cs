@@ -137,14 +137,14 @@ namespace LMPlatform.UI.Services.Notes
         }
 
 
-        public ResultViewData SavePersonalNote(int id, string text, string date, string startTime, string endTime, string note)
+        public SavePersonalNoteViewResult SavePersonalNote(int id, string text, string date, string startTime, string endTime, string note)
         {
             try
             {
                 var dateTime = DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 var start = DateTime.ParseExact(startTime, "HH:mm", CultureInfo.InvariantCulture).TimeOfDay;
                 var end = DateTime.ParseExact(endTime, "HH:mm", CultureInfo.InvariantCulture).TimeOfDay;
-                NoteManagementService.SavePersonalNote(new UserNote
+                var savedNote = NoteManagementService.SavePersonalNote(new UserNote
                 {
                     Id = id,
                     Text = text,
@@ -154,15 +154,16 @@ namespace LMPlatform.UI.Services.Notes
                     StartTime = start,
                     Note = note
                 });
-                return new ResultViewData
+                return new SavePersonalNoteViewResult
                 {
                     Code = "200",
-                    Message = "text.note.save.response.success"
+                    Message = "text.note.save.response.success",
+                    Note = new UserNoteViewData(savedNote)
                 };
             }
             catch
             {
-                return new ResultViewData
+                return new SavePersonalNoteViewResult
                 {
                     Message = "text.date.save.response.unknown",
                     Code = "500"

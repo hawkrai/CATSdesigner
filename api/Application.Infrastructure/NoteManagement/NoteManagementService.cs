@@ -49,13 +49,14 @@ namespace Application.Infrastructure.NoteManagement
             }
         }
 
-        public void SavePersonalNote(UserNote note)
+        public UserNote SavePersonalNote(UserNote note)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 repositoriesContainer.RepositoryFor<UserNote>().Save(note);
                 repositoriesContainer.ApplyChanges();
 
+                return note;
             }
         }
 

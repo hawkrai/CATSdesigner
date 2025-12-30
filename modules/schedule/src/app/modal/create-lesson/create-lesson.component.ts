@@ -598,7 +598,6 @@ export class CreateLessonComponent implements OnInit {
             this.formGroup.controls.type.value === '3' &&
             this.typeSubject[3]
           ) {
-            this.dialogRef.close({ lesson: this.lesson, type: 'course' })
             this.lessonservice
               .addCourseConsultation(
                 this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00',
@@ -611,16 +610,30 @@ export class CreateLessonComponent implements OnInit {
                 this.lesson.Id,
                 this.lesson.Teacher.LectorId
               )
-              .subscribe((r) => {
-                console.log(r)
+              .subscribe((res) => {
+                const schedule = res.Schedule
+                schedule.Teacher.FullName = this.lessonservice.cutTeacherName(
+                  this.lesson.Teacher.FullName
+                )
                 this.dialogRef.close({
-                  code: r.Code,
-                  message: this.translate.transform(r.StatusDescription, r.StatusDescription),
+                  lesson: {
+                        ...this.lesson,
+                        Id: schedule.Id,
+                        StartTime: schedule.StartTime,
+                        EndTime: schedule.EndTime,
+                        Day: schedule.Day,
+                        Subject: schedule.Subject,
+                        Teacher: schedule.Teacher,
+                        Building: schedule.Building,
+                        Audience: schedule.Audience,
+                        GroupId: schedule.GroupId,
+                        GroupName: this.currentGroup ? this.currentGroup.GroupName : ""
+                      },
+                  type: 'course',
+                  code: res.Code,
+                  message: this.translate.transform(res.Message, res.Message),
                 })
               })
-            this.lesson.Teacher.FullName = this.lessonservice.cutTeacherName(
-              this.lesson.Teacher.FullName
-            )
           } else if (this.formGroup.controls.type.value === '4') {
             this.dialogRef.close({ lesson: this.lesson, type: 'diplom' })
             this.lessonservice
@@ -673,7 +686,7 @@ export class CreateLessonComponent implements OnInit {
         noteId,
       )
       .subscribe((l) => {
-        console.log(l)
+        this.note.id = l.Note.Id
         this.dialogRef.close({
           note: this.note,
           type: 'note',
