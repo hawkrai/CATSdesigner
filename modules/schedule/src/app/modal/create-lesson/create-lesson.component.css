@@ -36,3 +36,15 @@
 .mat-input-element:disabled {
   color: black;
 }
+
+.dialog-form-header {
+  position: relative; /* якорь для крестика */
+  padding-right: 40px;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+}

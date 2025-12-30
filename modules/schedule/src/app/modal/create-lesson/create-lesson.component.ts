@@ -222,8 +222,6 @@ export class CreateLessonComponent implements OnInit {
             this.lessonservice
               .getGroupsBySubjectId(+this.lesson.SubjectId)
               .subscribe((res) => {
-                this.formGroup.controls.group.enable()
-                this.formGroup.controls.subGroup.enable()
                 if (this.isStudentUpdateLesson) {
                   this.formGroup.controls.group.disable()
                   this.formGroup.controls.subGroup.disable()
@@ -259,9 +257,15 @@ export class CreateLessonComponent implements OnInit {
         this.data.lesson.title,
         2
       )
-      const rawType = this.lessonservice.getType(this.data.lesson.title).trim();
 
+      const rawType = this.lessonservice.getType(this.data.lesson.title).trim();
       const found = this.lessonTypes.find(type => type[1] === rawType);
+      if (found) {
+        this.formGroup.get('type').setValue(found[0]);
+        this.changedType = found[0];
+
+        this.applyTypeRestrictions(found[0]);
+      }
 
       this.disableNote = true
     }
@@ -781,37 +785,36 @@ export class CreateLessonComponent implements OnInit {
     )
   }
 
-  typeChange(event): void {
-    if (this.changedType == '4') {
-      this.formGroup.get('subjectF').setValue('')
+  applyTypeRestrictions(type: string): void {
+    this.formGroup.controls.group.disable()
+    this.formGroup.controls.subGroup.disable()
+    this.formGroup.controls.group.clearValidators()
+    this.formGroup.controls.subGroup.clearValidators()
+
+    if (type === '0' || type === '4') {
+      return
     }
 
-    if (event.value == '4') {
-      this.formGroup.get('subjectF').setValue(0)
-    }
-    this.changedType = event.value
-    if (event.value == '0' || event.value == '4') {
-      this.formGroup.controls.group.disable()
-      this.formGroup.controls.subGroup.disable()
-      this.stageValue = ''
-      this.stageValueSub = ''
-      this.formGroup.controls.group.setValidators([])
-      this.formGroup.controls.subGroup.setValidators([])
-    }
-    if (event.value == '1' || event.value == '2') {
+    if (type === '1' || type === '2') {
       this.formGroup.controls.group.enable()
       this.formGroup.controls.subGroup.enable()
+
       this.formGroup.controls.group.setValidators([Validators.required])
       this.formGroup.controls.subGroup.setValidators([Validators.required])
     }
-    if (event.value == '3') {
-      this.stageValueSub = ''
+
+    if (type === '3') {
       this.formGroup.controls.group.enable()
-      this.formGroup.controls.subGroup.disable()
       this.formGroup.controls.group.setValidators([Validators.required])
-      this.formGroup.controls.subGroup.setValidators([])
     }
+
     this.formGroup.controls.group.updateValueAndValidity()
     this.formGroup.controls.subGroup.updateValueAndValidity()
+  }
+
+
+  typeChange(event): void {
+    this.changedType = event.value
+    this.applyTypeRestrictions(event.value)
   }
 }
