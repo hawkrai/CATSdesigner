@@ -38,11 +38,11 @@
 }
 
 .dialog-form-header {
-  position: relative; /* якорь для крестика */
+  position: relative;
   padding-right: 40px;
 }
 
-.dialog-close {
+.dialog-form-header .dialog-close {
   position: absolute;
   top: 0;
   right: 0;

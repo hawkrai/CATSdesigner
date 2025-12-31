@@ -9,6 +9,7 @@ import { Note } from '../../model/note.model'
 import { LessonService } from '../../service/lesson.service'
 import { NoteService } from '../../service/note.service'
 import { TranslatePipe } from 'educats-translate'
+import { LessonType } from '../../model/lesson-type.enum';
 
 export function flatpickrFactory() {
   flatpickr.localize(Russian)
@@ -24,14 +25,14 @@ export function flatpickrFactory() {
 export class CreateLessonComponent implements OnInit {
   isEditMode = false;
   dialogTitle = '';
-  changedType: string
+  changedType: LessonType
   formGroup: any
   eventToChange: any
   lesson: Lesson = new Lesson()
   subject: any
   subjects: any[] = []
-  lessonTypes: string[][]
-  lessonTypesFull: string[][]
+  lessonTypes: [LessonType, string][]
+  lessonTypesFull: [LessonType, string][]
   dayOfLesson: Date
   startTimeOfLesson: string
   endTimeOfLesson: string
@@ -203,7 +204,7 @@ export class CreateLessonComponent implements OnInit {
                 if (
                   this.teachers.length === 0 &&
                   this.isDiplomAvailable &&
-                  this.changedType === '4' &&
+                  this.changedType === LessonType.GraduationProject &&
                   this.user.role === 'lector'
                 ) {
                   const fallbackTeacher = {
@@ -464,7 +465,7 @@ export class CreateLessonComponent implements OnInit {
             }
           })
           if (
-            this.formGroup.controls.type.value === '0' &&
+            this.formGroup.controls.type.value === LessonType.Lecture &&
             this.typeSubject[0]
           ) {
             this.lessonservice
@@ -511,7 +512,7 @@ export class CreateLessonComponent implements OnInit {
                 }
               })
           } else if (
-            this.formGroup.controls.type.value === '2' &&
+            this.formGroup.controls.type.value === LessonType.Lab &&
             this.typeSubject[1]
           ) {
             this.lessonservice
@@ -555,7 +556,7 @@ export class CreateLessonComponent implements OnInit {
                 }
               })
           } else if (
-            this.formGroup.controls.type.value === '1' &&
+            this.formGroup.controls.type.value === LessonType.Practical &&
             this.typeSubject[2]
           ) {
             this.lessonservice
@@ -599,7 +600,7 @@ export class CreateLessonComponent implements OnInit {
                 }
               })
           } else if (
-            this.formGroup.controls.type.value === '3' &&
+            this.formGroup.controls.type.value === LessonType.CourseProject &&
             this.typeSubject[3]
           ) {
             this.dialogRef.close({ lesson: this.lesson, type: 'course' })
@@ -625,7 +626,7 @@ export class CreateLessonComponent implements OnInit {
             this.lesson.Teacher.FullName = this.lessonservice.cutTeacherName(
               this.lesson.Teacher.FullName
             )
-          } else if (this.formGroup.controls.type.value === '4') {
+          } else if (this.formGroup.controls.type.value === LessonType.GraduationProject) {
             this.dialogRef.close({ lesson: this.lesson, type: 'diplom' })
             this.lessonservice
               .addDiplomConsultation(
@@ -718,7 +719,7 @@ export class CreateLessonComponent implements OnInit {
     const subjectId = event.value;
 
     if (event.value == 0) {
-      this.changedType = '4'
+      this.changedType = LessonType.GraduationProject
     }
 
     this.formGroup
@@ -729,7 +730,7 @@ export class CreateLessonComponent implements OnInit {
       )
       .subscribe(([old, value]) => {
         if (old == 0) {
-          this.changedType = ''
+          this.changedType = LessonType.Empty
         }
       })
 
@@ -752,7 +753,7 @@ export class CreateLessonComponent implements OnInit {
       if (
           this.teachers.length === 0 &&
           this.isDiplomAvailable &&
-          this.changedType === '4' &&
+          this.changedType === LessonType.GraduationProject &&
           this.user.role === 'lector'
         ) {
           const fallbackTeacher = {
@@ -769,7 +770,7 @@ export class CreateLessonComponent implements OnInit {
     })
 
     this.lessonservice.getLessonTypes(subjectId).subscribe((types) => {
-      this.lessonTypesFull = types;
+      this.lessonTypesFull = types as [LessonType, string][]
     });
   }
 
