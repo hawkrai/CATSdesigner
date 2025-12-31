@@ -345,7 +345,7 @@ getLessonTypes(subjectId: number): Observable<string[][]> {
       Building: building,
       Audience: audience,
       GroupId: groupId,
-      Id: id,
+      ...(id ? { Id: id } : {}),
       Teacher: { LectorId: lecturerId },
     })
   }
