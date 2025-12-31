@@ -20,6 +20,10 @@ interface DialogData {
   lecturerId?: string
 }
 
+interface ScheduleResponse {
+  Id: string
+}
+
 @Component({
   selector: 'app-add-date-dialog',
   templateUrl: './add-date-dialog.component.html',
@@ -120,7 +124,14 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
 
   onAddClick(): void {
     if (this.data != null) {
-      const date = new Date(this.data.date)
+      const selectedDate = this.dateControl.value
+      
+      if (!selectedDate) {
+        this.addFlashMessage('Необходимо выбрать дату', 400)
+        return
+      }
+      
+      const date = new Date(selectedDate)
       date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
       this.data.start = this.startTimeControl.value
       this.data.end = this.endTimeControl.value
@@ -140,38 +151,28 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
           this.data.building,
           this.data.lecturerId
         )
-        .subscribe((response) => {
-          this.addFlashMessage(response.StatusDescription, response.StatusCode)
-
-          if (response.StatusCode === 200) {
-            const consultation: Consultation = {
-              Id: this.data.consultations[this.data.consultations.length - 1]
-                ? this.data.consultations[this.data.consultations.length - 1].Id + 1
-                : '0',
-              Teacher: {
-                LectorId: +this.data.lecturerId,
-                FullName: null,
-                UserName: null,
-              },
-              Day: date.toISOString(),
-              Subject: { Id: this.data.subjectId },
-              StartTime: this.data.start,
-              EndTime: this.data.end,
-              Building: this.data.building,
-              Audience: this.data.audience,
+        .subscribe(
+          (response) => {
+            if (response && response.Code === 200) {
+              this.addFlashMessage(response.Message, response.Code)
+              this.addConsultationToList(date, response.Schedule)
+            } else if (response && response.Code === 500) {
+              this.addFlashMessage(response.Message, response.Code)
             }
-            consultation.Day =
-              String(date.getDate()).padStart(2, '0') +
-              '.' +
-              String(date.getMonth() + 1).padStart(2, '0') +
-              '.' +
-              date.getFullYear()
-            this.data.consultations.push(consultation)
-            this.data.consultations = this.data.consultations.sort((a, b) =>
-              a.Day > b.Day ? 1 : b.Day > a.Day ? -1 : 0
-            )
+          },
+          (error) => {
+            if (error.status === 500 && error.error) {
+              if (typeof error.error === 'string') {
+                this.addFlashMessage(error.error, 500)
+              } else {
+                this.addFlashMessage('', 200)
+                this.addConsultationToList(date, error.error)
+              }
+            } else {
+              this.addFlashMessage('Ошибка при добавлении консультации', 400)
+            }
           }
-        })
+        )
     }
   }
 
@@ -187,10 +188,44 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
       this.toastr.warning(
         this.translatePipe.transform(
           'text.course.visit.dialog.add.save.failure',
-          'Время и место заняты '
-        ) + msg
+          'Время и место заняты'
+        )
       )
+    } else if (code === 400) {
+      this.toastr.error(msg)
     }
+  }
+
+  private addConsultationToList(date: Date, response: ScheduleResponse): void {
+    const selectedLector = this.lectors.find(
+      (l) => l.LectorId === +this.data.lecturerId
+    )
+
+    const consultation: Consultation = {
+      Id: response.Id || String(Date.now()),
+      Teacher: selectedLector
+        ? {
+            LectorId: selectedLector.LectorId,
+            FullName: selectedLector.FullName,
+            UserName: selectedLector.UserName,
+          }
+        : {
+            LectorId: +this.data.lecturerId,
+            FullName: null,
+            UserName: null,
+          },
+      Day: this.formatDate(date),
+      Subject: { Id: this.data.subjectId },
+      StartTime: this.data.start,
+      EndTime: this.data.end,
+      Building: this.data.building,
+      Audience: this.data.audience,
+    }
+
+    this.data.consultations.push(consultation)
+    this.data.consultations = [...this.data.consultations].sort((a, b) =>
+      a.Day > b.Day ? 1 : b.Day > a.Day ? -1 : 0
+    )
   }
 
   editPopover(day: any) {
@@ -227,18 +262,31 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result != null && result) {
-        const index: number = this.data.consultations
-          .map((item) => +item.Id)
-          .indexOf(+id)
-        this.data.consultations.splice(index, 1)
-        this.visitStatsService.deleteDate(id).subscribe(() => {
-          this.toastr.success(
-            this.translatePipe.transform(
-              'text.course.percentages.dialog.delete.success',
-              'Этап успешно удален'
+        this.visitStatsService.deleteDate(id).subscribe(
+          () => {
+            this.toastr.success(
+              this.translatePipe.transform(
+                'text.course.percentages.dialog.delete.success',
+                'Дата успешно удалена'
+              )
             )
-          )
-        })
+            const index: number = this.data.consultations
+              .map((item) => +item.Id)
+              .indexOf(+id)
+            if (index !== -1) {
+              this.data.consultations.splice(index, 1)
+              this.data.consultations = [...this.data.consultations]
+            }
+          },
+          (error) => {
+            this.toastr.error(
+              this.translatePipe.transform(
+                'text.course.percentages.dialog.delete.error',
+                'Ошибка при удалении даты'
+              )
+            )
+          }
+        )
       }
     })
   }
@@ -270,5 +318,12 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
     const yearNum = parseInt(year, 10)
 
     return new Date(yearNum, monthNum, dayNum)
+  }
+
+  formatDate(date: Date): string {
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const year = date.getFullYear()
+    return `${day}.${month}.${year}`
   }
 }
