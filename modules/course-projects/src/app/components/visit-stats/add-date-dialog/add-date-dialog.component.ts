@@ -198,7 +198,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
 
   private addConsultationToList(date: Date, response: ScheduleResponse): void {
     const selectedLector = this.lectors.find(
-      (l) => l.LectorId === +this.data.lecturerId
+      (l) => l.LectorId === Number(this.data.lecturerId)
     )
 
     const consultation: Consultation = {
@@ -210,17 +210,24 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
             UserName: selectedLector.UserName,
           }
         : {
-            LectorId: +this.data.lecturerId,
+            LectorId: Number(this.data.lecturerId),
             FullName: null,
             UserName: null,
           },
-      Day: this.formatDate(date),
+      Day: date.toISOString(),
       Subject: { Id: this.data.subjectId },
       StartTime: this.data.start,
       EndTime: this.data.end,
       Building: this.data.building,
       Audience: this.data.audience,
     }
+    
+    consultation.Day =
+      String(date.getDate()).padStart(2, '0') +
+      '.' +
+      String(date.getMonth() + 1).padStart(2, '0') +
+      '.' +
+      date.getFullYear()
 
     this.data.consultations.push(consultation)
     this.data.consultations = [...this.data.consultations].sort((a, b) =>
@@ -271,8 +278,8 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
               )
             )
             const index: number = this.data.consultations
-              .map((item) => +item.Id)
-              .indexOf(+id)
+              .map((item) => Number(item.Id))
+              .indexOf(Number(id))
             if (index !== -1) {
               this.data.consultations.splice(index, 1)
               this.data.consultations = [...this.data.consultations]
@@ -318,12 +325,5 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
     const yearNum = parseInt(year, 10)
 
     return new Date(yearNum, monthNum, dayNum)
-  }
-
-  formatDate(date: Date): string {
-    const day = date.getDate().toString().padStart(2, '0')
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const year = date.getFullYear()
-    return `${day}.${month}.${year}`
   }
 }
