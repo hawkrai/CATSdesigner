@@ -5,8 +5,8 @@ import * as modules from './modules.json'
 
 const app = express()
 const PORT = 3000
-const TARGET_DOMAIN = 'https://educats.by'
-const TARGET_CHAT_DOMAIN = 'https://localhost:4200/'
+const TARGET_DOMAIN = 'https://localhost/LMPlatform.UI'
+const TARGET_CHAT_DOMAIN = 'https://localhost:5000/'
 
 app.use(express.static(path.resolve('/.temp/apps')))
 

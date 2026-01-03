@@ -23,10 +23,12 @@
               'text.test.name' | translate: 'Название теста'
               }}
             </mat-label>
-            <input type="text"
-                   matInput
-                   [formControl]="myControl"
-                   [matAutocomplete]="auto" />
+            <input
+              matInput
+              type="text"
+              [formControl]="myControl"
+              [matAutocomplete]="auto"
+            />
             <mat-autocomplete #auto="matAutocomplete"
                               [displayWith]="displayFn"
                               (optionSelected)="onValueChange($event)">
