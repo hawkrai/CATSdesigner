@@ -22,6 +22,7 @@ import { TranslatePipe } from 'educats-translate'
 import { Help } from '../../models/help.model'
 import { Constants } from '../../models/constanst/DataConstants'
 import { DataValues } from '../../models/data-values.model'
+import { TestResult, StudentData, StudentMapEntry } from '../../models/student-test-result.model'
 import moment from 'moment'
 
 @AutoUnsubscribe
@@ -327,12 +328,24 @@ export class ResultTestTableComponent
   }
 
   getTestTooltip(testResult: any): string {
-    if (!testResult) return 'Нет данных о тесте';
+    if (!testResult) {
+      return this.translate.transform(
+        'text.test.no.data',
+        'Нет данных о тесте'
+      );
+    }
 
-    let tooltip = testResult.testName || 'Тест';
+    let tooltip = testResult.testName || this.translate.transform(
+      'text.test',
+      'Тест'
+    );
 
     if (testResult.points !== null && testResult.points !== undefined) {
-      tooltip += `\nОценка: ${testResult.points}`;
+      const markLabel = this.translate.transform(
+        'text.test.mark',
+        'Оценка'
+      );
+      tooltip += `\n${markLabel}: ${testResult.points}`;
 
       if (testResult.percent !== null && testResult.percent !== undefined) {
         tooltip += ` (${testResult.percent}%)`;
@@ -341,7 +354,11 @@ export class ResultTestTableComponent
       if (testResult.startTime && !testResult.startTime.includes('/Date(-62135596800000)/')) {
         const formattedDateTime = this.formatDateTimeForTooltip(testResult.startTime);
         if (formattedDateTime) {
-          tooltip += `\nДата и время прохождения: ${formattedDateTime}`;
+          const dateTimeLabel = this.translate.transform(
+            'text.test.date.time.passing',
+            'Дата и время прохождения'
+          );
+          tooltip += `\n${dateTimeLabel}: ${formattedDateTime}`;
           return tooltip;
         }
       }
@@ -352,15 +369,27 @@ export class ResultTestTableComponent
         if (dates.startTime) {
           const formattedDateTime = this.formatDateTimeForTooltip(dates.startTime);
           if (formattedDateTime) {
-            tooltip += `\nДата и время прохождения: ${formattedDateTime}`;
+            const dateTimeLabel = this.translate.transform(
+              'text.test.date.time.passing',
+              'Дата и время прохождения'
+            );
+            tooltip += `\n${dateTimeLabel}: ${formattedDateTime}`;
           }
         }
       } else if (testResult.testId && testResult.studentId) {
         this.loadDatesForTooltip(testResult.testId, testResult.studentId, cacheKey);
-        tooltip += '\nЗагрузка данных о времени...';
+        const loadingLabel = this.translate.transform(
+          'text.test.loading.time.data',
+          'Загрузка...'
+        );
+        tooltip += `\n${loadingLabel}`;
       }
     } else {
-      tooltip += '\nСтатус: тест не пройден';
+      const statusLabel = this.translate.transform(
+        'text.test.status.not.passed',
+        'Статус: тест не пройден'
+      );
+      tooltip += `\n${statusLabel}`;
     }
 
     return tooltip;
@@ -429,13 +458,12 @@ export class ResultTestTableComponent
   }
 
   private updateTestDateInScareThing(testId: number, studentId: number, startTime: string): void {
-    this.scareThing.forEach(subGroup => {
-      subGroup.forEach(student => {
-        if (student[1]?.id === studentId) {
-          student[1].test?.forEach((test: any) => {
+    this.scareThing.forEach((subGroup: StudentMapEntry[]) => {
+      subGroup.forEach(([, studentData]) => {
+        if (studentData?.id === studentId) {
+          studentData.test?.forEach((test: TestResult) => {
             if (test.testId === testId) {
               test.startTime = startTime;
-
               this.cdr.detectChanges();
             }
           });

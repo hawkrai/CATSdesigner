@@ -9,6 +9,7 @@ import { Subject, forkJoin } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 import { DataValues } from '../../models/data-values.model'
 import { ChangeDetectorRef } from '@angular/core'
+import { StorageKeys } from '../../../../../../container/src/app/core/models/storage-keys.enum'
 
 @Component({
   selector: 'app-result-test-table-pupil',
@@ -71,7 +72,7 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
     private testPassingService: TestPassingService,
     private cdr: ChangeDetectorRef
   ) {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'))
+    const currentUser = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser))
     this.studentId = currentUser?.id?.toString()
   }
 
@@ -191,7 +192,6 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
     }
   }
 
-  // Геттеры для шаблона
   getPassDate(test: Test): string {
     const testId = test.Id
 
