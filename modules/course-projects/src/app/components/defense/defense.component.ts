@@ -24,30 +24,30 @@ export enum LocalStorageKeys {
   RETURNED_FILES = 'returnedFiles'
 }
 
-interface ReturnedFileData {
+interface IReturnedFileData {
   Id: string;
   Attachments: Attachment[];
 }
 
-interface ReturnedFilesStorage {
-  [fileId: string]: ReturnedFileData;
+interface IReturnedFilesStorage {
+  [fileId: string]: IReturnedFileData;
 }
 
-interface ExtendedUserLabFile extends UserLabFile {
+interface IExtendedUserLabFile extends UserLabFile {
   isOldReturned?: boolean;
 }
 
-interface ExtendedStudentFilesModel extends StudentFilesModel {
+interface IExtendedStudentFilesModel extends StudentFilesModel {
   hasNewWork?: boolean;
   isExpanded?: boolean;
-  FileLabs: ExtendedUserLabFile[];
+  FileLabs: IExtendedUserLabFile[];
 }
 
-interface ExtendedCoreGroup extends CoreGroup {
+interface IExtendedCoreGroup extends CoreGroup {
   hasNewWork?: boolean;
 }
 
-interface DialogResult {
+interface IDialogResult {
   comments: string;
   uploadedFile?: {
     IdFile?: number;
@@ -67,12 +67,12 @@ export class DefenseComponent implements OnInit, OnDestroy {
   @Input() courseUser: CourseUser;
   @Output() newWorkEvent = new EventEmitter<boolean>();
 
-  public groups: ExtendedCoreGroup[] = [];
-  public allGroups: ExtendedCoreGroup[] = [];
-  public selectedGroup: ExtendedCoreGroup | null = null;
+  public groups: IExtendedCoreGroup[] = [];
+  public allGroups: IExtendedCoreGroup[] = [];
+  public selectedGroup: IExtendedCoreGroup | null = null;
 
-  public userLabFiles: ExtendedUserLabFile[] = [];
-  public studentFiles: ExtendedStudentFilesModel[] = [];
+  public userLabFiles: IExtendedUserLabFile[] = [];
+  public studentFiles: IExtendedStudentFilesModel[] = [];
   public detachedGroup = false;
   public canAddJob = false;
   public expandedStudentIds: Set<string> = new Set();
@@ -109,12 +109,12 @@ export class DefenseComponent implements OnInit, OnDestroy {
     this.expandedStudentIds.clear();
   }
 
-  private getReturnedFiles(): ReturnedFilesStorage {
+  private getReturnedFiles(): IReturnedFilesStorage {
     const stored = localStorage.getItem(LocalStorageKeys.RETURNED_FILES);
     return stored ? JSON.parse(stored) : {};
   }
 
-  private setReturnedFiles(files: ReturnedFilesStorage) {
+  private setReturnedFiles(files: IReturnedFilesStorage) {
     localStorage.setItem(LocalStorageKeys.RETURNED_FILES, JSON.stringify(files));
   }
 
@@ -175,7 +175,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkForStudentUpdates(oldFiles: ExtendedUserLabFile[], newFiles: ExtendedUserLabFile[]) {
+  private checkForStudentUpdates(oldFiles: IExtendedUserLabFile[], newFiles: IExtendedUserLabFile[]) {
     if (!oldFiles || oldFiles.length === 0) return;
 
     const returnedFiles = this.getReturnedFiles();
@@ -229,13 +229,13 @@ export class DefenseComponent implements OnInit, OnDestroy {
 
         const oldStudentFiles = this.studentFiles;
         const returnedFiles = this.getReturnedFiles();
-        const mappedStudents: ExtendedStudentFilesModel[] = [];
+        const mappedStudents: IExtendedStudentFilesModel[] = [];
 
         for (let i = 0; i < res.Students.length; i++) {
           const student = res.Students[i];
           let hasNewWork = false;
 
-          let fileLabs: ExtendedUserLabFile[] = student.FileLabs || [];
+          let fileLabs: IExtendedUserLabFile[] = student.FileLabs || [];
 
           fileLabs = fileLabs.map(file => {
             if (returnedFiles[file.Id]) {
@@ -244,7 +244,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
                 IsReturned: true,
                 Attachments: returnedFiles[file.Id].Attachments,
                 isOldReturned: true
-              } as ExtendedUserLabFile;
+              } as IExtendedUserLabFile;
             }
             return file;
           });
@@ -273,8 +273,8 @@ export class DefenseComponent implements OnInit, OnDestroy {
   }
 
   private checkForNewStudentSubmissions(
-    oldStudents: ExtendedStudentFilesModel[],
-    newStudents: ExtendedStudentFilesModel[]
+    oldStudents: IExtendedStudentFilesModel[],
+    newStudents: IExtendedStudentFilesModel[]
   ) {
   }
 
@@ -345,13 +345,13 @@ export class DefenseComponent implements OnInit, OnDestroy {
         }
 
         const returnedFiles = this.getReturnedFiles();
-        const mappedStudents: ExtendedStudentFilesModel[] = [];
+        const mappedStudents: IExtendedStudentFilesModel[] = [];
 
         for (let i = 0; i < res.Students.length; i++) {
           const student = res.Students[i];
           let hasNewWork = false;
 
-          let fileLabs: ExtendedUserLabFile[] = student.FileLabs || [];
+          let fileLabs: IExtendedUserLabFile[] = student.FileLabs || [];
 
           fileLabs = fileLabs.map(file => {
             if (returnedFiles[file.Id]) {
@@ -360,7 +360,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
                 IsReturned: true,
                 Attachments: returnedFiles[file.Id].Attachments,
                 isOldReturned: true
-              } as ExtendedUserLabFile;
+              } as IExtendedUserLabFile;
             }
             return file;
           });
@@ -395,7 +395,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
     }
   }
 
-  trackByStudentId(index: number, student: ExtendedStudentFilesModel): string {
+  trackByStudentId(index: number, student: IExtendedStudentFilesModel): string {
     return student.StudentId;
   }
 
@@ -467,7 +467,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
     this.labFilesService
       .getCourseProjectFilesForUser(this.subjectId, studentId)
       .subscribe((res) => {
-        let newLabs: ExtendedUserLabFile[] = res && res.UserLabFiles ? res.UserLabFiles : [];
+        let newLabs: IExtendedUserLabFile[] = res && res.UserLabFiles ? res.UserLabFiles : [];
         const returnedFiles = this.getReturnedFiles();
 
         newLabs = newLabs.map(file => {
@@ -477,7 +477,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
               IsReturned: true,
               Attachments: returnedFiles[file.Id].Attachments,
               isOldReturned: true
-            } as ExtendedUserLabFile;
+            } as IExtendedUserLabFile;
           }
           return file;
         });
@@ -485,7 +485,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
         const hasNew = newLabs.some(f => !f.IsReceived && !f.IsReturned);
         const isExpanded = this.expandedStudentIds.has(studentId);
 
-        const updatedStudent: ExtendedStudentFilesModel = {
+        const updatedStudent: IExtendedStudentFilesModel = {
           ...this.studentFiles[index],
           FileLabs: newLabs,
           hasNewWork: hasNew,
@@ -616,14 +616,14 @@ export class DefenseComponent implements OnInit, OnDestroy {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result: DialogResult) => {
+    dialogRef.afterClosed().subscribe((result: IDialogResult) => {
       if (result) {
         this.uploadJob(result, studentId || this.courseUser.UserId, userLabFile);
       }
     });
   }
 
-  uploadJob(dialogResult: DialogResult, studentId: string, userLabFile?: UserLabFile) {
+  uploadJob(dialogResult: IDialogResult, studentId: string, userLabFile?: UserLabFile) {
     const isLecturer = this.courseUser.IsLecturer;
 
     let attachmentId = '0';
@@ -671,8 +671,9 @@ export class DefenseComponent implements OnInit, OnDestroy {
 
     this.labFilesService.sendJob(payload).subscribe((res) => {
       if (isLecturer && userLabFile) {
-        userLabFile.IsReturned = true;
-        (userLabFile as ExtendedUserLabFile).isOldReturned = true;
+        const extendedFile: IExtendedUserLabFile = userLabFile;
+        extendedFile.IsReturned = true;
+        extendedFile.isOldReturned = true;
 
         const returnedFiles = this.getReturnedFiles();
         returnedFiles[userLabFile.Id] = {
