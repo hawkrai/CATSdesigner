@@ -9,7 +9,7 @@ import { Note } from '../../model/note.model'
 import { LessonService } from '../../service/lesson.service'
 import { NoteService } from '../../service/note.service'
 import { TranslatePipe } from 'educats-translate'
-import { LessonType } from '../../model/lesson-type.enum';
+import { LessonType } from '../../../../../../container/src/app/core/models/lesson-type.const'
 
 export function flatpickrFactory() {
   flatpickr.localize(Russian)
