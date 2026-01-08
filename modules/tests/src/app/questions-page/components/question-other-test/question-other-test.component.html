@@ -22,11 +22,11 @@
               'text.test.name' | translate: 'Название теста'
               }}</mat-label>
             <input
-              type="text"
               matInput
+              type="text"
               [formControl]="myControl"
               [matAutocomplete]="auto"
-            />
+             />
             <mat-autocomplete
               #auto="matAutocomplete"
               [displayWith]="displayFn"
@@ -46,7 +46,7 @@
           <input
             matInput
             [placeholder]="
-            'text.test.search.question' | translate: 'Поиск вопроса'
+              'text.test.search.question' | translate: 'Поиск вопроса'
             "
             (keyup)="filterQuestions($event)"
           />
@@ -74,7 +74,7 @@
       color="primary"
       (click)="onYesClick()"
       cdkFocusInitial
-    >
+     >
       {{ 'button.save' | translate: 'Сохранить' }}
     </button>
   </div>
