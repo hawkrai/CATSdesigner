@@ -235,6 +235,7 @@ export class ScheduleMainComponent implements OnInit {
       consultation.GroupId +
       '|' +
       '|' +
+      consultation.GroupName +
       '|' +
       '|' +
       consultation.Teacher.LectorId
@@ -255,6 +256,7 @@ export class ScheduleMainComponent implements OnInit {
       '|' +
       consultation.Building +
       '|' +
+      this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
       '|' +
       this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
       '|' +
@@ -284,8 +286,9 @@ export class ScheduleMainComponent implements OnInit {
       '|' +
       consultation.Building +
       '|' +
+      this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
       '|' +
-      'ДП' +
+      this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
       '|' +
       '|' +
       '363636' +
@@ -820,7 +823,7 @@ export class ScheduleMainComponent implements OnInit {
       this.isLoadActive = false
       this.refresh.next()
              this.lessons.forEach((lesson) => {
-               if(lesson.Type === 'Лекция'){
+               if(lesson.Type === 'Лекция' || lesson.Type === 'Lect.'){
                  this.lessonservice.getGroupsBySubjectId(+lesson.SubjectId).subscribe({
                    next: (res) => {
                      lesson.GroupName = res.Groups

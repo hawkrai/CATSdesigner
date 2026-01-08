@@ -9,6 +9,7 @@ import { Note } from '../../model/note.model'
 import { LessonService } from '../../service/lesson.service'
 import { NoteService } from '../../service/note.service'
 import { TranslatePipe } from 'educats-translate'
+import { LessonType } from '../../../../../../container/src/app/core/models/lesson-type.const'
 
 export function flatpickrFactory() {
   flatpickr.localize(Russian)
@@ -24,14 +25,14 @@ export function flatpickrFactory() {
 export class CreateLessonComponent implements OnInit {
   isEditMode = false;
   dialogTitle = '';
-  changedType: string
+  changedType: LessonType
   formGroup: any
   eventToChange: any
   lesson: Lesson = new Lesson()
   subject: any
   subjects: any[] = []
-  lessonTypes: string[][]
-  lessonTypesFull: string[][]
+  lessonTypes: [LessonType, string][]
+  lessonTypesFull: [LessonType, string][]
   dayOfLesson: Date
   startTimeOfLesson: string
   endTimeOfLesson: string
@@ -203,7 +204,7 @@ export class CreateLessonComponent implements OnInit {
                 if (
                   this.teachers.length === 0 &&
                   this.isDiplomAvailable &&
-                  this.changedType === '4' &&
+                  this.changedType === LessonType.GraduationProject &&
                   this.user.role === 'lector'
                 ) {
                   const fallbackTeacher = {
@@ -222,8 +223,6 @@ export class CreateLessonComponent implements OnInit {
             this.lessonservice
               .getGroupsBySubjectId(+this.lesson.SubjectId)
               .subscribe((res) => {
-                this.formGroup.controls.group.enable()
-                this.formGroup.controls.subGroup.enable()
                 if (this.isStudentUpdateLesson) {
                   this.formGroup.controls.group.disable()
                   this.formGroup.controls.subGroup.disable()
@@ -259,9 +258,15 @@ export class CreateLessonComponent implements OnInit {
         this.data.lesson.title,
         2
       )
-      const rawType = this.lessonservice.getType(this.data.lesson.title).trim();
 
+      const rawType = this.lessonservice.getType(this.data.lesson.title).trim();
       const found = this.lessonTypes.find(type => type[1] === rawType);
+      if (found) {
+        this.formGroup.get('type').setValue(found[0]);
+        this.changedType = found[0];
+
+        this.applyTypeRestrictions(found[0]);
+      }
 
       this.disableNote = true
     }
@@ -460,7 +465,7 @@ export class CreateLessonComponent implements OnInit {
             }
           })
           if (
-            this.formGroup.controls.type.value === '0' &&
+            this.formGroup.controls.type.value === LessonType.Lecture &&
             this.typeSubject[0]
           ) {
             this.lessonservice
@@ -507,7 +512,7 @@ export class CreateLessonComponent implements OnInit {
                 }
               })
           } else if (
-            this.formGroup.controls.type.value === '2' &&
+            this.formGroup.controls.type.value === LessonType.Lab &&
             this.typeSubject[1]
           ) {
             this.lessonservice
@@ -551,7 +556,7 @@ export class CreateLessonComponent implements OnInit {
                 }
               })
           } else if (
-            this.formGroup.controls.type.value === '1' &&
+            this.formGroup.controls.type.value === LessonType.Practical &&
             this.typeSubject[2]
           ) {
             this.lessonservice
@@ -595,7 +600,7 @@ export class CreateLessonComponent implements OnInit {
                 }
               })
           } else if (
-            this.formGroup.controls.type.value === '3' &&
+            this.formGroup.controls.type.value === LessonType.CourseProject &&
             this.typeSubject[3]
           ) {
             this.lessonservice
@@ -634,7 +639,10 @@ export class CreateLessonComponent implements OnInit {
                   message: this.translate.transform(res.Message, res.Message),
                 })
               })
-          } else if (this.formGroup.controls.type.value === '4') {
+            this.lesson.Teacher.FullName = this.lessonservice.cutTeacherName(
+              this.lesson.Teacher.FullName
+            )
+          } else if (this.formGroup.controls.type.value === LessonType.GraduationProject) {
             this.dialogRef.close({ lesson: this.lesson, type: 'diplom' })
             this.lessonservice
               .addDiplomConsultation(
@@ -727,7 +735,7 @@ export class CreateLessonComponent implements OnInit {
     const subjectId = event.value;
 
     if (event.value == 0) {
-      this.changedType = '4'
+      this.changedType = LessonType.GraduationProject
     }
 
     this.formGroup
@@ -738,7 +746,7 @@ export class CreateLessonComponent implements OnInit {
       )
       .subscribe(([old, value]) => {
         if (old == 0) {
-          this.changedType = ''
+          this.changedType = LessonType.Empty
         }
       })
 
@@ -761,7 +769,7 @@ export class CreateLessonComponent implements OnInit {
       if (
           this.teachers.length === 0 &&
           this.isDiplomAvailable &&
-          this.changedType === '4' &&
+          this.changedType === LessonType.GraduationProject &&
           this.user.role === 'lector'
         ) {
           const fallbackTeacher = {
@@ -778,7 +786,7 @@ export class CreateLessonComponent implements OnInit {
     })
 
     this.lessonservice.getLessonTypes(subjectId).subscribe((types) => {
-      this.lessonTypesFull = types;
+      this.lessonTypesFull = types as [LessonType, string][]
     });
   }
 
@@ -794,37 +802,36 @@ export class CreateLessonComponent implements OnInit {
     )
   }
 
-  typeChange(event): void {
-    if (this.changedType == '4') {
-      this.formGroup.get('subjectF').setValue('')
+  applyTypeRestrictions(type: string): void {
+    this.formGroup.controls.group.disable()
+    this.formGroup.controls.subGroup.disable()
+    this.formGroup.controls.group.clearValidators()
+    this.formGroup.controls.subGroup.clearValidators()
+
+    if (type === '0' || type === '4') {
+      return
     }
 
-    if (event.value == '4') {
-      this.formGroup.get('subjectF').setValue(0)
-    }
-    this.changedType = event.value
-    if (event.value == '0' || event.value == '4') {
-      this.formGroup.controls.group.disable()
-      this.formGroup.controls.subGroup.disable()
-      this.stageValue = ''
-      this.stageValueSub = ''
-      this.formGroup.controls.group.setValidators([])
-      this.formGroup.controls.subGroup.setValidators([])
-    }
-    if (event.value == '1' || event.value == '2') {
+    if (type === '1' || type === '2') {
       this.formGroup.controls.group.enable()
       this.formGroup.controls.subGroup.enable()
+
       this.formGroup.controls.group.setValidators([Validators.required])
       this.formGroup.controls.subGroup.setValidators([Validators.required])
     }
-    if (event.value == '3') {
-      this.stageValueSub = ''
+
+    if (type === '3') {
       this.formGroup.controls.group.enable()
-      this.formGroup.controls.subGroup.disable()
       this.formGroup.controls.group.setValidators([Validators.required])
-      this.formGroup.controls.subGroup.setValidators([])
     }
+
     this.formGroup.controls.group.updateValueAndValidity()
     this.formGroup.controls.subGroup.updateValueAndValidity()
+  }
+
+
+  typeChange(event): void {
+    this.changedType = event.value
+    this.applyTypeRestrictions(event.value)
   }
 }

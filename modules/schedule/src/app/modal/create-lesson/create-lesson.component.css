@@ -36,3 +36,15 @@
 .mat-input-element:disabled {
   color: black;
 }
+
+.dialog-form-header {
+  position: relative;
+  padding-right: 40px;
+}
+
+.dialog-form-header .dialog-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+}

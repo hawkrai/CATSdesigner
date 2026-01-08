@@ -1,8 +1,6 @@
-<div>
-  <h2
-    mat-dialog-title
-    class="visit-date__title"
-    style="margin: 0px; float: left; width: 94%"
+<div class="dialog-form-header">
+  <h2 mat-dialog-title class="visit-date__title"
+    style="margin: 0px; float: left; width: 94%; font-weight: normal;"
   >
     {{
         dialogTitle | translate
@@ -10,7 +8,11 @@
   </h2>
   <mat-icon
     (click)="onCancelClick()"
-    style="cursor: pointer; position: relative; margin-left: 1%"
+    class="dialog-close"
+    style="position: absolute;
+           top: 0;
+           right: 0;
+           cursor: pointer;"
     >close</mat-icon
   >
   <h5 style="float: left; font-size: 14px; color: #808080">{{ date }}</h5>
@@ -43,7 +45,8 @@
             }}</mat-option>
             <mat-divider></mat-divider>
             <mat-option *ngIf="isDiplomAvailable" [value]="0"
-              >Дипломное проектирование</mat-option
+              >{{ 'graduation.project' | translate : 'Дипломное проектирование' }}
+            </mat-option
             >
           </mat-select>
           <mat-error *ngIf="subjectF.hasError('required')">{{
