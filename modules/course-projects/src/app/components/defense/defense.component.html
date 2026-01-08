@@ -139,8 +139,8 @@
               class="mdc-data-table__row"
               *ngFor="let studentFile of userLabFiles"
               [ngClass]="{
-                sticky: studentFile.IsReceived,
-                fix: studentFile.IsReturned
+                'sticky': studentFile.IsReceived,
+                'fix': studentFile.IsReturned
               }"
             >
               <td class="mdc-data-table__cell">
@@ -177,7 +177,7 @@
                     <mat-icon>delete</mat-icon>
                   </button>
                 </ng-container>
-                <p *ngIf="studentFile.IsReturned">
+                <p *ngIf="studentFile.IsReturned && !studentFile.IsReceived">
                   {{ 'text.correct' | translate: 'Исправить' }}
                 </p>
               </td>
@@ -189,10 +189,10 @@
     <ng-container *ngIf="courseUser.IsLecturer">
       <mat-accordion *ngIf="studentFiles">
         <mat-expansion-panel
-            *ngFor="let student of studentFiles; trackBy: trackByStudentId"
-            [expanded]="student.isExpanded"
-            (opened)="toggleStudentExpanded(student.StudentId, true)"
-            (closed)="toggleStudentExpanded(student.StudentId, false)">
+          *ngFor="let student of studentFiles; trackBy: trackByStudentId"
+          [expanded]="student.isExpanded"
+          (opened)="toggleStudentExpanded(student.StudentId, true)"
+          (closed)="toggleStudentExpanded(student.StudentId, false)">
           <mat-expansion-panel-header>
             <mat-panel-title>
               {{ student.FullName }}
@@ -248,10 +248,10 @@
               <tbody *ngIf="student.FileLabs">
                 <tr
                   class="mdc-data-table__row"
-                  *ngFor="let fileLab of student.FileLabs"
+                  *ngFor="let fileLab of student.FileLabs; trackBy: trackByFileId"
                   [ngClass]="{
-                    sticky: fileLab.IsReceived,
-                    fix: fileLab.IsReturned
+                    'sticky': fileLab.IsReceived,
+                    'fix': fileLab.IsReturned
                   }"
                 >
                   <td class="mdc-data-table__cell">
@@ -270,7 +270,7 @@
                   <td class="mdc-data-table__cell">{{ fileLab.Comments }}</td>
                   <td class="mdc-data-table__cell">{{ fileLab.Date }}</td>
                   <td class="mdc-data-table__cell">
-                    <ng-container *ngIf="!fileLab.IsReturned">
+                    <ng-container *ngIf="!fileLab.IsReturned && !fileLab.IsReceived">
                       <button
                         mat-icon-button
                         color="primary"
@@ -281,11 +281,7 @@
                       >
                         <mat-icon>visibility</mat-icon>
                       </button>
-                    </ng-container>
 
-                    <ng-container
-                      *ngIf="!fileLab.IsReturned && !fileLab.IsReceived"
-                    >
                       <button
                         mat-icon-button
                         color="primary"
@@ -308,10 +304,18 @@
                         <mat-icon>arrow_forward</mat-icon>
                       </button>
                     </ng-container>
+                    <ng-container *ngIf="fileLab.IsReceived && !fileLab.IsReturned">
+                      <button
+                        mat-icon-button
+                        color="primary"
+                        matTooltip="{{
+                          'text.check' | translate: 'Проверить на плагиат'
+                        }}"
+                        (click)="checkPlagiarismFile(fileLab)"
+                      >
+                        <mat-icon>visibility</mat-icon>
+                      </button>
 
-                    <ng-container
-                      *ngIf="fileLab.IsReceived && !fileLab.IsReturned"
-                    >
                       <button
                         mat-icon-button
                         color="primary"
@@ -322,6 +326,20 @@
                       >
                         <mat-icon>thumb_down</mat-icon>
                       </button>
+                    </ng-container>
+                    <ng-container *ngIf="fileLab.IsReturned && fileLab.isOldReturned">
+                      <button
+                        mat-icon-button
+                        color="primary"
+                        matTooltip="{{
+                          'text.check' | translate: 'Проверить на плагиат'
+                        }}"
+                        (click)="checkPlagiarismFile(fileLab)"
+                      >
+                        <mat-icon>visibility</mat-icon>
+                      </button>
+                    </ng-container>
+                    <ng-container *ngIf="fileLab.IsReturned && !fileLab.isOldReturned">
                     </ng-container>
                   </td>
                 </tr>
