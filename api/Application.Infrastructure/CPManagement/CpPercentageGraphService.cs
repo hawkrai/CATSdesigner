@@ -133,7 +133,7 @@ namespace Application.Infrastructure.CPManagement
                 subjectsId = SubjectManagementService.GetSubjectsInfoByLector(userId).Select(s => s.Id).ToList();
             }
 
-            var baseQuery =  Context.CourseProjectConsultationDates
+            var baseQuery = Context.CourseProjectConsultationDates
                 .Where(x => x.Day >= _currentAcademicYearStartDate && x.Day < _currentAcademicYearEndDate)
                 .Where(x => groupId == 0 || x.GroupId.HasValue && x.GroupId.Value == groupId)
                 .OrderBy(x => x.Day)
@@ -147,7 +147,10 @@ namespace Application.Infrastructure.CPManagement
                     EndTime = x.EndTime,
                     Audience = x.Audience,
                     Building = x.Building,
-                    GroupId = x.GroupId.HasValue ? x.GroupId.Value : 0
+                    GroupId = x.GroupId.HasValue ? x.GroupId.Value : 0,
+                    GroupName = x.GroupId.HasValue
+                        ? Context.Groups.Where(g => g.Id == x.GroupId.Value).Select(g => g.Name).FirstOrDefault()
+                        : null
                 })
                 .ToList();
 
@@ -166,7 +169,8 @@ namespace Application.Infrastructure.CPManagement
                     EndTime = x.EndTime?.ToString(@"hh\:mm"),
                     Audience = x.Audience,
                     Building = x.Building,
-                    GroupId = x.GroupId
+                    GroupId = x.GroupId,
+                    GroupName = x.GroupName
                 })
                 .ToList();
 
