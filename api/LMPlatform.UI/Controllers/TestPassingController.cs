@@ -191,17 +191,25 @@ namespace LMPlatform.UI.Controllers
         [HttpGet]
         public JsonResult GetStudentResults(int subjectId)
         {
-            var results = this.TestPassingService.GetStidentResults(subjectId, UserContext.CurrentUserId)
+            var results = this.TestPassingService
+                .GetStidentResults(subjectId, UserContext.CurrentUserId)
                 .GroupBy(g => g.TestName)
-                .Select(group => new
+                .Select(group =>
                 {
-                    Title = group.Key,
-                    group.Last().Points,
-                    group.Last().Percent,
-                    this.TestsManagementService.GetTest(group.Last().TestId).ForSelfStudy,
-                    this.TestsManagementService.GetTest(group.Last().TestId).ForNN,
-                    this.TestsManagementService.GetTest(group.Last().TestId).BeforeEUMK,
-                    this.TestsManagementService.GetTest(group.Last().TestId).ForEUMK
+                    var lastResult = group.Last();
+                    var test = this.TestsManagementService.GetTest(lastResult.TestId);
+
+                    return new
+                    {
+                        Id = lastResult.TestId,
+                        Title = group.Key,
+                        Points = lastResult.Points,
+                        Percent = lastResult.Percent,
+                        ForSelfStudy = test.ForSelfStudy,
+                        ForNN = test.ForNN,
+                        BeforeEUMK = test.BeforeEUMK,
+                        ForEUMK = test.ForEUMK
+                    };
                 });
 
             return JsonResponse(results) as JsonResult;
