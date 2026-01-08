@@ -11,14 +11,16 @@
         <mat-icon>close</mat-icon>
       </button>
     </div>
-    <div>{{ data.name }}</div>
+    <div class="question-other-test-description">
+      <span>{{ data.name }}</span>
+    </div>
     <div class="question-other-dropdowns">
       <div class="question-other-dropdown">
         <form class="example-form">
           <mat-form-field class="example-full-width">
             <mat-label>{{
               'text.test.name' | translate: 'Название теста'
-            }}</mat-label>
+              }}</mat-label>
             <input
               type="text"
               matInput
@@ -44,7 +46,7 @@
           <input
             matInput
             [placeholder]="
-              'text.test.search.question' | translate: 'Поиск вопроса'
+            'text.test.search.question' | translate: 'Поиск вопроса'
             "
             (keyup)="filterQuestions($event)"
           />
