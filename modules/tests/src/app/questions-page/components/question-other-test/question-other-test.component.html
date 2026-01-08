@@ -11,7 +11,9 @@
         <mat-icon>close</mat-icon>
       </button>
     </div>
-    <div>{{ data.name }}</div>
+    <div class="question-other-test-description">
+      <span>{{ data.name }}</span>
+    </div>
     <div class="question-other-dropdowns">
       <div class="question-other-dropdown">
         <form class="example-form">
@@ -20,8 +22,8 @@
               'text.test.name' | translate: 'Название теста'
             }}</mat-label>
             <input
-              type="text"
               matInput
+              type="text"
               [formControl]="myControl"
               [matAutocomplete]="auto"
             />

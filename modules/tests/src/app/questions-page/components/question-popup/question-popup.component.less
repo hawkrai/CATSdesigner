@@ -1,15 +1,18 @@
 :host {
   position: relative;
-}
 
-::ng-deep {
-  .popover-close {
-    right: -10px !important;
+  ::ng-deep {
+    .popover .popover-close {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      color: #363636;
+    }
   }
 }
 
 textarea {
-  border-color: #949494 !important;
+  border-color: #949494;
 }
 
 .question-popup {
@@ -18,13 +21,16 @@ textarea {
 
   &-description {
     margin-top: 15px;
+
     ::ng-deep {
       mat-expansion-panel-header {
         padding: 0 10px;
       }
+
       .mat-expansion-panel-body {
         padding: 0 10px 10px;
       }
+
       .cke_resizer_vertical {
         display: none;
       }
@@ -53,28 +59,35 @@ textarea {
       justify-content: space-between;
       align-items: flex-start;
     }
+
     &-text {
       &-small {
         font-size: 14px;
-        color: #6c6c6c;
+        color: rgb(130 130 130);
         margin-bottom: 4px;
+        line-height: 1.35;
       }
     }
   }
+
   &-answers {
     &-input {
       width: 100%;
+
       .mat-checkbox-layout {
         width: 100%;
       }
+
       .mat-checkbox-label {
         width: 100%;
       }
     }
+
     &-item {
       width: 100%;
       display: flex;
       margin-bottom: 20px;
+
       &.mat-radio-label-content {
         width: 90%;
       }
@@ -83,6 +96,7 @@ textarea {
         .mat-radio-label {
           max-width: 480px;
         }
+
         .mat-radio-label-content {
           padding-left: 12px;
         }
@@ -90,6 +104,7 @@ textarea {
 
       &-input {
         border-bottom: 1px solid;
+
         &-only {
           margin-top: 30px;
           border-bottom: 1px solid;
@@ -110,6 +125,7 @@ textarea {
   &-full {
     display: block;
     width: 100%;
+
     .mat-form-field-label {
       font-size: 19px;
     }
@@ -118,6 +134,196 @@ textarea {
   &-inputs {
     display: flex;
   }
+
+  &-title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  &-type {
+    margin-right: 20px;
+  }
+}
+
+.basic-container {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  align-items: center;
+  margin-top: 20px;
+
+  &__selection {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+
+  &__title {
+    margin-bottom: 5px;
+    margin-top: 0;
+  }
+}
+
+.mobile {
+  display: none;
+}
+
+@media (max-width: 605px) {
+  .desktop {
+    display: none;
+  }
+
+  .mobile {
+    display: block;
+  }
+
+  .question-popup-inputs {
+    flex-direction: column;
+  }
+
+  .question-popup-container__justify {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .question-popup-complexity {
+    max-width: 100%;
+  }
+
+  .question-popup-answers-input {
+    ::ng-deep {
+      .mat-radio-label-content {
+        padding-right: 30px;
+      }
+    }
+  }
+}
+
+
+textarea {
+  border-color: #949494;
+}
+
+.question-popup {
+  overflow: auto;
+  position: fixed;
+
+  &-description {
+    margin-top: 15px;
+
+    ::ng-deep {
+      mat-expansion-panel-header {
+        padding: 0 10px;
+      }
+
+      .mat-expansion-panel-body {
+        padding: 0 10px 10px;
+      }
+
+      .cke_resizer_vertical {
+        display: none;
+      }
+    }
+  }
+
+  &-complexity {
+    max-width: 120px;
+  }
+
+  &-header {
+    display: block;
+  }
+
+  &-answer {
+    &-button {
+      background: #388e3c;
+      color: white;
+      height: 45px;
+    }
+  }
+
+  &-container {
+    &__justify {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    &-text {
+      &-small {
+        font-size: 14px;
+        color: rgb(130 130 130);
+        margin-bottom: 4px;
+        line-height: 1.35;
+      }
+    }
+  }
+
+  &-answers {
+    &-input {
+      width: 100%;
+
+      .mat-checkbox-layout {
+        width: 100%;
+      }
+
+      .mat-checkbox-label {
+        width: 100%;
+      }
+    }
+
+    &-item {
+      width: 100%;
+      display: flex;
+      margin-bottom: 20px;
+
+      &.mat-radio-label-content {
+        width: 90%;
+      }
+
+      ::ng-deep {
+        .mat-radio-label {
+          max-width: 480px;
+        }
+
+        .mat-radio-label-content {
+          padding-left: 12px;
+        }
+      }
+
+      &-input {
+        border-bottom: 1px solid;
+
+        &-only {
+          margin-top: 30px;
+          border-bottom: 1px solid;
+          width: 90%;
+        }
+      }
+
+      mat-icon {
+        margin-left: 4px;
+      }
+    }
+
+    .mat-checkbox-layout {
+      width: 100%;
+    }
+  }
+
+  &-full {
+    display: block;
+    width: 100%;
+
+    .mat-form-field-label {
+      font-size: 19px;
+    }
+  }
+
+  &-inputs {
+    display: flex;
+  }
+
   &-title {
     display: flex;
     align-items: center;
@@ -159,16 +365,20 @@ textarea {
   .mobile {
     display: block;
   }
+
   .question-popup-inputs {
     flex-direction: column;
   }
+
   .question-popup-container__justify {
     flex-direction: column;
     align-items: center;
   }
+
   .question-popup-complexity {
     max-width: 100%;
   }
+
   .question-popup-answers-input {
     ::ng-deep {
       .mat-radio-label-content {
