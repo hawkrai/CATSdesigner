@@ -64,15 +64,16 @@
           >{{ 'common.inputFolderName' | translate: 'Введите имя папки' }}
         </mat-label>
         <input
-          name="foderName"
+          name="folderName"
           maxlength="100"
+          required
           placeholder="{{ 'common.folderName' | translate: 'Имя папки' }}"
           [(ngModel)]="data.name"
           matInput
         />
       </mat-form-field>
 
-      <div *ngIf="isFile">
+      <div *ngIf="isFile || (editMode && !isFolder)">
         <mat-form-field>
           <mat-label
             >{{
@@ -82,6 +83,7 @@
           <input
             name="fileName"
             maxlength="100"
+            required
             placeholder="{{
               'common.fileName' | translate: 'Введите название элемента'
             }}"
@@ -108,15 +110,14 @@
     <button mat-raised-button (click)="onClose(files, false)">
       {{ 'common.cancel' | translate: 'Отмена' }}
     </button>
-    <button
-      mat-raised-button
-      (click)="onClose(files, true)"
-      color="primary"
-      [disabled]="!formElement.checkValidity() || (editMode && !hasChanges() && !hasFileChanges(files))
-            || (addMode && !hasChanges() && !hasFileChanges(files))"
-    >
-      {{ 'common.save' | translate: 'Сохранить' }}
-    </button>
+      <button
+        mat-raised-button
+        (click)="onClose(files, true)"
+        color="primary"
+        [disabled]="!isFormValid(files)"
+      >
+        {{ 'common.save' | translate: 'Сохранить' }}
+      </button>
   </div>
 </ng-container>
 <!--[(ngModel)]="data.subjectName"-->

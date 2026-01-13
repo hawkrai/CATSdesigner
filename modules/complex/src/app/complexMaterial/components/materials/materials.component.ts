@@ -298,7 +298,7 @@ export class MaterialComponent implements OnInit, OnChanges {
 
         this.complexService.addOrEditConcept(concept).subscribe((res) => {
           if (res['Code'] === '200') {
-            this.router.navigateByUrl('/cMaterial')
+            this.loadConceptCascade()
           }
         })
       }
@@ -371,8 +371,32 @@ export class MaterialComponent implements OnInit, OnChanges {
           Type: CodeType.success,
         })
 
-        this.router.navigateByUrl('/cMaterial')
+        this.loadConceptCascade()
       }
     })
   }
+
+  isMandatoryComponent(node: ComplexCascade): boolean {
+    const mandatoryComponents = [
+      'Титульный экран',
+      'Программа курса',
+      'Теоретический раздел',
+      'Практический раздел',
+      'Блок контроля знаний',
+    ]
+    const translatedComponents = [
+      this.translatePipe.transform('complex.titleScreen', 'Титульный экран'),
+      this.translatePipe.transform('complex.courseProgram', 'Программа курса'),
+      this.translatePipe.transform('complex.section.theoretical', 'Теоретический раздел'),
+      this.translatePipe.transform('complex.section.practical', 'Практический раздел'),
+      this.translatePipe.transform('complex.section.control', 'Блок контроля знаний'),
+    ]
+    const nodeName = node.Name || ''
+    return mandatoryComponents.some((comp) =>
+      nodeName.includes(comp)
+    ) || translatedComponents.some((comp) =>
+      nodeName.includes(comp)
+    )
+  }
+
 }

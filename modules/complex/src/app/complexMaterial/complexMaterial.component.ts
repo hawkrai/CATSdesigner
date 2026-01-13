@@ -87,7 +87,9 @@ export class ComplexMaterialComponent implements OnInit {
 
         this.complexService.addOrEditConcept(concept).subscribe((res) => {
           if (res['Code'] === '200') {
-            this.router.navigateByUrl('/cMaterial')
+            this.router.navigateByUrl('/cMaterial').then(() => {
+              window.location.reload()
+            })
           }
         })
       }
