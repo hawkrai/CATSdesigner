@@ -69,7 +69,7 @@
         </a>
         <a
           class="btn clickable"
-          (click)="openConfirmationDialog(node.Id)"
+          (click)="openConfirmationDialog(node.Id, node)"
           [matTooltip]="'common.delete' | translate: 'Удалить'"
           matTooltipPosition="below"
         >
@@ -134,7 +134,7 @@
           </a>
           <a
             class="btn clickable"
-            (click)="openConfirmationDialog(node.Id)"
+            (click)="openConfirmationDialog(node.Id, node)"
             [matTooltip]="'common.delete' | translate: 'Удалить'"
             matTooltipPosition="below"
             *ngIf="!isMandatoryComponent(node)"

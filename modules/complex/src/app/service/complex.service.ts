@@ -166,4 +166,18 @@ export class ComplexService {
       this.path + 'GetAvailableModules?subjectId=' + subject.id
     )
   }
+
+  public hideTest(conceptId: number, testId: number | null, complexId: number): Observable<any> {
+    return this.http.post(this.path + 'HideTest', {
+      conceptId: conceptId,
+      testId: testId,
+      complexId: complexId
+    })
+  }
+
+  public getHiddenTests(complexId: number): Observable<{ ConceptIds: number[], TestIds: number[] }> {
+    return this.http.get<{ ConceptIds: number[], TestIds: number[] }>(
+      this.path + 'GetHiddenTests?complexId=' + complexId
+    )
+  }
 }

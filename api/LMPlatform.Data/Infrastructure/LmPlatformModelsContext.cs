@@ -28,6 +28,8 @@ namespace LMPlatform.Data.Infrastructure
 
         public DbSet<WatchingTime> WatchingTime { get; set; }
 
+        public DbSet<HiddenTest> HiddenTests { get; set; }
+
         public DbSet<TestQuestionPassResults> TestQuestionPassResults { get; set; }
 
         public DbSet<Membership> Membership { get; set; }
@@ -356,6 +358,8 @@ namespace LMPlatform.Data.Infrastructure
             modelBuilder.Entity<Concept>().Map(m => m.ToTable("Concept"));
             modelBuilder.Entity<Concept>().HasMany<Concept>(d => d.Children);
             modelBuilder.Entity<Concept>().HasMany<ConceptQuestions>(d => d.ConceptQuestions);
+
+            modelBuilder.Entity<HiddenTest>().Map(m => m.ToTable("HiddenTest"));
 
             //modelBuilder.Entity<Concept>()
             //    .HasMany<WatchingTime>(e => e.WatchingTime)

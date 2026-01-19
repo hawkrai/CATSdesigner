@@ -25,6 +25,7 @@ import { StorageKeys } from '../../../../../../../container/src/app/core/models/
 import { TestService } from '../../../service/test.service'
 import { ConverterService } from '../../../service/converter.service'
 import { TestResultsLoaderService } from '../../../service/test-results-loader.service'
+import { HiddenTestsService } from '../../../service/hidden-tests.service'
 import { ChangeDetectorRef } from '@angular/core'
 
 @Component({
@@ -58,6 +59,7 @@ export class MaterialComponent implements OnInit, OnChanges {
     private testService: TestService,
     public converterService: ConverterService,
     private testResultsLoaderService: TestResultsLoaderService,
+    private hiddenTestsService: HiddenTestsService,
     private cdr: ChangeDetectorRef
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -84,14 +86,35 @@ export class MaterialComponent implements OnInit, OnChanges {
     if (!this.complexId) {
       return
     }
-    this.complexService.getConceptCascade(this.complexId).subscribe((res) => {
-      const localizedData = this.localizeTree(res.children)
-      this.dataSource.data = localizedData
-      this.treeControl.dataNodes = localizedData
-      this.treeControl.expandAll()
-      this.loadTestResults(localizedData)
-    })
+
+    this.hiddenTestsService.loadHiddenTests(this.complexId).subscribe(
+      () => {
+        this.complexService.getConceptCascade(this.complexId).subscribe((res) => {
+          const localizedData = this.localizeTree(res.children)
+          const filteredData = this.hiddenTestsService.filterHiddenTestsForCascade(this.complexId, localizedData)
+          this.dataSource.data = filteredData
+          this.treeControl.dataNodes = filteredData
+          this.treeControl.expandAll()
+          this.loadTestResults(filteredData)
+        })
+      },
+      (error) => {
+        console.error('Ошибка при загрузке скрытых тестов:', error)
+        
+        // Загружаем дерево даже если не удалось загрузить скрытые тесты
+        this.complexService.getConceptCascade(this.complexId).subscribe((res) => {
+          const localizedData = this.localizeTree(res.children)
+          this.dataSource.data = localizedData
+          this.treeControl.dataNodes = localizedData
+          this.treeControl.expandAll()
+          this.loadTestResults(localizedData)
+        })
+      }
+    )
   }
+
+
+
 
   loadTestResults(nodes: ComplexCascade[]): void {
     const user = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser))
@@ -340,7 +363,7 @@ export class MaterialComponent implements OnInit, OnChanges {
     return false
   }
 
-  public openConfirmationDialog(conceptId: number): void {
+  public openConfirmationDialog(conceptId: string | number, node?: ComplexCascade): void {
     const dialogRef = this.dialog.open(DeleteConfirmationPopupComponent, {
       width: '500px',
       data: { event },
@@ -352,14 +375,26 @@ export class MaterialComponent implements OnInit, OnChanges {
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((result) => {
         if (result) {
-          this.onDeleteClick(conceptId)
+          this.onDeleteClick(conceptId, node)
         }
       })
   }
 
-  onDeleteClick(conceptId: number): void {
+  onDeleteClick(conceptId: string | number, node?: ComplexCascade): void {
+    if (node && node.TestId) {
+      this.hiddenTestsService.saveHiddenTest(this.complexId, String(conceptId), node.TestId).subscribe()
+      this.hideTestFromTree(conceptId, node)
+      this.catsService.showMessage({
+        Message: `${this.translatePipe.transform(
+          'common.success.operation',
+          'Успешно удалено'
+        )}.`,
+        Type: CodeType.success,
+      })
+      return
+    }
     const complex: Complex = {
-      elementId: conceptId,
+      elementId: typeof conceptId === 'string' ? parseInt(conceptId, 10) : conceptId,
     }
     this.complexService.deleteConcept(complex).subscribe((result) => {
       if (result['Code'] === '200') {
@@ -374,6 +409,37 @@ export class MaterialComponent implements OnInit, OnChanges {
         this.loadConceptCascade()
       }
     })
+  }
+
+  private hideTestFromTree(conceptId: string | number, nodeToRemove: ComplexCascade): void {
+    if (!this.dataSource.data || this.dataSource.data.length === 0) {
+      return
+    }
+
+    // Собираем состояние развернутых узлов
+    const expandedNodeIds = this.hiddenTestsService.collectExpandedNodeIds(
+      this.dataSource.data,
+      (node) => this.treeControl.isExpanded(node)
+    )
+
+    // Удаляем узел из дерева
+    const newData = this.hiddenTestsService.removeCascadeNode(
+      this.dataSource.data,
+      conceptId
+    )
+
+    // Обновляем данные в дереве
+    this.dataSource.data = newData
+    this.treeControl.dataNodes = newData
+
+    setTimeout(() => {
+      this.hiddenTestsService.restoreExpandedState(
+        newData,
+        expandedNodeIds,
+        (node) => this.treeControl.expand(node)
+      )
+      this.cdr.detectChanges()
+    }, 0)
   }
 
   isMandatoryComponent(node: ComplexCascade): boolean {

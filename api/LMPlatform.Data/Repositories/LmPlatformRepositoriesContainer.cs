@@ -65,6 +65,8 @@ namespace LMPlatform.Data.Repositories
 
         public IWatchingTimeRepository WatchingTimeRepository { get; set; }
 
+        public IHiddenTestRepository HiddenTestRepository { get; set; }
+
         public IProjectMatrixRequirementsRepository ProjectMatrixRequirementsRepository { get; set; }
 
         public IDocumentRepository DocumentRepository { get; set; }
@@ -118,6 +120,7 @@ namespace LMPlatform.Data.Repositories
             PracticalRepository = new PracticalRepository(_dataContext);
             ConceptRepository = new ConceptRepository(_dataContext);
             WatchingTimeRepository = new WatchingTimeRepository(_dataContext);
+            HiddenTestRepository = new HiddenTestRepository(_dataContext);
             TestQuestionPassResultsRepository = new TestQuestionPassResultsRepository(_dataContext);
             ProjectMatrixRequirementsRepository = new ProjectMatrixRequirementsRepository(_dataContext);
             DocumentRepository = new DocumentRepository(_dataContext);
