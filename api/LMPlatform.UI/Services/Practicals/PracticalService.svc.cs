@@ -461,7 +461,7 @@ namespace LMPlatform.UI.Services.Practicals
                             IsReturned = e.IsReturned,
                             PracticalId = e.PracticalId,
                             UserId = e.UserId,
-                            fileSize = fileSizeKb?.ToString() + " КБ",
+                            fileSize = fileSizeKb.HasValue ? $"{fileSizeKb} КБ" : string.Empty,
                             Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
                             Attachments = attachments
                         };

@@ -55,7 +55,7 @@ namespace LMPlatform.UI.Services.Courses
                             UserId = e.UserId,
                             Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
                             Attachments = attachments,
-                            fileSize = fileSizeKb.ToString() + " КБ",
+                            fileSize = fileSizeKb.HasValue ? $"{fileSizeKb} КБ" : string.Empty
                         };
                     }).ToList();
 
@@ -124,7 +124,7 @@ namespace LMPlatform.UI.Services.Courses
                                 UserId = e.UserId,
                                 Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
                                 Attachments = attachments,
-                                fileSize = fileSizeKb.ToString() + " КБ",
+                                fileSize = fileSizeKb.HasValue ? $"{fileSizeKb} КБ" : string.Empty
                             };
                         }).ToList();
 

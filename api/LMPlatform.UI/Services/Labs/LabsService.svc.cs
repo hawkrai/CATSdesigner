@@ -337,7 +337,7 @@ namespace LMPlatform.UI.Services.Labs
                             IsReturned = e.IsReturned,
                             LabId = e.LabId,
                             UserId = e.UserId,
-                            fileSize = fileSizeKb.ToString() + " КБ",
+                            fileSize = fileSizeKb.HasValue ? $"{fileSizeKb} КБ" : string.Empty,
                             Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
                             Attachments = attachments
                         };

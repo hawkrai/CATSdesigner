@@ -27,6 +27,9 @@ export enum LocalStorageKeys {
 interface IReturnedFileData {
   Id: string;
   Attachments: Attachment[];
+  Comments?: string;
+  Date?: string;
+  fileSize?: string;
 }
 
 interface IReturnedFilesStorage {
@@ -35,6 +38,7 @@ interface IReturnedFilesStorage {
 
 interface IExtendedUserLabFile extends UserLabFile {
   isOldReturned?: boolean;
+  fileSize?: string;
 }
 
 interface IExtendedStudentFilesModel extends StudentFilesModel {
@@ -138,10 +142,18 @@ export class DefenseComponent implements OnInit, OnDestroy {
 
           this.userLabFiles = res.UserLabFiles.map(file => {
             if (returnedFiles[file.Id]) {
+              const savedAttachments = returnedFiles[file.Id].Attachments;
+              const savedComments = returnedFiles[file.Id].Comments;
+              const savedDate = returnedFiles[file.Id].Date;
+              const savedFileSize = returnedFiles[file.Id].fileSize;
+              
               return {
                 ...file,
                 IsReturned: true,
-                Attachments: returnedFiles[file.Id].Attachments,
+                Attachments: savedAttachments,
+                Comments: savedComments !== undefined ? savedComments : file.Comments,
+                Date: savedDate !== undefined ? savedDate : file.Date,
+                fileSize: savedFileSize !== undefined ? savedFileSize : file.fileSize,
                 isOldReturned: true
               };
             }
@@ -196,7 +208,12 @@ export class DefenseComponent implements OnInit, OnDestroy {
         if (!oldFile.IsReturned && newFile.IsReturned) {
           returnedFiles[oldFile.Id] = {
             Id: oldFile.Id,
-            Attachments: Array.isArray(oldFile.Attachments) ? oldFile.Attachments : []
+            Attachments: Array.isArray(oldFile.Attachments) 
+              ? oldFile.Attachments.map(att => ({...att}))
+              : [],
+            Comments: oldFile.Comments,
+            Date: oldFile.Date,
+            fileSize: oldFile.fileSize
           };
           this.setReturnedFiles(returnedFiles);
 
@@ -239,10 +256,18 @@ export class DefenseComponent implements OnInit, OnDestroy {
 
           fileLabs = fileLabs.map(file => {
             if (returnedFiles[file.Id]) {
+              const savedAttachments = returnedFiles[file.Id].Attachments;
+              const savedComments = returnedFiles[file.Id].Comments;
+              const savedDate = returnedFiles[file.Id].Date;
+              const savedFileSize = returnedFiles[file.Id].fileSize;
+              
               return {
                 ...file,
                 IsReturned: true,
-                Attachments: returnedFiles[file.Id].Attachments,
+                Attachments: savedAttachments,
+                Comments: savedComments !== undefined ? savedComments : file.Comments,
+                Date: savedDate !== undefined ? savedDate : file.Date,
+                fileSize: savedFileSize !== undefined ? savedFileSize : file.fileSize,
                 isOldReturned: true
               } as IExtendedUserLabFile;
             }
@@ -287,10 +312,18 @@ export class DefenseComponent implements OnInit, OnDestroy {
 
           this.userLabFiles = res.UserLabFiles.map(file => {
             if (returnedFiles[file.Id]) {
+              const savedAttachments = returnedFiles[file.Id].Attachments;
+              const savedComments = returnedFiles[file.Id].Comments;
+              const savedDate = returnedFiles[file.Id].Date;
+              const savedFileSize = returnedFiles[file.Id].fileSize;
+              
               return {
                 ...file,
                 IsReturned: true,
-                Attachments: returnedFiles[file.Id].Attachments,
+                Attachments: savedAttachments,
+                Comments: savedComments !== undefined ? savedComments : file.Comments,
+                Date: savedDate !== undefined ? savedDate : file.Date,
+                fileSize: savedFileSize !== undefined ? savedFileSize : file.fileSize,
                 isOldReturned: true
               };
             }
@@ -355,10 +388,18 @@ export class DefenseComponent implements OnInit, OnDestroy {
 
           fileLabs = fileLabs.map(file => {
             if (returnedFiles[file.Id]) {
+              const savedAttachments = returnedFiles[file.Id].Attachments;
+              const savedComments = returnedFiles[file.Id].Comments;
+              const savedDate = returnedFiles[file.Id].Date;
+              const savedFileSize = returnedFiles[file.Id].fileSize;
+              
               return {
                 ...file,
                 IsReturned: true,
-                Attachments: returnedFiles[file.Id].Attachments,
+                Attachments: savedAttachments,
+                Comments: savedComments !== undefined ? savedComments : file.Comments,
+                Date: savedDate !== undefined ? savedDate : file.Date,
+                fileSize: savedFileSize !== undefined ? savedFileSize : file.fileSize,
                 isOldReturned: true
               } as IExtendedUserLabFile;
             }
@@ -399,7 +440,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
     return student.StudentId;
   }
 
-  trackByFileId(index: number, file: UserLabFile): string {
+  trackByFileId(index: number, file: IExtendedUserLabFile): string {
     return file.Id;
   }
 
@@ -472,10 +513,18 @@ export class DefenseComponent implements OnInit, OnDestroy {
 
         newLabs = newLabs.map(file => {
           if (returnedFiles[file.Id]) {
+            const savedAttachments = returnedFiles[file.Id].Attachments;
+            const savedComments = returnedFiles[file.Id].Comments;
+            const savedDate = returnedFiles[file.Id].Date;
+            const savedFileSize = returnedFiles[file.Id].fileSize;
+            
             return {
               ...file,
               IsReturned: true,
-              Attachments: returnedFiles[file.Id].Attachments,
+              Attachments: savedAttachments,
+              Comments: savedComments !== undefined ? savedComments : file.Comments,
+              Date: savedDate !== undefined ? savedDate : file.Date,
+              fileSize: savedFileSize !== undefined ? savedFileSize : file.fileSize,
               isOldReturned: true
             } as IExtendedUserLabFile;
           }
@@ -588,7 +637,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
     this.newWorkEvent.emit(any);
   }
 
-  addJob(userLabFile?: UserLabFile, studentId?: string) {
+  addJob(userLabFile?: IExtendedUserLabFile, studentId?: string) {
     const body =
       userLabFile && this.courseUser.IsStudent
         ? {
@@ -623,7 +672,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
     });
   }
 
-  uploadJob(dialogResult: IDialogResult, studentId: string, userLabFile?: UserLabFile) {
+  uploadJob(dialogResult: IDialogResult, studentId: string, userLabFile?: IExtendedUserLabFile) {
     const isLecturer = this.courseUser.IsLecturer;
 
     let attachmentId = '0';
@@ -678,7 +727,12 @@ export class DefenseComponent implements OnInit, OnDestroy {
         const returnedFiles = this.getReturnedFiles();
         returnedFiles[userLabFile.Id] = {
           Id: userLabFile.Id,
-          Attachments: Array.isArray(userLabFile.Attachments) ? userLabFile.Attachments : []
+          Attachments: Array.isArray(userLabFile.Attachments) 
+            ? userLabFile.Attachments.map(att => ({...att}))
+            : [],
+          Comments: userLabFile.Comments,
+          Date: userLabFile.Date,
+          fileSize: userLabFile.fileSize
         };
         this.setReturnedFiles(returnedFiles);
 
@@ -703,7 +757,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteJob(userLabFile: UserLabFile) {
+  deleteJob(userLabFile: IExtendedUserLabFile) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
       data: {
@@ -732,7 +786,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
     });
   }
 
-  approveJob(fileLab: UserLabFile, studentId: string) {
+  approveJob(fileLab: IExtendedUserLabFile, studentId: string) {
     this.labFilesService.approveJob(fileLab.Id).subscribe(() => {
       fileLab.IsReceived = true;
       this.updateStudentJobs(studentId);
@@ -740,7 +794,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
     });
   }
 
-  restoreFromArchive(fileLab: UserLabFile, studentId: string) {
+  restoreFromArchive(fileLab: IExtendedUserLabFile, studentId: string) {
     this.labFilesService.restoreFromArchive(fileLab.Id).subscribe(() => {
       fileLab.IsReceived = false;
       this.updateStudentJobs(studentId);
@@ -754,13 +808,13 @@ export class DefenseComponent implements OnInit, OnDestroy {
     });
   }
 
-  checkPlagiarismFile(file: UserLabFile) {
+  checkPlagiarismFile(file: IExtendedUserLabFile) {
     this.dialog.open(CheckPlagiarismStudentComponent, {
       data: { body: { subjectId: this.subjectId, userFileId: file.Id } },
     });
   }
 
-  canCheckPlagiarism(file: UserLabFile): boolean {
+  canCheckPlagiarism(file: IExtendedUserLabFile): boolean {
     return file.IsReceived === true;
   }
 }
