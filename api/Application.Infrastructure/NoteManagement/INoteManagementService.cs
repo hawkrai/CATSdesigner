@@ -18,6 +18,8 @@ namespace Application.Infrastructure.NoteManagement
 
         public List<UserNote> GetPersonalNotes(int userId);
 
+        public bool CheckIfAllowed(int userId, DateTime date, TimeSpan startTime, TimeSpan endTime, int? excludeNoteId = null);
+
         public UserNote SavePersonalNote(UserNote note);
 
         public void DeletePersonalNote(int noteId);

@@ -60,6 +60,17 @@ namespace Application.Infrastructure.NoteManagement
             }
         }
 
+        public bool CheckIfAllowed(int userId, DateTime date, TimeSpan startTime, TimeSpan endTime, int? excludeNoteId = null)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                return repositoriesContainer
+                    .RepositoryFor<UserNote>()
+                    .GetAll(new Query<UserNote>(x => x.UserId == userId && x.Date == date && (!excludeNoteId.HasValue || x.Id != excludeNoteId.Value)))
+                    .Any(x => startTime < x.EndTime && x.StartTime < endTime);
+            }
+        }
+
         public void DeletePersonalNote(int noteId)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
