@@ -9,21 +9,28 @@
 }
 
 .mat-header-cell-date {
-  flex: 0 0 18.33%;
+  flex: 0 0 12%;
   padding: 0 8px;
   justify-content: center;
   text-align: center;
 }
 
 .mat-header-cell-time {
-  flex: 0 0 18.33%;
+  flex: 0 0 12%;
+  padding: 0 8px;
+  justify-content: center;
+  text-align: center;
+}
+
+.mat-header-cell-end-time {
+  flex: 0 0 12%;
   padding: 0 8px;
   justify-content: center;
   text-align: center;
 }
 
 .mat-header-cell-action {
-  flex: 0 0 18.33%;
+  flex: 0 0 12%;
   padding: 0 8px;
   justify-content: center;
   text-align: center;
@@ -40,7 +47,7 @@
 }
 
 .mat-cell.mat-header-cell-date {
-  flex: 0 0 18.33%;
+  flex: 0 0 12%;
   padding: 0 8px;
   justify-content: center;
   text-align: center;
@@ -49,7 +56,16 @@
 }
 
 .mat-cell.mat-header-cell-time {
-  flex: 0 0 18.33%;
+  flex: 0 0 12%;
+  padding: 0 8px;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.mat-cell.mat-header-cell-end-time {
+  flex: 0 0 12%;
   padding: 0 8px;
   justify-content: center;
   text-align: center;
@@ -58,7 +74,7 @@
 }
 
 .mat-cell.mat-header-cell-action {
-  flex: 0 0 18.33%;
+  flex: 0 0 12%;
   padding: 0 8px;
   justify-content: center;
   text-align: center;
@@ -74,32 +90,37 @@
 
   .mat-header-cell-description,
   .mat-cell.mat-header-cell-description {
-    flex: 0 0 35%;
+    flex: 0 0 20%;
   }
 
   .mat-header-cell-date,
   .mat-cell.mat-header-cell-date {
-    flex: 0 0 19%;
+    flex: 0 0 14%;
   }
 
   .mat-header-cell-time,
   .mat-cell.mat-header-cell-time {
-    flex: 0 0 19%;
+    flex: 0 0 14%;
+  }
+
+  .mat-header-cell-end-time,
+  .mat-cell.mat-header-cell-end-time {
+    flex: 0 0 14%;
   }
 
   .mat-header-cell-action,
   .mat-cell.mat-header-cell-action {
-    flex: 0 0 19%;
+    flex: 0 0 14%;
   }
 }
 
 .table-test-bg {
-  min-width: 600px;
+  min-width: 800px;
 }
 
 @media only screen and (max-width: 768px) {
   .table-test-bg {
-    min-width: 500px;
+    min-width: 650px;
   }
 }
 

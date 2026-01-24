@@ -23,13 +23,19 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
   public studentId: string
   public loading: boolean = true
 
-  public testDates: { [testId: string]: { date: string, time: string } } = {}
+  public testDates: {
+    [testId: string]: {
+      date: string,
+      startTime: string,
+      endTime: string
+    }
+  } = {}
 
   private unsubscribe$ = new Subject<void>()
 
   private loadingDates = new Set<number>()
 
-  displayedColumns: string[] = ['Id', 'Title', 'passDate', 'passTime', 'action']
+  displayedColumns: string[] = ['Id', 'Title', 'passDate', 'startTime', 'endTime', 'action']
 
   public barChartOptions: ChartOptions = {
     responsive: true,
@@ -122,17 +128,23 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
         (res: DataValues) => res.Key === Constants.TEST_INFO
       )
 
-      if (testInfoData?.Value?.StartTime) {
-        const formatted = this.formatDate(testInfoData.Value.StartTime)
+      if (testInfoData?.Value) {
+        const startTime = testInfoData.Value.StartTime;
+        const endTime = testInfoData.Value.CompletionTime || testInfoData.Value.EndTime;
+
+        const startFormatted = startTime ? this.formatDate(startTime) : { date: '—', time: '—' };
+        const endFormatted = endTime ? this.formatDate(endTime) : { date: '—', time: '—' };
+
         this.testDates[testId] = {
-          date: formatted.date,
-          time: formatted.time
-        }
+          date: startFormatted.date,
+          startTime: startFormatted.time,
+          endTime: endFormatted.time
+        };
       } else {
-        this.testDates[testId] = { date: '—', time: '—' }
+        this.testDates[testId] = { date: '—', startTime: '—', endTime: '—' }
       }
     } else {
-      this.testDates[testId] = { date: '—', time: '—' }
+      this.testDates[testId] = { date: '—', startTime: '—', endTime: '—' }
     }
 
     this.loadingDates.delete(testId)
@@ -159,7 +171,7 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
         },
         (error) => {
           console.error('Ошибка загрузки даты:', error)
-          this.testDates[testId] = { date: 'Ошибка', time: 'Ошибка' }
+          this.testDates[testId] = { date: 'Ошибка', startTime: 'Ошибка', endTime: 'Ошибка' }
           this.loadingDates.delete(testId)
           this.cdr.detectChanges()
         }
@@ -205,12 +217,25 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
     return this.testDates[testId]?.date || '—'
   }
 
-  getPassTime(test: Test): string {
+  getStartTime(test: Test): string {
     const testId = test.Id
 
     if (!testId) return '—'
 
-    return this.testDates[testId]?.time || '—'
+    if (!this.testDates[testId] && !this.loadingDates.has(testId) && this.studentId) {
+      setTimeout(() => this.loadDateForTest(test), 0)
+      return 'Загрузка...'
+    }
+
+    return this.testDates[testId]?.startTime || '—'
+  }
+
+  getEndTime(test: Test): string {
+    const testId = test.Id
+
+    if (!testId) return '—'
+
+    return this.testDates[testId]?.endTime || '—'
   }
 
   public ngOnChanges(changes: SimpleChanges): void {

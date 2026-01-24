@@ -23,20 +23,30 @@
     <!-- Date Column -->
     <ng-container matColumnDef="passDate">
       <mat-header-cell *matHeaderCellDef class="mat-header-cell-date">
-        {{ 'text.test.pass.date' | translate: 'Дата прохождения' }}
+        {{ 'text.test.date.completing.header' | translate: 'Дата прохождения теста' }}
       </mat-header-cell>
       <mat-cell *matCellDef="let element" class="mat-header-cell-date">
         {{ getPassDate(element) }}
       </mat-cell>
     </ng-container>
 
-    <!-- Time Column -->
-    <ng-container matColumnDef="passTime">
+    <!-- Start Time Column -->
+    <ng-container matColumnDef="startTime">
       <mat-header-cell *matHeaderCellDef class="mat-header-cell-time">
-        {{ 'text.test.pass.time' | translate: 'Время прохождения' }}
+        {{ 'text.test.time.start.header' | translate: 'Время начала теста' }}
       </mat-header-cell>
       <mat-cell *matCellDef="let element" class="mat-header-cell-time">
-        {{ getPassTime(element) }}
+        {{ getStartTime(element) }}
+      </mat-cell>
+    </ng-container>
+
+    <!-- End Time Column -->
+    <ng-container matColumnDef="endTime">
+      <mat-header-cell *matHeaderCellDef class="mat-header-cell-end-time">
+        {{ 'text.test.time.end.header' | translate: 'Время окончания теста' }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="mat-header-cell-end-time">
+        {{ getEndTime(element) }}
       </mat-cell>
     </ng-container>
 
