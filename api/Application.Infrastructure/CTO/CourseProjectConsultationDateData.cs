@@ -22,5 +22,7 @@ namespace Application.Infrastructure.CTO
 
         public int GroupId { get; set; }
         public string GroupName { get; set; }
+
+        public string Notes { get; set; }
     }
 }

@@ -67,7 +67,8 @@ namespace LMPlatform.UI.ApiControllers.CP
                 consultationDate.Audience,
                 consultationDate.Building,
                 consultationDate.GroupId,
-                consultationDate.Id               
+                consultationDate.Id,
+                consultationDate.Notes
             );
 
             if (saved != null)

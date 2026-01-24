@@ -613,7 +613,8 @@ export class CreateLessonComponent implements OnInit {
                 this.lesson.Building,
                 this.lesson.GroupId,
                 this.lesson.Id,
-                this.lesson.Teacher.LectorId
+                this.lesson.Teacher.LectorId,
+                this.memo
               )
               .subscribe((res) => {
                 const schedule = res.Schedule
