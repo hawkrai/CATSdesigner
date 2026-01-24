@@ -341,39 +341,48 @@ export class ResultTestTableComponent
     );
 
     if (testResult.points !== null && testResult.points !== undefined) {
-      const markLabel = this.translate.transform(
-        'text.test.mark',
-        'Оценка'
-      );
+      const markLabel = this.translate.transform('text.test.mark', 'Оценка');
       tooltip += `\n${markLabel}: ${testResult.points}`;
 
       if (testResult.percent !== null && testResult.percent !== undefined) {
         tooltip += ` (${testResult.percent}%)`;
       }
 
-      if (testResult.startTime && !testResult.startTime.includes('/Date(-62135596800000)/')) {
-        const formattedDateTime = this.formatDateTimeForTooltip(testResult.startTime);
-        if (formattedDateTime) {
-          const dateTimeLabel = this.translate.transform(
-            'text.test.date.time.passing',
-            'Дата и время прохождения'
-          );
-          tooltip += `\n${dateTimeLabel}: ${formattedDateTime}`;
-          return tooltip;
-        }
-      }
       const cacheKey = `${testResult.testId}_${testResult.studentId}`;
 
       if (this.tooltipDatesCache.has(cacheKey)) {
         const dates = this.tooltipDatesCache.get(cacheKey)!;
         if (dates.startTime) {
-          const formattedDateTime = this.formatDateTimeForTooltip(dates.startTime);
-          if (formattedDateTime) {
-            const dateTimeLabel = this.translate.transform(
-              'text.test.date.time.passing',
-              'Дата и время прохождения'
+          const formattedDate = this.formatDateForTooltip(dates.startTime);
+          const formattedStartTime = this.formatTimeForTooltip(dates.startTime);
+          let formattedEndTime = '';
+
+          if (dates.endTime) {
+            formattedEndTime = this.formatTimeForTooltip(dates.endTime);
+          }
+
+          if (formattedDate) {
+            const dateLabel = this.translate.transform(
+              'text.test.date.completing.header',
+              'Дата прохождения теста'
             );
-            tooltip += `\n${dateTimeLabel}: ${formattedDateTime}`;
+            tooltip += `\n${dateLabel}: ${formattedDate}`;
+          }
+
+          if (formattedStartTime) {
+            const startTimeLabel = this.translate.transform(
+              'text.test.time.start.header',
+              'Время начала теста'
+            );
+            tooltip += `\n${startTimeLabel}: ${formattedStartTime}`;
+          }
+
+          if (formattedEndTime) {
+            const endTimeLabel = this.translate.transform(
+              'text.test.time.end.header',
+              'Время окончания теста'
+            );
+            tooltip += `\n${endTimeLabel}: ${formattedEndTime}`;
           }
         }
       } else if (testResult.testId && testResult.studentId) {
@@ -395,7 +404,7 @@ export class ResultTestTableComponent
     return tooltip;
   }
 
-  private formatDateTimeForTooltip(dateTimeString: string): string {
+  private formatDateForTooltip(dateTimeString: string): string {
     if (!dateTimeString ||
       dateTimeString === 'null' ||
       dateTimeString === 'undefined' ||
@@ -406,7 +415,7 @@ export class ResultTestTableComponent
     try {
       if (typeof moment !== 'undefined') {
         const dateTime = moment(dateTimeString);
-        return dateTime.format('DD.MM.YYYY HH:mm:ss');
+        return dateTime.format('DD.MM.YYYY');
       }
 
       const date = new Date(dateTimeString);
@@ -417,13 +426,40 @@ export class ResultTestTableComponent
       const day = date.getDate().toString().padStart(2, '0');
       const month = (date.getMonth() + 1).toString().padStart(2, '0');
       const year = date.getFullYear();
+
+      return `${day}.${month}.${year}`;
+    } catch (error) {
+      console.error('Ошибка форматирования даты для tooltip:', error);
+      return '';
+    }
+  }
+
+  private formatTimeForTooltip(dateTimeString: string): string {
+    if (!dateTimeString ||
+      dateTimeString === 'null' ||
+      dateTimeString === 'undefined' ||
+      dateTimeString.includes('/Date(-62135596800000)/')) {
+      return '';
+    }
+
+    try {
+      if (typeof moment !== 'undefined') {
+        const dateTime = moment(dateTimeString);
+        return dateTime.format('HH:mm:ss');
+      }
+
+      const date = new Date(dateTimeString);
+      if (isNaN(date.getTime())) {
+        return '';
+      }
+
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
       const seconds = date.getSeconds().toString().padStart(2, '0');
 
-      return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+      return `${hours}:${minutes}:${seconds}`;
     } catch (error) {
-      console.error('Ошибка форматирования даты и времени для tooltip:', error);
+      console.error('Ошибка форматирования времени для tooltip:', error);
       return '';
     }
   }
@@ -444,7 +480,6 @@ export class ResultTestTableComponent
               endTime: testInfo.EndTime || null
             });
 
-            this.updateTestDateInScareThing(testId, studentId, testInfo.StartTime);
           } else {
             console.warn('Нет StartTime в ответе');
             this.tooltipDatesCache.set(cacheKey, { startTime: null, endTime: null });
@@ -455,20 +490,5 @@ export class ResultTestTableComponent
           this.tooltipDatesCache.set(cacheKey, { startTime: null, endTime: null });
         }
       });
-  }
-
-  private updateTestDateInScareThing(testId: number, studentId: number, startTime: string): void {
-    this.scareThing.forEach((subGroup: StudentMapEntry[]) => {
-      subGroup.forEach(([, studentData]) => {
-        if (studentData?.id === studentId) {
-          studentData.test?.forEach((test: TestResult) => {
-            if (test.testId === testId) {
-              test.startTime = startTime;
-              this.cdr.detectChanges();
-            }
-          });
-        }
-      });
-    });
   }
 }
