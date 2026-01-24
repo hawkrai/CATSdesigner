@@ -117,61 +117,88 @@ namespace Application.Infrastructure.CPManagement
             if (AuthorizationHelper.IsStudent(Context, userId))
             {
                 var student = Context.Students
-                    .Include(x => x.AssignedCourseProjects.Select(adp => adp.CourseProject))
-                    .Single(x => x.User.Id == userId);
-                if (student.AssignedCourseProjects.Count == 0)
+                    .Include(x => x.AssignedCourseProjects.Select(p => p.CourseProject))
+                    .SingleOrDefault(x => x.User.Id == userId);
+
+                if (student == null || !student.AssignedCourseProjects.Any())
                 {
                     return new List<CourseProjectConsultationDateData>();
                 }
 
-                userId = student.AssignedCourseProjects.First().CourseProject.LecturerId ?? 0;
+                userId = student.AssignedCourseProjects
+                    .Select(p => p.CourseProject?.LecturerId)
+                    .FirstOrDefault() ?? 0;
             }
 
             List<int> subjectsId = null;
             if (AuthorizationHelper.IsLecturer(Context, userId) && subjectId == 0)
             {
-                subjectsId = SubjectManagementService.GetSubjectsInfoByLector(userId).Select(s => s.Id).ToList();
+                subjectsId = SubjectManagementService
+                    .GetSubjectsInfoByLector(userId)
+                    .Select(s => s.Id)
+                    .ToList();
             }
 
             var baseQuery = Context.CourseProjectConsultationDates
-                .Where(x => x.Day >= _currentAcademicYearStartDate && x.Day < _currentAcademicYearEndDate)
-                .Where(x => groupId == 0 || x.GroupId.HasValue && x.GroupId.Value == groupId)
+                .Where(x => x.Day >= _currentAcademicYearStartDate &&
+                            x.Day < _currentAcademicYearEndDate)
+                .Where(x => groupId == 0 ||
+                            (x.GroupId.HasValue && x.GroupId.Value == groupId))
                 .OrderBy(x => x.Day)
                 .Select(x => new
                 {
-                    Day = x.Day,
-                    LecturerId = x.LecturerId,
-                    Id = x.Id,
-                    SubjectId = x.SubjectId,
-                    StartTime = x.StartTime,
-                    EndTime = x.EndTime,
-                    Audience = x.Audience,
-                    Building = x.Building,
-                    GroupId = x.GroupId.HasValue ? x.GroupId.Value : 0,
+                    x.Id,
+                    x.Day,
+                    x.LecturerId,
+                    x.SubjectId,
+                    x.StartTime,
+                    x.EndTime,
+                    x.Audience,
+                    x.Building,
+                    x.Notes,
+                    GroupId = x.GroupId ?? 0,
                     GroupName = x.GroupId.HasValue
-                        ? Context.Groups.Where(g => g.Id == x.GroupId.Value).Select(g => g.Name).FirstOrDefault()
+                        ? Context.Groups
+                            .Where(g => g.Id == x.GroupId.Value)
+                            .Select(g => g.Name)
+                            .FirstOrDefault()
                         : null
                 })
                 .ToList();
 
-            var consultations = (subjectsId != null)
-                ? baseQuery.AsEnumerable().Where(x => subjectsId.Contains(x.SubjectId)).ToList()
-                : baseQuery.AsEnumerable().Where(x => x.SubjectId == subjectId).ToList();
+            var consultations = subjectsId != null
+                ? baseQuery.Where(x => subjectsId.Contains(x.SubjectId)).ToList()
+                : baseQuery.Where(x => x.SubjectId == subjectId).ToList();
 
             var consultationsData = consultations
-                .Select(x => new CourseProjectConsultationDateData
+                .Select(x =>
                 {
-                    Day = x.Day.ToString("dd.MM.yyyy"),
-                    Teacher = new LecturerData(LecturerManagementService.GetLecturer(x.LecturerId)),
-                    Id = x.Id,
-                    Subject = CpManagementService.GetSubject(x.SubjectId),
-                    StartTime = x.StartTime?.ToString(@"hh\:mm"),
-                    EndTime = x.EndTime?.ToString(@"hh\:mm"),
-                    Audience = x.Audience,
-                    Building = x.Building,
-                    GroupId = x.GroupId,
-                    GroupName = x.GroupName
+                    Lecturer lecturer;
+                    try
+                    {
+                        lecturer = LecturerManagementService.GetLecturer(x.LecturerId);
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+
+                    return new CourseProjectConsultationDateData
+                    {
+                        Id = x.Id,
+                        Day = x.Day.ToString("dd.MM.yyyy"),
+                        Teacher = new LecturerData(lecturer),
+                        Subject = CpManagementService.GetSubject(x.SubjectId),
+                        StartTime = x.StartTime?.ToString(@"hh\:mm"),
+                        EndTime = x.EndTime?.ToString(@"hh\:mm"),
+                        Audience = x.Audience,
+                        Building = x.Building,
+                        GroupId = x.GroupId,
+                        GroupName = x.GroupName,
+                        Notes = x.Notes
+                    };
                 })
+                .Where(x => x != null)
                 .ToList();
 
             return consultationsData;
@@ -309,7 +336,8 @@ namespace Application.Infrastructure.CPManagement
             Context.SaveChanges();
         }
 
-        public CourseProjectConsultationDate SaveConsultationDate(int userId, int lecturerId, string date, int subjectId, string startTime, string endTime, string audience, string buildingNumber, int groupId, int? consultationId)
+        public CourseProjectConsultationDate SaveConsultationDate(int userId, int lecturerId, string date, int subjectId, string startTime, string endTime, string audience, string buildingNumber, int groupId, int? consultationId, string notes
+)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);
 
@@ -346,7 +374,8 @@ namespace Application.Infrastructure.CPManagement
                     EndTime = end,
                     Audience = audience,
                     Building = buildingNumber,
-                    GroupId = groupId
+                    GroupId = groupId,
+                    Notes = notes
                 };
 
                 Context.CourseProjectConsultationDates.Add(entity);
@@ -373,6 +402,7 @@ namespace Application.Infrastructure.CPManagement
                 entity.Audience = audience;
                 entity.Building = buildingNumber;
                 entity.GroupId = groupId;
+                entity.Notes = notes;
             }
 
             Context.SaveChanges();

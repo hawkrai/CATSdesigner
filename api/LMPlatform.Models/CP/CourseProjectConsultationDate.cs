@@ -46,5 +46,7 @@ namespace LMPlatform.Models.CP
         public virtual ICollection<CourseProjectConsultationMark> CourseProjectConsultationMarks { get; set; }
 
         public int? GroupId { get; set; }
+
+        public string Notes { get; set; }
     }
 }
