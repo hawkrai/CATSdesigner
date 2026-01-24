@@ -159,7 +159,7 @@
               <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
               <td class="mdc-data-table__cell">{{ studentFile.Date }}</td>
               <td class="mdc-data-table__cell">
-                <ng-container *ngIf="!studentFile.IsReturned">
+                <ng-container *ngIf="!studentFile.IsReturned && !studentFile.IsReceived">
                   <button
                     mat-icon-button
                     color="primary"
@@ -177,8 +177,7 @@
                     <mat-icon>delete</mat-icon>
                   </button>
                 </ng-container>
-                <p *ngIf="studentFile.IsReturned && !studentFile.IsReceived">
-                  {{ 'text.correct' | translate: 'Исправить' }}
+                <p *ngIf="studentFile.IsReturned || studentFile.IsReceived">
                 </p>
               </td>
             </tr>

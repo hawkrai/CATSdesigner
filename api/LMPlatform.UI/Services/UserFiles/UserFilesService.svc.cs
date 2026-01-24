@@ -285,7 +285,7 @@ namespace LMPlatform.UI.Services.UserFiles
                                 FileName = fileName
                             };
                             var fileSizeBytes = this.FilesManagementService.GetFileSize(attachment) ?? 0;
-                            resultS.sizeFile = Math.Round(fileSizeBytes / 1024.0, 2).ToString() + " КБ";
+                            resultS.sizeFile = fileSizeBytes > 0 ? $"{Math.Round(fileSizeBytes / 1024.0, 2)} КБ" : string.Empty;
 
                             var labFiles = this.LabsManagementService.GetUserLabFiles(userId, int.Parse(subjectId));
                             var matchedLab = labFiles.FirstOrDefault(x => x.Attachments != null && pathName.Contains(x.Attachments));
@@ -440,6 +440,15 @@ namespace LMPlatform.UI.Services.UserFiles
                     var authorName = user?.FullName ?? " ";
                     if (authorName != " ")
                     {
+                        var fileSizeBytes = FilesManagementService.GetFileSize(
+                            new Attachment { FileName = fileName, PathName = pathName });
+
+                        string sizeFileText = string.Empty;
+                        if (fileSizeBytes.HasValue && fileSizeBytes.Value > 0)
+                        {
+                            sizeFileText = Math.Round(fileSizeBytes.Value / 1024.0, 2) + " КБ";
+                        }
+
                         data.Add(new ResultPlag
                         {
                             DocFileName = fileName,
@@ -450,11 +459,12 @@ namespace LMPlatform.UI.Services.UserFiles
                             coeff = res.Coeff.ToString(),
                             subjectName = subjectName,
                             Name = subjectFullName,
-                            sizeFile = Math.Round((FilesManagementService.GetFileSize(new Attachment { FileName = fileName, PathName = pathName }) ?? 0) / 1024.0, 2) + " КБ",
+                            sizeFile = sizeFileText,
                             Theme = theme,
                             shortName = shortName
                         });
                     }
+
                 }
                 return new ResultViewData
                 {
