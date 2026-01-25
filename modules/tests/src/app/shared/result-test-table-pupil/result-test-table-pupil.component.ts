@@ -96,10 +96,6 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
     return testDate;
   }
 
-  private createEmptyTestDates(): TestDates {
-    return this.createTestDates();
-  }
-
   private loadAllDates(): void {
     if (!this.tests || !this.tests.length || !this.studentId) return
 
@@ -150,10 +146,10 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
           endFormatted.time
         );
       } else {
-        this.testDates[testId] = this.createEmptyTestDates();
+        this.testDates[testId] = this.createTestDates();
       }
     } else {
-      this.testDates[testId] = this.createEmptyTestDates();
+      this.testDates[testId] = this.createTestDates();
     }
 
     this.loadingDates.delete(testId)
@@ -179,7 +175,7 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
           this.cdr.detectChanges()
         },
         (error) => {
-          this.testDates[testId] = this.createEmptyTestDates();
+          this.testDates[testId] = this.createTestDates();
           this.loadingDates.delete(testId)
           this.cdr.detectChanges()
         }
