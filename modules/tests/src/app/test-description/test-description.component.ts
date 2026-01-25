@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { TestPassingService } from '../service/test-passing.service'
 import { catchError } from 'rxjs/operators'
 import { of } from 'rxjs'
+import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
 
 @Component({
   selector: 'app-test-description',
@@ -30,7 +31,7 @@ export class TestDescriptionComponent implements OnInit {
 
   public finishTest() {
     const testId = this.route.snapshot.paramMap.get('id')
-    const subject = JSON.parse(localStorage.getItem('currentSubject'))
+    const subject = JSON.parse(localStorage.getItem(StorageKeys.CurrentSubject))
     const subjectId = subject?.id
 
     if (!subjectId) {
