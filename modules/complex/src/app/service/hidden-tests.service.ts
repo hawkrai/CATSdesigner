@@ -4,6 +4,7 @@ import { ComplexService } from './complex.service'
 import { CatsService, CodeType } from './cats.service'
 import { ComplexCascade } from '../models/ComplexCascade'
 import { ComplexMonitoring } from '../models/ComplexMonitoring'
+import { ApiResponseCode } from '../models/api-response-code.enum'
 
 export interface HiddenTestsData {
   ConceptIds: number[]
@@ -66,7 +67,7 @@ export class HiddenTestsService {
     return new Observable((observer) => {
       this.complexService.hideTest(conceptIdNum, testId || null, complexIdNum).subscribe(
         (result) => {
-          if (result && result.Code === '200') {
+          if (result && result.Code === ApiResponseCode.Success) {
             if (!this.hiddenConceptIds.has(complexId)) {
               this.hiddenConceptIds.set(complexId, new Set())
             }
@@ -89,14 +90,6 @@ export class HiddenTestsService {
             })
             observer.error(result)
           }
-        },
-        (error) => {
-          console.error('Ошибка при сохранении скрытого теста:', error)
-          this.catsService.showMessage({
-            Message: 'Ошибка при сохранении скрытого теста',
-            Type: CodeType.error,
-          })
-          observer.error(error)
         }
       )
     })
@@ -117,13 +110,9 @@ export class HiddenTestsService {
     conceptId: string,
     testId?: number
   ): boolean {
-    if (this.isConceptHidden(complexId, conceptId)) {
-      return true
-    }
-    if (testId && this.isTestHidden(complexId, testId)) {
-      return true
-    }
-    return false
+    const isConceptHidden = this.isConceptHidden(complexId, conceptId)
+    const isTestHidden = testId && this.isTestHidden(complexId, testId)
+    return isConceptHidden || isTestHidden
   }
 
   getHiddenConceptIds(complexId: string): Set<string> {

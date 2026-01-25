@@ -26,6 +26,7 @@ import { TestService } from '../../../service/test.service'
 import { ConverterService } from '../../../service/converter.service'
 import { TestResultsLoaderService } from '../../../service/test-results-loader.service'
 import { HiddenTestsService } from '../../../service/hidden-tests.service'
+import { ApiResponseCode } from '../../../models/api-response-code.enum'
 import { ChangeDetectorRef } from '@angular/core'
 
 @Component({
@@ -98,10 +99,7 @@ export class MaterialComponent implements OnInit, OnChanges {
           this.loadTestResults(filteredData)
         })
       },
-      (error) => {
-        console.error('Ошибка при загрузке скрытых тестов:', error)
-        
-        // Загружаем дерево даже если не удалось загрузить скрытые тесты
+      () => {
         this.complexService.getConceptCascade(this.complexId).subscribe((res) => {
           const localizedData = this.localizeTree(res.children)
           this.dataSource.data = localizedData
@@ -320,7 +318,7 @@ export class MaterialComponent implements OnInit, OnChanges {
         }
 
         this.complexService.addOrEditConcept(concept).subscribe((res) => {
-          if (res['Code'] === '200') {
+          if (res['Code'] === ApiResponseCode.Success) {
             this.loadConceptCascade()
           }
         })
@@ -397,7 +395,7 @@ export class MaterialComponent implements OnInit, OnChanges {
       elementId: typeof conceptId === 'string' ? parseInt(conceptId, 10) : conceptId,
     }
     this.complexService.deleteConcept(complex).subscribe((result) => {
-      if (result['Code'] === '200') {
+      if (result['Code'] === ApiResponseCode.Success) {
         this.catsService.showMessage({
           Message: `${this.translatePipe.transform(
             'common.success.operation',
@@ -415,20 +413,16 @@ export class MaterialComponent implements OnInit, OnChanges {
     if (!this.dataSource.data || this.dataSource.data.length === 0) {
       return
     }
-
-    // Собираем состояние развернутых узлов
     const expandedNodeIds = this.hiddenTestsService.collectExpandedNodeIds(
       this.dataSource.data,
       (node) => this.treeControl.isExpanded(node)
     )
 
-    // Удаляем узел из дерева
     const newData = this.hiddenTestsService.removeCascadeNode(
       this.dataSource.data,
       conceptId
     )
 
-    // Обновляем данные в дереве
     this.dataSource.data = newData
     this.treeControl.dataNodes = newData
 

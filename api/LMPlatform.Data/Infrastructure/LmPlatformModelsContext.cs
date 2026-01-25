@@ -361,10 +361,6 @@ namespace LMPlatform.Data.Infrastructure
 
             modelBuilder.Entity<HiddenTest>().Map(m => m.ToTable("HiddenTest"));
 
-            //modelBuilder.Entity<Concept>()
-            //    .HasMany<WatchingTime>(e => e.WatchingTime)
-            //    .WithRequired(e => e.Concept);
-
             modelBuilder.Entity<ConceptQuestions>().Map(m => m.ToTable("ConceptQuestions"));
 
             modelBuilder.Entity<Question>()
