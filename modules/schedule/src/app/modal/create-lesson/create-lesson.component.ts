@@ -10,6 +10,7 @@ import { LessonService } from '../../service/lesson.service'
 import { NoteService } from '../../service/note.service'
 import { TranslatePipe } from 'educats-translate'
 import { LessonType } from '../../../../../../container/src/app/core/models/lesson-type.const'
+import { OperationResultCode } from '../../../../../../container/src/app/core/models/OperationResultCode.const'
 
 export function flatpickrFactory() {
   flatpickr.localize(Russian)
@@ -478,7 +479,7 @@ export class CreateLessonComponent implements OnInit {
                 this.lessonservice.formatDate2(this.dayOfLesson)
               )
               .subscribe((l) => {
-                if (l.Code == '200') {
+                if (l.Code == OperationResultCode.Success) {
                   if (this.lesson.Notes.length != 0) {
                     this.lessonservice
                       .saveLessonNote({
@@ -525,7 +526,7 @@ export class CreateLessonComponent implements OnInit {
                 this.lessonservice.formatDate2(this.dayOfLesson)
               )
               .subscribe((l) => {
-                if (l.Code == '200') {
+                if (l.Code == OperationResultCode.Success) {
                   if (this.lesson.Notes.length != 0) {
                     this.lessonservice
                       .saveLessonNote({
@@ -659,7 +660,7 @@ export class CreateLessonComponent implements OnInit {
           } else {
             this.dialogRef.close({
               lesson: null,
-              code: '500',
+              code: OperationResultCode.Error,
               message: this.translate.transform('text.date.add.response.failure.unknown', 'text.date.add.response.failure.unknown'),
             })
           }

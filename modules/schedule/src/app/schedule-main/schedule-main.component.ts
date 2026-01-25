@@ -19,6 +19,7 @@ import { ScheduleStatisticsComponent } from '../schedule-statistics/schedule-sta
 import { LessonService } from '../service/lesson.service'
 import { NoteService } from '../service/note.service'
 import { HelpPopoverScheduleComponent } from './help-popover/help-popover-schedule.component'
+import { OperationResultCode } from '../../../../../container/src/app/core/models/OperationResultCode.const'
 
 const colors: any = {
   color: {
@@ -367,9 +368,9 @@ export class ScheduleMainComponent implements OnInit {
     })
     dialogRef.afterClosed().subscribe((result) => {
       let type: string
-      if (result.code == '200') {
+      if (result.code == OperationResultCode.Success) {
         type = 'success'
-      } else if (result.code == '500') {
+      } else if (result.code == OperationResultCode.Error) {
         type = 'error'
       }
       if (type != undefined) {
@@ -621,9 +622,9 @@ export class ScheduleMainComponent implements OnInit {
           this.lessons.push(result.lesson);
         }
         let type: string
-        if (result.code == '200') {
+        if (result.code == OperationResultCode.Success) {
           type = 'success'
-        } else if (result.code == '500') {
+        } else if (result.code == OperationResultCode.Error) {
           type = 'error'
         }
         if (type != undefined) {
