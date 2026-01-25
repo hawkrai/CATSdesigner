@@ -353,12 +353,12 @@ export class ResultTestTableComponent
       if (this.tooltipDatesCache.has(cacheKey)) {
         const dates = this.tooltipDatesCache.get(cacheKey)!;
         if (dates.startTime) {
-          const formattedDate = this.formatDateForTooltip(dates.startTime);
-          const formattedStartTime = this.formatTimeForTooltip(dates.startTime);
+          const formattedDate = this.formatDateTimeForTooltip(dates.startTime, 'date');
+          const formattedStartTime = this.formatDateTimeForTooltip(dates.startTime, 'time');
           let formattedEndTime = '';
 
           if (dates.endTime) {
-            formattedEndTime = this.formatTimeForTooltip(dates.endTime);
+            formattedEndTime = this.formatDateTimeForTooltip(dates.endTime, 'time');
           }
 
           if (formattedDate) {
@@ -404,7 +404,7 @@ export class ResultTestTableComponent
     return tooltip;
   }
 
-  private formatDateForTooltip(dateTimeString: string): string {
+  private formatDateTimeForTooltip(dateTimeString: string, format: 'date' | 'time'): string {
     if (!dateTimeString ||
       dateTimeString === 'null' ||
       dateTimeString === 'undefined' ||
@@ -413,53 +413,35 @@ export class ResultTestTableComponent
     }
 
     try {
-      if (typeof moment !== 'undefined') {
-        const dateTime = moment(dateTimeString);
-        return dateTime.format('DD.MM.YYYY');
+      let timestamp: number;
+
+      if (dateTimeString.includes('/Date(')) {
+        const match = dateTimeString.match(/\/Date\((-?\d+)\)\//);
+        if (!match) {
+          return '';
+        }
+        timestamp = parseInt(match[1], 10);
+      } else {
+
+        const date = new Date(dateTimeString);
+        timestamp = date.getTime();
       }
 
-      const date = new Date(dateTimeString);
-      if (isNaN(date.getTime())) {
+      if (isNaN(timestamp) || timestamp <= 0) {
         return '';
       }
 
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const year = date.getFullYear();
+      const dateTime = moment(timestamp);
 
-      return `${day}.${month}.${year}`;
-    } catch (error) {
-      console.error('Ошибка форматирования даты для tooltip:', error);
-      return '';
-    }
-  }
-
-  private formatTimeForTooltip(dateTimeString: string): string {
-    if (!dateTimeString ||
-      dateTimeString === 'null' ||
-      dateTimeString === 'undefined' ||
-      dateTimeString.includes('/Date(-62135596800000)/')) {
-      return '';
-    }
-
-    try {
-      if (typeof moment !== 'undefined') {
-        const dateTime = moment(dateTimeString);
-        return dateTime.format('HH:mm:ss');
-      }
-
-      const date = new Date(dateTimeString);
-      if (isNaN(date.getTime())) {
+      if (!dateTime.isValid()) {
         return '';
       }
 
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      const seconds = date.getSeconds().toString().padStart(2, '0');
+      return format === 'date'
+        ? dateTime.format('DD.MM.YYYY')
+        : dateTime.format('HH:mm:ss');
 
-      return `${hours}:${minutes}:${seconds}`;
-    } catch (error) {
-      console.error('Ошибка форматирования времени для tooltip:', error);
+    } catch {
       return '';
     }
   }
@@ -481,12 +463,10 @@ export class ResultTestTableComponent
             });
 
           } else {
-            console.warn('Нет StartTime в ответе');
             this.tooltipDatesCache.set(cacheKey, { startTime: null, endTime: null });
           }
         },
         error: (error) => {
-          console.error('Ошибка загрузки дат для tooltip:', error);
           this.tooltipDatesCache.set(cacheKey, { startTime: null, endTime: null });
         }
       });

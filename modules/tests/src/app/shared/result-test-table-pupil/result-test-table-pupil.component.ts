@@ -10,6 +10,8 @@ import { takeUntil } from 'rxjs/operators'
 import { DataValues } from '../../models/data-values.model'
 import { ChangeDetectorRef } from '@angular/core'
 import { StorageKeys } from '../../../../../../container/src/app/core/models/storage-keys.enum'
+import { TestDates, TestDatesMap } from '../../models/test-date.model'
+import { TranslatePipe } from 'educats-translate'
 
 @Component({
   selector: 'app-result-test-table-pupil',
@@ -23,13 +25,7 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
   public studentId: string
   public loading: boolean = true
 
-  public testDates: {
-    [testId: string]: {
-      date: string,
-      startTime: string,
-      endTime: string
-    }
-  } = {}
+  public testDates: TestDatesMap = {}
 
   private unsubscribe$ = new Subject<void>()
 
@@ -76,6 +72,7 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
 
   constructor(
     private testPassingService: TestPassingService,
+    private translate: TranslatePipe,
     private cdr: ChangeDetectorRef
   ) {
     const currentUser = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser))
@@ -89,6 +86,18 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
   ngOnDestroy() {
     this.unsubscribe$.next()
     this.unsubscribe$.complete()
+  }
+
+  private createTestDates(date: string = '—', startTime: string = '—', endTime: string = '—'): TestDates {
+    const testDate = new TestDates();
+    testDate.date = date;
+    testDate.startTime = startTime;
+    testDate.endTime = endTime;
+    return testDate;
+  }
+
+  private createEmptyTestDates(): TestDates {
+    return this.createTestDates();
   }
 
   private loadAllDates(): void {
@@ -135,16 +144,16 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
         const startFormatted = startTime ? this.formatDate(startTime) : { date: '—', time: '—' };
         const endFormatted = endTime ? this.formatDate(endTime) : { date: '—', time: '—' };
 
-        this.testDates[testId] = {
-          date: startFormatted.date,
-          startTime: startFormatted.time,
-          endTime: endFormatted.time
-        };
+        this.testDates[testId] = this.createTestDates(
+          startFormatted.date,
+          startFormatted.time,
+          endFormatted.time
+        );
       } else {
-        this.testDates[testId] = { date: '—', startTime: '—', endTime: '—' }
+        this.testDates[testId] = this.createEmptyTestDates();
       }
     } else {
-      this.testDates[testId] = { date: '—', startTime: '—', endTime: '—' }
+      this.testDates[testId] = this.createEmptyTestDates();
     }
 
     this.loadingDates.delete(testId)
@@ -170,8 +179,7 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
           this.cdr.detectChanges()
         },
         (error) => {
-          console.error('Ошибка загрузки даты:', error)
-          this.testDates[testId] = { date: 'Ошибка', startTime: 'Ошибка', endTime: 'Ошибка' }
+          this.testDates[testId] = this.createEmptyTestDates();
           this.loadingDates.delete(testId)
           this.cdr.detectChanges()
         }
@@ -211,7 +219,7 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
 
     if (!this.testDates[testId] && !this.loadingDates.has(testId) && this.studentId) {
       setTimeout(() => this.loadDateForTest(test), 0)
-      return 'Загрузка...'
+      return this.translate.transform('text.test.loading.time.data', 'Загрузка...')
     }
 
     return this.testDates[testId]?.date || '—'
@@ -224,7 +232,7 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
 
     if (!this.testDates[testId] && !this.loadingDates.has(testId) && this.studentId) {
       setTimeout(() => this.loadDateForTest(test), 0)
-      return 'Загрузка...'
+      return this.translate.transform('text.test.loading.time.data', 'Загрузка...')
     }
 
     return this.testDates[testId]?.startTime || '—'
