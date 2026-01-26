@@ -200,11 +200,11 @@ export class MaterialsPopoverComponent {
 
   checkMaterialsContainerForButtonsVisibility() {
     this.prevButtonVisible = this.currentPathIndex != 0
+    const nextIndex = this.currentPathIndex + 1
     this.nextButtonVisible =
-      this.currentPathIndex < this.materialPathes.length - 1 &&
-      !this.materialPathes[this.currentPathIndex + 1]
-        .toLowerCase()
-        .endsWith('.docx')
+      nextIndex < this.materialPathes.length &&
+      this.materialPathes[nextIndex] &&
+      !this.materialPathes[nextIndex].toLowerCase().endsWith('.docx')
     this.toTestButtonVisible = this.isAdaptive && !this.nextButtonVisible
   }
 

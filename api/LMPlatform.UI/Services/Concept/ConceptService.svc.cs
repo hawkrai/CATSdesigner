@@ -18,6 +18,8 @@ using LMPlatform.UI.ViewModels.ComplexMaterialsViewModel;
 using Newtonsoft.Json;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using Org.BouncyCastle.Asn1.X509;
+using LMPlatform.Data.Repositories;
+using LMPlatform.Data.Infrastructure;
 
 namespace LMPlatform.UI.Services.Concept
 {
@@ -568,6 +570,85 @@ namespace LMPlatform.UI.Services.Concept
             };
 
             return availableModules;
+        }
+
+        public ResultViewData HideTest(int conceptId, int? testId, int complexId)
+        {
+            try
+            {
+                using (var context = new LMPlatform.Data.Infrastructure.LmPlatformModelsContext())
+                {
+                    var existing = context.HiddenTests
+                        .FirstOrDefault(ht => ht.ConceptId == conceptId && ht.ComplexId == complexId);
+
+                    if (existing == null)
+                    {
+                        var hiddenTest = new HiddenTest
+                        {
+                            ConceptId = conceptId,
+                            TestId = testId,
+                            ComplexId = complexId
+                        };
+                        context.HiddenTests.Add(hiddenTest);
+                    }
+                    else
+                    {
+                        if (existing.TestId != testId)
+                        {
+                            existing.TestId = testId;
+                        }
+                    }
+
+                    context.SaveChanges();
+                }
+
+                return new ResultViewData
+                {
+                    Message = SuccessMessage,
+                    Code = SuccessCode
+                };
+            }
+            catch (Exception ex)
+            {
+                var innerException = ex.InnerException != null ? ex.InnerException.Message : string.Empty;
+                var stackTrace = ex.StackTrace != null ? ex.StackTrace.Substring(0, Math.Min(200, ex.StackTrace.Length)) : string.Empty;
+                return new ResultViewData
+                {
+                    Message = $"HideTest Error: conceptId={conceptId}, testId={testId}, complexId={complexId}, error={ex.Message}, inner={innerException}, stack={stackTrace}",
+                    Code = ServerErrorCode
+                };
+            }
+        }
+
+        public HiddenTestsResult GetHiddenTests(int complexId)
+        {
+            try
+            {
+                using (var repositoriesContainer = new LMPlatform.Data.Repositories.LmPlatformRepositoriesContainer())
+                {
+                    var hiddenTests = repositoriesContainer.HiddenTestRepository
+                        .GetAll(new Application.Core.Data.Query<HiddenTest>(ht => ht.ComplexId == complexId))
+                        .ToList();
+
+                    return new HiddenTestsResult
+                    {
+                        ConceptIds = hiddenTests.Select(ht => ht.ConceptId).Distinct().ToList(),
+                        TestIds = hiddenTests.Where(ht => ht.TestId.HasValue).Select(ht => ht.TestId.Value).Distinct().ToList(),
+                        Message = SuccessMessage,
+                        Code = SuccessCode
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new HiddenTestsResult
+                {
+                    ConceptIds = new List<int>(),
+                    TestIds = new List<int>(),
+                    Message = "Ошибка при получении скрытых тестов: " + ex.Message,
+                    Code = ServerErrorCode
+                };
+            }
         }
 	}
 }

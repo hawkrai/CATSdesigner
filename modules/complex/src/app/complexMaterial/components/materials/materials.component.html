@@ -61,6 +61,7 @@
           (click)="openEditPopup(node)"
           [matTooltip]="'common.edit' | translate: 'Редактировать'"
           matTooltipPosition="below"
+          *ngIf="!node.TestId"
         >
           <span class="btn clickable"
             ><mat-icon class="icon">edit</mat-icon></span
@@ -68,7 +69,7 @@
         </a>
         <a
           class="btn clickable"
-          (click)="openConfirmationDialog(node.Id)"
+          (click)="openConfirmationDialog(node.Id, node)"
           [matTooltip]="'common.delete' | translate: 'Удалить'"
           matTooltipPosition="below"
         >
@@ -120,21 +121,23 @@
           {{ node.Name }}
         </span>
         <div class="work-icons" *ngIf="isLecturer">
-          <a
-            class="btn clickable"
-            (click)="openEditPopup(node)"
-            [matTooltip]="'common.edit' | translate: 'Редактировать'"
-            matTooltipPosition="below"
-          >
+        <a
+          class="btn clickable"
+          (click)="openEditPopup(node)"
+          [matTooltip]="'common.edit' | translate: 'Редактировать'"
+          matTooltipPosition="below"
+          *ngIf="!isMandatoryComponent(node) && !node.TestId"
+        >
             <span class="btn clickable"
               ><mat-icon class="icon">edit</mat-icon></span
             >
           </a>
           <a
             class="btn clickable"
-            (click)="openConfirmationDialog(node.Id)"
+            (click)="openConfirmationDialog(node.Id, node)"
             [matTooltip]="'common.delete' | translate: 'Удалить'"
             matTooltipPosition="below"
+            *ngIf="!isMandatoryComponent(node)"
           >
             <span class="btn clickable"
               ><mat-icon class="icon">delete</mat-icon></span

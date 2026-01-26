@@ -337,4 +337,24 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
 
     return false
   }
+
+  isFormValid(files: any[]): boolean {
+    if (!this.data.name || this.data.name.trim() === '') {
+      return false
+    }
+
+    if (this.addMode && (!this.data.parentId || this.data.parentId === null)) {
+      return false
+    }
+    
+    if (this.addMode && this.isFile && (!files || files.length === 0)) {
+      return false
+    }
+
+    if (this.editMode && !this.hasChanges() && !this.hasFileChanges(files)) {
+      return false
+    }
+
+    return true
+  }
 }

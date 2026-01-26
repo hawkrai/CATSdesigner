@@ -11,6 +11,7 @@ import { StorageKeys } from '../../../../../../../container/src/app/core/models/
 import { TestService } from '../../../service/test.service'
 import { TestResultsLoaderService } from '../../../service/test-results-loader.service'
 import { WatchingTimeService } from '../../../service/watching-time.service'
+import { HiddenTestsService } from '../../../service/hidden-tests.service'
 
 @Component({
   selector: 'app-monitoring-tree',
@@ -38,6 +39,7 @@ export class MonitoringTreeComponent implements OnInit {
     private testService: TestService,
     private testResultsLoaderService: TestResultsLoaderService,
     private watchingTimeService: WatchingTimeService,
+    private hiddenTestsService: HiddenTestsService,
     private cdr: ChangeDetectorRef
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -48,23 +50,36 @@ export class MonitoringTreeComponent implements OnInit {
 
   ngOnInit() {
     this.showLoader = true
+    this.hiddenTestsService.loadHiddenTests(this.complexId).subscribe(
+      () => {
+        this.loadComplexMonitoringInfo(true)
+      },
+      () => {
+        this.loadComplexMonitoringInfo(false)
+      }
+    )
+  }
+
+  private loadComplexMonitoringInfo(applyFilter: boolean) {
     this.complexService
       .getStudentComplexMonitoringInfo(this.complexId, this.studentId)
       .subscribe(
         (res: ComplexStudentMonitoring) => {
-          // Присваиваем значения свойствам компонента
           this.studentName = res.StudentName
           this.studentGroup = res.StudentGroup
           this.complexName = res.ComplexName
 
-          this.dataSource.data = res.ConceptMonitorings
-          this.treeControl.dataNodes = res.ConceptMonitorings
+          const data = applyFilter
+            ? this.hiddenTestsService.filterHiddenTestsForMonitoring(this.complexId, res.ConceptMonitorings)
+            : res.ConceptMonitorings
+
+          this.dataSource.data = data
+          this.treeControl.dataNodes = data
           this.showLoader = false
           this.treeControl.expandAll()
-          this.loadTestResults(res.ConceptMonitorings)
+          this.loadTestResults(data)
         },
-        (error) => {
-          console.error('Ошибка при получении данных:', error)
+        () => {
           sessionStorage.removeItem(StorageKeys.MonitoringComplexId)
           window.location.reload()
         }

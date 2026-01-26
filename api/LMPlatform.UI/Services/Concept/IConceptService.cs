@@ -1,4 +1,5 @@
-﻿using LMPlatform.UI.Services.Modules.Concept;
+﻿using LMPlatform.UI.Services.Modules;
+using LMPlatform.UI.Services.Modules.Concept;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using System.ServiceModel;
 using System.ServiceModel.Web;
@@ -92,6 +93,14 @@ namespace LMPlatform.UI.Services.Concept
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetAvailableModules?subjectId={subjectId}")]
         ConceptAvailableModules GetAvailableModules(int subjectId);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/HideTest")]
+        ResultViewData HideTest(int conceptId, int? testId, int complexId);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetHiddenTests?complexId={complexId}")]
+        HiddenTestsResult GetHiddenTests(int complexId);
 
     }
 }
