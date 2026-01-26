@@ -10,6 +10,7 @@ import { LessonService } from '../../service/lesson.service'
 import { NoteService } from '../../service/note.service'
 import { TranslatePipe } from 'educats-translate'
 import { LessonType } from '../../../../../../container/src/app/core/models/lesson-type.const'
+import { OperationResultCode } from '../../../../../../container/src/app/core/models/OperationResultCode.const'
 
 export function flatpickrFactory() {
   flatpickr.localize(Russian)
@@ -431,14 +432,18 @@ export class CreateLessonComponent implements OnInit {
                  this.startTimeOfLesson, this.endTimeOfLesson, this.note.id)
                 .subscribe({
                   next: (res) => {
-                    console.log('Личная заметка сохранена', res);
                     this.lesson.personalNote = personalNote;
                     if (this.data.notes && this.data.notes.global) {
                       this.lesson.Notes = [
                         { Text: this.data.notes.global.text, Id: this.data.notes.global.id }
                       ];
                     }
-                    this.dialogRef.close({ lesson: this.lesson, type: 'lesson' });
+                    this.dialogRef.close({
+                      lesson: this.lesson,
+                      type: 'lesson',
+                      code: res.Code,
+                      message: this.translate.transform(res.Message, res.Message)
+                    });
                   },
                   error: (err) => {
                     console.error('Ошибка при сохранении личной заметки', err);
@@ -474,7 +479,7 @@ export class CreateLessonComponent implements OnInit {
                 this.lessonservice.formatDate2(this.dayOfLesson)
               )
               .subscribe((l) => {
-                if (l.Code == '200') {
+                if (l.Code == OperationResultCode.Success) {
                   if (this.lesson.Notes.length != 0) {
                     this.lessonservice
                       .saveLessonNote({
@@ -521,7 +526,7 @@ export class CreateLessonComponent implements OnInit {
                 this.lessonservice.formatDate2(this.dayOfLesson)
               )
               .subscribe((l) => {
-                if (l.Code == '200') {
+                if (l.Code == OperationResultCode.Success) {
                   if (this.lesson.Notes.length != 0) {
                     this.lessonservice
                       .saveLessonNote({
@@ -640,9 +645,6 @@ export class CreateLessonComponent implements OnInit {
                   message: this.translate.transform(res.Message, res.Message),
                 })
               })
-            this.lesson.Teacher.FullName = this.lessonservice.cutTeacherName(
-              this.lesson.Teacher.FullName
-            )
           } else if (this.formGroup.controls.type.value === LessonType.GraduationProject) {
             this.dialogRef.close({ lesson: this.lesson, type: 'diplom' })
             this.lessonservice
@@ -659,7 +661,7 @@ export class CreateLessonComponent implements OnInit {
           } else {
             this.dialogRef.close({
               lesson: null,
-              code: '500',
+              code: OperationResultCode.Error,
               message: this.translate.transform('text.date.add.response.failure.unknown', 'text.date.add.response.failure.unknown'),
             })
           }
@@ -694,12 +696,13 @@ export class CreateLessonComponent implements OnInit {
         this.endTimeOfNote,
         noteId,
       )
-      .subscribe((l) => {
-        this.note.id = l.Note.Id
+      .subscribe((res) => {
+        this.note.id = res.Note.Id
         this.dialogRef.close({
+          code: res.Code,
           note: this.note,
           type: 'note',
-          message: this.translate.transform(l.Message, l.Message)
+          message: this.translate.transform(res.Message, res.Message)
         })
       })
   }

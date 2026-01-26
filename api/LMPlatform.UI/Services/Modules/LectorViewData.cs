@@ -25,7 +25,7 @@ namespace LMPlatform.UI.Services.Modules
             {
                 LectorId = lecturer.Id;
                 FullName = lecturer.FullName;
-                if (withUsername)
+                if (withUsername && lecturer.User != null)
                 {
                     UserName = lecturer.User.UserName;
                 }

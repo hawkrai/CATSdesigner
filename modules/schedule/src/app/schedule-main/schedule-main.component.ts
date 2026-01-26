@@ -19,6 +19,7 @@ import { ScheduleStatisticsComponent } from '../schedule-statistics/schedule-sta
 import { LessonService } from '../service/lesson.service'
 import { NoteService } from '../service/note.service'
 import { HelpPopoverScheduleComponent } from './help-popover/help-popover-schedule.component'
+import { OperationResultCode } from '../../../../../container/src/app/core/models/OperationResultCode.const'
 
 const colors: any = {
   color: {
@@ -125,6 +126,7 @@ export class ScheduleMainComponent implements OnInit {
 
   calculateTitle(lesson: Lesson): any {
     let teacher = ''
+    let teacherId = ''
     let minS
     let building = ''
     let memo = ''
@@ -142,8 +144,11 @@ export class ScheduleMainComponent implements OnInit {
     }
     memo = this.getLessonNoteText(lesson)
     if (lesson.Teacher != undefined) {
-      teacher = lesson.Teacher.FullName
-    }
+        teacher = lesson.Teacher.FullName
+        if (lesson.Teacher.LectorId != undefined) {
+          teacherId = lesson.Teacher.LectorId
+        }
+      }
     return (
       lesson.Start.split(':')[0] +
       ':' +
@@ -179,7 +184,7 @@ export class ScheduleMainComponent implements OnInit {
       '|' +
       lesson.SubGroupName +
       '|' +
-      lesson.Teacher.LectorId
+      teacherId
     )
   }
 
@@ -363,9 +368,9 @@ export class ScheduleMainComponent implements OnInit {
     })
     dialogRef.afterClosed().subscribe((result) => {
       let type: string
-      if (result.code == '200') {
+      if (result.code == OperationResultCode.Success) {
         type = 'success'
-      } else if (result.code == '500') {
+      } else if (result.code == OperationResultCode.Error) {
         type = 'error'
       }
       if (type != undefined) {
@@ -616,11 +621,15 @@ export class ScheduleMainComponent implements OnInit {
         } else {
           this.lessons.push(result.lesson);
         }
-
-        if (result.code) {
-              const type = result.code === '200' ? 'success' : 'error'
-              this.notifierService.notify(type, result.message)
-            }
+        let type: string
+        if (result.code == OperationResultCode.Success) {
+          type = 'success'
+        } else if (result.code == OperationResultCode.Error) {
+          type = 'error'
+        }
+        if (type != undefined) {
+          this.notifierService.notify(type, result.message)
+        }
         const startT = new Date(this.lesson.Date)
         const endT = new Date(this.lesson.Date)
         startT.setHours(

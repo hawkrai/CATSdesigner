@@ -1,11 +1,13 @@
 ﻿using Application.Core;
 using Application.Core.Helpers;
 using Application.Infrastructure.NoteManagement;
+using Application.Infrastructure.ScheduleManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Notes;
+using LMPlatform.UI.Services.Modules.Schedule;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,10 +26,11 @@ namespace LMPlatform.UI.Services.Notes
     {
         private readonly LazyDependency<INoteManagementService> noteManagementService = new LazyDependency<INoteManagementService>();
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
+        private readonly LazyDependency<IScheduleManagementService> scheduleManagementService = new LazyDependency<IScheduleManagementService>();
 
         public INoteManagementService NoteManagementService => noteManagementService.Value;
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
-
+        public IScheduleManagementService ScheduleManagementService => scheduleManagementService.Value;
 
         public ResultViewData SaveNote(int id, string text, int subjectId, int? lecturesScheduleId, int? labsScheduleId, int? practicalScheduleId)
         {
@@ -144,6 +147,16 @@ namespace LMPlatform.UI.Services.Notes
                 var dateTime = DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 var start = DateTime.ParseExact(startTime, "HH:mm", CultureInfo.InvariantCulture).TimeOfDay;
                 var end = DateTime.ParseExact(endTime, "HH:mm", CultureInfo.InvariantCulture).TimeOfDay;
+
+                if (NoteManagementService.CheckIfAllowed(UserContext.CurrentUserId, dateTime, start, end, id))
+                {
+                    return new SavePersonalNoteViewResult
+                    {
+                        Code = "500",
+                        Message = "text.date.response.failure.taken",
+                    };
+                }
+
                 var savedNote = NoteManagementService.SavePersonalNote(new UserNote
                 {
                     Id = id,
@@ -154,6 +167,7 @@ namespace LMPlatform.UI.Services.Notes
                     StartTime = start,
                     Note = note
                 });
+
                 return new SavePersonalNoteViewResult
                 {
                     Code = "200",

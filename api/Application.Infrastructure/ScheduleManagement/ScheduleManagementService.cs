@@ -2,8 +2,11 @@
 using Application.Core.Data;
 using Application.Infrastructure.Models;
 using Application.Infrastructure.SubjectManagement;
+using DocumentFormat.OpenXml.Spreadsheet;
+using LMPlatform.Data.Infrastructure;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
+using LMPlatform.Models.CP;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -20,9 +23,24 @@ namespace Application.Infrastructure.ScheduleManagement
 
 		public ISubjectManagementService SubjectManagementService => _subjectManagementService.Value;
 
-		public IEnumerable<ScheduleModel> CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience, int? groupId, int? subGroupId, int? lecturerId)
+        private readonly LazyDependency<ICpContext> _cpContext = new LazyDependency<ICpContext>();
+
+        private ICpContext CpContext => _cpContext.Value;
+
+        public IEnumerable<ScheduleModel> CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience, int? groupId, int? subGroupId, int? lecturerId)
 		{
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+
+            DateTime dayStart = date.Date;
+            DateTime dayEnd = date.Date.AddDays(1);
+            var courseProjectSchedule = CpContext.CourseProjectConsultationDates
+				.Where(x => x.Day >= dayStart && x.Day < dayEnd)
+				.Where(x => x.StartTime.HasValue && x.EndTime.HasValue)
+				.ToList()
+				.Select(CourseProjectScheduleToModel)
+				.ToList();
+
             var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date == date))
                 .Include(x => x.Lecturer.User)
                 .ToList()
@@ -43,9 +61,8 @@ namespace Application.Infrastructure.ScheduleManagement
                 .Select(LabScheduleToModel)
                 .ToList();
 
-
-            return lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule)
-				.Where(x => x.Start.HasValue
+			return lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule).Concat(courseProjectSchedule)
+                .Where(x => x.Start.HasValue
 					&& x.End.HasValue
 					&& (
 						(startTime < x.Start && x.Start < endTime) ||
@@ -182,7 +199,28 @@ namespace Application.Infrastructure.ScheduleManagement
 			};
 		}
 
-		private ScheduleModel PracticalScheduleToModel(ScheduleProtectionPractical practicalSchedule)
+        private ScheduleModel CourseProjectScheduleToModel(CourseProjectConsultationDate courseSchedule)
+        {
+			return new ScheduleModel
+			{
+				GroupId = courseSchedule.GroupId,
+				SubGroupId = 0,
+				Teacher = courseSchedule.LecturerId != 0 ? new Lecturer { Id = courseSchedule.LecturerId } : null,
+				Audience = courseSchedule.Audience,
+				Building = courseSchedule.Building,
+				Color = courseSchedule.Subject?.Color ?? string.Empty,
+				End = courseSchedule.EndTime,
+				Start = courseSchedule.StartTime,
+				Name = courseSchedule.Subject?.Name ?? string.Empty,
+				ShortName = courseSchedule.Subject?.ShortName ?? string.Empty,
+				SubjectId = courseSchedule.SubjectId,
+				Type = ClassType.Course,
+				Date = courseSchedule.Day,
+				Id = courseSchedule.Id,
+			};
+        }
+
+        private ScheduleModel PracticalScheduleToModel(ScheduleProtectionPractical practicalSchedule)
         {
 			var group = practicalSchedule.Subject?.SubjectGroups?.FirstOrDefault(x => x.SubjectId == practicalSchedule.SubjectId)?.Group;
 			return new ScheduleModel

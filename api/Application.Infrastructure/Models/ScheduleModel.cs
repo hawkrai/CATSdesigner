@@ -45,6 +45,8 @@ namespace Application.Infrastructure.Models
     {
         Lecture,
         Practical,
-        Lab
+        Lab,
+        Course,
+        PersonalNote
     }
 }
