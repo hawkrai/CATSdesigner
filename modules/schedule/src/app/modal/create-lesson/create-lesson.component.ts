@@ -77,6 +77,10 @@ export class CreateLessonComponent implements OnInit {
   ngOnInit(): void {
     this.isEditMode = !!this.data.lesson || !!this.data.note
 
+    this.lesson = this.data.lesson
+      ? { ...this.data.lesson }
+      : new Lesson();
+
     if (this.isEditMode) {
       this.dialogTitle = 'text.schedule.edit.event.to.schedule'
     } else {
@@ -425,21 +429,26 @@ export class CreateLessonComponent implements OnInit {
                 end: new Date(this.lesson.Date + 'T' + this.lesson.End),
                 title: '',
                 note: this.memo,
+                lessonId: this.data.lesson.id,
               };
+
+              if (this.data.notes && this.data.notes.global) {
+                this.lesson.Notes = [
+                  { Text: this.data.notes.global.text, Id: this.data.notes.global.id }
+                ];
+              }
 
               this.noteService
                 .savePersonalNote(personalNote, this.lessonservice.formatDate2(this.dayOfLesson),
-                 this.startTimeOfLesson, this.endTimeOfLesson, this.note.id)
+                 this.startTimeOfLesson, this.endTimeOfLesson, this.note.id, this.data.lesson.id)
                 .subscribe({
                   next: (res) => {
-                    this.lesson.personalNote = personalNote;
-                    if (this.data.notes && this.data.notes.global) {
-                      this.lesson.Notes = [
-                        { Text: this.data.notes.global.text, Id: this.data.notes.global.id }
-                      ];
+                    const updatedLesson: Lesson = {
+                      ...this.data.lesson,
+                      personalNote: res.Note
                     }
                     this.dialogRef.close({
-                      lesson: this.lesson,
+                      lesson: updatedLesson,
                       type: 'lesson',
                       code: res.Code,
                       message: this.translate.transform(res.Message, res.Message)
@@ -671,38 +680,54 @@ export class CreateLessonComponent implements OnInit {
 
   addNote() {
     const noteId = this.eventToChange ? this.eventToChange.id : 0
-    this.note.start = this.dayOfNote
-    const day = new Date(this.dayOfNote)
-    this.note.end = day
-    if (this.startTimeOfNote > this.endTimeOfNote) {
-      const temp = this.startTimeOfNote
-      this.startTimeOfNote = this.endTimeOfNote
-      this.endTimeOfNote = temp
+
+    const noteDraft: Note = {
+      ...this.note,
+      start: new Date(this.dayOfNote),
+      end: new Date(this.dayOfNote),
     }
-    this.note.start.setHours(
+
+    if (this.startTimeOfNote > this.endTimeOfNote) {
+      [this.startTimeOfNote, this.endTimeOfNote] =
+        [this.endTimeOfNote, this.startTimeOfNote];
+    }
+    noteDraft.start.setHours(
       +this.startTimeOfNote.split(':')[0],
       +this.startTimeOfNote.split(':')[1]
     )
-    this.note.end.setHours(
+    noteDraft.end.setHours(
       +this.endTimeOfNote.split(':')[0],
       +this.endTimeOfNote.split(':')[1]
     )
 
     this.noteService
       .savePersonalNote(
-        this.note,
+        noteDraft,
         this.lessonservice.formatDate2(this.dayOfNote),
         this.startTimeOfNote,
         this.endTimeOfNote,
         noteId,
       )
-      .subscribe((res) => {
-        this.note.id = res.Note.Id
+      .subscribe(res => {
+
+        if (res.Code !== OperationResultCode.Success) {
+          this.dialogRef.close({
+            code: res.Code,
+            message: this.translate.transform(res.Message, res.Message),
+          });
+          return;
+        }
+
+        this.note = {
+          ...noteDraft,
+          id: res.Note.Id,
+        }
+
         this.dialogRef.close({
           code: res.Code,
           note: this.note,
           type: 'note',
-          message: this.translate.transform(res.Message, res.Message)
+          message: this.translate.transform(res.Message, res.Message),
         })
       })
   }

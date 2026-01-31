@@ -558,6 +558,17 @@ export class ScheduleMainComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe((result) => {
+      let type: string;
+        if (result.code === OperationResultCode.Success) {
+          type = 'success';
+        } else if (result.code === OperationResultCode.Error) {
+          type = 'error';
+        }
+
+        if (type && result.message) {
+          this.notifierService.notify(type, result.message);
+        }
+
       if (result.note != null) {
         this.events = this.events.filter((event) => event !== eventToChange)
         this.events.push({
@@ -614,6 +625,16 @@ export class ScheduleMainComponent implements OnInit {
     })
     dialogRef.afterClosed().subscribe((result) => {
       if (result != null) {
+        if (!result.lesson) {
+            if (result.code) {
+              this.notifierService.notify(
+                result.code === '200' ? 'success' : 'error',
+                result.message
+              );
+            }
+            return;
+          }
+
         this.lesson = result.lesson
         const index = this.lessons.findIndex(l => l.Id === result.lesson.Id);
         if (index > -1) {
@@ -858,7 +879,9 @@ export class ScheduleMainComponent implements OnInit {
 
           l.Notes.forEach((note) => {
             if (!note) return;
-            const lesson = this.lessons.find(ls => this.isSameLessonAndNote(ls, note));
+            const lesson = this.lessons.find(l =>
+              note.LessonId ? l.Id === note.LessonId : this.isSameLessonAndNote(l, note)
+            );
             if (lesson && !lesson.Notes) {
               lesson.Notes = [];
             }
