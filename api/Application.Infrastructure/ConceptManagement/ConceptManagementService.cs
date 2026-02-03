@@ -373,7 +373,11 @@ namespace Application.Infrastructure.ConceptManagement
                     if (lastSibling != null)
                         concept.PrevConcept = lastSibling.Id;
                 }
-                concept.Published = concept.IsGroup ? true : false;
+
+                if (concept.IsGroup)
+                {
+                    concept.Published = true;
+                }
 
                 repositoriesContainer.ConceptRepository.Save(concept);
                 if (lastSibling != null)

@@ -9,6 +9,7 @@ import { IAppState } from '../../../../store/states/app.state'
 import { TranslatePipe } from 'educats-translate'
 import { CatsService } from 'src/app/service/cats.service'
 import { Help } from '../../../../models/help.model'
+import { MaterialFormType } from '../../../../models/material-form-type.enum'
 
 @Component({
   selector: 'add-app-materials-popover',
@@ -16,6 +17,7 @@ import { Help } from '../../../../models/help.model'
   styleUrls: ['./add-material-popover.component.less'],
 })
 export class AddMaterialPopoverComponent extends BaseFileManagementComponent<AddMaterialPopoverComponent> {
+  MaterialFormType = MaterialFormType
   navItems: ComplexCascade[] = []
   isFile: boolean
   isFolder: boolean
@@ -56,9 +58,9 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     }
   }
 
-  switchFormTo(formState: number) {
-    this.isFile = formState === 2
-    this.data.isGroup = this.isFolder = formState === 1
+  switchFormTo(formState: MaterialFormType) {
+    this.isFile = formState === MaterialFormType.File
+    this.data.isGroup = this.isFolder = formState === MaterialFormType.Folder
   }
 
   ngOnInit() {
@@ -70,9 +72,9 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
         this.navItems = this.translateNavItems(res)
         if (this.data) {
           if (this.addMode && this.data.isGroup === undefined) {
-            this.switchFormTo(2)
+            this.switchFormTo(MaterialFormType.File)
           } else {
-            this.switchFormTo(this.data.isGroup ? 1 : 2)
+            this.switchFormTo(this.data.isGroup ? MaterialFormType.Folder : MaterialFormType.File)
           }
 
           if (!this.data.parentId && currentComplexID && this.addMode) {

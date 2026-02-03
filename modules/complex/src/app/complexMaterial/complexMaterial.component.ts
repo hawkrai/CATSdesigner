@@ -69,7 +69,7 @@ export class ComplexMaterialComponent implements OnInit {
   }
 
   openAddPopup(): void {
-    const currentComplexID = localStorage.getItem('selectedComplex')
+    const currentComplexID = localStorage.getItems(StorageKeys.SelectedComplex)
     const dialogRef = this.dialog.open(AddMaterialPopoverComponent, {
       width: '600px',
       data: { 
