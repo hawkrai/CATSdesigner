@@ -98,7 +98,7 @@
   "text.subjects.attachments.material.single": "Можно добавить только один файл",
   "text.subjects.attachments.add": "Добавить файл",
   "text.subjects.attachments.attached": "Прикрепленный файл",
-  "text.subjects.attachments.loaded": "Загруженный файл",
+  "text.subjects.attachments.loaded": "Прикрепленный файл",
   "text.subjects.attachments.delete": "Удалить файл",
   "text.subjects.attachments.files": "Предметные файлы",
   "text.subjects.news.add": "Добавить новость",
