@@ -69,19 +69,25 @@ export class ComplexMaterialComponent implements OnInit {
   }
 
   openAddPopup(): void {
+    const currentComplexID = localStorage.getItem('selectedComplex')
     const dialogRef = this.dialog.open(AddMaterialPopoverComponent, {
       width: '600px',
-      data: { id: '0', attachments: [] },
+      data: { 
+        id: '0', 
+        attachments: [],
+        parentId: currentComplexID ? parseInt(currentComplexID, 10) : null
+      },
     })
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        const fileData = result.isGroup ? '' : JSON.stringify(result.attachments || [])
         const concept: Concept = {
           conceptId: +result.id,
           conceptName: result.name,
           parentId: result.parentId,
           isGroup: result.isGroup,
-          fileData: JSON.stringify(result.attachments),
+          fileData: fileData,
           userId: JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id,
         }
 

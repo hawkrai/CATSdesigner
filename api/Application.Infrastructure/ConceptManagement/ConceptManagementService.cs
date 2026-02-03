@@ -373,6 +373,7 @@ namespace Application.Infrastructure.ConceptManagement
                     if (lastSibling != null)
                         concept.PrevConcept = lastSibling.Id;
                 }
+                concept.Published = concept.IsGroup ? true : false;
 
                 repositoriesContainer.ConceptRepository.Save(concept);
                 if (lastSibling != null)
@@ -381,7 +382,6 @@ namespace Application.Infrastructure.ConceptManagement
                     repositoriesContainer.ConceptRepository.Save(lastSibling);
                 }
                 repositoriesContainer.ApplyChanges();
-                //BindNeighborConcept(concept, source, repositoriesContainer);
                 return concept;
             }
         }
@@ -486,7 +486,7 @@ namespace Application.Infrastructure.ConceptManagement
                         repositoriesContainer.AttachmentRepository.Save(attachment);
                     }
                 }
-                concept.Published = attachments.Any();
+                concept.Published = (!concept.IsGroup && !attachments.Any()) ? true : attachments.Any();
                 Concept source = null;
                 if (concept.Id != 0)
                     source = GetById(concept.Id);

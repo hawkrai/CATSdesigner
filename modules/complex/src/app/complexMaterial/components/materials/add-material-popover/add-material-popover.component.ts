@@ -69,9 +69,16 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
       .subscribe((res) => {
         this.navItems = this.translateNavItems(res)
         if (this.data) {
-          this.switchFormTo(this.data.isGroup ? 1 : 2)
+          if (this.addMode && this.data.isGroup === undefined) {
+            this.switchFormTo(2)
+          } else {
+            this.switchFormTo(this.data.isGroup ? 1 : 2)
+          }
 
-          if (this.data.parentId) {
+          if (!this.data.parentId && currentComplexID && this.addMode) {
+            this.data.parentId = parseInt(currentComplexID, 10)
+            this.selectConcept(this.data.parentId)
+          } else if (this.data.parentId) {
             this.selectConcept(this.data.parentId)
           }
         }
@@ -257,7 +264,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
   }
 
   get shouldHideFileUpload(): boolean {
-    if (this.data && this.data.testId) {
+    if (this.data && (this.data.isGroup || this.data.testId)) {
       return true
     }
     
@@ -347,9 +354,6 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
       return false
     }
     
-    if (this.addMode && this.isFile && (!files || files.length === 0)) {
-      return false
-    }
 
     if (this.editMode && !this.hasChanges() && !this.hasFileChanges(files)) {
       return false
