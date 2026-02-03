@@ -336,8 +336,7 @@ namespace Application.Infrastructure.CPManagement
             Context.SaveChanges();
         }
 
-        public CourseProjectConsultationDate SaveConsultationDate(int userId, int lecturerId, string date, int subjectId, string startTime, string endTime, string audience, string buildingNumber, int groupId, int? consultationId, string notes
-)
+        public CourseProjectConsultationDate SaveConsultationDate(int userId, int lecturerId, string date, int subjectId, string startTime, string endTime, string audience, string buildingNumber, int groupId, int? consultationId, string notes)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);
 
@@ -348,22 +347,28 @@ namespace Application.Infrastructure.CPManagement
             DateTime dayStart = dateTime.Date;
             DateTime dayEnd = dateTime.Date.AddDays(1);
 
-            var conflict = Context.CourseProjectConsultationDates
-                .Where(x => x.EndTime.HasValue && x.StartTime.HasValue && x.GroupId != null)
-                .Where(x => TimeSpan.Compare(x.StartTime.Value, start) <= 0 &&
-                            TimeSpan.Compare(x.EndTime.Value, start) >= 0)
-                .Where(x => x.Day >= dayStart && x.Day < dayEnd)
-                .Where(x => x.Audience == audience && x.Building == buildingNumber)
-                .FirstOrDefault();
+            bool hasLecturerConflict = Context.CourseProjectConsultationDates
+                .Where(x =>
+                    x.LecturerId == lecturerId &&
+                    x.Day >= dayStart &&
+                    x.Day < dayEnd &&
+                    x.StartTime.HasValue &&
+                    x.EndTime.HasValue &&
+                    (!consultationId.HasValue || x.Id != consultationId.Value)
+                )
+                .Any(x =>
+                    start < x.EndTime.Value &&
+                    end > x.StartTime.Value
+                );
 
-            if (conflict != null && consultationId == null)
+            if (hasLecturerConflict)
             {
                 return null;
             }
 
             CourseProjectConsultationDate entity;
 
-            if (consultationId == null)
+            if (!consultationId.HasValue)
             {
                 entity = new CourseProjectConsultationDate
                 {
@@ -385,11 +390,6 @@ namespace Application.Infrastructure.CPManagement
                 entity = Context.CourseProjectConsultationDates.Find(consultationId.Value);
 
                 if (entity == null)
-                {
-                    return null;
-                }
-
-                if (conflict != null && conflict.Id != entity.Id)
                 {
                     return null;
                 }

@@ -12,6 +12,10 @@ import { TranslatePipe } from 'educats-translate'
 import { LessonType } from '../../../../../../container/src/app/core/models/lesson-type.const'
 import { OperationResultCode } from '../../../../../../container/src/app/core/models/OperationResultCode.const'
 
+export enum HttpStatusCode {
+  InternalServerError = 500,
+}
+
 export function flatpickrFactory() {
   flatpickr.localize(Russian)
   return flatpickr
@@ -621,30 +625,47 @@ export class CreateLessonComponent implements OnInit {
                 this.lesson.Teacher.LectorId,
                 this.memo
               )
-              .subscribe((res) => {
-                const schedule = res.Schedule
-                schedule.Teacher.FullName = this.lessonservice.cutTeacherName(
-                  this.lesson.Teacher.FullName
-                )
-                this.dialogRef.close({
-                  lesson: {
-                        ...this.lesson,
-                        Id: schedule.Id,
-                        StartTime: schedule.StartTime,
-                        EndTime: schedule.EndTime,
-                        Day: schedule.Day,
-                        Subject: schedule.Subject,
-                        Teacher: schedule.Teacher,
-                        Building: schedule.Building,
-                        Audience: schedule.Audience,
-                        GroupId: schedule.GroupId,
-                        GroupName: this.currentGroup ? this.currentGroup.GroupName : ""
-                      },
-                  type: 'course',
-                  code: res.Code,
-                  message: this.translate.transform(res.Message, res.Message),
-                })
-              })
+              .subscribe({
+                next: (res) => {
+                  const schedule = res.Schedule;
+                  
+                  schedule.Teacher.FullName = this.lessonservice.cutTeacherName(
+                    this.lesson.Teacher.FullName
+                  );
+                  this.dialogRef.close({
+                    lesson: {
+                      ...this.lesson,
+                      Id: schedule.Id,
+                      StartTime: schedule.StartTime,
+                      EndTime: schedule.EndTime,
+                      Day: schedule.Day,
+                      Subject: schedule.Subject,
+                      Teacher: schedule.Teacher,
+                      Building: schedule.Building,
+                      Audience: schedule.Audience,
+                      GroupId: schedule.GroupId,
+                      GroupName: this.currentGroup ? this.currentGroup.GroupName : ""
+                    },
+                    type: 'course',
+                    code: res.Code,
+                    message: this.translate.transform(res.Message, res.Message),
+                  });
+                },
+                
+                error: (err) => {
+                  if (err.status === HttpStatusCode.InternalServerError) {
+                    this.dialogRef.close({
+                      lesson: null,
+                      type: 'course',
+                      code: OperationResultCode.Error,
+                      message: this.translate.transform(
+                        'text.date.response.failure.taken',
+                        'Время и место занято'
+                      ),
+                    });
+                  }
+                },
+              });
           } else if (this.formGroup.controls.type.value === LessonType.GraduationProject) {
             this.dialogRef.close({ lesson: this.lesson, type: 'diplom' })
             this.lessonservice
