@@ -1,0 +1,3 @@
+USE LMPlatform
+ALTER TABLE UserNotes
+ADD LessonId INT NULL;

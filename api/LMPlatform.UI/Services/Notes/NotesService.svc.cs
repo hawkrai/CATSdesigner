@@ -140,7 +140,7 @@ namespace LMPlatform.UI.Services.Notes
         }
 
 
-        public SavePersonalNoteViewResult SavePersonalNote(int id, string text, string date, string startTime, string endTime, string note)
+        public SavePersonalNoteViewResult SavePersonalNote(int id, string text, string date, string startTime, string endTime, string note, int? lessonId)
         {
             try
             {
@@ -165,7 +165,8 @@ namespace LMPlatform.UI.Services.Notes
                     Date = dateTime,
                     EndTime = end,
                     StartTime = start,
-                    Note = note
+                    Note = note,
+                    LessonId = lessonId,
                 });
 
                 return new SavePersonalNoteViewResult

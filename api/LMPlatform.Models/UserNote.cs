@@ -18,5 +18,7 @@ namespace LMPlatform.Models
         public User User { get; set; }
 
         public int UserId { get; set; }
+
+        public int? LessonId { get; set; }
     }
 }

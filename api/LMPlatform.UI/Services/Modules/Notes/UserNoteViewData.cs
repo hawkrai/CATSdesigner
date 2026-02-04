@@ -12,6 +12,7 @@ namespace LMPlatform.UI.Services.Modules.Notes
             Note = note.Note;
             UserId = note.UserId;
             Id = note.Id;
+            LessonId = note.LessonId;
             StartTime = note.StartTime.ToString(@"hh\:mm");
             Date = note.Date.ToString("dd/MM/yyyy");
             EndTime = note.EndTime.ToString(@"hh\:mm");
@@ -36,6 +37,9 @@ namespace LMPlatform.UI.Services.Modules.Notes
 
         [DataMember]
         public int Id { get; set; }
+
+        [DataMember]
+        public int? LessonId { get; set; }
 
     }
 }
