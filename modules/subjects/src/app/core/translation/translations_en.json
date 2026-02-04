@@ -118,7 +118,7 @@
   "text.subjects.attachments.material.single": "Can add only one file",
   "text.subjects.attachments.add": "Add file",
   "text.subjects.attachments.attached": "Attached file",
-  "text.subjects.attachments.loaded": "Loaded file",
+  "text.subjects.attachments.loaded": "Attached file",
   "text.subjects.attachments.delete": "Delete file",
   "text.subjects.attachments.files": "Course files",
 

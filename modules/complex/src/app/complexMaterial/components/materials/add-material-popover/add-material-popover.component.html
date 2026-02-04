@@ -45,16 +45,16 @@
       <div class="rad-button">
         <mat-radio-group style="display: block" [disabled]="editMode">
           <mat-radio-button
-            value="1"
+            [value]="MaterialFormType.Folder"
             [checked]="isFolder"
             style="padding-right: 20px"
-            (click)="switchFormTo(1)"
+            (click)="switchFormTo(MaterialFormType.Folder)"
             >{{ 'common.folder' | translate: 'Папка' }}
           </mat-radio-button>
           <mat-radio-button
-            value="2"
+            [value]="MaterialFormType.File"
             [checked]="isFile"
-            (click)="switchFormTo(2)"
+            (click)="switchFormTo(MaterialFormType.File)"
             >{{ 'common.file' | translate: 'Файл' }}
           </mat-radio-button>
         </mat-radio-group>

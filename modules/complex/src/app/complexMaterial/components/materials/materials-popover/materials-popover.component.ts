@@ -61,13 +61,15 @@ export class MaterialsPopoverComponent {
       this.adaptivityType = data.adaptivityType
       this.initFieldsByAdaptivity(data.adaptivity)
     } else if (data.documents) {
-      this.currentPathIndex = 0
+      this.currentPathIndex = data.currentIndex !== undefined ? data.currentIndex : 0
       this.materialPathes = data.documents
       this.showMaterial = true
       this.checkMaterialsContainerForButtonsVisibility()
     } else {
       this.showMaterial = true
       this.toTestButtonVisible = false
+      this.prevButtonVisible = false
+      this.nextButtonVisible = false
     }
   }
 
