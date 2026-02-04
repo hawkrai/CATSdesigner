@@ -12,6 +12,13 @@ import { TranslatePipe } from 'educats-translate'
 import { LessonType } from '../../../../../../container/src/app/core/models/lesson-type.const'
 import { OperationResultCode } from '../../../../../../container/src/app/core/models/OperationResultCode.const'
 
+export enum ScheduleEventType {
+  Lesson = 'lesson',
+  Course = 'course',
+  Diplom = 'diplom',
+  Note = 'note',
+}
+
 export function flatpickrFactory() {
   flatpickr.localize(Russian)
   return flatpickr
@@ -24,8 +31,8 @@ export function flatpickrFactory() {
   styleUrls: ['./create-lesson.component.css'],
 })
 export class CreateLessonComponent implements OnInit {
-  isEditMode = false;
-  dialogTitle = '';
+  isEditMode = false
+  dialogTitle = ''
   changedType: LessonType
   formGroup: any
   eventToChange: any
@@ -69,9 +76,9 @@ export class CreateLessonComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private data: any,
     private lessonservice: LessonService,
     private noteService: NoteService,
-    private translate: TranslatePipe,
+    private translate: TranslatePipe
   ) {
-    this.eventToChange = data.note ? { ...data.note } : null;
+    this.eventToChange = data.note ? { ...data.note } : null
   }
 
   ngOnInit(): void {
@@ -99,15 +106,35 @@ export class CreateLessonComponent implements OnInit {
       }
     })
     if (this.data.notes) {
-        if (this.user.role === 'lector' && this.data.notes.global && this.data.notes.global.text) {
-          this.memo = this.data.notes.global.text !== undefined ? this.data.notes.global.text : ''
-              this.note.id = this.data.notes.global.id !== undefined ? this.data.notes.global.id : 0
-        }
+      if (
+        this.user.role === 'lector' &&
+        this.data.notes.global &&
+        this.data.notes.global.text
+      ) {
+        this.memo =
+          this.data.notes.global.text !== undefined
+            ? this.data.notes.global.text
+            : ''
+        this.note.id =
+          this.data.notes.global.id !== undefined
+            ? this.data.notes.global.id
+            : 0
+      }
 
-        if (this.user.role === 'student' && this.data.notes.personal && this.data.notes.personal.text) {
-          this.memo = this.data.notes.personal.text !== undefined ? this.data.notes.personal.text : ''
-              this.note.id = this.data.notes.personal.id !== undefined ? this.data.notes.personal.id : 0
-        }
+      if (
+        this.user.role === 'student' &&
+        this.data.notes.personal &&
+        this.data.notes.personal.text
+      ) {
+        this.memo =
+          this.data.notes.personal.text !== undefined
+            ? this.data.notes.personal.text
+            : ''
+        this.note.id =
+          this.data.notes.personal.id !== undefined
+            ? this.data.notes.personal.id
+            : 0
+      }
     }
     if (this.user.role === 'student') {
       this.isStudentUpdateLesson = true
@@ -193,10 +220,12 @@ export class CreateLessonComponent implements OnInit {
                 }
                 if (this.teachers.length > 0) {
                   const currentLector = this.teachers.find(
-                    t => t.LectorId === +this.user.id
-                  );
+                    (t) => t.LectorId === +this.user.id
+                  )
                   if (currentLector) {
-                    this.formGroup.controls.teacher.setValue(currentLector.LectorId)
+                    this.formGroup.controls.teacher.setValue(
+                      currentLector.LectorId
+                    )
                     this.lesson.Teacher = currentLector
                   } else {
                     this.formGroup.controls.teacher.reset()
@@ -211,11 +240,13 @@ export class CreateLessonComponent implements OnInit {
                   const fallbackTeacher = {
                     LectorId: +this.user.id,
                     FullName: this.user.userName,
-                  };
+                  }
 
                   this.teachers = [fallbackTeacher]
                   this.lesson.Teacher = fallbackTeacher
-                  this.formGroup.controls.teacher.setValue(fallbackTeacher.LectorId)
+                  this.formGroup.controls.teacher.setValue(
+                    fallbackTeacher.LectorId
+                  )
                 }
               })
           }
@@ -248,9 +279,10 @@ export class CreateLessonComponent implements OnInit {
       this.dayOfLesson = this.data.lesson.start
       this.startTimeOfLesson = this.startHour + ':' + this.startMin
       this.endTimeOfLesson = this.endHour + ':' + this.endMin
-      this.memo = this.data.lesson.Notes && this.data.lesson.Notes.length > 0
-        ? this.data.lesson.Notes[0].Text
-        : '';
+      this.memo =
+        this.data.lesson.Notes && this.data.lesson.Notes.length > 0
+          ? this.data.lesson.Notes[0].Text
+          : ''
       this.lesson.Audience = this.lessonservice.getTitlePart(
         this.data.lesson.title,
         1
@@ -260,13 +292,13 @@ export class CreateLessonComponent implements OnInit {
         2
       )
 
-      const rawType = this.lessonservice.getType(this.data.lesson.title).trim();
-      const found = this.lessonTypes.find(type => type[1] === rawType);
+      const rawType = this.lessonservice.getType(this.data.lesson.title).trim()
+      const found = this.lessonTypes.find((type) => type[1] === rawType)
       if (found) {
-        this.formGroup.get('type').setValue(found[0]);
-        this.changedType = found[0];
+        this.formGroup.get('type').setValue(found[0])
+        this.changedType = found[0]
 
-        this.applyTypeRestrictions(found[0]);
+        this.applyTypeRestrictions(found[0])
       }
 
       this.disableNote = true
@@ -418,37 +450,45 @@ export class CreateLessonComponent implements OnInit {
     this.lesson.GroupId = this.formGroup.controls.group.value
     this.lesson.SubGroupId = this.formGroup.controls.subGroup.value
     if (this.isStudentUpdateLesson) {
-        if (this.memo && this.memo.trim() !== '') {
-              const personalNote: Note = {
-                id: this.note.id,
-                start: new Date(this.lesson.Date + 'T' + this.lesson.Start),
-                end: new Date(this.lesson.Date + 'T' + this.lesson.End),
-                title: '',
-                note: this.memo,
-              };
+      if (this.memo && this.memo.trim() !== '') {
+        const personalNote: Note = {
+          id: this.note.id,
+          start: new Date(this.lesson.Date + 'T' + this.lesson.Start),
+          end: new Date(this.lesson.Date + 'T' + this.lesson.End),
+          title: '',
+          note: this.memo,
+        }
 
-              this.noteService
-                .savePersonalNote(personalNote, this.lessonservice.formatDate2(this.dayOfLesson),
-                 this.startTimeOfLesson, this.endTimeOfLesson, this.note.id)
-                .subscribe({
-                  next: (res) => {
-                    this.lesson.personalNote = personalNote;
-                    if (this.data.notes && this.data.notes.global) {
-                      this.lesson.Notes = [
-                        { Text: this.data.notes.global.text, Id: this.data.notes.global.id }
-                      ];
-                    }
-                    this.dialogRef.close({
-                      lesson: this.lesson,
-                      type: 'lesson',
-                      code: res.Code,
-                      message: this.translate.transform(res.Message, res.Message)
-                    });
+        this.noteService
+          .savePersonalNote(
+            personalNote,
+            this.lessonservice.formatDate2(this.dayOfLesson),
+            this.startTimeOfLesson,
+            this.endTimeOfLesson,
+            this.note.id
+          )
+          .subscribe({
+            next: (res) => {
+              this.lesson.personalNote = personalNote
+              if (this.data.notes && this.data.notes.global) {
+                this.lesson.Notes = [
+                  {
+                    Text: this.data.notes.global.text,
+                    Id: this.data.notes.global.id,
                   },
-                  error: (err) => {
-                    console.error('Ошибка при сохранении личной заметки', err);
-                  },
-                });
+                ]
+              }
+              this.dialogRef.close({
+                lesson: this.lesson,
+                type: ScheduleEventType.Lesson,
+                code: res.Code,
+                message: this.translate.transform(res.Message, res.Message),
+              })
+            },
+            error: (err) => {
+              console.error('Ошибка при сохранении личной заметки', err)
+            },
+          })
       }
     } else {
       this.lessonservice
@@ -503,17 +543,21 @@ export class CreateLessonComponent implements OnInit {
                   }
 
                   this.lesson.GroupName = this.groups
-                     .slice(0, this.groups.length - 1)
-                    .map(g => g.GroupName).join('\n');
+                    .slice(0, this.groups.length - 1)
+                    .map((g) => g.GroupName)
+                    .join('\n')
 
                   this.dialogRef.close({
                     lesson: this.lesson,
-                    type: 'lesson',
+                    type: ScheduleEventType.Lesson,
                     code: l.Code,
                     message: this.translate.transform(l.Message, l.Message),
                   })
                 } else {
-                  this.dialogRef.close({ code: l.Code, message: this.translate.transform(l.Message, l.Message) })
+                  this.dialogRef.close({
+                    code: l.Code,
+                    message: this.translate.transform(l.Message, l.Message),
+                  })
                 }
               })
           } else if (
@@ -552,12 +596,15 @@ export class CreateLessonComponent implements OnInit {
                   }
                   this.dialogRef.close({
                     lesson: this.lesson,
-                    type: 'lesson',
+                    type: ScheduleEventType.Lesson,
                     code: l.Code,
                     message: this.translate.transform(l.Message, l.Message),
                   })
                 } else {
-                  this.dialogRef.close({ code: l.Code, message: this.translate.transform(l.Message, l.Message) })
+                  this.dialogRef.close({
+                    code: l.Code,
+                    message: this.translate.transform(l.Message, l.Message),
+                  })
                 }
               })
           } else if (
@@ -596,12 +643,15 @@ export class CreateLessonComponent implements OnInit {
                   }
                   this.dialogRef.close({
                     lesson: this.lesson,
-                    type: 'lesson',
+                    type: ScheduleEventType.Lesson,
                     code: l.Code,
                     message: this.translate.transform(l.Message, l.Message),
                   })
                 } else {
-                  this.dialogRef.close({ code: l.Code, message: this.translate.transform(l.Message, l.Message) })
+                  this.dialogRef.close({
+                    code: l.Code,
+                    message: this.translate.transform(l.Message, l.Message),
+                  })
                 }
               })
           } else if (
@@ -621,32 +671,54 @@ export class CreateLessonComponent implements OnInit {
                 this.lesson.Teacher.LectorId,
                 this.memo
               )
-              .subscribe((res) => {
-                const schedule = res.Schedule
-                schedule.Teacher.FullName = this.lessonservice.cutTeacherName(
-                  this.lesson.Teacher.FullName
-                )
-                this.dialogRef.close({
-                  lesson: {
-                        ...this.lesson,
-                        Id: schedule.Id,
-                        StartTime: schedule.StartTime,
-                        EndTime: schedule.EndTime,
-                        Day: schedule.Day,
-                        Subject: schedule.Subject,
-                        Teacher: schedule.Teacher,
-                        Building: schedule.Building,
-                        Audience: schedule.Audience,
-                        GroupId: schedule.GroupId,
-                        GroupName: this.currentGroup ? this.currentGroup.GroupName : ""
-                      },
-                  type: 'course',
-                  code: res.Code,
-                  message: this.translate.transform(res.Message, res.Message),
-                })
+              .subscribe({
+                next: (res) => {
+                  const schedule = res.Schedule
+
+                  schedule.Teacher.FullName = this.lessonservice.cutTeacherName(
+                    this.lesson.Teacher.FullName
+                  )
+                  this.dialogRef.close({
+                    lesson: {
+                      ...this.lesson,
+                      Id: schedule.Id,
+                      StartTime: schedule.StartTime,
+                      EndTime: schedule.EndTime,
+                      Day: schedule.Day,
+                      Subject: schedule.Subject,
+                      Teacher: schedule.Teacher,
+                      Building: schedule.Building,
+                      Audience: schedule.Audience,
+                      GroupId: schedule.GroupId,
+                      GroupName: this.currentGroup
+                        ? this.currentGroup.GroupName
+                        : '',
+                    },
+                    type: ScheduleEventType.Course,
+                    code: res.Code,
+                    message: this.translate.transform(res.Message, res.Message),
+                  })
+                },
+
+                error: (err) => {
+                  this.dialogRef.close({
+                    lesson: null,
+                    type: ScheduleEventType.Course,
+                    code: OperationResultCode.Error,
+                    message: this.translate.transform(
+                      'text.date.response.failure.taken',
+                      'Время и место занято'
+                    ),
+                  })
+                },
               })
-          } else if (this.formGroup.controls.type.value === LessonType.GraduationProject) {
-            this.dialogRef.close({ lesson: this.lesson, type: 'diplom' })
+          } else if (
+            this.formGroup.controls.type.value === LessonType.GraduationProject
+          ) {
+            this.dialogRef.close({
+              lesson: this.lesson,
+              type: ScheduleEventType.Diplom,
+            })
             this.lessonservice
               .addDiplomConsultation(
                 this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00',
@@ -662,7 +734,10 @@ export class CreateLessonComponent implements OnInit {
             this.dialogRef.close({
               lesson: null,
               code: OperationResultCode.Error,
-              message: this.translate.transform('text.date.add.response.failure.unknown', 'text.date.add.response.failure.unknown'),
+              message: this.translate.transform(
+                'text.date.add.response.failure.unknown',
+                'text.date.add.response.failure.unknown'
+              ),
             })
           }
         })
@@ -694,15 +769,15 @@ export class CreateLessonComponent implements OnInit {
         this.lessonservice.formatDate2(this.dayOfNote),
         this.startTimeOfNote,
         this.endTimeOfNote,
-        noteId,
+        noteId
       )
       .subscribe((res) => {
         this.note.id = res.Note.Id
         this.dialogRef.close({
           code: res.Code,
           note: this.note,
-          type: 'note',
-          message: this.translate.transform(res.Message, res.Message)
+          type: ScheduleEventType.Note,
+          message: this.translate.transform(res.Message, res.Message),
         })
       })
   }
@@ -723,20 +798,20 @@ export class CreateLessonComponent implements OnInit {
 
   getTypeTooltip(): string {
     if (!this.formGroup) {
-      return '';
+      return ''
     }
-    const value = this.formGroup.get('type').value;
+    const value = this.formGroup.get('type').value
     if (value === '3') {
-      return 'text.schedule.course.project';
+      return 'text.schedule.course.project'
     }
     if (value === '4') {
-      return 'text.schedule.graduation.project';
+      return 'text.schedule.graduation.project'
     }
-    return '';
+    return ''
   }
 
   subjectChange(event): void {
-    const subjectId = event.value;
+    const subjectId = event.value
 
     if (event.value == 0) {
       this.changedType = LessonType.GraduationProject
@@ -761,37 +836,37 @@ export class CreateLessonComponent implements OnInit {
     this.lessonservice.getJoinedLector(event.value).subscribe((re) => {
       this.teachers = re
 
-      const currentLector = re.find(t => t.LectorId === +this.user.id);
+      const currentLector = re.find((t) => t.LectorId === +this.user.id)
 
       if (currentLector) {
-        this.formGroup.controls.teacher.setValue(currentLector.LectorId);
-        this.lesson.Teacher = currentLector;
-        } else {
-          this.formGroup.controls.teacher.reset();
-        }
+        this.formGroup.controls.teacher.setValue(currentLector.LectorId)
+        this.lesson.Teacher = currentLector
+      } else {
+        this.formGroup.controls.teacher.reset()
+      }
 
       if (
-          this.teachers.length === 0 &&
-          this.isDiplomAvailable &&
-          this.changedType === LessonType.GraduationProject &&
-          this.user.role === 'lector'
-        ) {
-          const fallbackTeacher = {
-            LectorId: +this.user.id,
-            FullName: this.user.userName,
-          };
-
-          this.teachers = [fallbackTeacher];
-          this.formGroup.controls.teacher.setValue(fallbackTeacher.LectorId);
-          this.lesson.Teacher = fallbackTeacher;
+        this.teachers.length === 0 &&
+        this.isDiplomAvailable &&
+        this.changedType === LessonType.GraduationProject &&
+        this.user.role === 'lector'
+      ) {
+        const fallbackTeacher = {
+          LectorId: +this.user.id,
+          FullName: this.user.userName,
         }
+
+        this.teachers = [fallbackTeacher]
+        this.formGroup.controls.teacher.setValue(fallbackTeacher.LectorId)
+        this.lesson.Teacher = fallbackTeacher
+      }
 
       this.formGroup.controls.teacher.enable()
     })
 
     this.lessonservice.getLessonTypes(subjectId).subscribe((types) => {
       this.lessonTypesFull = types as [LessonType, string][]
-    });
+    })
   }
 
   teacherChange(event): void {
@@ -832,7 +907,6 @@ export class CreateLessonComponent implements OnInit {
     this.formGroup.controls.group.updateValueAndValidity()
     this.formGroup.controls.subGroup.updateValueAndValidity()
   }
-
 
   typeChange(event): void {
     this.changedType = event.value
