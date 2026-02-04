@@ -34,12 +34,12 @@
       style="color: #f44336"
       *ngIf="file.IdFile === -1; else attached"
     >
-      {{ 'text.subjects.attachments.attached' | translate: 'Загруженный файл' }}
+      {{ 'text.subjects.attachments.attached' | translate: 'Прикрепленный файл' }}
     </td>
     <ng-template #attached>
       <td class="mdc-data-table__cell" style="color: #3f51b5">
         {{
-          'text.subjects.attachments.loaded' | translate: 'Загруженный файл'
+          'text.subjects.attachments.loaded' | translate: 'Прикрепленный файл'
         }}
       </td>
     </ng-template>

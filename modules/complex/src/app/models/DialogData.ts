@@ -25,7 +25,8 @@ export interface DialogData {
 
   attachments?: any[]
   documents?: string[]
-
+  currentIndex?: number
+  
   //Adaptive Learning
   isAdaptive?: boolean
   adaptivityType?: number

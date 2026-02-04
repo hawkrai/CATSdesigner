@@ -200,26 +200,42 @@ export class MaterialComponent implements OnInit, OnChanges {
   openFolderPDF(nodeId: number): void {
     this.complexService.getFilesForFolder(nodeId).subscribe((result) => {
       if (result) {
-        const path = '/api/Upload?fileName=' + (result && result[0])
-        const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
-          width: '1000px',
-          height: '100%',
-          data: { name: 'name', documents: result, url: path },
-        })
+        const pdfFiles = result.filter((file: string) => !file.toLowerCase().endsWith('.docx'))
+        if (pdfFiles.length > 0) {
+          const path = '/api/Upload?fileName=' + pdfFiles[0]
+          const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
+            width: '1000px',
+            height: '100%',
+            data: { 
+              name: 'name', 
+              documents: pdfFiles, 
+              url: path,
+              currentIndex: 0
+            },
+          })
 
-        dialogRef.afterClosed().subscribe((result) => {
-          console.log('The dialog was closed')
-        })
+          dialogRef.afterClosed().subscribe((result) => {
+            console.log('The dialog was closed')
+          })
+        }
       }
     })
   }
 
   openPDF(nodeId: number, filename: string): void {
     const path = '/api/Upload?fileName=' + filename
+    const siblingMaterials = this.collectSiblingMaterials(this.dataSource.data, nodeId)
+    const currentIndex = siblingMaterials.findIndex((mat) => mat === filename)
+    
     const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
       width: '1000px',
       height: '100%',
-      data: { name: 'name', url: path },
+      data: { 
+        name: 'name', 
+        url: path,
+        documents: siblingMaterials,
+        currentIndex: currentIndex >= 0 ? currentIndex : 0
+      },
     })
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -228,6 +244,57 @@ export class MaterialComponent implements OnInit, OnChanges {
     })
   }
 
+  private collectSiblingMaterials(nodes: ComplexCascade[], nodeId: number): string[] {
+    const targetNode = this.findNodeById(nodes, nodeId)
+    
+    if (!targetNode) {
+      return []
+    }
+
+    const parentNode = this.findParentNode(nodes, nodeId)
+    
+    if (parentNode && parentNode.children) {
+      return parentNode.children
+        .filter((child) => child.FilePath && !child.FilePath.toLowerCase().endsWith('.docx'))
+        .map((child) => child.FilePath)
+    }
+    
+    return nodes
+      .filter((node) => node.FilePath && !node.FilePath.toLowerCase().endsWith('.docx'))
+      .map((node) => node.FilePath)
+  }
+
+  private findNodeById(nodes: ComplexCascade[], nodeId: number): ComplexCascade | null {
+    for (const node of nodes) {
+      if (String(node.Id) === String(nodeId)) {
+        return node
+      }
+      if (node.children && node.children.length > 0) {
+        const found = this.findNodeById(node.children, nodeId)
+        if (found) {
+          return found
+        }
+      }
+    }
+    return null
+  }
+
+  private findParentNode(nodes: ComplexCascade[], nodeId: number): ComplexCascade | null {
+    for (const node of nodes) {
+      if (node.children && node.children.length > 0) {
+        const childMatch = node.children.find((child) => String(child.Id) === String(nodeId))
+        if (childMatch) {
+          return node
+        }
+        const found = this.findParentNode(node.children, nodeId)
+        if (found) {
+          return found
+        }
+      }
+    }
+    return null
+  }
+  
   openTest(node: any) {
     if (node.TestId) {
       const { item } = this.menuService.getSubjectInfo(ModuleType.SmartTest)
@@ -308,12 +375,25 @@ export class MaterialComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        const isFile = !result.isGroup
+        const hasNoAttachments = !result.attachments || result.attachments.length === 0
+        const hadNoInitialAttachments = !attachments || attachments.length === 0
+        
+        let fileData: string
+        
+        if (isFile && hasNoAttachments && hadNoInitialAttachments) {
+          fileData = JSON.stringify([])
+        } else {
+          fileData = JSON.stringify(result.attachments || [])
+        }
+        const finalFileData = result.isGroup ? '' : fileData
+        
         const concept: Concept = {
           conceptId: result.id,
           conceptName: result.name,
           parentId: result.parentId,
           isGroup: result.isGroup,
-          fileData: JSON.stringify(result.attachments),
+          fileData: finalFileData,
           userId: JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id,
         }
 
