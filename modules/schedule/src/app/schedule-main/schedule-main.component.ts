@@ -20,6 +20,7 @@ import { LessonService } from '../service/lesson.service'
 import { NoteService } from '../service/note.service'
 import { HelpPopoverScheduleComponent } from './help-popover/help-popover-schedule.component'
 import { OperationResultCode } from '../../../../../container/src/app/core/models/OperationResultCode.const'
+import { NotificationType } from '../../../../../container/src/app/core/models/notification-type.const'
 
 const colors: any = {
   color: {
@@ -369,9 +370,9 @@ export class ScheduleMainComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       let type: string
       if (result.code == OperationResultCode.Success) {
-        type = 'success'
+        type = NotificationType.Success
       } else if (result.code == OperationResultCode.Error) {
-        type = 'error'
+        type = NotificationType.Error
       }
       if (type != undefined) {
         this.notifierService.notify(type, result.message)
@@ -560,9 +561,9 @@ export class ScheduleMainComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       let type: string;
         if (result.code === OperationResultCode.Success) {
-          type = 'success';
+          type = NotificationType.Success;
         } else if (result.code === OperationResultCode.Error) {
-          type = 'error';
+          type = NotificationType.Error;
         }
 
         if (type && result.message) {
@@ -628,7 +629,7 @@ export class ScheduleMainComponent implements OnInit {
         if (!result.lesson) {
             if (result.code) {
               this.notifierService.notify(
-                result.code === '200' ? 'success' : 'error',
+                result.code === OperationResultCode.Success ? NotificationType.Success : NotificationType.Error,
                 result.message
               );
             }
@@ -644,9 +645,9 @@ export class ScheduleMainComponent implements OnInit {
         }
         let type: string
         if (result.code == OperationResultCode.Success) {
-          type = 'success'
+          type = NotificationType.Success
         } else if (result.code == OperationResultCode.Error) {
-          type = 'error'
+          type = NotificationType.Error
         }
         if (type != undefined) {
           this.notifierService.notify(type, result.message)
