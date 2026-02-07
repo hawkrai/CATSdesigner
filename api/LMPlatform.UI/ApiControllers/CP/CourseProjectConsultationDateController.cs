@@ -85,7 +85,8 @@ namespace LMPlatform.UI.ApiControllers.CP
                     Subject = CpManagementService.GetSubject(saved.SubjectId),
                     Teacher = new LecturerData(
                         LecturerService.GetLecturer(saved.LecturerId)
-                     )
+                     ),
+                    Notes = saved.Notes,
                 };
 
                 return Request.CreateResponse(
