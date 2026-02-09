@@ -1066,17 +1066,22 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
-		public void UpdateUserFile(int userFileId, bool isReceived = false, bool isReturned = false)
-		{
-			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			var userFile = repositoriesContainer.RepositoryFor<UserLabFiles>()
-				.GetBy(new Query<UserLabFiles>(e => e.Id == userFileId));
-			userFile.IsReceived = isReceived;
-			userFile.IsReturned = isReturned;
-			repositoriesContainer.RepositoryFor<UserLabFiles>().Save(userFile);
-		}
+        public void UpdateUserFile(int userFileId, bool isReceived = false, bool isReturned = false)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            var userFile = repositoriesContainer.RepositoryFor<UserLabFiles>()
+                .GetBy(new Query<UserLabFiles>(e => e.Id == userFileId));
+            if (userFile == null)
+            {
+                return;
+            }
+            userFile.IsReceived = isReceived;
+            userFile.IsReturned = isReturned;
+            repositoriesContainer.RepositoryFor<UserLabFiles>().Save(userFile);
+            repositoriesContainer.ApplyChanges();
+        }
 
-		public List<ProfileCalendarModel> GetLecturesEvents(int userId)
+        public List<ProfileCalendarModel> GetLecturesEvents(int userId)
 		{
 			var model = new List<ProfileCalendarModel>();
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())

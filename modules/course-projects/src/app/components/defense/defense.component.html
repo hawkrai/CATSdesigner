@@ -334,11 +334,23 @@
                           'text.check' | translate: 'Проверить на плагиат'
                         }}"
                         (click)="checkPlagiarismFile(fileLab)"
+                        *ngIf="isDocFile(fileLab)"
                       >
                         <mat-icon>visibility</mat-icon>
                       </button>
                     </ng-container>
                     <ng-container *ngIf="fileLab.IsReturned && !fileLab.isOldReturned">
+                      <button
+                        mat-icon-button
+                        color="primary"
+                        matTooltip="{{
+                          'text.check' | translate: 'Проверить на плагиат'
+                        }}"
+                        (click)="checkPlagiarismFile(fileLab)"
+                        *ngIf="isDocFile(fileLab)"
+                      >
+                        <mat-icon>visibility</mat-icon>
+                      </button>
                     </ng-container>
                   </td>
                 </tr>
