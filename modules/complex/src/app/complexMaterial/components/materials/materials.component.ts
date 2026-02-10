@@ -386,14 +386,13 @@ export class MaterialComponent implements OnInit, OnChanges {
         } else {
           fileData = JSON.stringify(result.attachments || [])
         }
-        const finalFileData = result.isGroup ? '' : fileData
         
         const concept: Concept = {
           conceptId: result.id,
           conceptName: result.name,
           parentId: result.parentId,
           isGroup: result.isGroup,
-          fileData: finalFileData,
+          fileData: fileData,
           userId: JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id,
         }
 

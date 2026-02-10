@@ -91,11 +91,7 @@ namespace LMPlatform.UI.ViewModels.ComplexMaterialsViewModel
         public override void Save()
         {
             InitSourceConcept();
-            if (!IsGroup)
-                ConceptManagementService.SaveConcept(SourceConcept, GetAttachments());
-            else                
-                ConceptManagementService.SaveConcept(SourceConcept);
-            
+            ConceptManagementService.SaveConcept(SourceConcept, GetAttachments());
         }
 
         private void InitSourceConcept()

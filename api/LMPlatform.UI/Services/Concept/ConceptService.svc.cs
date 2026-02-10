@@ -209,7 +209,7 @@ namespace LMPlatform.UI.Services.Concept
                     FileData = fileData
                 };
 
-                if (!conceptModel.IsGroup && !string.IsNullOrEmpty(conceptModel.FileData))
+                if (!string.IsNullOrEmpty(conceptModel.FileData))
                 {
                     var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(conceptModel.FileData).ToList();
                     conceptModel.SetAttachments(attachmentsModel);

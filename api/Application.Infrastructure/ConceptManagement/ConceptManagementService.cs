@@ -99,7 +99,6 @@ namespace Application.Infrastructure.ConceptManagement
             var res = repositoriesContainer.ConceptRepository.GetTreeConceptByElementId(elementId);
 
             return AttachTestModuleData(res);
-            //return res;
         }
 
         private Concept AttachTestModuleData(Concept root)
@@ -431,6 +430,10 @@ namespace Application.Infrastructure.ConceptManagement
         private IList<Attachment> ProcessWordAttachmentsIfExist(IList<Attachment> attachments)
         {
             var res = new List<Attachment>();
+            if (attachments == null)
+            {
+                return res;
+            }
             var convertor = new WordToPdfConvertor();
 
             foreach (var attach in attachments)
@@ -461,36 +464,50 @@ namespace Application.Infrastructure.ConceptManagement
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 attachments = ProcessWordAttachmentsIfExist(attachments);
+                
+                if (attachments != null && attachments.Count > 15)
+                {
+                    throw new InvalidOperationException("Максимальное количество файлов - 15");
+                }
+                
                 if (!string.IsNullOrEmpty(concept.Container))
                 {
-                    var deleteFiles =
-                        repositoriesContainer.AttachmentRepository.GetAll(
-                            new Query<Attachment>(e => e.PathName == concept.Container)).ToList().Where(e => attachments.All(x => x.Id != e.Id)).ToList();
-
+                    var existingFiles = repositoriesContainer.AttachmentRepository
+                        .GetAll(new Query<Attachment>(e => e.PathName == concept.Container)).ToList();  
+                    
+                    var attachmentIds = new HashSet<int>(attachments?.Select(x => x.Id) ?? Enumerable.Empty<int>());   
+                    var deleteFiles = attachmentIds.Any() 
+                        ? existingFiles.Where(e => !attachmentIds.Contains(e.Id)).ToList() 
+                        : existingFiles;
+                    
                     foreach (var attachment in deleteFiles)
                     {
                         FilesManagementService.DeleteFileAttachment(attachment);
                     }
                 }
-                else
+                else if (attachments?.Any() == true)
                 {
                     concept.Container = GetGuidFileName();
                 }
 
-                FilesManagementService.SaveFiles(attachments.Where(e => e.Id == 0), concept.Container);
-
-                foreach (var attachment in attachments)
+                if (attachments?.Any() == true)
                 {
-                    if (attachment.Id == 0)
-                    {
-                        attachment.PathName = concept.Container;
-                        attachment.UserId = concept.UserId;
-                        attachment.CreationDate = DateTime.UtcNow;
+                    FilesManagementService.SaveFiles(attachments.Where(e => e.Id == 0), concept.Container);
 
-                        repositoriesContainer.AttachmentRepository.Save(attachment);
+                    foreach (var attachment in attachments)
+                    {
+                        if (attachment.Id == 0)
+                        {
+                            attachment.PathName = concept.Container;
+                            attachment.UserId = concept.UserId;
+                            attachment.CreationDate = DateTime.UtcNow;
+
+                            repositoriesContainer.AttachmentRepository.Save(attachment);
+                        }
                     }
                 }
-                concept.Published = (!concept.IsGroup && !attachments.Any()) ? true : attachments.Any();
+                concept.Published = true;
+
                 Concept source = null;
                 if (concept.Id != 0)
                     source = GetById(concept.Id);
@@ -499,7 +516,12 @@ namespace Application.Infrastructure.ConceptManagement
                 if (source == null)
                     InitNeighborConcept(concept, repositoriesContainer);
                 BindNeighborConcept(concept, source, repositoriesContainer);
-                TryPublishParent(concept.ParentId, repositoriesContainer);
+
+                if (concept.ParentId.HasValue)
+                {
+                    TryPublishParent(concept.ParentId, repositoriesContainer);
+                }
+                
                 return concept;
             }
         }
@@ -518,15 +540,15 @@ namespace Application.Infrastructure.ConceptManagement
         {
             if (parentId.HasValue)
             {
-                var parent = GetById(parentId.Value);
-                var childs = GetElementsByParentId(parent.Id);
-                parent.Published = parent.Published ? parent.Published : childs.Any(c => c.Published);
-                repoContainer.ConceptRepository.Save(parent);
-                repoContainer.ApplyChanges();
-                TryPublishParent(parent.ParentId, repoContainer);
+                var parent = repoContainer.ConceptRepository.GetBy(new Query<Concept>(c => c.Id == parentId.Value));
+                if (parent != null && !parent.Published)
+                {
+                    parent.Published = true;
+                    repoContainer.ConceptRepository.Save(parent);
+                    repoContainer.ApplyChanges();
+                    TryPublishParent(parent.ParentId, repoContainer);
+                }
             }
-            else
-                return;
         }
 
         private void AttachFolderToSection(string folderName, int userId, int subjectId, string sectionName)
