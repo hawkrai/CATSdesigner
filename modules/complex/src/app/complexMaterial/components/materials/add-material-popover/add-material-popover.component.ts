@@ -270,7 +270,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
   }
 
   get shouldHideFileUpload(): boolean {
-    if (this.data && this.data.testId) {
+    if (this.data && (this.data.isGroup || this.data.testId)) {
       return true
     }
     

@@ -13,7 +13,8 @@ export class NoteService {
     dateNote: string,
     start: string,
     end: string,
-    id: any
+    id: any,
+    lessonId?: number
   ): Observable<any> {
     return this.http.post<any>(
       '/Services/Notes/NotesService.svc/SavePersonalNote',
@@ -24,6 +25,7 @@ export class NoteService {
         startTime: start,
         endTime: end,
         note: noteAdd.note,
+        lessonId
       }
     )
   }

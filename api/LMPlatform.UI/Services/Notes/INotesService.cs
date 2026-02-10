@@ -27,7 +27,7 @@ namespace LMPlatform.UI.Services.Notes
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/SavePersonalNote")]
-        SavePersonalNoteViewResult SavePersonalNote(int id, string text, string date, string startTime, string endTime, string note);
+        SavePersonalNoteViewResult SavePersonalNote(int id, string text, string date, string startTime, string endTime, string note, int? lessonId);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/DeletePersonalNote")]

@@ -4,4 +4,5 @@ export class Note {
   end: Date
   title: string
   note: string
+  lessonId?: number
 }
