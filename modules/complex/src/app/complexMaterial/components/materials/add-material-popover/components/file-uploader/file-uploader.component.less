@@ -1,10 +1,23 @@
 .file-table {
   width: 100%;
   margin-top: 25px;
+  display: block;
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+}
+
+.file-table table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 100%;
+  table-layout: auto;
 }
 
 .container {
-  height: 32vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .attachment {
@@ -26,4 +39,6 @@
   margin-top: 10px;
   background: #388e3c;
   color: white;
+  width: auto;
+  align-self: flex-start;
 }

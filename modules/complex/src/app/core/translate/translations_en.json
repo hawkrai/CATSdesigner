@@ -13,7 +13,7 @@
   "common.file": "File",
   "common.inputFileName": "Enter the item name",
   "common.fileName": "Enter the item name",
-  "common.pinnedDoc": "Attached material (Can add only one file .pdf, .docx or .doc)",
+  "common.pinnedDoc": "Attached material (Can add up to 15 files .pdf, .docx or .doc)",
   "common.pretest": "Pass the pre-test",
   "common.prevDocument": "Previous document",
   "common.nextDocument": "Next document",
@@ -104,5 +104,7 @@
   "complex.test.points.few": "points",
   "complex.test.points.many": "points",
   "complex.test.tooltip": "The test score is {points} {pointsText}. The test took {time}",
-  "complex.test.score": "The test score is"
+  "complex.test.score": "The test score is",
+  "complex.maxFilesReached": "Maximum file limit reached (15)",
+  "complex.filesLimitWarning": "Only {count} file(s) can be added. Other files were not added."
 }

@@ -7,9 +7,11 @@ import { ComplexCascade } from '../../../../models/ComplexCascade'
 import { BaseFileManagementComponent } from './base-file-management.component'
 import { IAppState } from '../../../../store/states/app.state'
 import { TranslatePipe } from 'educats-translate'
-import { CatsService } from 'src/app/service/cats.service'
+import { CatsService, CodeType } from 'src/app/service/cats.service'
 import { Help } from '../../../../models/help.model'
 import { MaterialFormType } from '../../../../models/material-form-type.enum'
+import { take } from 'rxjs/operators'
+import * as filesActions from '../../../../store/actions/files.actions'
 
 @Component({
   selector: 'add-app-materials-popover',
@@ -29,6 +31,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
   private initialName: string = ''
   private initialParentId: any = null
   private initialFiles: any[] = []
+  private initialIsGroup: boolean = false
 
   addComponentHelp: Help = {
     message: '',
@@ -104,6 +107,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
         if (this.editMode) {
           this.initialName = this.data.name || ''
           this.initialParentId = this.data.parentId || null
+          this.initialIsGroup = this.data.isGroup || false
           if (this.data.attachments) {
             this.initialFiles = JSON.parse(JSON.stringify(this.data.attachments))
           }
@@ -310,6 +314,11 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
       return true
     }
 
+    const currentIsGroup = this.data.isGroup || false
+    if (currentIsGroup !== this.initialIsGroup) {
+      return true
+    }
+
     return false
   }
 
@@ -362,5 +371,21 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     }
 
     return true
+  }
+
+  uploadFile(file: File) {
+    this.files$.pipe(take(1)).subscribe(files => {
+      if (files.length >= 15) {
+        this.catsService.showMessage({
+          Message: this.translatePipe.transform(
+            'complex.maxFilesReached',
+            'Достигнут максимальный лимит файлов (15)'
+          ),
+          Type: CodeType.error,
+        })
+        return
+      }
+      this.store.dispatch(filesActions.uploadFile({ file }))
+    })
   }
 }

@@ -13,7 +13,7 @@
   "common.file": "Файл",
   "common.inputFileName": "Введите название элемента",
   "common.fileName": "Введите название элемента",
-  "common.pinnedDoc": "Прикрепленный материал (Можно добавить только один файл формата .pdf, .docx или .doc)",
+  "common.pinnedDoc": "Прикрепленный материал (Можно добавить до 15 файлов формата .pdf, .docx или .doc)",
   "common.pretest": "Пройти предтест",
   "common.prevDocument": "Предыдущий документ",
   "common.nextDocument": "Следующий документ",
@@ -104,5 +104,7 @@
   "complex.test.points.few": "балла",
   "complex.test.points.many": "баллов",
   "complex.test.tooltip": "Оценка за тест {points} {pointsText}, затраченное время - {time}",
-  "complex.test.score": "Оценка за тест"
+  "complex.test.score": "Оценка за тест",
+  "complex.maxFilesReached": "Достигнут максимальный лимит файлов (15)",
+  "complex.filesLimitWarning": "Можно добавить только {count} файл(ов). Остальные файлы не были добавлены."
 }

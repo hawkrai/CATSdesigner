@@ -98,11 +98,11 @@
       header="{{
         'common.pinnedDoc'
           | translate
-            : 'Прикрепленный материал (Можно добавить только один файл формата .pdf, .docx или .doc)'
+            : 'Прикрепленный материал (Можно добавить до 15 файлов формата .pdf, .docx или .doc)'
       }}"
       (delete)="deleteFile($event)"
       [files]="files"
-      [disabled]="files.length > 0"
+      [disabled]="files.length >= 15"
       (upload)="uploadFile($event)"
     ></app-file-uploader>
   </div>

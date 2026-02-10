@@ -27,6 +27,7 @@ export class BaseFileManagementComponent<T> implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.files$ = this.store.select(filesSelectors.getFiles)
     if (this.data.attachments) {
       const values = JSON.stringify(
         this.data.attachments.map(
@@ -35,7 +36,6 @@ export class BaseFileManagementComponent<T> implements OnInit, OnDestroy {
         )
       )
       this.store.dispatch(filesActions.loadAttachments({ values }))
-      this.files$ = this.store.select(filesSelectors.getFiles)
     }
   }
 
