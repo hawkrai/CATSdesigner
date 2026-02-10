@@ -483,12 +483,12 @@ export class CreateLessonComponent implements OnInit {
           .subscribe({
             next: (res) => {
               const updatedLesson: Lesson = {
-                ...this.data.lesson,
-                personalNote: res.Note,
+                ...this.lesson,
+                personalNote: personalNote
               }
               this.dialogRef.close({
                 lesson: updatedLesson,
-                type: 'lesson',
+                type: ScheduleEventType.Lesson,
                 code: res.Code,
                 message: this.translate.transform(res.Message, res.Message),
               })
@@ -687,7 +687,15 @@ export class CreateLessonComponent implements OnInit {
               .subscribe({
                 next: (res) => {
                   const schedule = res.Schedule
-
+                  if (this.memo && this.memo.trim() !== '') {
+                    this.lesson.Notes = [
+                      {
+                        Text: this.memo,
+                      },
+                    ]
+                  } else {
+                    this.lesson.Notes = []
+                  }
                   schedule.Teacher.FullName = this.lessonservice.cutTeacherName(
                     this.lesson.Teacher.FullName
                   )

@@ -212,6 +212,9 @@ export class ScheduleMainComponent implements OnInit {
   }
 
   getTitleCourseConsultation(consultation: any) {
+    let memo = ''
+    memo = this.getLessonNoteText(consultation)
+
     return (
       consultation.StartTime.split(':')[0] +
       ':' +
@@ -237,6 +240,7 @@ export class ScheduleMainComponent implements OnInit {
       '|' +
       consultation.Subject.Id +
       '|' +
+      memo +
       '|' +
       consultation.GroupId +
       '|' +
@@ -627,22 +631,33 @@ export class ScheduleMainComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result != null) {
         if (!result.lesson) {
-            if (result.code) {
-              this.notifierService.notify(
-                result.code === OperationResultCode.Success ? NotificationType.Success : NotificationType.Error,
-                result.message
-              );
-            }
-            return;
+          if (result.code) {
+            this.notifierService.notify(
+              result.code === OperationResultCode.Success ? NotificationType.Success : NotificationType.Error,
+              result.message
+            )
           }
+          return
+        }
 
         this.lesson = result.lesson
-        const index = this.lessons.findIndex(l => l.Id === result.lesson.Id);
+        const index = this.lessons.findIndex(l => l.Id === result.lesson.Id)
         if (index > -1) {
-          this.lessons[index] = result.lesson;
+          this.lessons[index] = this.lesson
         } else {
-          this.lessons.push(result.lesson);
+          this.lessons.push(result.lesson)
         }
+
+        this.lesson.Teacher = {
+          FullName: this.lessonservice.getTitlePart(lessonChanged.title, 5),
+        }
+
+        this.lesson.GroupName =
+          this.lessonservice.getTitlePart(lessonChanged.title, 12)
+
+        this.lesson.SubGroupName =
+          this.lessonservice.getTitlePart(lessonChanged.title, 13)
+
         let type: string
         if (result.code == OperationResultCode.Success) {
           type = NotificationType.Success
@@ -767,6 +782,9 @@ export class ScheduleMainComponent implements OnInit {
       .subscribe((result) => {
         if (result.Consultations != undefined) {
           result.Consultations.forEach((consultation) => {
+            if (typeof consultation.Notes === 'string') {
+                  consultation.Notes = [{ Text: consultation.Notes }]
+            }
             const startT = new Date(
               consultation.Day.split('.')[2] +
                 '-' +
@@ -790,6 +808,30 @@ export class ScheduleMainComponent implements OnInit {
                 consultation.Teacher.FullName
               )
             }
+
+            const lessonLike: Lesson = {
+                      Id: consultation.Id,
+                      Date: consultation.Day,
+                      Start: consultation.StartTime,
+                      End: consultation.EndTime,
+                      Type: 'КП',
+                      Teacher: consultation.Teacher,
+                      Name: consultation.Subject.Name,
+                      ShortName: consultation.Subject.ShortName,
+                      Building: consultation.Building,
+                      Audience: consultation.Audience,
+                      Color: consultation.Subject.Color,
+                      SubjectId: consultation.Subject.Id,
+                      Notes: consultation.Notes,
+                      GroupId: consultation.GroupId,
+                      SubGroupId: null,
+                      GroupName: consultation.GroupName,
+                      SubGroupName: null,
+                      personalNote: undefined,
+            }
+
+            this.lessons.push(lessonLike)
+
             this.events.push({
               id: consultation.Id,
               start: startT,
