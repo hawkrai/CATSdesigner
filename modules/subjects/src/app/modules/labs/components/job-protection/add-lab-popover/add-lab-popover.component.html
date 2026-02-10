@@ -4,7 +4,7 @@
   </ng-container>
   <ng-container body>
     <form class="form" [formGroup]="jobProtectionForm">
-      <mat-form-field class="example-full-width" *ngIf="!data.body.isTeacher">
+      <mat-form-field class="example-full-width" *ngIf="!data.body?.isTeacher">
         <mat-select
           formControlName="labId"
           [placeholder]="
@@ -28,9 +28,9 @@
           class="lab-work-component__news-text"
           matInput
           formControlName="comments"
-          (paste)="onPaste($event.clipboardData)"
-        >
-        </textarea>
+          (paste)="onPaste($event)"
+          placeholder="Введите комментарий"
+        ></textarea>
       </mat-form-field>
       <app-file-uploader
         [disabled]="filesArray.length > 0"
@@ -56,7 +56,7 @@
       mat-raised-button
       (click)="onSave()"
       color="primary"
-      [disabled]="jobProtectionForm.invalid || !isValid()"
+      [disabled]="jobProtectionForm.invalid || !canSave()"
     >
       {{ data.buttonText }}
     </button>

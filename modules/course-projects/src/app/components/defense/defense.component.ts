@@ -20,22 +20,6 @@ import { ToastrService } from 'ngx-toastr';
 import { forkJoin, interval, Subscription } from 'rxjs';
 import { switchMap, startWith } from 'rxjs/operators';
 
-export enum LocalStorageKeys {
-  RETURNED_FILES = 'returnedFiles'
-}
-
-interface IReturnedFileData {
-  Id: string;
-  Attachments: Attachment[];
-  Comments?: string;
-  Date?: string;
-  fileSize?: string;
-}
-
-interface IReturnedFilesStorage {
-  [fileId: string]: IReturnedFileData;
-}
-
 interface IExtendedUserLabFile extends UserLabFile {
   isOldReturned?: boolean;
   fileSize?: string;
@@ -113,15 +97,6 @@ export class DefenseComponent implements OnInit, OnDestroy {
     this.expandedStudentIds.clear();
   }
 
-  private getReturnedFiles(): IReturnedFilesStorage {
-    const stored = localStorage.getItem(LocalStorageKeys.RETURNED_FILES);
-    return stored ? JSON.parse(stored) : {};
-  }
-
-  private setReturnedFiles(files: IReturnedFilesStorage) {
-    localStorage.setItem(LocalStorageKeys.RETURNED_FILES, JSON.stringify(files));
-  }
-
   private startPollingForStudent() {
     this.stopPolling();
 
@@ -138,28 +113,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res && res.UserLabFiles) {
           const oldFiles = this.userLabFiles;
-          const returnedFiles = this.getReturnedFiles();
-
-          this.userLabFiles = res.UserLabFiles.map(file => {
-            if (returnedFiles[file.Id]) {
-              const savedAttachments = returnedFiles[file.Id].Attachments;
-              const savedComments = returnedFiles[file.Id].Comments;
-              const savedDate = returnedFiles[file.Id].Date;
-              const savedFileSize = returnedFiles[file.Id].fileSize;
-              
-              return {
-                ...file,
-                IsReturned: true,
-                Attachments: savedAttachments,
-                Comments: savedComments !== undefined ? savedComments : file.Comments,
-                Date: savedDate !== undefined ? savedDate : file.Date,
-                fileSize: savedFileSize !== undefined ? savedFileSize : file.fileSize,
-                isOldReturned: true
-              };
-            }
-            return file;
-          });
-
+          this.userLabFiles = res.UserLabFiles;
           this.canAddJob = !this.userLabFiles.find((file) => !file.IsReturned);
           this.checkForStudentUpdates(oldFiles, this.userLabFiles);
         } else {
@@ -190,8 +144,6 @@ export class DefenseComponent implements OnInit, OnDestroy {
   private checkForStudentUpdates(oldFiles: IExtendedUserLabFile[], newFiles: IExtendedUserLabFile[]) {
     if (!oldFiles || oldFiles.length === 0) return;
 
-    const returnedFiles = this.getReturnedFiles();
-
     newFiles.forEach(newFile => {
       const oldFile = oldFiles.find(f => f.Id === newFile.Id);
 
@@ -206,17 +158,6 @@ export class DefenseComponent implements OnInit, OnDestroy {
         }
 
         if (!oldFile.IsReturned && newFile.IsReturned) {
-          returnedFiles[oldFile.Id] = {
-            Id: oldFile.Id,
-            Attachments: Array.isArray(oldFile.Attachments) 
-              ? oldFile.Attachments.map(att => ({...att}))
-              : [],
-            Comments: oldFile.Comments,
-            Date: oldFile.Date,
-            fileSize: oldFile.fileSize
-          };
-          this.setReturnedFiles(returnedFiles);
-
           this.toastr.warning(
             this.translatePipe.transform(
               'text.course.defence.notification.returned',
@@ -245,34 +186,13 @@ export class DefenseComponent implements OnInit, OnDestroy {
         }
 
         const oldStudentFiles = this.studentFiles;
-        const returnedFiles = this.getReturnedFiles();
         const mappedStudents: IExtendedStudentFilesModel[] = [];
 
         for (let i = 0; i < res.Students.length; i++) {
           const student = res.Students[i];
           let hasNewWork = false;
 
-          let fileLabs: IExtendedUserLabFile[] = student.FileLabs || [];
-
-          fileLabs = fileLabs.map(file => {
-            if (returnedFiles[file.Id]) {
-              const savedAttachments = returnedFiles[file.Id].Attachments;
-              const savedComments = returnedFiles[file.Id].Comments;
-              const savedDate = returnedFiles[file.Id].Date;
-              const savedFileSize = returnedFiles[file.Id].fileSize;
-              
-              return {
-                ...file,
-                IsReturned: true,
-                Attachments: savedAttachments,
-                Comments: savedComments !== undefined ? savedComments : file.Comments,
-                Date: savedDate !== undefined ? savedDate : file.Date,
-                fileSize: savedFileSize !== undefined ? savedFileSize : file.fileSize,
-                isOldReturned: true
-              } as IExtendedUserLabFile;
-            }
-            return file;
-          });
+          const fileLabs: IExtendedUserLabFile[] = student.FileLabs || [];
 
           if (fileLabs && fileLabs.length > 0) {
             hasNewWork = fileLabs.some(file =>
@@ -308,28 +228,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
       .getCourseProjectFilesForUser(this.subjectId, this.courseUser.UserId)
       .subscribe((res) => {
         if (res && res.UserLabFiles) {
-          const returnedFiles = this.getReturnedFiles();
-
-          this.userLabFiles = res.UserLabFiles.map(file => {
-            if (returnedFiles[file.Id]) {
-              const savedAttachments = returnedFiles[file.Id].Attachments;
-              const savedComments = returnedFiles[file.Id].Comments;
-              const savedDate = returnedFiles[file.Id].Date;
-              const savedFileSize = returnedFiles[file.Id].fileSize;
-              
-              return {
-                ...file,
-                IsReturned: true,
-                Attachments: savedAttachments,
-                Comments: savedComments !== undefined ? savedComments : file.Comments,
-                Date: savedDate !== undefined ? savedDate : file.Date,
-                fileSize: savedFileSize !== undefined ? savedFileSize : file.fileSize,
-                isOldReturned: true
-              };
-            }
-            return file;
-          });
-
+          this.userLabFiles = res.UserLabFiles;
           this.canAddJob = !this.userLabFiles.find((file) => !file.IsReturned);
         } else {
           this.canAddJob = true;
@@ -370,61 +269,48 @@ export class DefenseComponent implements OnInit, OnDestroy {
         subjectId: this.subjectId,
         groupId: this.selectedGroup.GroupId,
       })
-      .subscribe((res) => {
-        if (!res || !res.Students) {
-          this.studentFiles = [];
-          this.updateGroupHasNewWork();
-          return;
-        }
-
-        const returnedFiles = this.getReturnedFiles();
-        const mappedStudents: IExtendedStudentFilesModel[] = [];
-
-        for (let i = 0; i < res.Students.length; i++) {
-          const student = res.Students[i];
-          let hasNewWork = false;
-
-          let fileLabs: IExtendedUserLabFile[] = student.FileLabs || [];
-
-          fileLabs = fileLabs.map(file => {
-            if (returnedFiles[file.Id]) {
-              const savedAttachments = returnedFiles[file.Id].Attachments;
-              const savedComments = returnedFiles[file.Id].Comments;
-              const savedDate = returnedFiles[file.Id].Date;
-              const savedFileSize = returnedFiles[file.Id].fileSize;
-              
-              return {
-                ...file,
-                IsReturned: true,
-                Attachments: savedAttachments,
-                Comments: savedComments !== undefined ? savedComments : file.Comments,
-                Date: savedDate !== undefined ? savedDate : file.Date,
-                fileSize: savedFileSize !== undefined ? savedFileSize : file.fileSize,
-                isOldReturned: true
-              } as IExtendedUserLabFile;
-            }
-            return file;
-          });
-
-          if (fileLabs && fileLabs.length > 0) {
-            hasNewWork = fileLabs.some(file =>
-              !file.IsReceived && !file.IsReturned
-            );
+      .subscribe({
+        next: (res) => {
+          if (!res) {
+            this.studentFiles = [];
+            this.updateGroupHasNewWork();
+            return;
           }
 
-          const isExpanded = this.expandedStudentIds.has(student.StudentId);
+          if (!res.Students || res.Students.length === 0) {
+            this.studentFiles = [];
+            this.updateGroupHasNewWork();
+            return;
+          }
 
-          mappedStudents.push({
-            ...student,
-            FileLabs: fileLabs,
-            hasNewWork,
-            isExpanded
-          });
+          const mappedStudents: IExtendedStudentFilesModel[] = [];
+
+          for (let i = 0; i < res.Students.length; i++) {
+            const student = res.Students[i];
+            let hasNewWork = false;
+
+            const fileLabs: IExtendedUserLabFile[] = student.FileLabs || [];
+
+            if (fileLabs.length > 0) {
+              hasNewWork = fileLabs.some(file => !file.IsReceived && !file.IsReturned);
+            }
+
+            const isExpanded = this.expandedStudentIds.has(student.StudentId);
+
+            mappedStudents.push({
+              ...student,
+              FileLabs: fileLabs,
+              hasNewWork,
+              isExpanded
+            });
+          }
+
+          this.studentFiles = mappedStudents;
+          this.updateGroupHasNewWork();
+          this.emitGlobalWorkStatus();
+        },
+        error: (err) => {
         }
-
-        this.studentFiles = mappedStudents;
-        this.updateGroupHasNewWork();
-        this.emitGlobalWorkStatus();
       });
   }
 
@@ -508,29 +394,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
     this.labFilesService
       .getCourseProjectFilesForUser(this.subjectId, studentId)
       .subscribe((res) => {
-        let newLabs: IExtendedUserLabFile[] = res && res.UserLabFiles ? res.UserLabFiles : [];
-        const returnedFiles = this.getReturnedFiles();
-
-        newLabs = newLabs.map(file => {
-          if (returnedFiles[file.Id]) {
-            const savedAttachments = returnedFiles[file.Id].Attachments;
-            const savedComments = returnedFiles[file.Id].Comments;
-            const savedDate = returnedFiles[file.Id].Date;
-            const savedFileSize = returnedFiles[file.Id].fileSize;
-            
-            return {
-              ...file,
-              IsReturned: true,
-              Attachments: savedAttachments,
-              Comments: savedComments !== undefined ? savedComments : file.Comments,
-              Date: savedDate !== undefined ? savedDate : file.Date,
-              fileSize: savedFileSize !== undefined ? savedFileSize : file.fileSize,
-              isOldReturned: true
-            } as IExtendedUserLabFile;
-          }
-          return file;
-        });
-
+        const newLabs: IExtendedUserLabFile[] = res && res.UserLabFiles ? res.UserLabFiles : [];
         const hasNew = newLabs.some(f => !f.IsReceived && !f.IsReturned);
         const isExpanded = this.expandedStudentIds.has(studentId);
 
@@ -710,7 +574,7 @@ export class DefenseComponent implements OnInit, OnDestroy {
         guidFileName +
         '"}]',
       comments: dialogResult ? dialogResult.comments : '',
-      id: !userLabFile || isLecturer ? '0' : userLabFile.Id,
+      id: isLecturer && userLabFile ? userLabFile.Id : '0',
       isCp: true,
       isRet: isLecturer,
       pathFile: userLabFile ? userLabFile.PathFile : '',
@@ -718,42 +582,30 @@ export class DefenseComponent implements OnInit, OnDestroy {
       userId: studentId,
     };
 
-    this.labFilesService.sendJob(payload).subscribe((res) => {
-      if (isLecturer && userLabFile) {
-        const extendedFile: IExtendedUserLabFile = userLabFile;
-        extendedFile.IsReturned = true;
-        extendedFile.isOldReturned = true;
+    this.labFilesService.sendJob(payload).subscribe({
+      next: (res) => {
+        if (isLecturer && userLabFile) {
+          this.updateStudentJobs(studentId);
+        } else if (!isLecturer) {
+          this.loadStudentFiles();
+        }
 
-        const returnedFiles = this.getReturnedFiles();
-        returnedFiles[userLabFile.Id] = {
-          Id: userLabFile.Id,
-          Attachments: Array.isArray(userLabFile.Attachments) 
-            ? userLabFile.Attachments.map(att => ({...att}))
-            : [],
-          Comments: userLabFile.Comments,
-          Date: userLabFile.Date,
-          fileSize: userLabFile.fileSize
-        };
-        this.setReturnedFiles(returnedFiles);
+        this.canAddJob = false;
 
-        this.updateStudentJobs(studentId);
-      } else if (!isLecturer) {
-        this.loadStudentFiles();
+        this.toastr.success(
+          isLecturer
+            ? this.translatePipe.transform(
+                'text.course.defence.correct',
+                'Работа отправлена для исправления'
+              )
+            : this.translatePipe.transform(
+                'text.course.defence.dialog.success',
+                'Работа успешно добавлена'
+              )
+        );
+      },
+      error: (err) => {
       }
-
-      this.canAddJob = false;
-
-      this.toastr.success(
-        isLecturer
-          ? this.translatePipe.transform(
-            'text.course.defence.correct',
-            'Работа отправлена для исправления'
-          )
-          : this.translatePipe.transform(
-            'text.course.defence.dialog.success',
-            'Работа успешно добавлена'
-          )
-      );
     });
   }
 
@@ -816,5 +668,17 @@ export class DefenseComponent implements OnInit, OnDestroy {
 
   canCheckPlagiarism(file: IExtendedUserLabFile): boolean {
     return file.IsReceived === true;
+  }
+
+  isDocFile(file: IExtendedUserLabFile): boolean {
+    if (!file.Attachments || file.Attachments.length === 0) {
+      return false;
+    }
+
+    const attachment = file.Attachments[0];
+    const fileName = attachment.Name || attachment.FileName || '';
+    const lowerFileName = fileName.toLowerCase();
+
+    return lowerFileName.endsWith('.doc') || lowerFileName.endsWith('.docx');
   }
 }

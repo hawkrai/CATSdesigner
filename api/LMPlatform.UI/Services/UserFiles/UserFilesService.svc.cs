@@ -58,7 +58,14 @@ namespace LMPlatform.UI.Services.UserFiles
         {
             try
             {
-                var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
+                var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments)?.ToList() ?? new List<Attachment>();
+
+                string finalPath = pathFile;
+
+                if (isRet)
+                {
+                    finalPath = $"P{Guid.NewGuid().ToString("N").ToUpper()}";
+                }
 
                 var userLabFile = SubjectManagementService.SaveUserLabFiles(new UserLabFiles
                 {
@@ -66,14 +73,20 @@ namespace LMPlatform.UI.Services.UserFiles
                     Date = DateTime.Now,
                     UserId = userId,
                     Comments = comments,
-                    Attachments = pathFile,
-                    Id = id,
+                    Attachments = finalPath,
+                    Id = isRet ? 0 : id,
                     LabId = labId,
                     PracticalId = practicalId,
                     IsCoursProject = isCp,
                     IsReceived = false,
                     IsReturned = isRet
                 }, attachmentsModel);
+
+                if (isRet && id > 0)
+                {
+                    SubjectManagementService.UpdateUserFile(id, isReturned: true);
+                }
+
                 return new UserLabFileViewData()
                 {
                     Message = "Файл(ы) успешно отправлен(ы)",
@@ -96,16 +109,15 @@ namespace LMPlatform.UI.Services.UserFiles
                     PracticalShortName = userLabFile.Practical?.ShortName,
                 };
             }
-            catch
+            catch (Exception ex)
             {
                 return new UserLabFileViewData
                 {
-                    Message = "Произошла ошибка",
+                    Message = $"Произошла ошибка: {ex.Message}",
                     Code = "500"
                 };
             }
         }
-
         public ResultViewData DeleteUserFile(int id)
         {
             try

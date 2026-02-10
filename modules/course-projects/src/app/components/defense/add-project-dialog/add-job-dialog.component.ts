@@ -28,7 +28,16 @@ export class AddJobDialogComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    const attachment = this.data.body.attachments[0]
+    let attachment = null
+
+    if (
+      this.data.body &&
+      this.data.body.attachments &&
+      this.data.body.attachments.length > 0
+    ) {
+      attachment = this.data.body.attachments[0]
+    }
+
     if (attachment) {
       this.labFilesService
         .getAttachment({
@@ -44,7 +53,11 @@ export class AddJobDialogComponent implements AfterViewInit {
             '"]',
           deleteValues: 'DELETE',
         })
-        .subscribe((res) => (this.data.body.uploadedFile = res[0]))
+        .subscribe((res) => {
+          if (res && res.length > 0) {
+            this.data.body.uploadedFile = res[0]
+          }
+        })
     }
   }
 
@@ -57,27 +70,44 @@ export class AddJobDialogComponent implements AfterViewInit {
     fileInput.type = 'file'
     fileInput.addEventListener('change', (event) => {
       const target = event.target as HTMLInputElement
-      const selectedFile = target.files[0]
-      this.labFilesService
-        .uploadFile(selectedFile)
-        .subscribe((res) => (this.data.body.uploadedFile = res[0]))
+      let selectedFile = null
+
+      if (target.files && target.files.length > 0) {
+        selectedFile = target.files[0]
+      }
+
+      if (selectedFile) {
+        this.labFilesService.uploadFile(selectedFile).subscribe((res) => {
+          if (res && res.length > 0) {
+            this.data.body.uploadedFile = res[0]
+          }
+        })
+      }
+
       fileInput = null
     })
     fileInput.click()
   }
 
-  deleteFile() {
-    this.labFilesService
-      .deleteFile(this.data.body.uploadedFile.DeleteUrl)
-      .subscribe(() => (this.data.body.uploadedFile = null))
-  }
+  onPaste(event: ClipboardEvent): void {
+    event.preventDefault()
 
-  onPaste(clipboardData: DataTransfer): void {
-    if (clipboardData.files.length > 0) {
+    const clipboardData = event.clipboardData
+    if (!clipboardData) return
+
+    if (clipboardData.files && clipboardData.files.length > 0) {
       this.labFilesService
         .uploadFile(clipboardData.files[0])
-        .subscribe((res) => (this.data.body.uploadedFile = res[0]))
+        .subscribe((res) => {
+          if (res && res.length > 0) {
+            this.data.body.uploadedFile = res[0]
+          }
+        })
     }
+  }
+
+  deleteFile(): void {
+    this.data.body.uploadedFile = null
   }
 
   onCancelClick(): void {
