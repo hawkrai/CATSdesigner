@@ -137,7 +137,6 @@
             (click)="openConfirmationDialog(node.Id, node)"
             [matTooltip]="'common.delete' | translate: 'Удалить'"
             matTooltipPosition="below"
-            *ngIf="!isMandatoryComponent(node)"
           >
             <span class="btn clickable"
               ><mat-icon class="icon">delete</mat-icon></span

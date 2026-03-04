@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -262,6 +262,8 @@ namespace LMPlatform.UI.Services.Modules.Concept
 	            first = next;
 	            checkCount++;
             }
+
+            res.AddRange(source.Where(i => res.All(r => r.Id != i.Id)));
 
             return res;
         }

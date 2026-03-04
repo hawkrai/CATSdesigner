@@ -1,4 +1,4 @@
-﻿using Application.Core;
+using Application.Core;
 using Application.Infrastructure.ConceptManagement;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.SubjectManagement;
@@ -96,6 +96,11 @@ namespace LMPlatform.UI.ViewModels.ComplexMaterialsViewModel
 
         private void InitSourceConcept()
         {
+            if (IsNew())
+            {
+                this.Published = true;
+            }
+
             SourceConcept = new Concept()
             {
                 Id = this.Id,
