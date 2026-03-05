@@ -114,6 +114,8 @@ namespace Application.Infrastructure.CPManagement
 
         public List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int subjectId, int groupId)
         {
+            List<int> allowedSubjectIds = null;
+
             if (AuthorizationHelper.IsStudent(Context, userId))
             {
                 var student = Context.Students
@@ -125,8 +127,20 @@ namespace Application.Infrastructure.CPManagement
                     return new List<CourseProjectConsultationDateData>();
                 }
 
+                allowedSubjectIds = student.AssignedCourseProjects
+                    .Where(p => p.CourseProject != null && p.CourseProject.SubjectId.HasValue)
+                    .Select(p => p.CourseProject.SubjectId.Value)
+                    .Distinct()
+                    .ToList();
+
+                if (!allowedSubjectIds.Any())
+                {
+                    return new List<CourseProjectConsultationDateData>();
+                }
+
                 userId = student.AssignedCourseProjects
-                    .Select(p => p.CourseProject?.LecturerId)
+                    .Where(p => p.CourseProject != null)
+                    .Select(p => p.CourseProject.LecturerId)
                     .FirstOrDefault() ?? 0;
             }
 
@@ -166,9 +180,20 @@ namespace Application.Infrastructure.CPManagement
                 })
                 .ToList();
 
-            var consultations = subjectsId != null
-                ? baseQuery.Where(x => subjectsId.Contains(x.SubjectId)).ToList()
-                : baseQuery.Where(x => x.SubjectId == subjectId).ToList();
+            var consultations = baseQuery.AsEnumerable();
+
+            if (allowedSubjectIds != null && allowedSubjectIds.Any())
+            {
+                consultations = consultations.Where(x => allowedSubjectIds.Contains(x.SubjectId));
+            }
+            else if (subjectsId != null && subjectsId.Any())
+            {
+                consultations = consultations.Where(x => subjectsId.Contains(x.SubjectId));
+            }
+            else if (subjectId != 0)
+            {
+                consultations = consultations.Where(x => x.SubjectId == subjectId);
+            }
 
             var consultationsData = consultations
                 .Select(x =>
