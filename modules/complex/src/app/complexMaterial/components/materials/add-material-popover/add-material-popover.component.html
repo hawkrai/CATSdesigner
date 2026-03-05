@@ -12,7 +12,7 @@
       <div class="basic-container" *ngIf="navItems?.length">
         <span *ngFor="let item of navItems">
           <!-- Handle branch node buttons here -->
-          <span *ngIf="item.children && item.children.length > 0">
+          <span *ngIf="item.children && item.children.length > 0; else singleConcept">
             <button
               mat-raised-button
               class="drop_button"
@@ -24,6 +24,16 @@
               <mat-icon>expand_more</mat-icon>
             </button>
           </span>
+          <ng-template #singleConcept>
+            <button
+              mat-raised-button
+              class="drop_button"
+              [disabled]="shouldDisableConceptSelector"
+              (click)="selectConcept(item.Id)"
+            >
+              {{ item.Name }}
+            </button>
+          </ng-template>
           <app-menu-item
             #menu
             [items]="item.children"

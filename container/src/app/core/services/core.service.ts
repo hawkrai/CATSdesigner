@@ -133,6 +133,12 @@ export class CoreService {
     localStorage.removeItem('currentSubject')
   }
 
+  public clearUserData(): void {
+    this.selectedSubject = null
+    this.listOfSubjects = null
+    localStorage.removeItem('currentSubject')
+  }
+
   public getCurrentSubject(): any {
     return JSON.parse(localStorage.getItem('currentSubject'))
   }

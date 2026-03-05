@@ -514,7 +514,11 @@ namespace Application.Infrastructure.ConceptManagement
                 repositoriesContainer.ConceptRepository.Save(concept);
                 repositoriesContainer.ApplyChanges();
                 if (source == null)
+                {
                     InitNeighborConcept(concept, repositoriesContainer);
+                    repositoriesContainer.ConceptRepository.Save(concept);
+                    repositoriesContainer.ApplyChanges();
+                }
                 BindNeighborConcept(concept, source, repositoriesContainer);
 
                 if (concept.ParentId.HasValue)
