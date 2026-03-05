@@ -9,6 +9,7 @@ export enum StorageKeys {
   // LocalStorage keys
   CurrentUser = 'currentUser',
   CurrentSubject = 'currentSubject',
+  ActiveChat = 'activeChat',
   TestsModuleTab = 'testsModule_tab',
   Theme = 'theme',
   SelectedComplex = 'selectedComplex',

@@ -5,6 +5,7 @@ import { map, catchError } from 'rxjs/operators'
 
 import { User } from './../models/user'
 import { CoreService } from './core.service'
+import { StorageKeys } from '../models/storage-keys.enum'
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -16,7 +17,7 @@ export class AuthenticationService {
     private coreService: CoreService
   ) {
     this.currentUserSubject = new BehaviorSubject<User>(
-      JSON.parse(localStorage.getItem('currentUser'))
+      JSON.parse(localStorage.getItem(StorageKeys.CurrentUser))
     )
     this.currentUser = this.currentUserSubject.asObservable()
   }
@@ -26,7 +27,7 @@ export class AuthenticationService {
   }
 
   setCurrentUserValue(user: any): void {
-    localStorage.setItem('currentUser', JSON.stringify(user))
+    localStorage.setItem(StorageKeys.CurrentUser, JSON.stringify(user))
     this.currentUserSubject.next(user)
   }
 
@@ -40,7 +41,7 @@ export class AuthenticationService {
         map((user) => {
           this.setCurrentUserValue(user)
           this.coreService.clearUserData()
-          localStorage.removeItem('activeChat')
+          localStorage.removeItem(StorageKeys.ActiveChat)
           return user
         }),
         catchError((error) => {
@@ -57,7 +58,7 @@ export class AuthenticationService {
   logout() {
     return this.http.get<any>('/Account/LogOff').pipe(
       map((user) => {
-        localStorage.removeItem('currentUser')
+        localStorage.removeItem(StorageKeys.CurrentUser)
         this.currentUserSubject.next(null)
       })
     )
