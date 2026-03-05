@@ -10,6 +10,8 @@ import { Module } from '../models/module.model'
 import { Subject } from '../models/subject'
 import { Lector } from '../models/lector.model'
 import { ConfirmationService } from './confirmation.service'
+import { StorageKeys } from '../models/storage-keys.enum'
+import { MessageChannel } from '../models/message-channel.enum'
 
 type Tooltip = 'success' | 'warning'
 
@@ -62,25 +64,25 @@ export class CoreService {
       return
     }
     console.log(`New message - ${message.channel} , value - ${message.value}`)
-    if (message.channel == 'Route') {
+    if (message.channel == MessageChannel.Route) {
       this.router.navigateByUrl(`/${message.value}`)
     }
-    if (message.channel === 'Confirmation') {
+    if (message.channel === MessageChannel.Confirmation) {
       this.confirmationService.confirmationSubject.next(+message.value)
     }
 
-    if (message.channel === 'Location') {
+    if (message.channel === MessageChannel.Location) {
       this.location.go(message.value)
     }
 
-    if (message.channel === 'SubjectId') {
+    if (message.channel === MessageChannel.SubjectId) {
       this.subjectIdSub.next(+message.value)
     }
-    if (message.channel === 'UpdateSubjects') {
+    if (message.channel === MessageChannel.UpdateSubjects) {
       this.updateSubjectSub.next()
     }
 
-    if (message.channel === 'Toast') {
+    if (message.channel === MessageChannel.Toast) {
       const tooltip: { text: string; type: Tooltip } = JSON.parse(message.value)
       this.toastrService[tooltip.type](tooltip.text)
     }
@@ -119,7 +121,7 @@ export class CoreService {
   }
 
   public setCurrentSubject(subject: any): void {
-    localStorage.setItem('currentSubject', JSON.stringify(subject))
+    localStorage.setItem(StorageKeys.CurrentSubject, JSON.stringify(subject))
   }
 
   public isUserAssignedToSubject(subjectId: number): rxjs.Observable<boolean> {
@@ -130,17 +132,17 @@ export class CoreService {
 
   public removeCurrentSubject(): void {
     this.selectedSubject = null
-    localStorage.removeItem('currentSubject')
+    localStorage.removeItem(StorageKeys.CurrentSubject)
   }
 
   public clearUserData(): void {
     this.selectedSubject = null
     this.listOfSubjects = null
-    localStorage.removeItem('currentSubject')
+    localStorage.removeItem(StorageKeys.CurrentSubject)
   }
 
   public getCurrentSubject(): any {
-    return JSON.parse(localStorage.getItem('currentSubject'))
+    return JSON.parse(localStorage.getItem(StorageKeys.CurrentSubject))
   }
 
   public getSubjectOwner(subjectId: number): rxjs.Observable<Lector> {
