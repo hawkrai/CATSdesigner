@@ -28,6 +28,7 @@ import { ConfirmationService } from 'src/app/core/services/confirmation.service'
 import { MatSelectionList } from '@angular/material/list'
 import { MatSelect } from '@angular/material/select'
 import { DOCUMENT } from '@angular/common'
+import { HttpClient } from '@angular/common/http'
 
 interface DropDownValue {
   name: string
@@ -43,6 +44,7 @@ export class NavComponent implements OnInit, OnDestroy {
   public isLector: boolean
   public isStudent: boolean
   public isAdmin: boolean
+  public showDiplomLink: boolean = false
   public unconfirmedStudents = 0
   public totalUnreadCount$: Observable<number>
   private unsubscribeStream$: Subject<void> = new Subject<void>()
@@ -84,6 +86,7 @@ export class NavComponent implements OnInit, OnDestroy {
     private confirmationService: ConfirmationService,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
+    private http: HttpClient,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -203,6 +206,20 @@ export class NavComponent implements OnInit, OnDestroy {
           this.profileIcon = res.Avatar
           this.userFullName = res.Name
         })
+
+      this.http.get<any>('diplom/api/DiplomUser').subscribe((res) => {
+        if (this.isStudent) {
+          this.showDiplomLink = res.IsGraduate === true
+        } else if (this.isLector) {
+          this.showDiplomLink =
+            res.IsSecretary === true ||
+            res.HasChosenDiplomProject === true ||
+            res.HasAssignedDiplomProject === true ||
+            res.IsLecturerHasGraduateStudents === true
+        } else {
+          this.showDiplomLink = false
+        }
+      })
     }
   }
   viewSearchResults() {
@@ -213,7 +230,6 @@ export class NavComponent implements OnInit, OnDestroy {
       this.viewStudentSearchResults()
     } else {
       this.cleanSearchResults()
-      //
     }
   }
 

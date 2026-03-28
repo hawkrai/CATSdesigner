@@ -11,18 +11,19 @@ namespace Application.Infrastructure.DPManagement
         public UserData GetUserInfo(int userId)
         {
             var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).Single(x => x.Id == userId);
-
             return new UserData
             {
                 UserId = user.Id,
                 IsLecturer = user.Lecturer != null,
                 IsStudent = user.Student != null,
                 IsSecretary = user.Lecturer != null && user.Lecturer.IsSecretary,
-                HasChosenDiplomProject = user.Student != null 
+                HasChosenDiplomProject = user.Student != null
                     && Context.AssignedDiplomProjects.Any(x => x.StudentId == user.Student.Id && !x.ApproveDate.HasValue),
-                HasAssignedDiplomProject = user.Student != null 
+                HasAssignedDiplomProject = user.Student != null
                     && Context.AssignedDiplomProjects.Any(x => x.StudentId == user.Student.Id && x.ApproveDate.HasValue),
-                IsLecturerHasGraduateStudents = user.Lecturer != null && user.Lecturer.IsLecturerHasGraduateStudents
+                IsLecturerHasGraduateStudents = user.Lecturer != null && user.Lecturer.IsLecturerHasGraduateStudents,
+                IsGraduate = user.Student != null
+                    && Context.DiplomProjectGroups.Any(x => x.GroupId == user.Student.GroupId)
             };
         }
 
