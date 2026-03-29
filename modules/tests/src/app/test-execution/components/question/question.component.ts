@@ -1,9 +1,9 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
   Input,
-  OnInit,
   Output,
   ViewChild,
 } from '@angular/core'
@@ -28,7 +28,7 @@ import { StorageKeys } from '../../../../../../../container/src/app/core/models/
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.less'],
 })
-export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
+export class QuestionComponent extends AutoUnsubscribeBase implements AfterViewInit {
   @ViewChild('description') descriptionElement: ElementRef<HTMLDivElement>
   private _question
   public get question(): TestQuestion {
@@ -38,10 +38,6 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
   public set question(value: TestQuestion) {
     const prevNumber = this._question?.Number
     const nextNumber = value?.Number
-    if (this.descriptionElement) {
-      this.descriptionElement.nativeElement.innerHTML =
-        value?.Question?.Description
-    }
     this._question = value
     if (
       value?.Question?.QuestionType === 2 &&
@@ -49,6 +45,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
     ) {
       this.textAnswer = ''
     }
+    this.renderQuestionDescription()
   }
 
   @Input()
@@ -78,11 +75,16 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
     super()
   }
 
-  ngOnInit() {
-    if (this.descriptionElement) {
-      this.descriptionElement.nativeElement.innerHTML =
-        this.question?.Question?.Description
+  ngAfterViewInit(): void {
+    this.renderQuestionDescription()
+  }
+
+  private renderQuestionDescription(): void {
+    const el = this.descriptionElement?.nativeElement
+    if (!el || !this._question?.Question) {
+      return
     }
+    el.innerHTML = this._question.Question.Description ?? ''
   }
 
   public answerQuestion(): void {
