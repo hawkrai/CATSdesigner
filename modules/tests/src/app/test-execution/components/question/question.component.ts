@@ -36,11 +36,19 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
   }
   @Input('question')
   public set question(value: TestQuestion) {
+    const prevNumber = this._question?.Number
+    const nextNumber = value?.Number
     if (this.descriptionElement) {
       this.descriptionElement.nativeElement.innerHTML =
         value?.Question?.Description
     }
     this._question = value
+    if (
+      value?.Question?.QuestionType === 2 &&
+      nextNumber !== prevNumber
+    ) {
+      this.textAnswer = ''
+    }
   }
 
   @Input()
@@ -56,7 +64,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
   @Output()
   public goToNextQuestion: EventEmitter<any> = new EventEmitter()
   private unsubscribeStream$: Subject<void> = new Subject<void>()
-  private value: string
+  public textAnswer = ''
   private isTrue: boolean
   private answers: number = 0
 
@@ -90,7 +98,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
       this.charsNeskolko[7] ||
       this.charsNeskolko[8] ||
       this.chosenAnswer ||
-      this.value
+      this.textAnswer
     ) {
       const user = JSON.parse(localStorage.getItem('currentUser'))
       const request = {
@@ -115,7 +123,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
           })
         })
       } else if (this.question.Question.QuestionType === 2) {
-        request.answers.push({ Content: this.value, IsCorrect: 0 })
+        request.answers.push({ Content: this.textAnswer, IsCorrect: 0 })
       } else if (this.question.Question.QuestionType === 3) {
         this.question.Question.Answers.forEach((answer, index) => {
           request.answers.push({ Id: answer.Id.toString(), IsCorrect: index })
@@ -130,7 +138,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
         .pipe(
           tap(() => {
             this.getOnNextQuestion(true, this.isTrue)
-            this.value = null
+            this.textAnswer = ''
           }),
           takeUntil(this.unsubscribeStream$),
           catchError(() => {
@@ -165,10 +173,6 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
   public getOnNextQuestion(answered: boolean, isTrue = true): void {
     this.charsNeskolko = {}
     this.goToNextQuestion.emit({ answered, isTrue })
-  }
-
-  public onValueChange(event): void {
-    this.value = event.currentTarget.value
   }
 
   drop(event: CdkDragDrop<string[]>) {
