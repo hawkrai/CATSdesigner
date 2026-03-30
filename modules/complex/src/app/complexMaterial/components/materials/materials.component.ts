@@ -406,7 +406,6 @@ export class MaterialComponent implements OnInit, OnChanges {
             )
           : []
 
-        // Для папки не передаём файлы в fileData — они пойдут как дочерние концепты
         let fileData: string
         if (isFile && hasNoAttachments && hadNoInitialAttachments) {
           fileData = JSON.stringify([])
@@ -427,7 +426,6 @@ export class MaterialComponent implements OnInit, OnChanges {
 
         this.complexService.addOrEditConcept(concept).subscribe((res) => {
           if (res['Code'] === ApiResponseCode.Success) {
-            // Создаём дочерние концепты для каждого нового файла папки
             if (result.isGroup && newFiles.length > 0) {
               const childConcepts$ = newFiles.map((file: any) =>
                 this.complexService.addOrEditConcept({
