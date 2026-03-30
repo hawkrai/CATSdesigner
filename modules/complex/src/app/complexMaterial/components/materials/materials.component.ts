@@ -18,7 +18,7 @@ import { TranslatePipe } from 'educats-translate'
 import { CatsService, CodeType } from 'src/app/service/cats.service'
 import { DeleteConfirmationPopupComponent } from './delete-confirmation-popup/delete-confirmation-popup.component'
 import { takeUntil } from 'rxjs/operators'
-import { Subject } from 'rxjs'
+import { Subject, forkJoin, of } from 'rxjs'
 import { MenuService } from '../../../../../../../container/src/app/core/services/menu.service'
 import { ModuleType } from '../../../../../../../container/src/app/core/models/module.model'
 import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
@@ -92,7 +92,20 @@ export class MaterialComponent implements OnInit, OnChanges {
       () => {
         this.complexService.getConceptCascade(this.complexId).subscribe((res) => {
           const localizedData = this.localizeTree(res.children)
+          const getTestNodes = (nodes: ComplexCascade[]): ComplexCascade[] => {
+            const result: ComplexCascade[] = []
+            const walk = (list: ComplexCascade[]) => {
+              list.forEach(n => {
+                if (n.TestId) result.push(n)
+                if (n.children && n.children.length) walk(n.children)
+              })
+            }
+            walk(nodes)
+            return result
+          }
+          console.log('[HiddenTests] Тесты до фильтрации:', getTestNodes(localizedData).map(n => ({ Id: n.Id, TestId: n.TestId, Name: n.Name })))
           const filteredData = this.hiddenTestsService.filterHiddenTestsForCascade(this.complexId, localizedData)
+          console.log('[HiddenTests] Тесты после фильтрации:', getTestNodes(filteredData).map(n => ({ Id: n.Id, TestId: n.TestId, Name: n.Name })))
           this.dataSource.data = filteredData
           this.treeControl.dataNodes = filteredData
           this.treeControl.expandAll()
@@ -100,12 +113,14 @@ export class MaterialComponent implements OnInit, OnChanges {
         })
       },
       () => {
+        console.error('[HiddenTests] loadHiddenTests вернул ошибку — дерево без фильтрации')
         this.complexService.getConceptCascade(this.complexId).subscribe((res) => {
           const localizedData = this.localizeTree(res.children)
-          this.dataSource.data = localizedData
-          this.treeControl.dataNodes = localizedData
+          const filteredData = this.hiddenTestsService.filterHiddenTestsForCascade(this.complexId, localizedData)
+          this.dataSource.data = filteredData
+          this.treeControl.dataNodes = filteredData
           this.treeControl.expandAll()
-          this.loadTestResults(localizedData)
+          this.loadTestResults(filteredData)
         })
       }
     )
@@ -172,6 +187,7 @@ export class MaterialComponent implements OnInit, OnChanges {
           }
         }
       }
+      localizedName = this.stripFileExtension(localizedName)
       return {
         ...node,
         Name: localizedName,
@@ -378,27 +394,55 @@ export class MaterialComponent implements OnInit, OnChanges {
         const isFile = !result.isGroup
         const hasNoAttachments = !result.attachments || result.attachments.length === 0
         const hadNoInitialAttachments = !attachments || attachments.length === 0
-        
+
+        const userId = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id
+
+        const initialAttachmentIds = new Set(
+          (attachments || []).filter(a => a.id > 0).map(a => a.id)
+        )
+        const newFiles = result.isGroup
+          ? (result.attachments || []).filter(
+              (a: any) => !a.id || a.id === 0 || !initialAttachmentIds.has(a.id)
+            )
+          : []
+
+        // Для папки не передаём файлы в fileData — они пойдут как дочерние концепты
         let fileData: string
-        
         if (isFile && hasNoAttachments && hadNoInitialAttachments) {
+          fileData = JSON.stringify([])
+        } else if (result.isGroup) {
           fileData = JSON.stringify([])
         } else {
           fileData = JSON.stringify(result.attachments || [])
         }
-        
+
         const concept: Concept = {
           conceptId: result.id,
           conceptName: result.name,
           parentId: result.parentId,
           isGroup: result.isGroup,
           fileData: fileData,
-          userId: JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id,
+          userId,
         }
 
         this.complexService.addOrEditConcept(concept).subscribe((res) => {
           if (res['Code'] === ApiResponseCode.Success) {
-            this.loadConceptCascade()
+            // Создаём дочерние концепты для каждого нового файла папки
+            if (result.isGroup && newFiles.length > 0) {
+              const childConcepts$ = newFiles.map((file: any) =>
+                this.complexService.addOrEditConcept({
+                  conceptId: 0,
+                  conceptName: this.stripFileExtension(file.name),
+                  parentId: result.id,
+                  isGroup: false,
+                  fileData: JSON.stringify([file]),
+                  userId,
+                })
+              )
+              forkJoin(childConcepts$).subscribe(() => this.loadConceptCascade())
+            } else {
+              this.loadConceptCascade()
+            }
           }
         })
       }
@@ -407,6 +451,10 @@ export class MaterialComponent implements OnInit, OnChanges {
 
   hasChild = (_: number, node: ComplexCascade) =>
     node.IsGroup || (!!node.children && node.children.length > 0)
+
+  private stripFileExtension(name: string): string {
+    return name.replace(/\.(pdf|docx?|doc)$/i, '')
+  }
 
   isLeafClickable(node: ComplexCascade): boolean {
     return !!(node.FilePath || node.TestId)

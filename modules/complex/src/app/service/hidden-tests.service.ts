@@ -28,8 +28,10 @@ export class HiddenTestsService {
     const complexIdNum = parseInt(complexId, 10)
     
     return new Observable((observer) => {
+      console.log('[HiddenTests] Запрос GetHiddenTests для complexId:', complexId)
       this.complexService.getHiddenTests(complexIdNum).subscribe(
         (hiddenTests) => {
+          console.log('[HiddenTests] Ответ сервера:', hiddenTests)
           if (hiddenTests && hiddenTests.ConceptIds && hiddenTests.TestIds) {
             this.hiddenConceptIds.set(
               complexId,
@@ -39,7 +41,10 @@ export class HiddenTestsService {
               complexId,
               new Set(hiddenTests.TestIds)
             )
+            console.log('[HiddenTests] Загружено ConceptIds:', hiddenTests.ConceptIds)
+            console.log('[HiddenTests] Загружено TestIds:', hiddenTests.TestIds)
           } else {
+            console.warn('[HiddenTests] Пустой или некорректный ответ, устанавливаем пустые множества')
             this.hiddenConceptIds.set(complexId, new Set())
             this.hiddenTestIds.set(complexId, new Set())
           }
@@ -47,7 +52,7 @@ export class HiddenTestsService {
           observer.complete()
         },
         (error) => {
-          console.error('Ошибка при загрузке скрытых тестов:', error)
+          console.error('[HiddenTests] HTTP ошибка при загрузке:', error)
           this.hiddenConceptIds.set(complexId, new Set())
           this.hiddenTestIds.set(complexId, new Set())
           observer.error(error)
