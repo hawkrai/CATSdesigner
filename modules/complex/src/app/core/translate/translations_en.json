@@ -13,7 +13,7 @@
   "common.file": "File",
   "common.inputFileName": "Enter the item name",
   "common.fileName": "Enter the item name",
-  "common.pinnedDoc": "Attached material (Can add up to 15 files .pdf, .docx or .doc)",
+  "common.pinnedDoc": "Attached material (supported file formats: .pdf, .docx or .doc)",
   "common.pretest": "Pass the pre-test",
   "common.prevDocument": "Previous document",
   "common.nextDocument": "Next document",

@@ -13,7 +13,7 @@
   "common.file": "Файл",
   "common.inputFileName": "Введите название элемента",
   "common.fileName": "Введите название элемента",
-  "common.pinnedDoc": "Прикрепленный материал (Можно добавить до 15 файлов формата .pdf, .docx или .doc)",
+  "common.pinnedDoc": "Прикрепленный материал (поддерживаются файлы формата .pdf, .docx или .doc)",
   "common.pretest": "Пройти предтест",
   "common.prevDocument": "Предыдущий документ",
   "common.nextDocument": "Следующий документ",
