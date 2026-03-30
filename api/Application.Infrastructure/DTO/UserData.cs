@@ -15,5 +15,6 @@
         public bool HasAssignedDiplomProject { get; set; }
 
         public bool IsLecturerHasGraduateStudents { get; set; }
+        public bool IsGraduate { get; set; }
     }
 }
