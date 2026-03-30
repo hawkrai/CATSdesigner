@@ -167,5 +167,6 @@
   "text.test.pass.time": "Время Прохождения",
   "text.test.date.time.passing": "Дата и время прохождения",
   "text.test.status.not.passed": "Статус: тест не пройден",
-  "text.test.loading.time.data": "Загрузка..."
+  "text.test.loading.time.data": "Загрузка...",
+  "text.test.no.additional.information": "Нет дополнительной информации"
 }
