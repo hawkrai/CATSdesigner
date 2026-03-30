@@ -536,6 +536,14 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             }
         }
 
+        private static string NormalizeKeyboardAnswer(string raw)
+        {
+            if (raw == null)
+                return null;
+            var withoutControls = string.Concat(raw.Where(ch => !char.IsControl(ch)));
+            return withoutControls.Trim();
+        }
+
         private void ProcessTextAnswer(IEnumerable<Answer> userAnswers, Question question, AnswerOnTestQuestion answerOntestQuestion)
         {
             if (userAnswers.Count() != 1)
@@ -543,17 +551,31 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                 throw new InvalidDataException("Пользователь должен указать 1 правильный ответ");
             }
 
-            if (userAnswers.Single().Content == null)
+            var rawContent = userAnswers.Single().Content;
+            if (rawContent == null)
             {
                 throw new InvalidDataException("Пользователь должен указать ответ");
             }
 
-            if (question.Answers.Select(answer => answer.Content.ToLower()).Contains(userAnswers.Single().Content.ToLower()))
+            var normalizedUser = NormalizeKeyboardAnswer(rawContent);
+            if (string.IsNullOrEmpty(normalizedUser))
+            {
+                throw new InvalidDataException("Пользователь должен указать ответ");
+            }
+
+            var normalizedUserKey = normalizedUser.ToLowerInvariant();
+            var referenceKeys = question.Answers
+                .Select(referenceAnswer => NormalizeKeyboardAnswer(referenceAnswer.Content))
+                .Where(normalizedReference => !string.IsNullOrEmpty(normalizedReference))
+                .Select(normalizedReference => normalizedReference.ToLowerInvariant())
+                .ToList();
+
+            if (referenceKeys.Contains(normalizedUserKey))
             {
                 answerOntestQuestion.Points = question.ComlexityLevel;
             }
 
-            answerOntestQuestion.AnswerString = userAnswers.Single().Content.ToLower();
+            answerOntestQuestion.AnswerString = normalizedUserKey;
         }
 
         private void ProcessManyVariantsAnswer(IEnumerable<Answer> userAnswers, Question question, AnswerOnTestQuestion answerOntestQuestion)
