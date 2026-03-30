@@ -237,7 +237,13 @@ namespace Application.Infrastructure.Export
                 dateStart = awork.DiplomProject.DateStart.HasValue ? awork.DiplomProject.DateStart.Value.ToString("dd'.'MM'.'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
                 dateEnd = awork.DiplomProject.DateEnd != null && awork.DiplomProject.DateEnd.HasValue ? awork.DiplomProject.DateEnd.Value.ToString("dd'.'MM'.'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
                 lecturer = string.Format("{0}.{1}. {2}", awork.DiplomProject.Lecturer.FirstName[0], awork.DiplomProject.Lecturer.MiddleName[0], awork.DiplomProject.Lecturer.LastName);
-                student = string.Format("{0}.{1}. {2}", awork.Student.FirstName[0], awork.Student.MiddleName[0], awork.Student.LastName);
+                var firstInitial = !string.IsNullOrWhiteSpace(awork.Student.FirstName)
+                    ? awork.Student.FirstName[0] + "."
+                    : "";
+                var middleInitial = !string.IsNullOrWhiteSpace(awork.Student.MiddleName)
+                    ? awork.Student.MiddleName[0] + "."
+                    : "";
+                student = $"{firstInitial}{middleInitial} {awork.Student.LastName}".Trim();
             }
 
             Body body1 = new Body();
