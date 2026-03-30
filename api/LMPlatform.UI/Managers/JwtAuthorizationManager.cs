@@ -36,8 +36,20 @@ namespace LMPlatform.UI.Managers
             {
                 return false;
             }
-            var parsed = HttpCookie.TryParse(WebOperationContext.Current.IncomingRequest.Headers[HttpRequestHeader.Cookie], out var cookie);
-            var authCookie = parsed ? cookie.Name == "Authorization" ? cookie.Value : cookie.Values.Get("Authorization") : null;
+            var cookieHeader = WebOperationContext.Current.IncomingRequest.Headers[HttpRequestHeader.Cookie];
+            string authCookie = null;
+            if (!string.IsNullOrEmpty(cookieHeader))
+            {
+                foreach (var part in cookieHeader.Split(';'))
+                {
+                    var pair = part.Trim().Split(new[] { '=' }, 2);
+                    if (pair.Length == 2 && pair[0].Trim() == "Authorization")
+                    {
+                        authCookie = pair[1].Trim();
+                        break;
+                    }
+                }
+            }
 
             var autHeader = WebOperationContext.Current.IncomingRequest.Headers["Authorization"];
 
