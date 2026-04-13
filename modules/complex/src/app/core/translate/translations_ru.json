@@ -1,6 +1,7 @@
 {
   "common.success.operation": "Операция выполнена успешно",
   "common.error.operation": "Эумк с таким именем уже существует",
+  "common.error.move": "Не удалось переместить элемент",
   "common.kb": "КБ",
   "common.addFile": "Добавить файл",
   "common.uploadedFile": "Загруженный файл",
@@ -13,7 +14,7 @@
   "common.file": "Файл",
   "common.inputFileName": "Введите название элемента",
   "common.fileName": "Введите название элемента",
-  "common.pinnedDoc": "Прикрепленный материал (Можно добавить до 15 файлов формата .pdf, .docx или .doc)",
+  "common.pinnedDoc": "Прикрепленный материал (поддерживаются файлы формата .pdf, .docx или .doc)",
   "common.pretest": "Пройти предтест",
   "common.prevDocument": "Предыдущий документ",
   "common.nextDocument": "Следующий документ",
@@ -105,6 +106,6 @@
   "complex.test.points.many": "баллов",
   "complex.test.tooltip": "Оценка за тест {points} {pointsText}, затраченное время - {time}",
   "complex.test.score": "Оценка за тест",
-  "complex.maxFilesReached": "Достигнут максимальный лимит файлов (15)",
+  "complex.maxFilesReached": "Достигнут максимальный лимит файлов (5)",
   "complex.filesLimitWarning": "Можно добавить только {count} файл(ов). Остальные файлы не были добавлены."
 }

@@ -30,6 +30,8 @@ namespace LMPlatform.UI.ViewModels.ComplexMaterialsViewModel
         public String Container { get; set; }
         public String FileData { get; set; }
         public Boolean IsGroup { get; set; }
+        public Boolean ContainerExplicitlySet { get; set; }
+        public Boolean PreserveFiles { get; set; }
 
         [DisplayName("Родительский элемент")]
         public Int32 ParentId { get; set; }
@@ -93,7 +95,7 @@ namespace LMPlatform.UI.ViewModels.ComplexMaterialsViewModel
         public override void Save()
         {
             InitSourceConcept();
-            SavedConcept = ConceptManagementService.SaveConcept(SourceConcept, GetAttachments());
+            SavedConcept = ConceptManagementService.SaveConcept(SourceConcept, GetAttachments(), ContainerExplicitlySet, PreserveFiles);
         }
 
         private void InitSourceConcept()

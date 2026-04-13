@@ -24,6 +24,10 @@ namespace LMPlatform.UI.Services.Concept
         ConceptResult AttachSiblings(int source, int left, int right);
 
         [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "MoveConceptNode", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        ConceptResult MoveConceptNode(int conceptId, int newParentId, int prevConceptId, int nextConceptId);
+
+        [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConcept?elementId={elementId}")]
         ConceptViewData GetConcept(int elementId);
 
@@ -80,7 +84,7 @@ namespace LMPlatform.UI.Services.Concept
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/AddConcept")]
-        ConceptResult AddOrEditConcept(int conceptId, string conceptName, int parentId, bool isGroup, string fileData, int userId, string container);
+        ConceptResult AddOrEditConcept(int conceptId, string conceptName, int parentId, bool isGroup, string fileData, int userId, string container, bool preserveFiles);
 
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetFolderFilesPaths?conceptId={conceptId}")]

@@ -30,7 +30,7 @@ export const addFile = createAction(
 
 export const addFileSuccess = createAction(
   '[Files] Add File Success',
-  props<{ file: AttachedFile; index: number }>()
+  props<{ file: AttachedFile }>()
 )
 
 export const deleteFile = createAction(

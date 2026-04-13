@@ -57,6 +57,7 @@ export class BaseFileManagementComponent<T> implements OnInit, OnDestroy {
       name: f.Name,
       attachmentType: f.Type,
       fileName: f.GuidFileName,
+      pathName: f.IdFile > 0 ? (f as any).PathName || (f as any).pathName || '' : '',
     }))
     this.dialogRef.close(this.data)
   }

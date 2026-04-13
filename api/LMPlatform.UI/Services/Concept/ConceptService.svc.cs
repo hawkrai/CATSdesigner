@@ -198,7 +198,7 @@ namespace LMPlatform.UI.Services.Concept
             return res;
         }
 
-        public ConceptResult AddOrEditConcept(int conceptId, string conceptName, int parentId, bool isGroup, string fileData, int userId, string container = null)
+        public ConceptResult AddOrEditConcept(int conceptId, string conceptName, int parentId, bool isGroup, string fileData, int userId, string container, bool preserveFiles)
         {
             try
             {
@@ -206,12 +206,14 @@ namespace LMPlatform.UI.Services.Concept
                 {
                     IsGroup = isGroup,
                     Name = conceptName,
-                    FileData = fileData
+                    FileData = fileData,
+                    PreserveFiles = preserveFiles
                 };
 
                 if (!string.IsNullOrEmpty(container))
                 {
                     conceptModel.Container = container;
+                    conceptModel.ContainerExplicitlySet = true;
                 }
 
                 if (!string.IsNullOrEmpty(conceptModel.FileData))
@@ -305,6 +307,46 @@ namespace LMPlatform.UI.Services.Concept
             catch (Exception ex)
             {
                 
+                return new ConceptResult
+                {
+                    Message = ex.Message,
+                    Code = ServerErrorCode
+                };
+            }
+        }
+
+        public ConceptResult MoveConceptNode(int conceptId, int newParentId, int prevConceptId, int nextConceptId)
+        {
+            try
+            {
+                var concept = ConceptManagementService.MoveConceptNode(conceptId, newParentId, prevConceptId, nextConceptId);
+
+                if (concept == null)
+                {
+                    return new ConceptResult
+                    {
+                        Message = "Concept not found",
+                        Code = ServerErrorCode
+                    };
+                }
+
+                return new ConceptResult
+                {
+                    Concept = new ConceptViewData(concept),
+                    Message = SuccessMessage,
+                    Code = SuccessCode
+                };
+            }
+            catch (InvalidOperationException ex)
+            {
+                return new ConceptResult
+                {
+                    Message = ex.Message,
+                    Code = ServerErrorCode
+                };
+            }
+            catch (Exception ex)
+            {
                 return new ConceptResult
                 {
                     Message = ex.Message,

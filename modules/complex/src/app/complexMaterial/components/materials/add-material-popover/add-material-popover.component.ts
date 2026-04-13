@@ -62,6 +62,58 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
   }
 
   switchFormTo(formState: MaterialFormType) {
+    if (this.editMode) {
+      const switchingToFolder = formState === MaterialFormType.Folder
+      const switchingToFile = formState === MaterialFormType.File
+
+      if (switchingToFolder && !this.isFolder) {
+        this.store.dispatch(filesActions.reset())
+        this.isFile = false
+        this.data.isGroup = this.isFolder = true
+      } else if (switchingToFile && !this.isFile) {
+        const children: any[] = this.data.children || []
+        const fileChildrenWithAttachment = children.filter(
+          (c: any) => !c.IsGroup && c.FilePath
+        )
+        const folderChildren = children.filter((c: any) => c.IsGroup)
+        const multipleFilesWithAttachment = fileChildrenWithAttachment.length > 1
+
+        if (folderChildren.length > 0 || multipleFilesWithAttachment) {
+          this.catsService.showMessage({
+            Message: this.translatePipe.transform(
+              'complex.cannotConvertFolder',
+              folderChildren.length > 0
+                ? 'Папка содержит вложенные папки. Удалите их перед сменой типа.'
+                : 'Папка содержит несколько файлов с материалами. Оставьте не более одного перед сменой типа.'
+            ),
+            Type: CodeType.error,
+          })
+          return
+        }
+        if (fileChildrenWithAttachment.length === 1) {
+          const child = fileChildrenWithAttachment[0]
+          if (child.Attachments && child.Attachments.length > 0) {
+            this.data.attachments = child.Attachments.map((a: any) => ({
+              id: a.Id,
+              name: a.Name,
+              pathName: a.PathName,
+              fileName: a.FileName,
+              attachmentType: a.AttachmentType,
+            }))
+            const values = JSON.stringify(
+              this.data.attachments.map(
+                (a: any) => `${a.name}/${a.id}/${a.pathName}/${a.fileName}`
+              )
+            )
+            this.store.dispatch(filesActions.loadAttachments({ values }))
+          }
+        }
+        this.isFolder = false
+        this.data.isGroup = false
+        this.isFile = true
+      }
+      return
+    }
     this.isFile = formState === MaterialFormType.File
     this.data.isGroup = this.isFolder = formState === MaterialFormType.Folder
   }
@@ -375,12 +427,12 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
 
   uploadFile(file: File) {
     this.files$.pipe(take(1)).subscribe(files => {
-      if (files.length >= 15) {
+      const limit = this.isFile ? 1 : 5
+      if (files.length >= limit) {
         this.catsService.showMessage({
-          Message: this.translatePipe.transform(
-            'complex.maxFilesReached',
-            'Достигнут максимальный лимит файлов (15)'
-          ),
+          Message: this.isFile
+            ? this.translatePipe.transform('complex.maxOneFile', 'К элементу типа Файл можно прикрепить только один файл')
+            : this.translatePipe.transform('complex.maxFilesReached', 'Достигнут максимальный лимит файлов (5)'),
           Type: CodeType.error,
         })
         return

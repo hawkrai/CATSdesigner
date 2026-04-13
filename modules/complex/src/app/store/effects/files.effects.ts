@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core'
 import { Store } from '@ngrx/store'
 
 import * as filesActions from '../actions/files.actions'
-import * as filesSelectors from '../selectors/files.selector'
-import { map, switchMap, tap, withLatestFrom } from 'rxjs/operators'
+import { map, switchMap, tap, mergeMap } from 'rxjs/operators'
 import { IAppState } from '../states/app.state'
 import { FilesService } from '../../service/files.service'
 
@@ -41,22 +40,19 @@ export class FilesEffects {
   uploadFile$ = createEffect(() =>
     this.actions$.pipe(
       ofType(filesActions.uploadFile),
-      withLatestFrom(this.store.select(filesSelectors.getFiles)),
-      map(([{ file }, files]) =>
-        filesActions.addFile({ file, index: files.length })
-      )
+      map(({ file }) => filesActions.addFile({ file, index: 0 }))
     )
   )
 
   addFile$ = createEffect(() =>
     this.actions$.pipe(
       ofType(filesActions.addFile),
-      switchMap(({ file, index }) =>
+      mergeMap(({ file }) =>
         this.filesService
           .uploadFile(file)
           .pipe(
             map((uploadedFile) =>
-              filesActions.addFileSuccess({ file: uploadedFile, index })
+              filesActions.addFileSuccess({ file: uploadedFile })
             )
           )
       )
