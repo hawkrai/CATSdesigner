@@ -438,7 +438,7 @@ namespace Application.Infrastructure.ConceptManagement
 
             foreach (var attach in attachments)
             {
-                var extension = Path.GetExtension(attach.FileName);
+                var extension = Path.GetExtension(attach.Name);
                 if (string.Compare(extension, ".doc", true) == 0 || string.Compare(extension, ".docx", true) == 0 || string.Compare(extension, ".rtf", true) == 0)
                 {
                     var friendlyFileName = Path.GetFileNameWithoutExtension(attach.Name);

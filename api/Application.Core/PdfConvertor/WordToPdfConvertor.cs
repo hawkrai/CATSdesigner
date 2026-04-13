@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Spire.Doc;
-using Spire.Doc.Documents;
-using System.IO;
 using System.Configuration;
-
+using System.Diagnostics;
+using System.IO;
 
 namespace Application.Core.PdfConvertor
 {
@@ -15,15 +9,56 @@ namespace Application.Core.PdfConvertor
     {
         private readonly string _storageRootTemp = ConfigurationManager.AppSettings["FileUploadPathTemp"];
 
-        public String Convert(String sourceFile)
+        private static readonly string LibreOfficePath = ConfigurationManager.AppSettings["LibreOfficePath"] 
+        ?? @"C:\Program Files\LibreOffice\program\soffice.exe";
+
+        public string Convert(string sourceFile)
         {
-            Document document = new Document();
-            document.LoadFromFile(sourceFile);
+            sourceFile = Path.GetFullPath(sourceFile.Replace("//", "\\"));
 
-            var fileName = String.Format("{0}.pdf",Path.GetFileNameWithoutExtension(sourceFile));
-            var fullPath = String.Format("{0}{1}", _storageRootTemp, fileName);
+            if (!File.Exists(sourceFile))
+                throw new FileNotFoundException("Source file not found", sourceFile);
 
-            document.SaveToFile(fullPath, FileFormat.PDF);
+            var outputDir = Path.GetFullPath(_storageRootTemp.Replace("//", "\\").TrimEnd('/', '\\'));
+
+            var profileDir = Path.Combine(Path.GetTempPath(), "libreoffice-profile");
+            Directory.CreateDirectory(profileDir);
+            var profileUrl = new Uri(profileDir).AbsoluteUri;
+
+            var psi = new ProcessStartInfo
+            {
+                FileName = LibreOfficePath,
+                Arguments = $"-env:UserInstallation=\"{profileUrl}\" --headless --convert-to pdf \"{sourceFile}\" --outdir \"{outputDir}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            string stdout, stderr;
+            int exitCode;
+
+            using (var process = Process.Start(psi))
+            {
+                if (process == null)
+                    throw new InvalidOperationException("Failed to start LibreOffice process.");
+
+                stdout = process.StandardOutput.ReadToEnd();
+                stderr = process.StandardError.ReadToEnd();
+                process.WaitForExit(60000);
+                exitCode = process.ExitCode;
+            }
+
+            if (exitCode != 0)
+                throw new InvalidOperationException(
+                    $"LibreOffice conversion failed (exit {exitCode}). stdout: {stdout} stderr: {stderr}");
+
+            var fileName = $"{Path.GetFileNameWithoutExtension(sourceFile)}.pdf";
+            var fullOutputPath = Path.Combine(outputDir, fileName);
+
+            if (!File.Exists(fullOutputPath))
+                throw new FileNotFoundException(
+                    $"Converted PDF not found at '{fullOutputPath}'. stdout: {stdout} stderr: {stderr}");
 
             return fileName;
         }
