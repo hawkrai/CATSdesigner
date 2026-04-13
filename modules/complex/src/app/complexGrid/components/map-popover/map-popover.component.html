@@ -5,8 +5,12 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
-  <s2w-angular-d3-tree-lib
-    class="tree_branches"
-    [(treeData)]="chartData"
-  ></s2w-angular-d3-tree-lib>
+  <div id="chartContainer" class="chart-container">
+    <s2w-angular-d3-tree-lib
+      class="tree_branches"
+      [(treeData)]="chartData"
+      (nodeSelected)="nodeSelected($event)"
+      (nodeUpdated)="nodeUpdated($event)"
+    ></s2w-angular-d3-tree-lib>
+  </div>
 </div>
