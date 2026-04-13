@@ -438,10 +438,12 @@ export class MaterialComponent implements OnInit, OnChanges {
           fileData = JSON.stringify([])
         } else if (convertedFromFolderToFile && folderToFileContainer) {
           fileData = JSON.stringify([])
+        } else if (result.isGroup) {
+          fileData = JSON.stringify([])
         } else {
           fileData = JSON.stringify(result.attachments || [])
         }
-        
+
         const concept: Concept = {
           conceptId: result.id,
           conceptName: result.name,

@@ -35,7 +35,10 @@ export class ResultTestTableComponent
   extends AutoUnsubscribeBase
   implements OnInit, OnChanges
 {
-  private tooltipDatesCache = new Map<string, { startTime: string, endTime: string }>();
+  private tooltipDatesCache = new Map<
+    string,
+    { startTime: string | null; endTime: string | null }
+  >();
   public barChartColors: any[] = [{ backgroundColor: '#1976D2' }]
   public barChartOptions: ChartOptions = {
     responsive: true,
@@ -169,26 +172,84 @@ export class ResultTestTableComponent
   } //todo average marks from backend
 
   public openAnswersDialog(
-    openDialog: boolean,
+    openDialog: any,
     name: string,
     testName: string,
     event?: any,
     id?: any
   ): void {
-    if (openDialog) {
-      const dialogRef = this.dialog.open(AnswersPopupComponent, {
-        width: '800px',
-        data: { event, id, name, testName },
-        disableClose: false,
-        autoFocus: false,
-        panelClass: 'test-modal-container',
-      })
+    const hasPassedScore = openDialog !== null && openDialog !== undefined
+    if (!hasPassedScore || !event || !id) return
 
-      dialogRef
-        .afterClosed()
-        .pipe(takeUntil(this.unsubscribeStream$))
-        .subscribe()
-    }
+    const studentId = id.toString()
+    const testId = event.toString()
+    const cacheKey = `${testId}_${studentId}`
+
+    this.testPassingService
+      .getAnswersByStudentAndTest(studentId, testId)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe({
+        next: (answers: DataValues[]) => {
+          const testInfo: any = answers.find(
+            (res: DataValues) => res.Key === Constants.TEST_INFO
+          )?.Value
+
+          const userAnswers: any[] | undefined = answers.find(
+            (res: DataValues) => res.Key === Constants.USER_ANSWERS
+          )?.Value
+
+          this.tooltipDatesCache.set(cacheKey, {
+            startTime: testInfo?.StartTime || null,
+            endTime: testInfo?.EndTime || null,
+          })
+
+          const hasUsableTestInfo =
+            !!testInfo &&
+            testInfo.Points != null &&
+            testInfo.Percent != null
+
+          const hasRenderableUserAnswers =
+            Array.isArray(userAnswers) &&
+            userAnswers.some(
+              (a) =>
+                !!a &&
+                ((typeof a.QuestionTitle === 'string' &&
+                  a.QuestionTitle.trim().length > 0) ||
+                  (typeof a.AnswerString === 'string' &&
+                    a.AnswerString.trim().length > 0))
+            )
+
+          if (!hasUsableTestInfo || !hasRenderableUserAnswers) {
+            return
+          }
+
+          const dialogRef = this.dialog.open(AnswersPopupComponent, {
+            width: '800px',
+            data: {
+              event,
+              id,
+              name,
+              testName,
+              preloadedUserAnswers: userAnswers,
+              preloadedTestInfo: testInfo,
+            },
+            disableClose: false,
+            autoFocus: false,
+            panelClass: 'test-modal-container',
+          })
+
+          dialogRef
+            .afterClosed()
+            .pipe(takeUntil(this.unsubscribeStream$))
+            .subscribe()
+        },
+        error: () => {
+          this.tooltipDatesCache.set(cacheKey, {
+            startTime: null,
+            endTime: null,
+          })
+        },
+      })
   }
 
   public downloadExcel(): void {
@@ -340,7 +401,7 @@ export class ResultTestTableComponent
       'Тест'
     );
 
-    if (testResult.points !== null && testResult.points !== undefined) {
+      if (testResult.points !== null && testResult.points !== undefined) {
       const markLabel = this.translate.transform('text.test.mark', 'Оценка');
       tooltip += `\n${markLabel}: ${testResult.points}`;
 
@@ -384,6 +445,12 @@ export class ResultTestTableComponent
             );
             tooltip += `\n${endTimeLabel}: ${formattedEndTime}`;
           }
+          } else {
+            const noAdditionalInfo = this.translate.transform(
+              'text.test.no.additional.information',
+              'Нет дополнительной информации'
+            )
+            tooltip += `\n${noAdditionalInfo}`
         }
       } else if (testResult.testId && testResult.studentId) {
         this.loadDatesForTooltip(testResult.testId, testResult.studentId, cacheKey);

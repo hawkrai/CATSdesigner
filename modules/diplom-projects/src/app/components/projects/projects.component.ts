@@ -69,21 +69,25 @@ export class ProjectsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+  if (this.diplomUser.IsSecretary && !this.diplomUser.IsLecturerHasGraduateStudents) {
+    this.isLecturer = false
+    localStorage.setItem('toggle', 'false')
+  } else {
     const toggleValue: string = localStorage.getItem('toggle')
     if (toggleValue && this.diplomUser.IsLecturer) {
-      this.isLecturer =
-        localStorage.getItem('toggle') === 'false' ? false : true
+      this.isLecturer = localStorage.getItem('toggle') === 'false' ? false : true
     } else {
       this.isLecturer = this.diplomUser.IsLecturer
     }
-    this.groupService
-      .getGroupsByUser(this.diplomUser.UserId)
-      .subscribe((res) => {
-        this.groups = res.Groups
-      })
-    this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
-    this.retrieveProjects()
   }
+  this.groupService
+    .getGroupsByUser(this.diplomUser.UserId)
+    .subscribe((res) => {
+      this.groups = res.Groups
+    })
+  this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
+  this.retrieveProjects()
+}
 
   retrieveProjects() {
     this.projectsSubscription = this.projectsService

@@ -4,8 +4,8 @@ import { TestPassingService } from '../../../../service/test-passing.service'
 import { UserAnswers } from '../../../../models/user-answers.model'
 import { AutoUnsubscribe } from '../../../../decorator/auto-unsubscribe'
 import { AutoUnsubscribeBase } from '../../../../core/auto-unsubscribe-base'
-import { Subject } from 'rxjs'
-import { takeUntil, tap } from 'rxjs/operators'
+import { of, Subject } from 'rxjs'
+import { catchError, takeUntil, tap } from 'rxjs/operators'
 import { DataValues } from '../../../../models/data-values.model'
 import { Constants } from '../../../../models/constanst/DataConstants'
 import moment from 'moment'
@@ -36,29 +36,101 @@ export class AnswersPopupComponent
   }
 
   ngOnInit() {
+    if (
+      Array.isArray(this.data?.preloadedUserAnswers) &&
+      this.data?.preloadedTestInfo
+    ) {
+      const userAnswers = this.data.preloadedUserAnswers
+      const testInfo = this.data.preloadedTestInfo
+
+      const hasRenderableAnswers =
+        Array.isArray(userAnswers) &&
+        userAnswers.some(
+          (a) =>
+            !!a &&
+            ((typeof a.QuestionTitle === 'string' &&
+              a.QuestionTitle.trim().length > 0) ||
+              (typeof a.AnswerString === 'string' &&
+                a.AnswerString.trim().length > 0))
+        )
+
+      if (!hasRenderableAnswers) {
+        this.dialogRef.close()
+        return
+      }
+
+      this.answers = userAnswers
+      this.mark = testInfo?.Points
+      this.percent = testInfo?.Percent
+
+      if (testInfo?.StartTime) {
+        this.startTime = moment(testInfo.StartTime).format('HH:mm:ss')
+        this.startDate = moment(testInfo.StartTime).format('DD.MM.YYYY')
+      } else {
+        this.startTime = ''
+        this.startDate = ''
+      }
+
+      return
+    }
+
     this.testPassingService
       .getAnswersByStudentAndTest(this.data.id, this.data.event)
       .pipe(
         tap((answers: DataValues[]) => {
-          this.answers = answers.find(
+          const userAnswersEntry = answers.find(
             (res: DataValues) => res.Key === Constants.USER_ANSWERS
-          ).Value
-          this.mark = answers.find(
+          )
+          const testInfoEntry = answers.find(
             (res: DataValues) => res.Key === Constants.TEST_INFO
-          ).Value.Points
-          this.percent = answers.find(
-            (res: DataValues) => res.Key === Constants.TEST_INFO
-          ).Value.Percent
-          this.startTime = moment(
-            answers.find((res: DataValues) => res.Key === Constants.TEST_INFO)
-              .Value.StartTime
-          ).format('HH:mm:ss')
-          this.startDate = moment(
-            answers.find((res: DataValues) => res.Key === Constants.TEST_INFO)
-              .Value.StartTime
-          ).format('DD.MM.YYYY')
+          )
+
+          const userAnswers = userAnswersEntry?.Value
+          const testInfo = testInfoEntry?.Value
+          const hasAnswers =
+            Array.isArray(userAnswers) &&
+            userAnswers.some(
+              (a) =>
+                !!a &&
+                ((typeof a.QuestionTitle === 'string' &&
+                  a.QuestionTitle.trim().length > 0) ||
+                  (typeof a.AnswerString === 'string' &&
+                    a.AnswerString.trim().length > 0))
+            )
+          const hasTestInfo =
+            !!testInfo &&
+            testInfo.Points !== null &&
+            testInfo.Points !== undefined &&
+            testInfo.Percent !== null &&
+            testInfo.Percent !== undefined
+
+          if (!hasAnswers || !hasTestInfo) {
+            this.dialogRef.close()
+            return
+          }
+
+          this.answers = userAnswers
+          this.mark = testInfo.Points
+          this.percent = testInfo.Percent
+
+          try {
+            if (testInfo?.StartTime) {
+              this.startTime = moment(testInfo.StartTime).format('HH:mm:ss')
+              this.startDate = moment(testInfo.StartTime).format('DD.MM.YYYY')
+            } else {
+              this.startTime = ''
+              this.startDate = ''
+            }
+          } catch {
+            this.startTime = ''
+            this.startDate = ''
+          }
         }),
-        takeUntil(this.unsubscribeStream$)
+        takeUntil(this.unsubscribeStream$),
+        catchError(() => {
+          this.dialogRef.close()
+          return of([])
+        })
       )
       .subscribe()
   }

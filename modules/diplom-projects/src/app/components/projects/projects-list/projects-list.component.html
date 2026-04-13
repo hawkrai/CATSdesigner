@@ -19,6 +19,28 @@
             class="mdc-data-table__header-cell"
             role="columnheader"
             scope="col"
+            *ngIf="!diplomUser.IsSecretary"
+          >
+            {{
+              'text.diplomProject.themeDP'
+                | translate: 'Темa дипломного проекта'
+            }}
+          </th>
+          <th
+            mat-sort-header="Student"
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+            *ngIf="diplomUser.IsSecretary"
+          >
+            {{ 'text.diplomProject.student' | translate: 'Студент' }}
+          </th>
+          <th
+            mat-sort-header="Theme"
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+            *ngIf="diplomUser.IsSecretary"
           >
             {{
               'text.diplomProject.themeDP'
@@ -39,6 +61,16 @@
             class="mdc-data-table__header-cell"
             role="columnheader"
             scope="col"
+            *ngIf="diplomUser.IsStudent"
+          >
+            {{ 'text.diplomProject.student' | translate: 'Студент' }}
+          </th>
+          <th
+            mat-sort-header="Student"
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+            *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary"
           >
             {{ 'text.diplomProject.student' | translate: 'Студент' }}
           </th>
@@ -47,6 +79,7 @@
             class="mdc-data-table__header-cell"
             role="columnheader"
             scope="col"
+            *ngIf="!diplomUser.IsSecretary"
           >
             {{ 'text.diplomProject.group' | translate: 'Группа' }}
           </th>
@@ -57,6 +90,15 @@
             scope="col"
           >
             {{ 'text.diplomProject.date' | translate: 'Дата' }}
+          </th>
+          <th
+            mat-sort-header="Lecturer"
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+            *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary"
+          >
+            {{ 'text.diplomProject.head' | translate: 'Руководитель проекта' }}
           </th>
           <th
             class="mdc-data-table__header-cell"
@@ -86,7 +128,22 @@
           *ngFor="let project of filteredProjects; index as i"
         >
           <td class="mdc-data-table__cell">{{ i + 1 }}</td>
-          <td class="mdc-data-table__cell mdc-data-table__wrap">
+          <td
+            class="mdc-data-table__cell mdc-data-table__wrap"
+            *ngIf="!diplomUser.IsSecretary"
+          >
+            {{ project.Theme }}
+          </td>
+          <td
+            class="mdc-data-table__cell"
+            *ngIf="diplomUser.IsSecretary"
+          >
+            {{ project.Student }}
+          </td>
+          <td
+            class="mdc-data-table__cell mdc-data-table__wrap"
+            *ngIf="diplomUser.IsSecretary"
+          >
             {{ project.Theme }}
           </td>
           <td
@@ -95,10 +152,32 @@
           >
             {{ project.Lecturer }}
           </td>
-          <td class="mdc-data-table__cell">{{ project.Student }}</td>
-          <td class="mdc-data-table__cell">{{ project.Group }}</td>
+          <td
+            class="mdc-data-table__cell"
+            *ngIf="diplomUser.IsStudent"
+          >
+            {{ project.Student }}
+          </td>
+          <td
+            class="mdc-data-table__cell"
+            *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary"
+          >
+            {{ project.Student }}
+          </td>
+          <td
+            class="mdc-data-table__cell"
+            *ngIf="!diplomUser.IsSecretary"
+          >
+            {{ project.Group }}
+          </td>
           <td class="mdc-data-table__cell">
             {{ project.ApproveDate | date: 'dd.MM.yyyy' }}
+          </td>
+          <td
+            class="mdc-data-table__cell"
+            *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary"
+          >
+            {{ project.Lecturer }}
           </td>
           <td class="mdc-data-table__cell" *ngIf="diplomUser.IsStudent">
             <button
