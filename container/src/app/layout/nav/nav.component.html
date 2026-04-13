@@ -18,7 +18,7 @@
     }}</a>
   </div>
 
-  <div *ngIf="isLector || isStudent">
+  <div *ngIf="showDiplomLink">
     <a mat-button [routerLinkActive]="'active'" [routerLink]="'/web/diplom'">{{
       'graduation.project' | translate: 'Дипломное проектирование'
     }}</a>
@@ -328,7 +328,7 @@
           'header.menu.subjects' | translate: 'Предметы'
         }}</a>
       </div>
-      <div *ngIf="isLector">
+      <div *ngIf="showDiplomLink">
         <a mat-button [routerLink]="'/web/diplom'">{{
           'header.menu.diplomCreating' | translate: 'Дипломное проектирование'
         }}</a>
@@ -360,7 +360,7 @@
           'header.menu.subjects' | translate: 'Предметы'
         }}</a>
       </div>
-      <div *ngIf="isLector">
+      <div *ngIf="showDiplomLink">
         <a mat-button [routerLink]="'/web/diplom'">{{
           'header.menu.diplomCreating' | translate: 'Дипломное проектирование'
         }}</a>

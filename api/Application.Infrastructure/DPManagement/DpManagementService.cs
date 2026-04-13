@@ -28,32 +28,60 @@ namespace Application.Infrastructure.DPManagement
             var searchString = parms.Filters["searchString"];
             var isSecretary = Convert.ToBoolean(parms.Filters["isSecretary"]);
 
-            var query = Context.DiplomProjects.AsNoTracking()
-                .Include(x => x.Lecturer)
-                .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student.Group));
-
             var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
-            
-            if (user.Lecturer != null)
+
+            if (user != null && user.Lecturer != null)
             {
                 if (user.Lecturer.IsSecretary)
                 {
                     user.Lecturer.IsSecretary = isSecretary ? true : false;
                 }
-                
-            }
-
-            if (user != null && user.Lecturer != null && !user.Lecturer.IsSecretary)
-            {
-                query = query.Where(x => x.LecturerId == userId);
             }
 
             if (user != null && user.Lecturer != null && user.Lecturer.IsSecretary)
             {
                 var currentYear = _currentAcademicYearEndDate.Year.ToString();
-                query = query.Where(x => x.AssignedDiplomProjects.Any()).Where(x => x.AssignedDiplomProjects
-                .FirstOrDefault().Student.Group.GraduationYear == currentYear).Where(x => x.AssignedDiplomProjects
-                .FirstOrDefault().Student.Group.SecretaryId == userId);
+
+                var studentQuery = Context.GetGraduateStudents()
+                    .AsNoTracking()
+                    .Include(x => x.Group)
+                    .Include(x => x.AssignedDiplomProjects.Select(adp => adp.DiplomProject.Lecturer))
+                    .Where(x => x.Group.SecretaryId == userId)
+                    .Where(x => x.Group.GraduationYear == currentYear);
+
+                if (searchString.Length > 0)
+                {
+                    studentQuery = studentQuery.Where(x =>
+                        x.LastName.Contains(searchString) ||
+                        x.AssignedDiplomProjects.Any(adp => adp.DiplomProject.Theme.Contains(searchString)));
+                }
+
+                var diplomProjects = from s in studentQuery
+                                     let adp = s.AssignedDiplomProjects.FirstOrDefault()
+                                     let dp = adp != null ? adp.DiplomProject : null
+                                     select new DiplomProjectData
+                                     {
+                                         Id = dp != null ? (int?)dp.DiplomProjectId : null,
+                                         Theme = dp != null ? dp.Theme : null,
+                                         Lecturer = dp != null && dp.Lecturer != null
+                                             ? dp.Lecturer.LastName + " " + dp.Lecturer.FirstName + " " + dp.Lecturer.MiddleName
+                                             : null,
+                                         Student = s.LastName + " " + s.FirstName + " " + s.MiddleName,
+                                         StudentId = s.Id,
+                                         Group = s.Group.Name,
+                                         ApproveDate = adp != null ? adp.ApproveDate : null
+                                     };
+
+                return diplomProjects.ApplyPaging(parms);
+            }
+
+            var query = Context.DiplomProjects.AsNoTracking()
+                .Include(x => x.Lecturer)
+                .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student.Group));
+
+            if (user != null && user.Lecturer != null && !user.Lecturer.IsSecretary)
+            {
+                query = query.Where(x => x.LecturerId == userId);
             }
 
             if (user != null && user.Student != null)
@@ -66,8 +94,8 @@ namespace Application.Infrastructure.DPManagement
                 var diplomProjects = from dp in query
                                      let adp = dp.AssignedDiplomProjects.FirstOrDefault()
                                      where adp.Student.LastName.Contains(searchString) ||
-                                         dp.Theme.Contains(searchString) ||
-                                        adp.Student.Group.Name.Contains(searchString)
+                                           dp.Theme.Contains(searchString) ||
+                                           adp.Student.Group.Name.Contains(searchString)
                                      select new DiplomProjectData
                                      {
                                          Id = dp.DiplomProjectId,
