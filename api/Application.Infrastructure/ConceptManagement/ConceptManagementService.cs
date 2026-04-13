@@ -459,25 +459,36 @@ namespace Application.Infrastructure.ConceptManagement
             return res;
         }
 
-        public Concept SaveConcept(Concept concept, IList<Attachment> attachments)
+        public Concept SaveConcept(Concept concept, IList<Attachment> attachments, bool containerExplicitlySet = false, bool preserveFiles = false)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 attachments = ProcessWordAttachmentsIfExist(attachments);
                 
-                if (attachments != null && attachments.Count > 15)
+                if (attachments != null && attachments.Count > 5)
                 {
-                    throw new InvalidOperationException("Максимальное количество файлов - 15");
+                    throw new InvalidOperationException("Максимальное количество файлов - 5");
                 }
                 
                 if (!string.IsNullOrEmpty(concept.Container))
                 {
-                    // Если attachments не переданы — не трогаем существующие файлы в контейнере
-                    if (attachments != null && attachments.Any())
+                    if (!containerExplicitlySet && (attachments == null || !attachments.Any()))
+                    {
+                        if (!preserveFiles)
+                        {
+                            var existingFiles = repositoriesContainer.AttachmentRepository
+                                .GetAll(new Query<Attachment>(e => e.PathName == concept.Container)).ToList();
+                            foreach (var attachment in existingFiles)
+                            {
+                                FilesManagementService.DeleteFileAttachment(attachment);
+                            }
+                        }
+                        concept.Container = null;
+                    }
+                    else if (!containerExplicitlySet)
                     {
                         var existingFiles = repositoriesContainer.AttachmentRepository
                             .GetAll(new Query<Attachment>(e => e.PathName == concept.Container)).ToList();
-
                         var attachmentIds = new HashSet<int>(attachments.Select(x => x.Id));
                         var deleteFiles = attachmentIds.Any()
                             ? existingFiles.Where(e => !attachmentIds.Contains(e.Id)).ToList()
@@ -974,6 +985,51 @@ namespace Application.Infrastructure.ConceptManagement
                 repositoriesContainer.ConceptRepository.Save(nextItem);
             }
             repositoriesContainer.ApplyChanges();
+        }
+
+        public Concept MoveConceptNode(int conceptId, int newParentId, int prevConceptId, int nextConceptId)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            Func<int, Query<Concept>> queryById = id => new Query<Concept>(c => c.Id == id);
+
+            var concept = repositoriesContainer.ConceptRepository.GetBy(queryById(conceptId));
+            if (concept == null)
+                return null;
+
+            var mandatorySectionNames = new[] { TitlePageSectionName, ProgramSectionName, LectSectionName, PracticalSectionName, TestSectionName };
+            if (concept.ReadOnly == true && mandatorySectionNames.Contains(concept.Name))
+                throw new InvalidOperationException($"Cannot move read-only concept");
+
+            var oldPrev = concept.PrevConcept;
+            var oldNext = concept.NextConcept;
+
+            concept.ParentId = newParentId;
+            concept.PrevConcept = prevConceptId > 0 ? prevConceptId : (int?)null;
+            concept.NextConcept = nextConceptId > 0 ? nextConceptId : (int?)null;
+            repositoriesContainer.ConceptRepository.Save(concept);
+
+            ResetSiblings(oldPrev, oldNext, repositoriesContainer);
+
+            if (prevConceptId > 0)
+            {
+                var prevNode = repositoriesContainer.ConceptRepository.GetBy(queryById(prevConceptId));
+                if (prevNode != null)
+                {
+                    prevNode.NextConcept = concept.Id;
+                    repositoriesContainer.ConceptRepository.Save(prevNode);
+                }
+            }
+            if (nextConceptId > 0)
+            {
+                var nextNode = repositoriesContainer.ConceptRepository.GetBy(queryById(nextConceptId));
+                if (nextNode != null)
+                {
+                    nextNode.PrevConcept = concept.Id;
+                    repositoriesContainer.ConceptRepository.Save(nextNode);
+                }
+            }
+            repositoriesContainer.ApplyChanges();
+            return repositoriesContainer.ConceptRepository.GetById(concept.Id);
         }
 
         public bool IsTestModule(string moduleName)

@@ -18,7 +18,7 @@ import { TranslatePipe } from 'educats-translate'
 import { CatsService, CodeType } from 'src/app/service/cats.service'
 import { DeleteConfirmationPopupComponent } from './delete-confirmation-popup/delete-confirmation-popup.component'
 import { takeUntil } from 'rxjs/operators'
-import { Subject } from 'rxjs'
+import { Subject, forkJoin, of } from 'rxjs'
 import { MenuService } from '../../../../../../../container/src/app/core/services/menu.service'
 import { ModuleType } from '../../../../../../../container/src/app/core/models/module.model'
 import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
@@ -28,6 +28,9 @@ import { TestResultsLoaderService } from '../../../service/test-results-loader.s
 import { HiddenTestsService } from '../../../service/hidden-tests.service'
 import { ApiResponseCode } from '../../../models/api-response-code.enum'
 import { ChangeDetectorRef } from '@angular/core'
+import { TreeDragDropService } from '../../../service/tree-drag-drop.service'
+import { DropPlacement } from '../../../models/drop-placement.enum'
+import { DragCssClass } from '../../../models/drag-css-class.enum'
 
 @Component({
   selector: 'app-material-tree',
@@ -37,6 +40,8 @@ import { ChangeDetectorRef } from '@angular/core'
 export class MaterialComponent implements OnInit, OnChanges {
   @Input() complexId: string
   isLecturer: boolean
+  dropIndicatorNodeId: number | null = null
+  dropInsideNodeId: number | null = null
   treeControl = new NestedTreeControl<ComplexCascade>((node) => node.children)
   dataSource = new MatTreeNestedDataSource<ComplexCascade>()
   private unsubscribeStream$: Subject<void> = new Subject<void>()
@@ -61,7 +66,8 @@ export class MaterialComponent implements OnInit, OnChanges {
     public converterService: ConverterService,
     private testResultsLoaderService: TestResultsLoaderService,
     private hiddenTestsService: HiddenTestsService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public treeDragDropService: TreeDragDropService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -92,7 +98,20 @@ export class MaterialComponent implements OnInit, OnChanges {
       () => {
         this.complexService.getConceptCascade(this.complexId).subscribe((res) => {
           const localizedData = this.localizeTree(res.children)
+          const getTestNodes = (nodes: ComplexCascade[]): ComplexCascade[] => {
+            const result: ComplexCascade[] = []
+            const walk = (list: ComplexCascade[]) => {
+              list.forEach(n => {
+                if (n.TestId) result.push(n)
+                if (n.children && n.children.length) walk(n.children)
+              })
+            }
+            walk(nodes)
+            return result
+          }
+          console.log('[HiddenTests] Тесты до фильтрации:', getTestNodes(localizedData).map(n => ({ Id: n.Id, TestId: n.TestId, Name: n.Name })))
           const filteredData = this.hiddenTestsService.filterHiddenTestsForCascade(this.complexId, localizedData)
+          console.log('[HiddenTests] Тесты после фильтрации:', getTestNodes(filteredData).map(n => ({ Id: n.Id, TestId: n.TestId, Name: n.Name })))
           this.dataSource.data = filteredData
           this.treeControl.dataNodes = filteredData
           this.treeControl.expandAll()
@@ -100,12 +119,14 @@ export class MaterialComponent implements OnInit, OnChanges {
         })
       },
       () => {
+        console.error('[HiddenTests] loadHiddenTests вернул ошибку — дерево без фильтрации')
         this.complexService.getConceptCascade(this.complexId).subscribe((res) => {
           const localizedData = this.localizeTree(res.children)
-          this.dataSource.data = localizedData
-          this.treeControl.dataNodes = localizedData
+          const filteredData = this.hiddenTestsService.filterHiddenTestsForCascade(this.complexId, localizedData)
+          this.dataSource.data = filteredData
+          this.treeControl.dataNodes = filteredData
           this.treeControl.expandAll()
-          this.loadTestResults(localizedData)
+          this.loadTestResults(filteredData)
         })
       }
     )
@@ -172,6 +193,7 @@ export class MaterialComponent implements OnInit, OnChanges {
           }
         }
       }
+      localizedName = this.stripFileExtension(localizedName)
       return {
         ...node,
         Name: localizedName,
@@ -370,18 +392,51 @@ export class MaterialComponent implements OnInit, OnChanges {
         attachments: attachments,
         testId: node.TestId,
         isMandatoryComponent: isMandatoryComponent,
+        children: node.children || [],
       },
     })
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const isFile = !result.isGroup
+        const wasFolder = node.IsGroup
+        const isNowFolder = result.isGroup
+        const isNowFile = !result.isGroup
         const hasNoAttachments = !result.attachments || result.attachments.length === 0
         const hadNoInitialAttachments = !attachments || attachments.length === 0
-        
+
+        const userId = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id
+
+        const initialAttachmentIds = new Set(
+          (attachments || []).filter(a => a.id > 0).map(a => a.id)
+        )
+
+        const newFiles = isNowFolder
+          ? (result.attachments || []).filter(
+              (a: any) => !a.id || a.id === 0 || !initialAttachmentIds.has(a.id)
+            )
+          : []
+
+        const convertedFromFileToFolder = !wasFolder && isNowFolder
+        const fileToFolderAttachments = convertedFromFileToFolder
+          ? (attachments || [])
+          : []
+
+        const convertedFromFolderToFile = wasFolder && isNowFile
+        let folderToFileContainer: string | null = null
+        if (convertedFromFolderToFile) {
+          const children: any[] = node.children || []
+          const childWithFile = children.find((c: any) => !c.IsGroup && c.FilePath)
+          if (childWithFile && childWithFile.Attachments && childWithFile.Attachments.length > 0) {
+            folderToFileContainer = childWithFile.Attachments[0].PathName
+          }
+        }
+
         let fileData: string
-        
-        if (isFile && hasNoAttachments && hadNoInitialAttachments) {
+        if (isNowFile && hasNoAttachments && hadNoInitialAttachments && !folderToFileContainer) {
+          fileData = JSON.stringify([])
+        } else if (isNowFolder) {
+          fileData = JSON.stringify([])
+        } else if (convertedFromFolderToFile && folderToFileContainer) {
           fileData = JSON.stringify([])
         } else {
           fileData = JSON.stringify(result.attachments || [])
@@ -393,20 +448,61 @@ export class MaterialComponent implements OnInit, OnChanges {
           parentId: result.parentId,
           isGroup: result.isGroup,
           fileData: fileData,
-          userId: JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id,
+          userId,
+          container: folderToFileContainer || undefined,
+          preserveFiles: convertedFromFileToFolder && fileToFolderAttachments.length > 0,
         }
 
-        this.complexService.addOrEditConcept(concept).subscribe((res) => {
-          if (res['Code'] === ApiResponseCode.Success) {
-            this.loadConceptCascade()
-          }
-        })
+        const deleteChildren$ = convertedFromFolderToFile
+          ? (node.children || []).map((child: any) =>
+              this.complexService.deleteConcept({ elementId: parseInt(child.Id, 10) })
+            )
+          : []
+
+        const doSave = () => {
+          this.complexService.addOrEditConcept(concept).subscribe((res) => {
+            if (res['Code'] === ApiResponseCode.Success) {
+              const allNewChildFiles = [
+                ...newFiles,
+                ...fileToFolderAttachments,
+              ]
+
+              if (isNowFolder && allNewChildFiles.length > 0) {
+                const childConcepts$ = allNewChildFiles.map((file: any) => {
+                  const isExisting = file.id && file.id > 0
+                  return this.complexService.addOrEditConcept({
+                    conceptId: 0,
+                    conceptName: this.stripFileExtension(file.name),
+                    parentId: result.id,
+                    isGroup: false,
+                    fileData: isExisting ? JSON.stringify([]) : JSON.stringify([file]),
+                    userId,
+                    container: isExisting ? (file.pathName || undefined) : undefined,
+                  })
+                })
+                forkJoin(childConcepts$).subscribe(() => this.loadConceptCascade())
+              } else {
+                this.loadConceptCascade()
+              }
+            }
+          })
+        }
+
+        if (deleteChildren$.length > 0) {
+          forkJoin(deleteChildren$).subscribe(() => doSave())
+        } else {
+          doSave()
+        }
       }
     })
   }
 
   hasChild = (_: number, node: ComplexCascade) =>
     node.IsGroup || (!!node.children && node.children.length > 0)
+
+  private stripFileExtension(name: string): string {
+    return name.replace(/\.(pdf|docx?|doc)$/i, '')
+  }
 
   isLeafClickable(node: ComplexCascade): boolean {
     return !!(node.FilePath || node.TestId)
@@ -536,6 +632,120 @@ export class MaterialComponent implements OnInit, OnChanges {
     ) || translatedComponents.some((comp) =>
       nodeName.includes(comp)
     )
+  }
+
+  isMandatoryNode(node: ComplexCascade): boolean {
+    return !!(node as any).ReadOnly || !!node.isSectionNode || this.isMandatoryComponent(node)
+  }
+
+  onDragStart(event: DragEvent, node: ComplexCascade): void {
+    event.stopPropagation()
+    this.treeDragDropService.onDragStart(node)
+    const el = event.target as HTMLElement
+    if (el) {
+      setTimeout(() => el.classList.add(DragCssClass.Dragging), 0)
+    }
+  }
+
+  onDragOver(event: DragEvent, node: ComplexCascade): void {
+    const target = (event.currentTarget as HTMLElement)
+    this.treeDragDropService.onDragOver(event, target, node, this.dataSource.data)
+    const pos = this.treeDragDropService.dropPosition
+    if (pos) {
+      if (pos.placement === DropPlacement.Inside) {
+        this.dropIndicatorNodeId = null
+        this.dropInsideNodeId = Number(pos.targetNode.Id)
+      } else if (pos.placement === DropPlacement.After) {
+        this.dropInsideNodeId = null
+        this.dropIndicatorNodeId = Number(pos.targetNode.Id)
+      } else {
+        this.dropInsideNodeId = null
+        const parent = this.treeDragDropService.findParent(node, this.dataSource.data)
+        const siblings = parent ? (parent.children || []) : this.dataSource.data
+        const idx = siblings.findIndex(n => n.Id === node.Id)
+        this.dropIndicatorNodeId = idx > 0 ? Number(siblings[idx - 1].Id) : null
+      }
+    }
+  }
+
+  onDragLeave(event: DragEvent): void {
+    const related = event.relatedTarget as HTMLElement
+    if (!related || !related.closest('mat-tree')) {
+      this.dropIndicatorNodeId = null
+      this.dropInsideNodeId = null
+    }
+  }
+
+  onDrop(event: DragEvent, node: ComplexCascade): void {
+    event.stopPropagation()
+    const target = event.currentTarget as HTMLElement
+    const position = this.treeDragDropService.onDrop(event, target, node, this.dataSource.data)
+    this.dropIndicatorNodeId = null
+    this.dropInsideNodeId = null
+
+    if (!position) return
+
+    const { targetNode, placement } = position
+    let newParentId: number
+    let prevConceptId: number
+    let nextConceptId: number
+
+    if (placement === DropPlacement.Inside) {
+      newParentId = Number(targetNode.Id)
+      const children = targetNode.children || []
+      prevConceptId = children.length > 0 ? Number(children[children.length - 1].Id) : 0
+      nextConceptId = 0
+    } else {
+      const parent = this.treeDragDropService.findParent(targetNode, this.dataSource.data)
+      const siblings = parent ? (parent.children || []) : this.dataSource.data
+      const targetIdx = siblings.findIndex(n => n.Id === targetNode.Id)
+      if (targetIdx === -1) return
+
+      newParentId = parent ? Number(parent.Id) : Number(targetNode.ParentId)
+
+      if (placement === DropPlacement.Before) {
+        prevConceptId = targetIdx > 0 ? Number(siblings[targetIdx - 1].Id) : 0
+        nextConceptId = Number(targetNode.Id)
+      } else {
+        prevConceptId = Number(targetNode.Id)
+        nextConceptId = targetIdx < siblings.length - 1 ? Number(siblings[targetIdx + 1].Id) : 0
+      }
+    }
+
+    const dragNode = this.treeDragDropService.dragNode
+    this.treeDragDropService.onDragEnd()
+
+    if (!dragNode) return
+
+    this.complexService.moveConceptNode(
+      Number(dragNode.Id),
+      newParentId,
+      prevConceptId,
+      nextConceptId
+    ).subscribe((res) => {
+      if (res && res['Code'] === ApiResponseCode.Success) {
+        localStorage.setItem(StorageKeys.SelectedComplex, this.complexId)
+        window.location.reload()
+      } else {
+        this.catsService.showMessage({
+          Message: this.translatePipe.transform('common.error.move', 'Не удалось переместить элемент'),
+          Type: CodeType.error,
+        })
+      }
+    }, () => {
+      this.catsService.showMessage({
+        Message: this.translatePipe.transform('common.error.move', 'Не удалось переместить элемент'),
+        Type: CodeType.error,
+      })
+    })
+  }
+
+  onDragEnd(event: DragEvent): void {
+    const el = event.target as HTMLElement
+    if (el) el.classList.remove(DragCssClass.Dragging)
+    this.treeDragDropService.onDragEnd()
+    this.dropIndicatorNodeId = null
+    this.dropInsideNodeId = null
   }
 
 }

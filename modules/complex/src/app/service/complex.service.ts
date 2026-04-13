@@ -180,4 +180,18 @@ export class ComplexService {
       this.path + 'GetHiddenTests?complexId=' + complexId
     )
   }
+
+  public moveConceptNode(
+    conceptId: number,
+    newParentId: number,
+    prevConceptId: number,
+    nextConceptId: number
+  ): Observable<any> {
+    return this.http.post(this.path + 'MoveConceptNode', {
+      conceptId,
+      newParentId,
+      prevConceptId,
+      nextConceptId,
+    })
+  }
 }
