@@ -1,8 +1,10 @@
-﻿using System.Data.Entity;
-using System.Linq;
-using Application.Core;
+﻿using Application.Core;
 using Application.Infrastructure.DTO;
 using LMPlatform.Data.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 
 namespace Application.Infrastructure.DPManagement
 {
@@ -10,7 +12,26 @@ namespace Application.Infrastructure.DPManagement
     {
         public UserData GetUserInfo(int userId)
         {
-            var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).Single(x => x.Id == userId);
+            var now = DateTime.Now;
+            var user = Context.Users
+                .Include(x => x.Student)
+                .Include(x => x.Lecturer)
+                .SingleOrDefault(x => x.Id == userId);
+
+            if (user == null)
+                return null;
+
+            var studentGroup = user.Student != null
+                ? Context.Groups.SingleOrDefault(g => g.Id == user.Student.GroupId)
+                : null;
+
+            var selectedGroupIds = user.Lecturer != null && user.Lecturer.IsSecretary
+                ? Context.Groups
+        .Where(g => g.SecretaryId == user.Lecturer.Id)
+        .Select(g => g.Id)
+        .ToList()
+    : new List<int>();
+
             return new UserData
             {
                 UserId = user.Id,
@@ -22,8 +43,10 @@ namespace Application.Infrastructure.DPManagement
                 HasAssignedDiplomProject = user.Student != null
                     && Context.AssignedDiplomProjects.Any(x => x.StudentId == user.Student.Id && x.ApproveDate.HasValue),
                 IsLecturerHasGraduateStudents = user.Lecturer != null && user.Lecturer.IsLecturerHasGraduateStudents,
-                IsGraduate = user.Student != null
-                    && Context.DiplomProjectGroups.Any(x => x.GroupId == user.Student.GroupId)
+                IsGraduate = studentGroup != null
+                    && int.TryParse(studentGroup.GraduationYear, out int gradYear)
+                    && gradYear == now.Year,
+                SelectedGroupIds = selectedGroupIds
             };
         }
 

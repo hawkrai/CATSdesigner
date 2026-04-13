@@ -28,5 +28,7 @@ namespace Application.Infrastructure.DTO
         public string LecturerName { get; set; }
 
         public DateTime? MarkDate { get; set; }
+        public string DiplomProjectTheme { get; set; }
+        public int GroupId { get; set; }
     }
 }

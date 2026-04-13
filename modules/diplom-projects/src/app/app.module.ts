@@ -58,7 +58,7 @@ import { ToastrModule } from 'ngx-toastr'
 import { HelpPopoverScheduleComponent } from './shared/help-popover/help-popover-schedule.component'
 import { HelpComponent } from './shared/help/help.component'
 import { PopoverModule } from 'ngx-smart-popover'
-
+import { EditComponent } from './components/projects/edit/edit.component'
 @NgModule({
   declarations: [
     AppComponent,
@@ -81,6 +81,7 @@ import { PopoverModule } from 'ngx-smart-popover'
     VisitingPopoverComponent,
     HelpComponent,
     HelpPopoverScheduleComponent,
+    EditComponent,
   ],
   imports: [
     BrowserModule,

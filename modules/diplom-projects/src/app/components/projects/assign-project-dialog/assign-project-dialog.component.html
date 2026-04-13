@@ -1,12 +1,15 @@
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
   <mat-icon class="close-icon">close</mat-icon>
 </button>
-<h1 mat-dialog-title>
+<h1 mat-dialog-title class="dialog-title">
   {{
     'text.diplomProject.assignTheme'
       | translate: 'Назначение темы дипломного проекта'
   }}
 </h1>
+<div class="theme-subtitle">
+  {{ data.students[0]?.DiplomProjectTheme }}
+</div>
 <mat-form-field class="group-select">
   <mat-select [value]="groups ? groups[0] : ''">
     <mat-option

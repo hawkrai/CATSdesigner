@@ -1,0 +1,76 @@
+<div class="edit-popover mat-elevation-z4">
+  <div class="edit-popover__header">
+    <span>{{ 'date.edit' | translate: 'Редактировать дату' }}</span>
+    <button mat-icon-button (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="edit-popover__body">
+    <div class="form-container">
+      <mat-form-field class="form-field">
+        <mat-label>{{ 'text.diplomProject.date' | translate: 'Дата' }}</mat-label>
+        <input
+          matInput
+          [matDatepicker]="dp"
+          [formControl]="dateControl"
+          readonly
+        />
+        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+        <mat-datepicker #dp></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="form-container">
+      <mat-form-field class="form-field">
+        <mat-label>{{
+          'text.diplomProject.startConsultation' | translate: 'Начало консультации'
+        }}</mat-label>
+        <input matInput type="time" [formControl]="startTimeControl" />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>{{
+          'text.diplomProject.endConsultation' | translate: 'Конец консультации'
+        }}</mat-label>
+        <input matInput type="time" [formControl]="endTimeControl" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-container">
+      <mat-form-field class="form-field">
+        <mat-label>{{
+          'text.diplomProject.building' | translate: 'Корпус'
+        }}</mat-label>
+        <input matInput [formControl]="buildingControl" />
+        <mat-error *ngIf="buildingControl.invalid">{{
+          'text.course.visit.dialog.add.error.small' | translate: 'От 1 до 3 символов'
+        }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>{{
+          'text.diplomProject.audience' | translate: 'Аудитория'
+        }}</mat-label>
+        <input matInput [formControl]="audienceControl" />
+        <mat-error *ngIf="audienceControl.invalid">{{
+          'text.course.visit.dialog.add.error.small' | translate: 'От 1 до 3 символов'
+        }}</mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="edit-popover__actions">
+    <button mat-raised-button (click)="onClose()">
+      {{ 'text.editor.close' | translate: 'Закрыть' }}
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="isFormInvalid"
+      (click)="onSave()"
+    >
+      {{ 'date.save' | translate: 'Сохранить' }}
+    </button>
+  </div>
+</div>

@@ -5,9 +5,10 @@ import { CoreGroup } from 'src/app/models/core-group.model'
 import { TranslatePipe } from 'educats-translate'
 
 interface DialogData {
+  id?: number
   name: string
   groups: CoreGroup[]
-  selectedGroups: CoreGroup[]
+  selectedGroups: (number | CoreGroup)[]
   edit: boolean
 }
 
@@ -17,24 +18,33 @@ interface DialogData {
   styleUrls: ['./add-project-dialog.component.less'],
 })
 export class AddProjectDialogComponent {
-  private nameControl: FormControl = new FormControl(this.data.name, [
-    Validators.minLength(3),
-    Validators.maxLength(255),
-    Validators.required,
-    this.noWhitespaceValidator,
-  ])
+  nameControl: FormControl
 
-  private groups: CoreGroup[]
+  groups: CoreGroup[] = []
 
   constructor(
     public dialogRef: MatDialogRef<AddProjectDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public translatePipe: TranslatePipe
   ) {
-    this.groups = data.groups.filter(
-      (g) => !data.selectedGroups.find((sg) => sg.GroupId === g.GroupId)
+    this.nameControl = new FormControl(this.data.name, [
+      Validators.minLength(3),
+      Validators.maxLength(255),
+      Validators.required,
+      this.noWhitespaceValidator,
+    ])
+    const selectedIds: number[] = this.data.selectedGroups.map((item) => {
+      if (typeof item === 'number') {
+        return item
+      }
+      return Number(item.GroupId)
+    })
+    this.data.selectedGroups = this.data.groups.filter((g) =>
+      selectedIds.includes(Number(g.GroupId))
     )
-    this.includeNone()
+    this.groups = this.data.groups.filter(
+      (g) => !selectedIds.includes(Number(g.GroupId))
+    )
   }
 
   onCancelClick(): void {
@@ -43,12 +53,7 @@ export class AddProjectDialogComponent {
 
   move(i: number, origin: CoreGroup[], dest: CoreGroup[]) {
     const group = origin.splice(i, 1)[0]
-    const destIndex = dest.findIndex((g) => g.GroupName > group.GroupName)
-    if (destIndex < 0) {
-      dest.push(group)
-    } else {
-      dest.splice(destIndex, 0, group)
-    }
+    dest.push(group)
   }
 
   includeAll() {
@@ -61,13 +66,12 @@ export class AddProjectDialogComponent {
     this.groups = this.data.groups.slice()
   }
 
-  trackByFn(index, item) {
-    return item.Id
+  trackByFn(index: number, item: CoreGroup) {
+    return Number(item.GroupId)
   }
 
-  public noWhitespaceValidator(control: FormControl) {
+  noWhitespaceValidator(control: FormControl) {
     const isWhitespace = (control.value || '').trim().length === 0
-    const isValid = !isWhitespace
-    return isValid ? null : { whitespace: true }
+    return isWhitespace ? { whitespace: true } : null
   }
 }

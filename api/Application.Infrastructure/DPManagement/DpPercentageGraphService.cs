@@ -99,6 +99,21 @@ namespace Application.Infrastructure.DPManagement
             return data;
         }
 
+        public void UpdateConsultationDate(int userId, int id, DateTime day, TimeSpan? startTime, TimeSpan? endTime, string audience, string building)
+        {
+            var entity = Context.DiplomProjectConsultationDates.FirstOrDefault(x => x.Id == id);
+
+            if (entity == null)
+                throw new Exception("Consultation not found");
+
+            entity.Day = day;
+            entity.StartTime = startTime;
+            entity.EndTime = endTime;
+            entity.Audience = audience;
+            entity.Building = building;
+
+            Context.SaveChanges();
+        }
         public List<DiplomProjectConsultationDateData> GetConsultationDatesForUser(int userId)
         {
             if (AuthorizationHelper.IsStudent(Context, userId))
@@ -115,20 +130,32 @@ namespace Application.Infrastructure.DPManagement
             }
 
             return Context.DiplomProjectConsultationDates
-                .Where(x => x.Day >= _currentAcademicYearStartDate && x.Day < _currentAcademicYearEndDate)
-                .Where(x => x.LecturerId == userId)
-                .OrderBy(x => x.Day)
-                .Select(x => new DiplomProjectConsultationDateData
-                {
-                    Day = x.Day,
-                    LecturerId = x.LecturerId,
-                    Id = x.Id,
-                    Audience = x.Audience,
-                    Building = x.Building,
-                    StartTime = x.StartTime,
-                    EndTime = x.EndTime
-                })
-                .ToList();
+    .Where(x => x.Day >= _currentAcademicYearStartDate && x.Day < _currentAcademicYearEndDate)
+    .Where(x => x.LecturerId == userId)
+    .Join(Context.Lecturers,
+        c => c.LecturerId,
+        l => l.Id,
+        (c, l) => new
+        {
+            Consultation = c,
+            Lecturer = l
+        })
+    .AsEnumerable()
+    .Select(x => new DiplomProjectConsultationDateData
+    {
+        Id = x.Consultation.Id,
+        LecturerId = x.Consultation.LecturerId,
+
+        LecturerFullName = x.Lecturer.FullName,
+
+        Day = x.Consultation.Day,
+        StartTime = x.Consultation.StartTime,
+        EndTime = x.Consultation.EndTime,
+        Audience = x.Consultation.Audience,
+        Building = x.Consultation.Building
+    })
+    .OrderBy(x => x.Day)
+    .ToList();
         }
 
         /// <summary>

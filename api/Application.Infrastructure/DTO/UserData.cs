@@ -1,4 +1,6 @@
-﻿namespace Application.Infrastructure.DTO
+﻿using System.Collections.Generic;
+
+namespace Application.Infrastructure.DTO
 {
     public class UserData
     {
@@ -16,5 +18,6 @@
 
         public bool IsLecturerHasGraduateStudents { get; set; }
         public bool IsGraduate { get; set; }
+        public IEnumerable<int> SelectedGroupIds { get; set; }
     }
 }

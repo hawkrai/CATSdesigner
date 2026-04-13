@@ -1,6 +1,10 @@
 <div class="visit-stats-list-component">
   <div class="mdc-data-table">
-    <table class="mdc-data-table__table">
+    <table
+      class="mdc-data-table__table"
+      matSort
+      (matSortChange)="sortData($event)"
+    >
       <thead>
         <tr class="mdc-data-table__header-row">
           <th
@@ -11,6 +15,7 @@
             №
           </th>
           <th
+            mat-sort-header="Name"
             class="mdc-data-table__header-cell"
             role="columnheader"
             scope="col"
@@ -18,11 +23,61 @@
             {{ 'text.diplomProject.student' | translate: 'Студент' }}
           </th>
           <th
+            mat-sort-header="DiplomProjectTheme"
             class="mdc-data-table__header-cell"
             role="columnheader"
             scope="col"
+            *ngIf="
+              visitStatsComponent.getDiplomUser().IsSecretary &&
+              !visitStatsComponent.isLecturer
+            "
+          >
+            {{
+              'text.diplomProject.themeDP'
+                | translate: 'Тема дипломного проекта'
+            }}
+          </th>
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+            *ngIf="
+              visitStatsComponent.getDiplomUser().IsSecretary &&
+              !visitStatsComponent.isLecturer
+            "
+          >
+            {{ 'text.diplomProject.head' | translate: 'Руководитель проекта' }}
+          </th>
+          <th
+            mat-sort-header="Group"
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+            *ngIf="
+              !(
+                visitStatsComponent.getDiplomUser().IsSecretary &&
+                !visitStatsComponent.isLecturer
+              )
+            "
           >
             {{ 'text.diplomProject.group' | translate: 'Группа' }}
+          </th>
+          <th
+            mat-sort-header="DiplomProjectTheme"
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+            *ngIf="
+              !(
+                visitStatsComponent.getDiplomUser().IsSecretary &&
+                !visitStatsComponent.isLecturer
+              )
+            "
+          >
+            {{
+              'text.diplomProject.themeDP'
+                | translate: 'Тема дипломного проекта'
+            }}
           </th>
           <th
             class="mdc-data-table__header-cell data-cell"
@@ -31,20 +86,7 @@
             *ngFor="let consultation of consultations"
           >
             <div class="header-date">
-              <a
-                class="clickable"
-                (dblclick)="visitStatsComponent.deleteVisitDate(consultation)"
-                matTooltip="{{
-                  'text.diplomProject.dateRemove' | translate: 'Удалить дату'
-                }}"
-                *ngIf="
-                  visitStatsComponent.getDiplomUser().IsLecturer &&
-                  !visitStatsComponent.getDiplomUser().IsSecretary
-                "
-              >
-                {{ consultation.Day | date: 'dd.MM.yyyy' }}
-              </a>
-              <a
+              <span
                 class="clickable"
                 (dblclick)="visitStatsComponent.deleteVisitDate(consultation)"
                 matTooltip="{{
@@ -53,7 +95,7 @@
                 *ngIf="visitStatsComponent.isLecturer"
               >
                 {{ consultation.Day | date: 'dd.MM.yyyy' }}
-              </a>
+              </span>
               <p *ngIf="visitStatsComponent.getDiplomUser().IsStudent">
                 {{ consultation.Day | date: 'dd.MM.yyyy' }}
               </p>
@@ -76,7 +118,46 @@
         >
           <td class="mdc-data-table__cell">{{ i + 1 }}</td>
           <td class="mdc-data-table__cell">{{ stats.Name }}</td>
-          <td class="mdc-data-table__cell">{{ stats.Group }}</td>
+          <td
+            class="mdc-data-table__cell"
+            *ngIf="
+              visitStatsComponent.getDiplomUser().IsSecretary &&
+              !visitStatsComponent.isLecturer
+            "
+          >
+            {{ stats.DiplomProjectTheme }}
+          </td>
+          <td
+            class="mdc-data-table__cell"
+            *ngIf="
+              visitStatsComponent.getDiplomUser().IsSecretary &&
+              !visitStatsComponent.isLecturer
+            "
+          >
+            {{ stats.Lecturer }}
+          </td>
+          <td
+            class="mdc-data-table__cell"
+            *ngIf="
+              !(
+                visitStatsComponent.getDiplomUser().IsSecretary &&
+                !visitStatsComponent.isLecturer
+              )
+            "
+          >
+            {{ stats.Group }}
+          </td>
+          <td
+            class="mdc-data-table__cell"
+            *ngIf="
+              !(
+                visitStatsComponent.getDiplomUser().IsSecretary &&
+                !visitStatsComponent.isLecturer
+              )
+            "
+          >
+            {{ stats.DiplomProjectTheme }}
+          </td>
           <ng-container *ngIf="visitStatsComponent.getDiplomUser().IsStudent">
             <td
               class="mdc-data-table__cell data-cell"
@@ -142,6 +223,7 @@
     </table>
   </div>
 </div>
+
 <ng-template #load>
   <div class="spinner">
     <mat-spinner></mat-spinner>
