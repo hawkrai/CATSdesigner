@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.ConceptManagement;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.SubjectManagement;
@@ -51,10 +52,12 @@ namespace LMPlatform.UI.Services.Concept
         
         public ConceptResult SaveRootConcept(string name, string container, int subjectId, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshops, bool isPublished)
         {
+            if (!CurrentUserIsLector())
+                return new ConceptResult { Message = "Access denied", Code = "403" };
             try
             {
-                //var authorId = UserContext.CurrentUserId;
-                var root = ConceptManagementService.CreateRootConcept(name, 2, subjectId, isPublished, includeLabs, includeLectures, includeTests, includeWorkshops);
+                var authorId = UserContext.CurrentUserId;
+                var root = ConceptManagementService.CreateRootConcept(name, authorId, subjectId, isPublished, includeLabs, includeLectures, includeTests, includeWorkshops);
                 var subj = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == subjectId));
                 return new ConceptResult
                 {
@@ -108,8 +111,10 @@ namespace LMPlatform.UI.Services.Concept
         {
             try
             {
-                //var authorId = UserContext.CurrentUserId;
+                var isLector = CurrentUserIsLector();
                 var concepts = ConceptManagementService.GetElementsByParentId(parentId);
+                if (!isLector)
+                    concepts = concepts.Where(c => c.Published);
                 var concept = ConceptManagementService.GetById(parentId);
 
                 return new ConceptResult
@@ -134,10 +139,12 @@ namespace LMPlatform.UI.Services.Concept
 
         public ConceptResult Remove(int conceptId)
         {
+            if (!CurrentUserIsLector())
+                return new ConceptResult { Message = "Access denied", Code = "403" };
             try
             {
                 var source = ConceptManagementService.GetById(conceptId);
-                var canDelete = source != null;
+                var canDelete = source != null && source.UserId == UserContext.CurrentUserId;
                 if (canDelete)
                 {
                     ConceptManagementService.Remove(conceptId, source.IsGroup);
@@ -162,9 +169,10 @@ namespace LMPlatform.UI.Services.Concept
 
         public ConceptResult EditRootConcept(int elementId, string name, bool? includeLabs, bool? includeLectures, bool? includeTests, bool? includeWorkshops, bool isPublished)
         {
+            if (!CurrentUserIsLector())
+                return new ConceptResult { Message = "Access denied", Code = "403" };
             try
             {
-
                 ConceptManagementService.UpdateRootConcept(elementId, name, isPublished, includeLabs ?? false, includeLectures ?? false, includeTests ?? false, includeWorkshops ?? false);
 
                 return new ConceptResult
@@ -200,9 +208,12 @@ namespace LMPlatform.UI.Services.Concept
 
         public ConceptResult AddOrEditConcept(int conceptId, string conceptName, int parentId, bool isGroup, string fileData, int userId, string container, bool preserveFiles)
         {
+            if (!CurrentUserIsLector())
+                return new ConceptResult { Message = "Access denied", Code = "403" };
             try
             {
-                var conceptModel = new AddOrEditConceptViewModel(userId, conceptId, parentId)
+                var currentUserId = UserContext.CurrentUserId;
+                var conceptModel = new AddOrEditConceptViewModel(currentUserId, conceptId, parentId)
                 {
                     IsGroup = isGroup,
                     Name = conceptName,
@@ -292,6 +303,8 @@ namespace LMPlatform.UI.Services.Concept
         #region Used By Mobile
         public ConceptResult AttachSiblings(int source, int left, int right)
         {
+            if (!CurrentUserIsLector())
+                return new ConceptResult { Message = "Access denied", Code = "403" };
             try
             {
                 var concept = ConceptManagementService.AttachSiblings(source, right, left);
@@ -317,6 +330,8 @@ namespace LMPlatform.UI.Services.Concept
 
         public ConceptResult MoveConceptNode(int conceptId, int newParentId, int prevConceptId, int nextConceptId)
         {
+            if (!CurrentUserIsLector())
+                return new ConceptResult { Message = "Access denied", Code = "403" };
             try
             {
                 var concept = ConceptManagementService.MoveConceptNode(conceptId, newParentId, prevConceptId, nextConceptId);
@@ -401,6 +416,8 @@ namespace LMPlatform.UI.Services.Concept
 
         public ConceptStudentMonitoringData GetStudentMonitoringInfo(int complexId, int studentId)
         {
+            if (!CurrentUserIsLector())
+                return null;
             try
             {
                 var student = StudentManagementService.GetStudent(studentId);
@@ -498,6 +515,8 @@ namespace LMPlatform.UI.Services.Concept
         }
         public StudentsResult GetConfirmedAndNoneDeletedStudentsByGroupId(int groupId)
         {
+            if (!CurrentUserIsLector())
+                return new StudentsResult { Message = "Access denied", Code = "403" };
             try
             {
                 var students = StudentManagementService.GetConfirmedAndNoneDeletedStudentsByGroup(groupId);
@@ -522,6 +541,8 @@ namespace LMPlatform.UI.Services.Concept
         }
         public MonitoringData GetConceptViews(int conceptId, int groupId)
         {
+            if (!CurrentUserIsLector())
+                return null;
             var concept = ConceptManagementService.GetLiteById(conceptId);
             var list = WatchingTimeService.GetAllRecords(conceptId);
             var viewRecords = new List<ViewsWorm>();
@@ -622,6 +643,8 @@ namespace LMPlatform.UI.Services.Concept
 
         public ResultViewData HideTest(int conceptId, int? testId, int complexId)
         {
+            if (!CurrentUserIsLector())
+                return new ResultViewData { Message = "Access denied", Code = "403" };
             try
             {
                 using (var context = new LMPlatform.Data.Infrastructure.LmPlatformModelsContext())
