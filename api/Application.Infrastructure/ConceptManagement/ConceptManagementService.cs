@@ -472,17 +472,21 @@ namespace Application.Infrastructure.ConceptManagement
                 
                 if (!string.IsNullOrEmpty(concept.Container))
                 {
-                    var existingFiles = repositoriesContainer.AttachmentRepository
-                        .GetAll(new Query<Attachment>(e => e.PathName == concept.Container)).ToList();  
-                    
-                    var attachmentIds = new HashSet<int>(attachments?.Select(x => x.Id) ?? Enumerable.Empty<int>());   
-                    var deleteFiles = attachmentIds.Any() 
-                        ? existingFiles.Where(e => !attachmentIds.Contains(e.Id)).ToList() 
-                        : existingFiles;
-                    
-                    foreach (var attachment in deleteFiles)
+                    // Если attachments не переданы — не трогаем существующие файлы в контейнере
+                    if (attachments != null && attachments.Any())
                     {
-                        FilesManagementService.DeleteFileAttachment(attachment);
+                        var existingFiles = repositoriesContainer.AttachmentRepository
+                            .GetAll(new Query<Attachment>(e => e.PathName == concept.Container)).ToList();
+
+                        var attachmentIds = new HashSet<int>(attachments.Select(x => x.Id));
+                        var deleteFiles = attachmentIds.Any()
+                            ? existingFiles.Where(e => !attachmentIds.Contains(e.Id)).ToList()
+                            : existingFiles;
+
+                        foreach (var attachment in deleteFiles)
+                        {
+                            FilesManagementService.DeleteFileAttachment(attachment);
+                        }
                     }
                 }
                 else if (attachments?.Any() == true)

@@ -198,7 +198,7 @@ namespace LMPlatform.UI.Services.Concept
             return res;
         }
 
-        public ConceptResult AddOrEditConcept(int conceptId, string conceptName, int parentId, bool isGroup, string fileData, int userId)
+        public ConceptResult AddOrEditConcept(int conceptId, string conceptName, int parentId, bool isGroup, string fileData, int userId, string container = null)
         {
             try
             {
@@ -208,6 +208,11 @@ namespace LMPlatform.UI.Services.Concept
                     Name = conceptName,
                     FileData = fileData
                 };
+
+                if (!string.IsNullOrEmpty(container))
+                {
+                    conceptModel.Container = container;
+                }
 
                 if (!string.IsNullOrEmpty(conceptModel.FileData))
                 {
@@ -219,6 +224,7 @@ namespace LMPlatform.UI.Services.Concept
 
                 return new ConceptResult
                 {
+                    SavedConceptId = conceptModel.SavedConcept?.Id,
                     Message = SuccessCode,
                     Code = SuccessCode
                 };

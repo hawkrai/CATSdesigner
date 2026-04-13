@@ -88,10 +88,12 @@ namespace LMPlatform.UI.ViewModels.ComplexMaterialsViewModel
             return Attachments != null ? Attachments : new List<Attachment>();
         }
 
+        public Concept SavedConcept { get; private set; }
+
         public override void Save()
         {
             InitSourceConcept();
-            ConceptManagementService.SaveConcept(SourceConcept, GetAttachments());
+            SavedConcept = ConceptManagementService.SaveConcept(SourceConcept, GetAttachments());
         }
 
         private void InitSourceConcept()

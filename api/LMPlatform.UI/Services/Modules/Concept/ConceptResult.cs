@@ -20,5 +20,8 @@ namespace LMPlatform.UI.Services.Modules.Concept
 
         [DataMember]
         public string SubjectName { get; set; }
+
+        [DataMember]
+        public int? SavedConceptId { get; set; }
     }
 }
