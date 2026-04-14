@@ -186,6 +186,9 @@ export class QuestionComponent extends AutoUnsubscribeBase implements AfterViewI
   }
 
   private checkSelfStudyAnswer(request): boolean {
+    if (this.question.Question.QuestionType === 2) {
+      return this.checkSelfStudyTextAnswer(request)
+    }
     this.answers = 0
     const answersLength: number = request.answers.length
     request.answers.forEach((answer) => {
@@ -199,5 +202,37 @@ export class QuestionComponent extends AutoUnsubscribeBase implements AfterViewI
       })
     })
     return this.answers === answersLength
+  }
+
+  private normalizeKeyboardAnswer(raw: string | null | undefined): string | null {
+    if (raw == null) {
+      return null
+    }
+    const withoutControls = Array.from(raw)
+      .filter((ch) => {
+        const code = ch.charCodeAt(0)
+        return code > 31 && code !== 127
+      })
+      .join('')
+    const trimmed = withoutControls.trim()
+    return trimmed.length === 0 ? null : trimmed
+  }
+
+  private checkSelfStudyTextAnswer(request: { answers: Array<{ Content?: string }> }): boolean {
+    const userEntry = request.answers.find((a) => a.Content != null)
+    if (!userEntry) {
+      return false
+    }
+    const normalizedUser = this.normalizeKeyboardAnswer(userEntry.Content)
+    if (!normalizedUser) {
+      return false
+    }
+    const userKey = normalizedUser.toLowerCase()
+    const referenceKeys = this.question.Question.Answers.map((a) =>
+      this.normalizeKeyboardAnswer(a.Content)
+    )
+      .filter((ref): ref is string => ref != null && ref !== '')
+      .map((ref) => ref.toLowerCase())
+    return referenceKeys.includes(userKey)
   }
 }
