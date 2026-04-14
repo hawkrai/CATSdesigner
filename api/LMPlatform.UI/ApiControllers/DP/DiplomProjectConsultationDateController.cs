@@ -16,8 +16,27 @@ namespace LMPlatform.UI.ApiControllers.DP
     {
         public HttpResponseMessage Post([FromBody] DiplomProjectConsultationDateData consultationDate)
         {
-            PercentageService.SaveConsultationDate(UserContext.CurrentUserId, consultationDate.Day, consultationDate.StartTime, consultationDate.EndTime,
-                consultationDate.Audience, consultationDate.Building);
+            if (consultationDate.Id.HasValue && consultationDate.Id.Value > 0)
+            {
+                PercentageService.UpdateConsultationDate(
+                    UserContext.CurrentUserId,
+                    consultationDate.Id.Value,
+                    consultationDate.Day,
+                    consultationDate.StartTime,
+                    consultationDate.EndTime,
+                    consultationDate.Audience,
+                    consultationDate.Building);
+            }
+            else
+            {
+                PercentageService.SaveConsultationDate(
+                    UserContext.CurrentUserId,
+                    consultationDate.Day,
+                    consultationDate.StartTime,
+                    consultationDate.EndTime,
+                    consultationDate.Audience,
+                    consultationDate.Building);
+            }
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 

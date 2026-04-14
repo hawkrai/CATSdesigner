@@ -252,35 +252,83 @@ export class ScheduleMainComponent implements OnInit {
     )
   }
 
-  getTitelConsultation(consultation: any) {
-    return (
-      consultation.StartTime.split(':')[0] +
-      ':' +
-      consultation.StartTime.split(':')[1] +
-      '-' +
-      consultation.EndTime.split(':')[0] +
-      ':' +
-      consultation.EndTime.split(':')[1] +
-      '|' +
-      consultation.Audience +
-      '|' +
-      consultation.Building +
-      '|' +
-      this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
-      '|' +
-      this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
-      '|' +
-      '|' +
-      '363636' +
-      '|' +
-      '|' +
-      '|' +
-      '|' +
-      '|' +
-      '|' +
-      '|'
-    )
+  formatLecturerName(fullName: string): string {
+  if (!fullName) return ''
+
+  const parts = fullName.trim().split(' ').filter(x => x)
+
+  if (parts.length === 1) {
+    return parts[0]
   }
+
+  const lastName = parts[0]
+  const initials = parts
+    .slice(1)
+    .map(p => p.charAt(0).toUpperCase() + '.')
+    .join(' ')
+
+  return lastName + ' ' + initials
+}
+
+  getTitelConsultation(consultation: any) {
+
+  let memo = ''
+  memo = this.getLessonNoteText(consultation)
+
+  let teacher = ''
+
+  if (consultation.Teacher && consultation.Teacher.FullName) {
+    teacher = consultation.Teacher.FullName
+  } else if (consultation.LecturerFullName) {
+    teacher = consultation.LecturerFullName
+  }
+
+  teacher = this.formatLecturerName(teacher)
+
+  let subjectName = ''
+  let subjectId = ''
+
+  if (consultation.Subject) {
+    subjectName = consultation.Subject.Name
+    subjectId = consultation.Subject.Id
+  }
+
+  return (
+    consultation.StartTime.split(':')[0] +
+    ':' +
+    consultation.StartTime.split(':')[1] +
+    '-' +
+    consultation.EndTime.split(':')[0] +
+    ':' +
+    consultation.EndTime.split(':')[1] +
+    '|' +
+    consultation.Audience +
+    '|' +
+    consultation.Building +
+    '|' +
+    this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
+    '|' +
+    this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
+    '|' +
+    teacher +
+    '|' +
+    '363636' +
+    '|' +
+    subjectName +
+    '|' +
+    subjectId +
+    '|' +
+    memo +
+    '|' +
+    consultation.GroupId +
+    '|' +
+    '|' +
+    consultation.GroupName +
+    '|' +
+    '|' +
+    ''
+  )
+}
 
   getTitleDiplomConsultation(consultation: any) {
     return (

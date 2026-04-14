@@ -14,12 +14,16 @@ namespace LMPlatform.UI.ApiControllers.DP
     [JwtAuth]
     public class DiplomProjectConsultationController : ApiController
     {
-        public object Get([System.Web.Http.ModelBinding.ModelBinder]GetPagedListParams parms)
+        public object Get([System.Web.Http.ModelBinding.ModelBinder] GetPagedListParams parms)
         {
             var lecturerId = UserContext.CurrentUserId;
             if (parms.Filters.ContainsKey("lecturerId"))
             {
-                lecturerId = int.Parse(parms.Filters["lecturerId"]);
+                var parsedId = int.Parse(parms.Filters["lecturerId"]);
+                if (parsedId != 0)
+                {
+                    lecturerId = parsedId;
+                }
             }
 
             return new

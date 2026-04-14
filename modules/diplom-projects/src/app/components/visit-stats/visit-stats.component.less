@@ -3,11 +3,16 @@
     overflow: auto;
     display: flex;
     justify-content: space-between;
+
+    & > div:first-child {
+      display: flex;
+      align-items: center;
+    }
   }
 
   .addDateBtn {
-    float: left;
-    margin-top: 9px;
+  vertical-align: middle;
+  margin-right: 10px;
   }
 
   .detached-toggle {
@@ -21,6 +26,11 @@
 
   &__lecturer-select {
     width: 180px;
+  }
+
+  &__group-select-wrapper {
+    margin-left: 20px;
+    margin-right: 20px;
   }
 
   &__search {
@@ -39,10 +49,16 @@
   }
 }
 
+.addDateBtn {
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
 .mselect {
-  margin-top: 5px;
+  margin-top: 0;
   margin-right: 10px;
   margin-left: 10px;
+  vertical-align: middle;
   font-weight: 300;
   background-color: #ffffff00;
   border: 0px;
@@ -52,7 +68,7 @@
     Helvetica Neue,
     sans-serif;
   font-size: 14px;
-  width: 120px;
+  width: 165px;
 }
 
 .group-select {

@@ -412,6 +412,7 @@
   "text.diplomProject.student": "Студент",
   "text.diplomProject.group": "Группа",
   "text.diplomProject.date": "Дата",
+  "text.diplomProject.date.appointments": "Дата назначения",
   "text.diplomProject.action": "Действие",
   "text.diplomProject.tap": "Нажмите для выбора другой роли",
   "text.diplomProject.downloadTaskSheet": "Скачать лист задания",

@@ -49,6 +49,10 @@ export class AddDateDialogComponent {
     this.data.date != null ? new Date(this.data.date) : new Date()
   )
 
+  isEditing = false
+  showEditPopover = false
+  selectedDayId: string | null = null
+
   constructor(
     public dialogRef: MatDialogRef<AddDateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -91,28 +95,37 @@ export class AddDateDialogComponent {
     if (this.data != null) {
       const date = new Date(this.data.date)
       date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+
+      const lastConsultation = this.data.consultations.length
+        ? this.data.consultations[this.data.consultations.length - 1]
+        : null
+
       const consultation: Consultation = {
-        Id: this.data.consultations[this.data.consultations.length - 1].Id + 1,
-        LecturerId:
-          this.data.consultations[this.data.consultations.length - 1]
-            .LecturerId,
+        Id: lastConsultation
+          ? String(Number(lastConsultation.Id) + 1)
+          : '1',
+        LecturerId: lastConsultation
+          ? String(lastConsultation.LecturerId)
+          : this.getCurrentLecturerIdAsString(),
         Day: date.toISOString(),
-        StartTime: this.data.start,
-        EndTime: this.data.end,
-        Building: this.data.building,
-        Audience: this.data.audience,
+        StartTime: String(this.data.start),
+        EndTime: String(this.data.end),
+        Building: String(this.data.building),
+        Audience: String(this.data.audience),
       }
+
       this.data.consultations.push(consultation)
       this.data.consultations = this.data.consultations.sort((a, b) =>
         a.Day > b.Day ? 1 : b.Day > a.Day ? -1 : 0
       )
+
       this.visitStatsService
         .addDate(
           date.toISOString(),
-          this.data.start,
-          this.data.end,
-          this.data.audience,
-          this.data.building
+          String(this.data.start),
+          String(this.data.end),
+          String(this.data.audience),
+          String(this.data.building)
         )
         .subscribe(() => {
           this.addFlashMessage(
@@ -122,6 +135,14 @@ export class AddDateDialogComponent {
             )
           )
         })
+    }
+  }
+
+  private getCurrentLecturerIdAsString(): string {
+    if (this.data.consultations && this.data.consultations.length > 0) {
+      return String(this.data.consultations[0].LecturerId)
+    } else {
+      return '0'
     }
   }
 
@@ -135,6 +156,38 @@ export class AddDateDialogComponent {
       .indexOf(+id)
     this.data.consultations.splice(index, 1)
     this.visitStatsService.deleteDate(id).subscribe(() => {})
+  }
+
+  editPopover(day: Consultation): void {
+    this.selectedDayId = day.Id
+    this.isEditing = true
+    this.showEditPopover = true
+  }
+
+  closeEditPopover(event: any): void {
+    this.isEditing = false
+    this.showEditPopover = false
+    this.selectedDayId = null
+  }
+
+  onDataUpdated(updatedDay: Consultation): void {
+    const index = this.data.consultations.findIndex(
+      c => String(c.Id) === String(updatedDay.Id)
+    )
+    if (index !== -1) {
+      Object.assign(this.data.consultations[index], updatedDay)
+    }
+    this.data.consultations.sort(
+      (a, b) => new Date(a.Day).getTime() - new Date(b.Day).getTime()
+    )
+    this.isEditing = false
+    this.showEditPopover = false
+    this.selectedDayId = null
+  }
+
+  parseDate(dateString: string): Date {
+    const [day, month, year] = dateString.split('.')
+    return new Date(+year, +month - 1, +day)
   }
 
   public noWhitespaceValidator(control: FormControl) {

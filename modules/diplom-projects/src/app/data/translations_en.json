@@ -468,6 +468,7 @@
   "text.diplomProject.student": "Student",
   "text.diplomProject.group": "Group",
   "text.diplomProject.date": "Date",
+  "text.diplomProject.date.appointments": "Date of appointment",
   "text.diplomProject.action": "Action",
   "text.diplomProject.tap": "Click to select a different role",
   "text.diplomProject.downloadTaskSheet": "Download taks sheet",

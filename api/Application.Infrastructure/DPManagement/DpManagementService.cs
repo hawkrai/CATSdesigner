@@ -18,7 +18,7 @@ using System.Web;
 using System.Net.Http;
 using System.Net;
 using Application.Core.Exceptions;
-
+ 
 namespace Application.Infrastructure.DPManagement
 {
     public class DpManagementService : IDpManagementService
@@ -28,26 +28,24 @@ namespace Application.Infrastructure.DPManagement
             var searchString = parms.Filters["searchString"];
             var isSecretary = Convert.ToBoolean(parms.Filters["isSecretary"]);
 
-            var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
+            var user = Context.Users
+                .Include(x => x.Student)
+                .Include(x => x.Lecturer)
+                .SingleOrDefault(x => x.Id == userId);
 
-            if (user != null && user.Lecturer != null)
-            {
-                if (user.Lecturer.IsSecretary)
-                {
-                    user.Lecturer.IsSecretary = isSecretary ? true : false;
-                }
-            }
+            var actAsSecretary = user != null && user.Lecturer != null && isSecretary;
 
-            if (user != null && user.Lecturer != null && user.Lecturer.IsSecretary)
+            if (actAsSecretary)
             {
                 var currentYear = _currentAcademicYearEndDate.Year.ToString();
 
-                var studentQuery = Context.GetGraduateStudents()
+                var studentQuery = Context.Students
                     .AsNoTracking()
                     .Include(x => x.Group)
                     .Include(x => x.AssignedDiplomProjects.Select(adp => adp.DiplomProject.Lecturer))
                     .Where(x => x.Group.SecretaryId == userId)
-                    .Where(x => x.Group.GraduationYear == currentYear);
+                    .Where(x => x.Group.GraduationYear == currentYear)
+                    .Where(x => x.Confirmed == null || x.Confirmed.Value);
 
                 if (searchString.Length > 0)
                 {
@@ -79,7 +77,7 @@ namespace Application.Infrastructure.DPManagement
                 .Include(x => x.Lecturer)
                 .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student.Group));
 
-            if (user != null && user.Lecturer != null && !user.Lecturer.IsSecretary)
+            if (user != null && user.Lecturer != null && !isSecretary)
             {
                 query = query.Where(x => x.LecturerId == userId);
             }
@@ -197,14 +195,12 @@ namespace Application.Infrastructure.DPManagement
                     lecturerId = currentUserId;
                 }
             }
-            else {
+            else
+            {
                 lecturerId = projectData.LecturerId.Value;
             }
 
-            /*if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme))
-            {
-                throw new ApplicationException("Тема с таким названием уже есть!");
-            }*/
+            projectData.LecturerId = lecturerId;
 
             AuthorizationHelper.ValidateLecturerAccess(Context, lecturerId);
 
@@ -214,14 +210,18 @@ namespace Application.Infrastructure.DPManagement
                 project = Context.DiplomProjects
                               .Include(x => x.DiplomProjectGroups)
                               .Single(x => x.DiplomProjectId == projectData.Id);
-                if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme && x.DiplomProjectId != projectData.Id && x.LecturerId == projectData.LecturerId))
+
+                if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme
+                    && x.DiplomProjectId != projectData.Id
+                    && x.LecturerId == projectData.LecturerId))
                 {
                     throw new ApplicationServiceException();
                 }
             }
             else
             {
-                if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme && x.LecturerId == projectData.LecturerId))
+                if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme
+                    && x.LecturerId == projectData.LecturerId))
                 {
                     throw new DuplicateDPThemeInLecturerException();
                 }
@@ -229,15 +229,18 @@ namespace Application.Infrastructure.DPManagement
                 Context.DiplomProjects.Add(project);
             }
 
-            var diplomProgects = Context.DiplomProjects.Include(dp => dp.DiplomProjectGroups)
-                .Where(dp => dp.Theme == projectData.Theme && dp.LecturerId.Value != projectData.LecturerId.Value).ToList();
+            var diplomProgects = Context.DiplomProjects
+                .Include(dp => dp.DiplomProjectGroups)
+                .Where(dp => dp.Theme == projectData.Theme
+                    && dp.LecturerId.Value != projectData.LecturerId.Value)
+                .ToList();
 
             var groupsWithTheSameTheme = new List<Group>();
-            if(diplomProgects != null)
+            if (diplomProgects != null)
             {
-                foreach(var diplomProgect in diplomProgects)
+                foreach (var diplomProgect in diplomProgects)
                 {
-                    foreach(var group in diplomProgect.DiplomProjectGroups)
+                    foreach (var group in diplomProgect.DiplomProjectGroups)
                     {
                         groupsWithTheSameTheme.Add(group.Group);
                     }
@@ -245,12 +248,21 @@ namespace Application.Infrastructure.DPManagement
             }
 
             var currentGroups = project.DiplomProjectGroups.ToList();
-            var newGroups = projectData.SelectedGroupsIds.Select(x => new DiplomProjectGroup { GroupId = x, DiplomProjectId = project.DiplomProjectId }).ToList();
-            var groupsWithTheSameThemeFromCurrentLecturer = groupsWithTheSameTheme.Where(g => newGroups.Select(gr => gr.GroupId).ToList().Contains(g.Id));
+            var newGroups = projectData.SelectedGroupsIds
+                .Select(x => new DiplomProjectGroup
+                {
+                    GroupId = x,
+                    DiplomProjectId = project.DiplomProjectId
+                }).ToList();
 
-            if(groupsWithTheSameThemeFromCurrentLecturer != null && groupsWithTheSameThemeFromCurrentLecturer.Count() > 0)
+            var groupsWithTheSameThemeFromCurrentLecturer = groupsWithTheSameTheme
+                .Where(g => newGroups.Select(gr => gr.GroupId).ToList().Contains(g.Id));
+
+            if (groupsWithTheSameThemeFromCurrentLecturer != null
+                && groupsWithTheSameThemeFromCurrentLecturer.Count() > 0)
             {
-                throw new DuplicateDPThemeInGroupException(string.Join(",", groupsWithTheSameThemeFromCurrentLecturer.Select(g => g.Name)));
+                throw new DuplicateDPThemeInGroupException(
+                    string.Join(",", groupsWithTheSameThemeFromCurrentLecturer.Select(g => g.Name)));
             }
 
             var groupsToAdd = newGroups.Except(currentGroups, grp => grp.GroupId);
@@ -269,7 +281,6 @@ namespace Application.Infrastructure.DPManagement
             project.LecturerId = lecturerId;
             project.Theme = projectData.Theme;
             Context.SaveChanges();
-            
         }
 
         public TaskSheetData GetTaskSheet(int diplomProjectId)
@@ -469,16 +480,22 @@ namespace Application.Infrastructure.DPManagement
             var diplomProjectId = int.Parse(parms.Filters["diplomProjectId"]);
 
             return Context.GetGraduateStudents()
-                .Include(x => x.Group.DiplomProjectGroups)
+                .Include(x => x.Group.DiplomProjectGroups.Select(dpg => dpg.DiplomProject))
                 .Where(x => x.Group.DiplomProjectGroups.Any(dpg => dpg.DiplomProjectId == diplomProjectId))
                 .Where(x => !x.AssignedDiplomProjects.Any())
-				.Where(x => x.Confirmed == null || x.Confirmed.Value)
+                .Where(x => x.Confirmed == null || x.Confirmed.Value)
                 .Select(s => new StudentData
                 {
                     Id = s.Id,
-                    Name = s.LastName + " " + s.FirstName + " " + s.MiddleName, //todo
-                    Group = s.Group.Name
-                }).ApplyPaging(parms);
+                    Name = s.LastName + " " + s.FirstName + " " + s.MiddleName,
+                    Group = s.Group.Name,
+
+                    DiplomProjectTheme = s.Group.DiplomProjectGroups
+                        .Where(dpg => dpg.DiplomProjectId == diplomProjectId)
+                        .Select(dpg => dpg.DiplomProject.Theme)
+                        .FirstOrDefault()
+                })
+                .ApplyPaging(parms);
         }
 
         public PagedList<StudentData> GetGraduateStudentsForUser(int userId, GetPagedListParams parms, bool getBySecretaryForStudent = true)
@@ -501,6 +518,12 @@ namespace Application.Infrastructure.DPManagement
                 isSecretary = bool.Parse(parms.Filters["isSecretary"]);
             }
 
+            var groupId = 0;
+            if (parms.Filters.ContainsKey("groupId"))
+            {
+                int.TryParse(parms.Filters["groupId"], out groupId);
+            }
+
             var isStudent = AuthorizationHelper.IsStudent(Context, userId);
             var isLecturer = AuthorizationHelper.IsLecturer(Context, userId);
             var isLecturerSecretary = isLecturer && Context.Lecturers.Single(x => x.Id == userId).IsSecretary;
@@ -510,13 +533,17 @@ namespace Application.Infrastructure.DPManagement
             {
                 if (getBySecretaryForStudent)
                 {
-                    secretaryId = Context.Users.Where(x => x.Id == userId).Select(x => x.Student.Group.SecretaryId).Single() ?? 0;
+                    secretaryId = Context.Users
+                        .Where(x => x.Id == userId)
+                        .Select(x => x.Student.Group.SecretaryId)
+                        .Single() ?? 0;
                 }
                 else
                 {
-                    userId = Context.Users.Where(x => x.Id == userId)
-                            .Select(x => x.Student.AssignedDiplomProjects.FirstOrDefault().DiplomProject.LecturerId)
-                            .Single() ?? 0;
+                    userId = Context.Users
+                        .Where(x => x.Id == userId)
+                        .Select(x => x.Student.AssignedDiplomProjects.FirstOrDefault().DiplomProject.LecturerId)
+                        .Single() ?? 0;
                 }
             }
 
@@ -524,42 +551,51 @@ namespace Application.Infrastructure.DPManagement
             {
                 parms.SortExpression = "Name";
             }
+
             var query = Context.GetGraduateStudents()
                 .Where(x => isLecturerSecretary || (isStudent && getBySecretaryForStudent) || x.AssignedDiplomProjects.Any(asd => asd.DiplomProject.LecturerId == userId))
-                .Where(x => secretaryId == 0 || x.Group.SecretaryId == secretaryId);
+                .Where(x => secretaryId == 0 || x.Group.SecretaryId == secretaryId)
+                .Where(x => x.Confirmed == null || x.Confirmed.Value)
+                .Where(x => groupId == 0 || x.GroupId == groupId);  // <-- добавили фильтр
+
             return (from s in query
-                    let lecturer = s.AssignedDiplomProjects.FirstOrDefault().DiplomProject.Lecturer
                     let dp = s.AssignedDiplomProjects.FirstOrDefault()
+                    let lecturer = dp != null && dp.DiplomProject != null ? dp.DiplomProject.Lecturer : null
+                    let theme = dp != null && dp.DiplomProject != null ? dp.DiplomProject.Theme : null
                     select new StudentData
-                {
-                    Id = s.Id,
-                    Name = s.LastName + " " + s.FirstName + " " + s.MiddleName, //todo
-                    Mark = dp.Mark,
-                    AssignedDiplomProjectId = dp.Id,
-                    Lecturer = lecturer.LastName + " " + lecturer.FirstName + " " + lecturer.MiddleName, //todo
-                    Group = s.Group.Name,
-                    Comment = dp.Comment,
-                    ShowForStudent = dp.ShowForStudent,
-                    LecturerName = dp.LecturerName,
-                    MarkDate = dp.MarkDate,
-                    PercentageResults = s.PercentagesResults.Select(pr => new PercentageResultData
                     {
-                        Id = pr.Id,
-                        PercentageGraphId = pr.DiplomPercentagesGraphId,
-                        StudentId = pr.StudentId,
-                        Mark = pr.Mark,
-                        Comment = pr.Comments,
-                        ShowForStudent = pr.ShowForStudent,
-                    }),
-                    DiplomProjectConsultationMarks = s.DiplomProjectConsultationMarks.Select(cm => new DiplomProjectConsultationMarkData
-                    {
-                        Id = cm.Id,
-                        ConsultationDateId = cm.ConsultationDateId,
-                        StudentId = cm.StudentId,
-                        Mark = cm.Mark,
-                        Comments = cm.Comments
-                    })
-                }).ApplyPaging(parms);
+                        Id = s.Id,
+                        Name = s.LastName + " " + s.FirstName + " " + s.MiddleName,
+                        Mark = dp != null && dp.Mark.HasValue ? (int?)dp.Mark.Value : null,
+                        AssignedDiplomProjectId = dp != null ? dp.Id : (int?)null,
+                        Lecturer = lecturer != null
+                            ? lecturer.LastName + " " + lecturer.FirstName + " " + lecturer.MiddleName
+                            : null,
+                        Group = s.Group.Name,
+                        GroupId = s.GroupId,  // <-- добавили
+                        Comment = dp != null ? dp.Comment : null,
+                        ShowForStudent = dp != null ? dp.ShowForStudent : (bool?)null,
+                        LecturerName = dp != null ? dp.LecturerName : null,
+                        MarkDate = dp != null ? dp.MarkDate : (DateTime?)null,
+                        DiplomProjectTheme = theme,
+                        PercentageResults = s.PercentagesResults.Select(pr => new PercentageResultData
+                        {
+                            Id = pr.Id,
+                            PercentageGraphId = pr.DiplomPercentagesGraphId,
+                            StudentId = pr.StudentId,
+                            Mark = pr.Mark,
+                            Comment = pr.Comments,
+                            ShowForStudent = pr.ShowForStudent,
+                        }),
+                        DiplomProjectConsultationMarks = s.DiplomProjectConsultationMarks.Select(cm => new DiplomProjectConsultationMarkData
+                        {
+                            Id = cm.Id,
+                            ConsultationDateId = cm.ConsultationDateId,
+                            StudentId = cm.StudentId,
+                            Mark = cm.Mark,
+                            Comments = cm.Comments
+                        })
+                    }).ApplyPaging(parms);
         }
 
         public PagedList<StudentData> GetStudentsForLecturer(int userId, GetPagedListParams parms)

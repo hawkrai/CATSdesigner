@@ -1,10 +1,4 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core'
+import { Component, Input, OnInit } from '@angular/core'
 import { VisitStats } from '../../models/visit-stats.model'
 import { VisitStatsService } from '../../services/visit-stats.service'
 import { Subscription } from 'rxjs'
@@ -12,11 +6,7 @@ import { Consultation } from '../../models/consultation.model'
 import { ConsultationMark } from '../../models/consultation-mark.model'
 import { DiplomUser } from '../../models/diplom-user.model'
 import { AddDateDialogComponent } from './add-date-dialog/add-date-dialog.component'
-import {
-  MatDialog,
-  MatOptionSelectionChange,
-  MatSnackBar,
-} from '@angular/material'
+import { MatDialog } from '@angular/material'
 import { VisitingPopoverComponent } from '../../shared/visiting-popover/visiting-popover.component'
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component'
 import { CoreGroup } from 'src/app/models/core-group.model'
@@ -39,12 +29,15 @@ export class VisitStatsComponent implements OnInit {
   private visitStatsSubscription: Subscription
 
   private visitStatsList: VisitStats[]
-  private filteredVisitStatsList: VisitStats[]
-  private consultations: Consultation[]
-  private lecturers: Lecturer[]
+  public filteredVisitStatsList: VisitStats[]
+  public consultations: Consultation[]
+  public lecturers: Lecturer[]
   private index = 0
-  private lecturer: Lecturer
+  public lecturer: Lecturer
   public isLecturer = false
+
+  public groups: { id: number; name: string }[] = []
+  public selectedGroup: { id: number; name: string } = null
 
   public themes = [
     {
@@ -65,8 +58,7 @@ export class VisitStatsComponent implements OnInit {
   public theme = undefined
 
   private preSavedData: Consultation = null
-
-  private searchString = ''
+  public searchString = ''
 
   constructor(
     private visitStatsService: VisitStatsService,
@@ -78,22 +70,30 @@ export class VisitStatsComponent implements OnInit {
 
   ngOnInit() {
     const toggleValue: string = localStorage.getItem('toggle')
-    if (toggleValue && this.diplomUser.IsLecturer) {
+
+    if (
+      this.diplomUser.IsSecretary &&
+      !this.diplomUser.IsLecturerHasGraduateStudents
+    ) {
+      this.isLecturer = false
+      localStorage.removeItem('toggle')
+    } else if (
+      toggleValue &&
+      this.diplomUser.IsLecturer &&
+      this.diplomUser.IsSecretary
+    ) {
       this.isLecturer =
         localStorage.getItem('toggle') === 'false' ? false : true
     } else {
       this.isLecturer = this.diplomUser.IsLecturer
     }
+
     this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
     this.retrieveVisitStats()
   }
 
-  selectedLecturer(event: any) {
-    this.index = this.lecturers
-      .map(function (e) {
-        return e.Id
-      })
-      .indexOf(event.Id)
+  onGroupChange(group: { id: number; name: string }) {
+    this.selectedGroup = group
     this.retrieveVisitStats()
   }
 
@@ -103,39 +103,68 @@ export class VisitStatsComponent implements OnInit {
 
   retrieveVisitStats() {
     if (this.diplomUser.IsSecretary && !this.isLecturer) {
+      this.visitStatsList = null
+
       this.visitStatsService
         .getLecturerDiplomGroups({
           entity: 'LecturerForSecretary',
           id: this.diplomUser.UserId,
         })
         .subscribe((res) => {
-          this.lecturers = res.sort((a, b) => (a.Name < b.Name ? -1 : 1))
-          this.lecturer = res[this.index]
-          this.visitStatsList = null
-          const lecturerId: string = this.lecturers[this.index]
-            ? this.lecturers[this.index].Id
-            : '0'
-          this.visitStatsSubscription = this.visitStatsService
-            .getVisitStats({
-              count: this.COUNT,
-              page: this.PAGE,
-              filter:
-                '{"isSecretary":"' +
-                this.isLecturer +
-                '","lecturerId":"' +
-                lecturerId +
-                '","searchString":"' +
-                this.searchString +
-                '"}',
+          this.lecturers = res.sort((a: any, b: any) =>
+            a.Name < b.Name ? -1 : 1
+          )
+
+          if (
+            this.groups.length === 0 &&
+            this.diplomUser.SelectedGroupIds &&
+            this.diplomUser.SelectedGroupIds.length > 0
+          ) {
+            const groupRequests = this.lecturers.map((lecturer: any) =>
+              this.visitStatsService
+                .getVisitStats({
+                  count: this.COUNT,
+                  page: this.PAGE,
+                  filter:
+                    '{"isSecretary":"' +
+                    this.isLecturer +
+                    '","lecturerId":"' +
+                    lecturer.Id +
+                    '","groupId":"0","searchString":""}',
+                })
+                .toPromise()
+            )
+
+            Promise.all(groupRequests).then((allResults: any[]) => {
+              const seen = new Set<number>()
+              const allGroups: { id: number; name: string }[] = []
+
+              allResults.forEach((allRes: any) => {
+                if (allRes && allRes.Students && allRes.Students.Items) {
+                  allRes.Students.Items.forEach((s: any) => {
+                    if (
+                      s.GroupId &&
+                      !seen.has(s.GroupId) &&
+                      this.diplomUser.SelectedGroupIds.includes(s.GroupId)
+                    ) {
+                      seen.add(s.GroupId)
+                      allGroups.push({ id: s.GroupId, name: s.Group.trim() })
+                    }
+                  })
+                }
+              })
+
+              this.groups = allGroups.sort((a, b) => (a.name < b.name ? -1 : 1))
+
+              if (this.groups.length > 0 && !this.selectedGroup) {
+                this.selectedGroup = this.groups[0]
+              }
+
+              this.loadStudentsForAllLecturers()
             })
-            .subscribe((res) => {
-              this.visitStatsList = this.assignResults(
-                res.Students.Items,
-                res.DiplomProjectConsultationDates
-              )
-              this.consultations = res.DiplomProjectConsultationDates
-              this.filteredVisitStatsList = this.visitStatsList
-            })
+          } else {
+            this.loadStudentsForAllLecturers()
+          }
         })
     } else {
       this.visitStatsList = null
@@ -161,6 +190,59 @@ export class VisitStatsComponent implements OnInit {
     }
   }
 
+  private loadStudentsForAllLecturers() {
+    const groupId = this.selectedGroup ? this.selectedGroup.id : 0
+    const requests = this.lecturers.map((lecturer: any) =>
+      this.visitStatsService
+        .getVisitStats({
+          count: this.COUNT,
+          page: this.PAGE,
+          filter:
+            '{"isSecretary":"' +
+            this.isLecturer +
+            '","lecturerId":"' +
+            lecturer.Id +
+            '","groupId":"' +
+            groupId +
+            '","searchString":"' +
+            this.searchString +
+            '"}',
+        })
+        .toPromise()
+    )
+
+    Promise.all(requests).then((results: any[]) => {
+      let allStudents: VisitStats[] = []
+      let allConsultations: Consultation[] = []
+      const consultationIds = new Set<number>()
+
+      results.forEach((res) => {
+        if (res && res.Students && res.Students.Items) {
+          allStudents = allStudents.concat(res.Students.Items)
+        }
+        if (res && res.DiplomProjectConsultationDates) {
+          res.DiplomProjectConsultationDates.forEach((c: Consultation) => {
+            if (!consultationIds.has(Number(c.Id))) {
+              consultationIds.add(Number(c.Id))
+              allConsultations.push(c)
+            }
+          })
+        }
+      })
+
+      this.consultations = allConsultations
+      this.visitStatsList = this.assignResults(allStudents, allConsultations)
+      this.filteredVisitStatsList = this.visitStatsList
+    })
+  }
+
+  compareGroups(
+    a: { id: number; name: string },
+    b: { id: number; name: string }
+  ): boolean {
+    return a && b ? a.id === b.id : a === b
+  }
+
   onSearchChange(searchText: string) {
     this.searchString = searchText
     this.updateStats()
@@ -168,6 +250,8 @@ export class VisitStatsComponent implements OnInit {
 
   lecturerStatusChange(event) {
     this.isLecturer = event.value.value
+    this.selectedGroup = null
+    this.groups = []
     localStorage.setItem('toggle', event.value.value)
     this.retrieveVisitStats()
   }
@@ -183,6 +267,10 @@ export class VisitStatsComponent implements OnInit {
     visitStats: VisitStats[],
     consultations: Consultation[]
   ): VisitStats[] {
+    if (!visitStats || visitStats.length === 0) {
+      return visitStats
+    }
+
     for (const student of visitStats) {
       const results: ConsultationMark[] = []
       for (const consultation of consultations) {
@@ -384,7 +472,7 @@ export class VisitStatsComponent implements OnInit {
       location.origin +
       '/api/DpStatistic' +
       `?isLecturer=${this.isLecturer}` +
-      `&lecturerId=${this.lecturer.Id}` +
+      `&lecturerId=${this.lecturer ? this.lecturer.Id : ''}` +
       `&id=${this.diplomUser.UserId}`
   }
 

@@ -27,7 +27,7 @@ export class ProjectsComponent implements OnInit {
 
   private COUNT = 1000000
   private PAGE = 1
-
+  public selectedGroup: string = null
   private groups: CoreGroup[]
   private projects: Project[]
   private projectsSubscription: Subscription
@@ -69,49 +69,75 @@ export class ProjectsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-  if (this.diplomUser.IsSecretary && !this.diplomUser.IsLecturerHasGraduateStudents) {
-    this.isLecturer = false
-    localStorage.setItem('toggle', 'false')
-  } else {
-    const toggleValue: string = localStorage.getItem('toggle')
-    if (toggleValue && this.diplomUser.IsLecturer) {
-      this.isLecturer = localStorage.getItem('toggle') === 'false' ? false : true
+    if (
+      this.diplomUser.IsSecretary &&
+      !this.diplomUser.IsLecturerHasGraduateStudents
+    ) {
+      this.isLecturer = false
+      localStorage.setItem('toggle', 'false')
     } else {
-      this.isLecturer = this.diplomUser.IsLecturer
+      const toggleValue: string = localStorage.getItem('toggle')
+      if (toggleValue !== null && this.diplomUser.IsLecturer) {
+        this.isLecturer = toggleValue === 'true'
+      } else {
+        this.isLecturer = this.diplomUser.IsSecretary
+          ? false
+          : this.diplomUser.IsLecturer
+      }
     }
+    this.groupService
+      .getGroupsByUser(this.diplomUser.UserId)
+      .subscribe((res) => {
+        this.groups = res.Groups
+      })
+    this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
+    this.retrieveProjects()
   }
-  this.groupService
-    .getGroupsByUser(this.diplomUser.UserId)
-    .subscribe((res) => {
-      this.groups = res.Groups
-    })
-  this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
-  this.retrieveProjects()
-}
+
+  lecturerStatusChange(event: any) {
+    const value = event.value.value
+
+    this.isLecturer = value
+
+    localStorage.setItem('toggle', value)
+
+    this.selectedGroup = null
+
+    this.filteredProjects = []
+
+    this.retrieveProjects()
+  }
 
   retrieveProjects() {
+    const url =
+      'count=' +
+      this.COUNT +
+      '&page=' +
+      this.PAGE +
+      '&filter={"isSecretary":"' +
+      !this.isLecturer +
+      '","searchString":"' +
+      this.searchString +
+      '"}' +
+      '&sorting[' +
+      this.sorting +
+      ']=' +
+      this.direction
+
     this.projectsSubscription = this.projectsService
-      .getProjects(
-        'count=' +
-          this.COUNT +
-          '&page=' +
-          this.PAGE +
-          '&filter={"isSecretary":"' +
-          !this.isLecturer +
-          '","searchString":"' +
-          this.searchString +
-          '"}' +
-          '&sorting[' +
-          this.sorting +
-          ']=' +
-          this.direction
-      )
+      .getProjects(url)
       .subscribe((res) => {
         this.projects = res.Items
         this.projectGroups = this.projects
           .map((a) => a.Group)
           .filter((v, i, a) => a.indexOf(v) === i)
-        this.filteredProjects = this.projects
+        if (this.selectedGroup) {
+          this.filteredProjects = this.projects.filter(
+            (x) => x.Group == this.selectedGroup
+          )
+        } else {
+          this.filteredProjects = this.projects
+        }
       })
   }
 
@@ -124,18 +150,13 @@ export class ProjectsComponent implements OnInit {
   }
 
   _selectedGroup(event: MatOptionSelectionChange) {
-    console.log(event)
-    if (event.isUserInput) {
-      this.filteredProjects = this.projects.filter(
-        (x) => x.Group == event.source.value
-      )
-    }
-  }
+    if (!event.isUserInput) return
 
-  lecturerStatusChange(event) {
-    this.isLecturer = event.value.value
-    localStorage.setItem('toggle', event.value.value)
-    this.retrieveProjects()
+    this.selectedGroup = event.source.value
+
+    this.filteredProjects = this.projects.filter(
+      (x) => x.Group == this.selectedGroup
+    )
   }
 
   sort(field: string, direction: string) {

@@ -17,5 +17,6 @@ namespace Application.Infrastructure.DTO
         public string Building { get; set; }
 
         public string Audience { get; set; }
+        public string LecturerFullName { get; set; }
     }
 }

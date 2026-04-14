@@ -30,5 +30,6 @@ namespace Application.Infrastructure.DPManagement
         void SaveConsultationDate(int userId, DateTime date, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber);
 
         void DeleteConsultationDate(int userId, int id);
+        void UpdateConsultationDate(int currentUserId, int id, DateTime day, TimeSpan? startTime, TimeSpan? endTime, string audience, string building);
     }
 }

@@ -72,20 +72,22 @@ export class VisitStatsService {
   }
 
   public addDate(
-    date: string,
-    startTime: string,
-    endTime: string,
-    audience: string,
-    building: string
-  ): Observable<any> {
-    return this.http.post('api/DiplomProjectConsultationDate', {
-      Day: date,
-      StartTime: startTime,
-      EndTime: endTime,
-      Building: building,
-      Audience: audience,
-    })
-  }
+  date: string,
+  startTime: string,
+  endTime: string,
+  audience: string,
+  building: string,
+  id: string | null = null
+): Observable<any> {
+  return this.http.post('api/DiplomProjectConsultationDate', {
+    Id: id ? Number(id) : null,
+    Day: date,
+    StartTime: startTime,
+    EndTime: endTime,
+    Building: building,
+    Audience: audience,
+  })
+}
 
   public deleteDate(id: string): Observable<any> {
     return this.http.post('api/DiplomProjectConsultationDate/' + id, null)

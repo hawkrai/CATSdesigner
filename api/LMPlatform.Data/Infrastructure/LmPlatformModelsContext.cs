@@ -50,7 +50,9 @@ namespace LMPlatform.Data.Infrastructure
 
         public IQueryable<Student> GetGraduateStudents()
         {
-            return Students.Where(StudentIsGraduate);
+            return Students
+                .Where(StudentIsGraduate)
+                .Where(x => x.Confirmed == null || x.Confirmed.Value);
         }
 
         public Expression<Func<Student, bool>> StudentIsGraduate
