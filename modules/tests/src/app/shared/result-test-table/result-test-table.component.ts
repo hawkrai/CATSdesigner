@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -16,7 +15,7 @@ import { ChartDataSets, ChartOptions, ChartType } from 'chart.js'
 import { AutoUnsubscribe } from '../../decorator/auto-unsubscribe'
 import { AutoUnsubscribeBase } from '../../core/auto-unsubscribe-base'
 import { Subject } from 'rxjs'
-import { takeUntil } from 'rxjs/operators'
+import { finalize, takeUntil } from 'rxjs/operators'
 import { TestPassingService } from '../../service/test-passing.service'
 import { TranslatePipe } from 'educats-translate'
 import { Help } from '../../models/help.model'
@@ -38,7 +37,9 @@ export class ResultTestTableComponent
   private tooltipDatesCache = new Map<
     string,
     { startTime: string | null; endTime: string | null }
-  >();
+  >()
+  private tooltipFetchInFlight = new Set<string>()
+  private tooltipRequestGeneration = 0
   public barChartColors: any[] = [{ backgroundColor: '#1976D2' }]
   public barChartOptions: ChartOptions = {
     responsive: true,
@@ -110,7 +111,6 @@ export class ResultTestTableComponent
   constructor(
     public dialog: MatDialog,
     private translatePipe: TranslatePipe,
-    private cdr: ChangeDetectorRef,
     private testPassingService: TestPassingService,
     private translate: TranslatePipe
   ) {
@@ -372,7 +372,11 @@ export class ResultTestTableComponent
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    this.cdr.detectChanges()
+    if (changes.tests && !changes.tests.firstChange) {
+      this.tooltipRequestGeneration++
+      this.tooltipDatesCache.clear()
+      this.tooltipFetchInFlight.clear()
+    }
   }
 
   getAverageTooltip(element) {
@@ -453,12 +457,18 @@ export class ResultTestTableComponent
             tooltip += `\n${noAdditionalInfo}`
         }
       } else if (testResult.testId && testResult.studentId) {
-        this.loadDatesForTooltip(testResult.testId, testResult.studentId, cacheKey);
+        if (!this.tooltipFetchInFlight.has(cacheKey)) {
+          this.loadDatesForTooltip(
+            testResult.testId,
+            testResult.studentId,
+            cacheKey
+          )
+        }
         const loadingLabel = this.translate.transform(
           'text.test.loading.time.data',
           'Загрузка...'
-        );
-        tooltip += `\n${loadingLabel}`;
+        )
+        tooltip += `\n${loadingLabel}`
       }
     } else {
       const statusLabel = this.translate.transform(
@@ -513,29 +523,49 @@ export class ResultTestTableComponent
     }
   }
 
-  private loadDatesForTooltip(testId: number, studentId: number, cacheKey: string): void {
+  private loadDatesForTooltip(
+    testId: number,
+    studentId: number,
+    cacheKey: string
+  ): void {
+    if (this.tooltipFetchInFlight.has(cacheKey)) {
+      return
+    }
+    this.tooltipFetchInFlight.add(cacheKey)
+    const generation = this.tooltipRequestGeneration
     this.testPassingService
       .getAnswersByStudentAndTest(studentId.toString(), testId.toString())
-      .pipe(takeUntil(this.unsubscribeStream$))
+      .pipe(
+        takeUntil(this.unsubscribeStream$),
+        finalize(() => this.tooltipFetchInFlight.delete(cacheKey))
+      )
       .subscribe({
         next: (answers: DataValues[]) => {
+          if (generation !== this.tooltipRequestGeneration) {
+            return
+          }
           const testInfo = answers.find(
             (res: DataValues) => res.Key === Constants.TEST_INFO
-          )?.Value;
+          )?.Value
 
           if (testInfo?.StartTime) {
             this.tooltipDatesCache.set(cacheKey, {
               startTime: testInfo.StartTime,
-              endTime: testInfo.EndTime || null
-            });
-
+              endTime: testInfo.EndTime || null,
+            })
           } else {
-            this.tooltipDatesCache.set(cacheKey, { startTime: null, endTime: null });
+            this.tooltipDatesCache.set(cacheKey, {
+              startTime: null,
+              endTime: null,
+            })
           }
         },
-        error: (error) => {
-          this.tooltipDatesCache.set(cacheKey, { startTime: null, endTime: null });
-        }
-      });
+        error: () => {
+          if (generation !== this.tooltipRequestGeneration) {
+            return
+          }
+          this.tooltipDatesCache.set(cacheKey, { startTime: null, endTime: null })
+        },
+      })
   }
 }
