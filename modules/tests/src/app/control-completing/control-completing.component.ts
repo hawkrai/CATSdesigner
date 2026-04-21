@@ -9,8 +9,8 @@ import {
 } from '@angular/core'
 import { TestPassingService } from '../service/test-passing.service'
 import { ControlItems } from '../models/control-items.model'
-import { takeUntil } from 'rxjs/operators'
-import { Subject } from 'rxjs'
+import { switchMap, takeUntil } from 'rxjs/operators'
+import { Subject, timer } from 'rxjs'
 import { AutoUnsubscribe } from '../decorator/auto-unsubscribe'
 import { AutoUnsubscribeBase } from '../core/auto-unsubscribe-base'
 import { Student } from '../models/student.model'
@@ -30,7 +30,6 @@ export class ControlCompletingComponent
   @Input()
   public filterCompletingString: string
   private unsubscribeStream$: Subject<void> = new Subject<void>()
-  public timeoutId = null
 
   constructor(
     private testPassingService: TestPassingService,
@@ -39,26 +38,20 @@ export class ControlCompletingComponent
     super()
   }
 
-  async ngOnInit() {
-    await this.refreshData()
-  }
-
-  public async getTestsResult() {
+  ngOnInit() {
     const subject = JSON.parse(localStorage.getItem('currentSubject'))
-    this.testPassingService
-      .getControlItems(subject.id)
-      .pipe(takeUntil(this.unsubscribeStream$))
+    const subjectId = subject?.id
+    if (!subjectId) return
+
+    timer(0, 3000)
+      .pipe(
+        switchMap(() => this.testPassingService.getControlItems(subjectId)),
+        takeUntil(this.unsubscribeStream$)
+      )
       .subscribe((controlItems: ControlItems[]) => {
         this.controlItems = controlItems
         this.filterStudents(controlItems)
       })
-    await this.testPassingService.getControlItems(subject.id)
-  }
-
-  public async refreshData() {
-    console.log('refreshData')
-    await this.getTestsResult()
-    this.timeoutId = setTimeout(this.refreshData.bind(this), 3000)
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -82,6 +75,7 @@ export class ControlCompletingComponent
   }
 
   public ngOnDestroy(): void {
-    clearTimeout(this.timeoutId)
+    this.unsubscribeStream$.next()
+    this.unsubscribeStream$.complete()
   }
 }
