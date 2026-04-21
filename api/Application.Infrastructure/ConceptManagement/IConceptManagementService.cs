@@ -16,10 +16,11 @@ namespace Application.Infrastructure.ConceptManagement
         IEnumerable<Concept> GetElementsByParentId(int parentId);
         IEnumerable<Concept> GetElementsBySubjectId(int subjectId);
         Concept CreateRootConcept(string name, int authorId, int subjectId, bool isPublished = true, bool includeLabs = true, bool includeLectures = true, bool includeTests = true, bool includeWorkshops = true);
-        Concept SaveConcept(Concept concept, IList<Attachment> attachments, bool containerExplicitlySet = false, bool preserveFiles = false);
+        Concept SaveConcept(Concept concept, IList<Attachment> attachments, bool containerExplicitlySet = false, bool preserveFiles = false, bool skipConversion = false);
         Concept SaveConcept(Concept concept);
         Concept UpdateRootConcept(int id, string name, bool isPublished = true, bool includeLabs = true, bool includeLectures = true, bool includeTests = true, bool includeWorkshops = true);
         void Remove(int id, bool removeChildren);
+        void ConvertPendingDocxToPdf(int conceptId);
         Concept AttachSiblings(int sourceId, int rightId, int leftId);
         Concept MoveConceptNode(int conceptId, int newParentId, int prevConceptId, int nextConceptId);
         void AttachFolderToLectSection(string folderName, int userId, int subjectId);

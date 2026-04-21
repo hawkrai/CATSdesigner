@@ -12,6 +12,7 @@ import { MaterialsPopoverComponent } from './components/materials/materials-popo
 import { TestService } from '../service/test.service'
 import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
 import { ApiResponseCode } from '../models/api-response-code.enum'
+import { LibreOfficeAvailabilityService } from '../service/libre-office-availability.service'
 
 @Component({
   selector: 'app-labs',
@@ -31,7 +32,8 @@ export class ComplexMaterialComponent implements OnInit {
     public dialog: MatDialog,
     private adaptivityService: AdaptivityService,
     private complexService: ComplexService,
-    private testService: TestService
+    private testService: TestService,
+    private libreOfficeAvailability: LibreOfficeAvailabilityService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -95,6 +97,7 @@ export class ComplexMaterialComponent implements OnInit {
           isGroup: result.isGroup,
           fileData: fileData,
           userId: userId,
+          skipConversion: !this.libreOfficeAvailability.isAvailable,
         }
 
         this.complexService.addOrEditConcept(concept).subscribe((res) => {
@@ -114,6 +117,7 @@ export class ComplexMaterialComponent implements OnInit {
                     fileData: isExisting ? JSON.stringify([]) : JSON.stringify([file]),
                     userId: userId,
                     container: isExisting ? (file.pathName || undefined) : undefined,
+                    skipConversion: !this.libreOfficeAvailability.isAvailable,
                   })
                 })
                 forkJoin(childConcepts$).subscribe(() => {

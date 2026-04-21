@@ -135,7 +135,7 @@ export class ComplexService {
   }
 
   public deleteConcept(complex: Complex) {
-    return this.http.post(this.path + 'Remove', complex)
+    return this.http.get(this.path + 'Remove?elementId=' + complex.elementId)
   }
 
   public getConcepts(): Observable<any> {
@@ -179,6 +179,10 @@ export class ComplexService {
     return this.http.get<{ ConceptIds: number[], TestIds: number[] }>(
       this.path + 'GetHiddenTests?complexId=' + complexId
     )
+  }
+
+  public convertPendingDocx(conceptId: number): Observable<any> {
+    return this.http.get(this.path + 'ConvertPendingDocx?conceptId=' + conceptId)
   }
 
   public moveConceptNode(

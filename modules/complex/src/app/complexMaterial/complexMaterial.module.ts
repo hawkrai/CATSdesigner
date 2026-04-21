@@ -27,9 +27,11 @@ import { DeleteConfirmationPopupComponent } from './components/materials/delete-
 import { PopoverDialogComponent } from './components/materials/popover-dialog/popover-dialog.component'
 import { FileComponent } from './components/materials/add-material-popover/components/file/file.component'
 import { FileViewerComponent } from './components/materials/add-material-popover/components/file-viewer/file-viewer.component'
+import { SafeUrlPipe } from '../pipes/safe-url.pipe'
 
 @NgModule({
   declarations: [
+    SafeUrlPipe,
     FileComponent,
     FileViewerComponent,
     MaterialComponent,

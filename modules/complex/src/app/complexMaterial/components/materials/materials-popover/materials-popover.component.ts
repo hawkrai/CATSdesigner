@@ -5,6 +5,7 @@ import { AdaptivityService } from '../../../../service/adaptivity.service'
 import { TestExecutionComponent } from '../adaptiveLearningTests/adaptive-learning-test.component'
 import { TestService } from '../../../../service/test.service'
 import { Adaptivity } from '../../../../models/Adaptivity'
+import { LibreOfficeAvailabilityService } from '../../../../service/libre-office-availability.service'
 
 @Component({
   selector: 'app-materials-popover',
@@ -17,8 +18,12 @@ export class MaterialsPopoverComponent {
   path: string
   currentPathIndex: number
   materialPathes: string[]
+  currentFilePath: string
   zoom: number = 1
   isDragging: boolean
+
+  isLibreOfficeMode: boolean = false
+  isGoogleDocsLoading: boolean = false
 
   themaId: string
   adaptivityType: number
@@ -50,12 +55,20 @@ export class MaterialsPopoverComponent {
     public dialogRef: MatDialogRef<MaterialsPopoverComponent>,
     private adaptivityService: AdaptivityService,
     private testService: TestService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private libreOfficeAvailability: LibreOfficeAvailabilityService
   ) {
     this.path = data.url
     this.isAdaptive = data.isAdaptive
     this.materialPathes
     this.countWatchTime()
+
+    libreOfficeAvailability.getAvailability().subscribe(available => {
+      this.isLibreOfficeMode = available
+      if (this.materialPathes) {
+        this.checkMaterialsContainerForButtonsVisibility()
+      }
+    })
 
     if (this.isAdaptive) {
       this.adaptivityType = data.adaptivityType
@@ -63,6 +76,7 @@ export class MaterialsPopoverComponent {
     } else if (data.documents) {
       this.currentPathIndex = data.currentIndex !== undefined ? data.currentIndex : 0
       this.materialPathes = data.documents
+      this.currentFilePath = this.materialPathes ? this.materialPathes[this.currentPathIndex] : ''
       this.showMaterial = true
       this.checkMaterialsContainerForButtonsVisibility()
     } else {
@@ -70,6 +84,9 @@ export class MaterialsPopoverComponent {
       this.toTestButtonVisible = false
       this.prevButtonVisible = false
       this.nextButtonVisible = false
+      if (data.url) {
+        this.currentFilePath = data.url.replace('/api/Upload?fileName=', '')
+      }
     }
   }
 
@@ -173,40 +190,55 @@ export class MaterialsPopoverComponent {
   }
 
   goToPrevMaterial() {
-    do {
+    if (this.isLibreOfficeMode) {
+      do {
+        --this.currentPathIndex
+        if (this.currentPathIndex < 0) {
+          this.currentPathIndex = 0
+          return
+        }
+      } while (this.materialPathes[this.currentPathIndex].toLowerCase().endsWith('.docx'))
+    } else {
       --this.currentPathIndex
       if (this.currentPathIndex < 0) {
+        this.currentPathIndex = 0
         return
       }
-    } while (
-      this.materialPathes[this.currentPathIndex].toLowerCase().endsWith('.docx')
-    )
-    this.path =
-      '/api/Upload?fileName=' + this.materialPathes[this.currentPathIndex]
+    }
+    this.path = '/api/Upload?fileName=' + this.materialPathes[this.currentPathIndex]
+    this.currentFilePath = this.materialPathes[this.currentPathIndex]
+    this.isGoogleDocsLoading = true
     this.checkMaterialsContainerForButtonsVisibility()
   }
 
   goToNextMaterial() {
-    do {
+    if (this.isLibreOfficeMode) {
+      do {
+        ++this.currentPathIndex
+        if (this.currentPathIndex >= this.materialPathes.length) {
+          this.currentPathIndex = this.materialPathes.length - 1
+          return
+        }
+      } while (this.materialPathes[this.currentPathIndex].toLowerCase().endsWith('.docx'))
+    } else {
       ++this.currentPathIndex
       if (this.currentPathIndex >= this.materialPathes.length) {
+        this.currentPathIndex = this.materialPathes.length - 1
         return
       }
-    } while (
-      this.materialPathes[this.currentPathIndex].toLowerCase().endsWith('.docx')
-    )
-    this.path =
-      '/api/Upload?fileName=' + this.materialPathes[this.currentPathIndex]
+    }
+    this.path = '/api/Upload?fileName=' + this.materialPathes[this.currentPathIndex]
+    this.currentFilePath = this.materialPathes[this.currentPathIndex]
+    this.isGoogleDocsLoading = true
     this.checkMaterialsContainerForButtonsVisibility()
   }
 
   checkMaterialsContainerForButtonsVisibility() {
     this.prevButtonVisible = this.currentPathIndex != 0
     const nextIndex = this.currentPathIndex + 1
-    this.nextButtonVisible =
-      nextIndex < this.materialPathes.length &&
-      this.materialPathes[nextIndex] &&
-      !this.materialPathes[nextIndex].toLowerCase().endsWith('.docx')
+    const nextExists = nextIndex < this.materialPathes.length && !!this.materialPathes[nextIndex]
+    const nextIsDocx = nextExists && this.materialPathes[nextIndex].toLowerCase().endsWith('.docx')
+    this.nextButtonVisible = nextExists && (this.isLibreOfficeMode ? !nextIsDocx : true)
     this.toTestButtonVisible = this.isAdaptive && !this.nextButtonVisible
   }
 
@@ -250,6 +282,12 @@ export class MaterialsPopoverComponent {
 
   onNoClick(): void {
     this.dialogRef.close(this.studentSeconds)
+  }
+
+  get googleDocsUrl(): string {
+    const filePath = this.currentFilePath || (this.path ? this.path.replace('/api/Upload?fileName=', '') : '')
+    const publicFileUrl = `${window.location.origin}/api/Upload?fileName=${filePath}`
+    return `https://docs.google.com/gview?url=${publicFileUrl}&embedded=true`
   }
 
   zoomIn() {

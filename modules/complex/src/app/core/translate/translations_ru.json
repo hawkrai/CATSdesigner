@@ -107,5 +107,6 @@
   "complex.test.tooltip": "Оценка за тест {points} {pointsText}, затраченное время - {time}",
   "complex.test.score": "Оценка за тест",
   "complex.maxFilesReached": "Достигнут максимальный лимит файлов (5)",
-  "complex.filesLimitWarning": "Можно добавить только {count} файл(ов). Остальные файлы не были добавлены."
+  "complex.filesLimitWarning": "Можно добавить только {count} файл(ов). Остальные файлы не были добавлены.",
+  "complex.loadingDocument": "Загрузка документа..."
 }

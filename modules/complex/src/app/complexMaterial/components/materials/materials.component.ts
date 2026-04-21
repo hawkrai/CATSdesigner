@@ -31,6 +31,7 @@ import { ChangeDetectorRef } from '@angular/core'
 import { TreeDragDropService } from '../../../service/tree-drag-drop.service'
 import { DropPlacement } from '../../../models/drop-placement.enum'
 import { DragCssClass } from '../../../models/drag-css-class.enum'
+import { LibreOfficeAvailabilityService } from '../../../service/libre-office-availability.service'
 
 @Component({
   selector: 'app-material-tree',
@@ -67,7 +68,8 @@ export class MaterialComponent implements OnInit, OnChanges {
     private testResultsLoaderService: TestResultsLoaderService,
     private hiddenTestsService: HiddenTestsService,
     private cdr: ChangeDetectorRef,
-    public treeDragDropService: TreeDragDropService
+    public treeDragDropService: TreeDragDropService,
+    private libreOfficeAvailability: LibreOfficeAvailabilityService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -89,7 +91,7 @@ export class MaterialComponent implements OnInit, OnChanges {
     }
   }
 
-  private loadConceptCascade(): void {
+  private loadConceptCascade(onComplete?: () => void): void {
     if (!this.complexId) {
       return
     }
@@ -116,6 +118,7 @@ export class MaterialComponent implements OnInit, OnChanges {
           this.treeControl.dataNodes = filteredData
           this.treeControl.expandAll()
           this.loadTestResults(filteredData)
+          if (onComplete) onComplete()
         })
       },
       () => {
@@ -222,15 +225,17 @@ export class MaterialComponent implements OnInit, OnChanges {
   openFolderPDF(nodeId: number): void {
     this.complexService.getFilesForFolder(nodeId).subscribe((result) => {
       if (result) {
-        const pdfFiles = result.filter((file: string) => !file.toLowerCase().endsWith('.docx'))
-        if (pdfFiles.length > 0) {
-          const path = '/api/Upload?fileName=' + pdfFiles[0]
+        const files = this.libreOfficeAvailability.isAvailable
+          ? result.filter((file: string) => !file.toLowerCase().endsWith('.docx'))
+          : result
+        if (files.length > 0) {
+          const path = '/api/Upload?fileName=' + files[0]
           const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
             width: '1000px',
             height: '100%',
             data: { 
               name: 'name', 
-              documents: pdfFiles, 
+              documents: files, 
               url: path,
               currentIndex: 0
             },
@@ -245,6 +250,27 @@ export class MaterialComponent implements OnInit, OnChanges {
   }
 
   openPDF(nodeId: number, filename: string): void {
+    if (this.libreOfficeAvailability.isAvailable &&
+        (filename.toLowerCase().endsWith('.docx') || filename.toLowerCase().endsWith('.doc'))) {
+      this.complexService.convertPendingDocx(nodeId).subscribe((res) => {
+        if (res && res['Code'] === ApiResponseCode.Success) {
+          this.loadConceptCascade(() => {
+            const updatedNode = this.findNodeById(this.dataSource.data, nodeId)
+            const updatedFilename = (updatedNode && updatedNode.FilePath) ? updatedNode.FilePath : filename
+            this._openPDFDialog(nodeId, updatedFilename)
+          })
+        } else {
+          this._openPDFDialog(nodeId, filename)
+        }
+      }, () => {
+        this._openPDFDialog(nodeId, filename)
+      })
+    } else {
+      this._openPDFDialog(nodeId, filename)
+    }
+  }
+
+  private _openPDFDialog(nodeId: number, filename: string): void {
     const path = '/api/Upload?fileName=' + filename
     const siblingMaterials = this.collectSiblingMaterials(this.dataSource.data, nodeId)
     const currentIndex = siblingMaterials.findIndex((mat) => mat === filename)
@@ -262,7 +288,6 @@ export class MaterialComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe((result) => {
       this.complexService.saveWatchingTime(nodeId, result).subscribe()
-      console.log('The dialog was closed')
     })
   }
 
@@ -277,12 +302,16 @@ export class MaterialComponent implements OnInit, OnChanges {
     
     if (parentNode && parentNode.children) {
       return parentNode.children
-        .filter((child) => child.FilePath && !child.FilePath.toLowerCase().endsWith('.docx'))
+        .filter((child) => child.FilePath && (
+          !this.libreOfficeAvailability.isAvailable || !child.FilePath.toLowerCase().endsWith('.docx')
+        ))
         .map((child) => child.FilePath)
     }
     
     return nodes
-      .filter((node) => node.FilePath && !node.FilePath.toLowerCase().endsWith('.docx'))
+      .filter((node) => node.FilePath && (
+        !this.libreOfficeAvailability.isAvailable || !node.FilePath.toLowerCase().endsWith('.docx')
+      ))
       .map((node) => node.FilePath)
   }
 
@@ -453,6 +482,7 @@ export class MaterialComponent implements OnInit, OnChanges {
           userId,
           container: folderToFileContainer || undefined,
           preserveFiles: convertedFromFileToFolder && fileToFolderAttachments.length > 0,
+          skipConversion: !this.libreOfficeAvailability.isAvailable,
         }
 
         const deleteChildren$ = convertedFromFolderToFile
@@ -480,6 +510,7 @@ export class MaterialComponent implements OnInit, OnChanges {
                     fileData: isExisting ? JSON.stringify([]) : JSON.stringify([file]),
                     userId,
                     container: isExisting ? (file.pathName || undefined) : undefined,
+                    skipConversion: !this.libreOfficeAvailability.isAvailable,
                   })
                 })
                 forkJoin(childConcepts$).subscribe(() => this.loadConceptCascade())

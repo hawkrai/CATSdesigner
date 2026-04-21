@@ -7,6 +7,8 @@ using Application.Infrastructure.UserManagement;
 using LMPlatform.UI.Services.Modules.Concept;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using Application.Core.Data;
 using Application.Infrastructure.WatchingTimeManagement;
@@ -144,8 +146,7 @@ namespace LMPlatform.UI.Services.Concept
             try
             {
                 var source = ConceptManagementService.GetById(conceptId);
-                var canDelete = source != null && source.UserId == UserContext.CurrentUserId;
-                if (canDelete)
+                if (source != null)
                 {
                     ConceptManagementService.Remove(conceptId, source.IsGroup);
                 }
@@ -206,7 +207,7 @@ namespace LMPlatform.UI.Services.Concept
             return res;
         }
 
-        public ConceptResult AddOrEditConcept(int conceptId, string conceptName, int parentId, bool isGroup, string fileData, int userId, string container, bool preserveFiles)
+        public ConceptResult AddOrEditConcept(int conceptId, string conceptName, int parentId, bool isGroup, string fileData, int userId, string container, bool preserveFiles, bool skipConversion)
         {
             if (!CurrentUserIsLector())
                 return new ConceptResult { Message = "Access denied", Code = "403" };
@@ -218,7 +219,8 @@ namespace LMPlatform.UI.Services.Concept
                     IsGroup = isGroup,
                     Name = conceptName,
                     FileData = fileData,
-                    PreserveFiles = preserveFiles
+                    PreserveFiles = preserveFiles,
+                    SkipConversion = skipConversion
                 };
 
                 if (!string.IsNullOrEmpty(container))
@@ -719,6 +721,31 @@ namespace LMPlatform.UI.Services.Concept
                     Message = "Ошибка при получении скрытых тестов: " + ex.Message,
                     Code = ServerErrorCode
                 };
+            }
+        }
+
+        public LibreOfficeAvailabilityResult CheckLibreOfficeAvailability()
+        {
+            var path = ConfigurationManager.AppSettings["LibreOfficePath"]
+                       ?? @"C:\Program Files\LibreOffice\program\soffice.exe";
+            return new LibreOfficeAvailabilityResult
+            {
+                IsLibreOfficeAvailable = File.Exists(path)
+            };
+        }
+
+        public ResultViewData ConvertPendingDocx(int conceptId)
+        {
+            if (!CurrentUserIsLector())
+                return new ResultViewData { Message = "Access denied", Code = "403" };
+            try
+            {
+                ConceptManagementService.ConvertPendingDocxToPdf(conceptId);
+                return new ResultViewData { Message = SuccessMessage, Code = SuccessCode };
+            }
+            catch (Exception ex)
+            {
+                return new ResultViewData { Message = ex.Message, Code = ServerErrorCode };
             }
         }
 	}

@@ -107,5 +107,6 @@
   "complex.test.tooltip": "The test score is {points} {pointsText}. The test took {time}",
   "complex.test.score": "The test score is",
   "complex.maxFilesReached": "Maximum file limit reached (5)",
-  "complex.filesLimitWarning": "Only {count} file(s) can be added. Other files were not added."
+  "complex.filesLimitWarning": "Only {count} file(s) can be added. Other files were not added.",
+  "complex.loadingDocument": "Loading document..."
 }

@@ -7,4 +7,5 @@ export class Concept {
   userId: string
   container?: string
   preserveFiles?: boolean
+  skipConversion?: boolean
 }

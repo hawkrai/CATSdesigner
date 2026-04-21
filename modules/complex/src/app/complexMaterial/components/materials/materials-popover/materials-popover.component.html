@@ -1,6 +1,6 @@
 <div mat-dialog-actions *ngIf="!needToGetInitialTest && !isTest">
   <button
-    *ngIf="zoomInButtonVisible"
+    *ngIf="zoomInButtonVisible && isLibreOfficeMode"
     mat-raised-button
     mat-button
     class="color-button"
@@ -10,7 +10,7 @@
     {{ 'common.zoomIn' | translate: 'Увеличить' }}
   </button>
   <button
-    *ngIf="zoomOutButtonVisible"
+    *ngIf="zoomOutButtonVisible && isLibreOfficeMode"
     mat-raised-button
     mat-button
     class="color-button"
@@ -110,9 +110,10 @@
     }}
     {{ time }}</span
   >
+  <!-- LibreOffice_Mode -->
   <pdf-viewer
     #pdfViewer
-    *ngIf="showMaterial"
+    *ngIf="showMaterial && isLibreOfficeMode"
     (mousemove)="onDrag($event, pdfViewer)"
     (mousedown)="onDragStarted($event)"
     (mouseup)="onDragEnded($event, 'up')"
@@ -129,6 +130,20 @@
     [zoom-scale]="page - width"
     style="width: 100%; height: 100vh"
   ></pdf-viewer>
+
+  <!-- GoogleDocs_Mode -->
+  <ng-container *ngIf="showMaterial && !isLibreOfficeMode">
+    <div class="google-docs-wrapper">
+      <div *ngIf="isGoogleDocsLoading" class="google-docs-loading">
+        <span>{{ 'complex.loadingDocument' | translate: 'Загрузка документа...' }}</span>
+      </div>
+      <iframe
+        [src]="googleDocsUrl | safeUrl"
+        frameborder="0"
+        (load)="isGoogleDocsLoading = false"
+      ></iframe>
+    </div>
+  </ng-container>
 
   <div *ngIf="isTest">
     <app-test-execution testId="{{ testId }}"></app-test-execution>
