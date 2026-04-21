@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Application.Core.Data;
@@ -75,6 +75,7 @@ namespace LMPlatform.Models
 
         	public int? QuestionId { get; set; }
         public int? OngoingTest { get; set; }
+        public string OngoingTestDeviceId { get; set; }
 
         public DateTime? AddedOn { get; set; }
     }

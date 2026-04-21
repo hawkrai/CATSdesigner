@@ -30,8 +30,9 @@ export class TestPassingService {
   constructor(private http: HttpClient) {}
 
   getTestDescription(testId: string): Observable<TestDescription> {
+    const deviceId = this.getOrCreateDeviceId()
     return this.http.get<TestDescription>(
-      '/TestPassing/GetTestDescription?testId=' + testId
+      '/TestPassing/GetTestDescription?testId=' + testId + '&deviceId=' + deviceId
     )
   }
 
@@ -171,5 +172,43 @@ export class TestPassingService {
     headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
     headers['Accept'] = 'application/json, text/javascript, */*; q=0.01'
     return new HttpHeaders(headers)
+  }
+
+  private getOrCreateDeviceId(): string {
+    const key = 'deviceId'
+    const existing = localStorage.getItem(key)
+    if (existing) return existing
+
+    const generated = this.generateUuid()
+    localStorage.setItem(key, generated)
+    return generated
+  }
+
+  private generateUuid(): string {
+    // modern browsers
+    const anyCrypto: any = (globalThis as any).crypto
+    if (anyCrypto?.randomUUID) return anyCrypto.randomUUID()
+
+    // fallback (RFC4122 v4-ish)
+    const bytes = new Uint8Array(16)
+    if (anyCrypto?.getRandomValues) {
+      anyCrypto.getRandomValues(bytes)
+    } else {
+      for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256)
+    }
+    bytes[6] = (bytes[6] & 0x0f) | 0x40
+    bytes[8] = (bytes[8] & 0x3f) | 0x80
+    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
+    return (
+      hex.slice(0, 8) +
+      '-' +
+      hex.slice(8, 12) +
+      '-' +
+      hex.slice(12, 16) +
+      '-' +
+      hex.slice(16, 20) +
+      '-' +
+      hex.slice(20)
+    )
   }
 }
