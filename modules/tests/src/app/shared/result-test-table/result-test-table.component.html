@@ -63,7 +63,11 @@
             >
             <mat-cell
               *matCellDef="let element; let index = index"
-              class="mat-header-cell-description"
+              class="mat-header-cell-description mat-cell-student-name"
+              [matTooltip]="
+                index === studentResults.length - 1 ? null : element[1].name
+              "
+              [matTooltipDisabled]="index === studentResults.length - 1"
             >
               {{
                 index === studentResults.length - 1
@@ -75,13 +79,13 @@
           </ng-container>
 
           <ng-container
-            *ngFor="let dummy of ' '.repeat(testSize).split(''); let i = index"
+            *ngFor="let i of testColumnIndices"
             [matColumnDef]="'test' + i"
           >
             <mat-header-cell
               *matHeaderCellDef
-              class="mat-header-cell-action"
-              [matTooltip]="studentResults[0][1].test[i].testName"
+              class="mat-header-cell-action mat-header-test-name"
+              [matTooltip]="getTestHeaderTooltip(studentResults, i)"
               >{{
                 ('text.test' | translate: 'Тест') + ' ' + (i + 1)
               }}</mat-header-cell
@@ -175,9 +179,6 @@
       [chartType]="barChartType"
     >
     </canvas>
-  </div>
-  <div class="result-test-table-warning" *ngIf="!showChart">
-    {{ 'text.test.no.results' | translate: 'Нет результатов для отображения' }}
   </div>
 </ng-container>
 
