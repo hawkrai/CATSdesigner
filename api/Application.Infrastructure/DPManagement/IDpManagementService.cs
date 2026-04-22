@@ -48,7 +48,7 @@ namespace Application.Infrastructure.DPManagement
 
         void SaveTaskSheetTemplate(DiplomProjectTaskSheetTemplate template);
 
-        string GetTasksSheetHtml(int diplomProjectId);
+        string GetTasksSheetHtml(int diplomProjectId, string lang = "ru");
 
         List<NewsData> GetNewses(int userId);
 

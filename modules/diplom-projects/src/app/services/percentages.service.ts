@@ -18,13 +18,15 @@ export class PercentagesService {
     id: string,
     date: string,
     name: string,
-    percentage: number
+    percentage: number,
+    selectedGroupsIds?: number[]
   ): Observable<any> {
     return this.http.post('api/DpPercentage', {
       Id: id,
       Name: name,
       Percentage: percentage,
       Date: date,
+      SelectedGroupsIds: selectedGroupsIds,
     })
   }
 

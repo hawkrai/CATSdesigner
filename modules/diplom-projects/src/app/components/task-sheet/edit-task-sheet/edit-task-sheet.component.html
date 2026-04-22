@@ -1,12 +1,14 @@
-<button mat-icon-button class="close-button" [mat-dialog-close]="true">
-  <mat-icon class="close-icon">close</mat-icon>
-</button>
-<h1 mat-dialog-title>
-  {{
-    'text.diplomProject.editTaskSheet'
-      | translate: 'Редактирование листа задания'
-  }}
-</h1>
+<div class="dialog-header">
+  <h1 mat-dialog-title>
+    {{
+      'text.diplomProject.editTaskSheet'
+        | translate: 'Редактирование листа задания'
+    }}
+  </h1>
+  <button mat-icon-button class="close-button" [mat-dialog-close]="true">
+    <mat-icon class="close-icon">close</mat-icon>
+  </button>
+</div>
 <div mat-dialog-content style="display: block">
   <div class="choose-template">
     <mat-form-field class="form-field">

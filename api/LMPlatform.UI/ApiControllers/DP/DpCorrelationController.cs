@@ -20,11 +20,14 @@ namespace LMPlatform.UI.ApiControllers.DP
             get { return correlationService.Value; }
         }
 
-        // GET api/<controller>
         public List<Correlation> Get()
         {
-            var entity = HttpUtility.ParseQueryString(Request.RequestUri.Query)["entity"];
-            return CorrelationService.GetCorrelation(entity, UserContext.CurrentUserId);
+            var query = HttpUtility.ParseQueryString(Request.RequestUri.Query);
+            var entity = query["entity"];
+            var isSecretaryParam = query["isSecretary"];
+            var isSecretary = isSecretaryParam != null && isSecretaryParam.ToLower() == "true";
+
+            return CorrelationService.GetCorrelation(entity, UserContext.CurrentUserId, isSecretary);
         }
     }
 }

@@ -69,7 +69,7 @@ namespace Application.Infrastructure.DPManagement
                                          Group = s.Group.Name,
                                          ApproveDate = adp != null ? adp.ApproveDate : null
                                      };
-
+                parms.SortExpression = "Student";
                 return diplomProjects.ApplyPaging(parms);
             }
 
@@ -104,7 +104,7 @@ namespace Application.Infrastructure.DPManagement
                                          Group = adp.Student.Group.Name,
                                          ApproveDate = adp.ApproveDate
                                      };
-
+                parms.SortExpression = "Student";
                 return diplomProjects.ApplyPaging(parms);
             }
             else
@@ -121,7 +121,7 @@ namespace Application.Infrastructure.DPManagement
                                          Group = adp.Student.Group.Name,
                                          ApproveDate = adp.ApproveDate
                                      };
-
+                parms.SortExpression = "Student";
                 return diplomProjects.ApplyPaging(parms);
             }
         }
@@ -736,9 +736,8 @@ namespace Application.Infrastructure.DPManagement
             Context.SaveChanges();
         }
 
-        public string GetTasksSheetHtml(int diplomProjectId)
+        public string GetTasksSheetHtml(int diplomProjectId, string lang = "ru")
         {
-            //todo
             var diplomProject =
                 new LmPlatformModelsContext().DiplomProjects
                     .Include(x =>
@@ -746,8 +745,8 @@ namespace Application.Infrastructure.DPManagement
                     .Single(x => x.DiplomProjectId == diplomProjectId);
 
             return diplomProject.AssignedDiplomProjects.Count == 1
-                ? Word.DiplomProjectToDocView(diplomProject.AssignedDiplomProjects.First())
-                : Word.DiplomProjectToDocView(diplomProject);
+                ? Word.DiplomProjectToDocView(diplomProject.AssignedDiplomProjects.First(), lang)
+                : Word.DiplomProjectToDocView(diplomProject, lang);
         }
 
         public List<NewsData> GetNewses(int lecturerId)

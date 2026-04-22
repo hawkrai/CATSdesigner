@@ -32,11 +32,41 @@ namespace Application.Infrastructure.DPManagement
 
         private readonly Dictionary<string, Func<int?, List<Correlation>>> _correlationMethodsMapping;
 
-        public List<Correlation> GetCorrelation(string entity, int? id)
+        private List<Correlation> GetDiplomProjectCorrelationForSecretary(int? secretaryId)
+        {
+            if (!secretaryId.HasValue)
+            {
+                return new List<Correlation>();
+            }
+
+            var currentYear = _currentAcademicYearEndDate.Year.ToString();
+
+            return Context.DiplomProjects
+                .Include(x => x.AssignedDiplomProjects.Select(adp => adp.Student.Group))
+                .Where(x => x.AssignedDiplomProjects.Any(adp =>
+                    adp.Student.Group.SecretaryId == secretaryId &&
+                    adp.Student.Group.GraduationYear == currentYear))
+                .Select(x => new Correlation
+                {
+                    Id = x.DiplomProjectId,
+                    Name = x.Theme
+                })
+                .OrderBy(x => x.Name)
+                .ToList();
+        }
+
+
+
+        public List<Correlation> GetCorrelation(string entity, int? id, bool isSecretary = false)
         {
             if (!_correlationMethodsMapping.ContainsKey(entity))
             {
                 throw new Exception("CorrelationService doesn't serve this entity type!");
+            }
+
+            if (entity == "DiplomProject" && isSecretary)
+            {
+                return GetDiplomProjectCorrelationForSecretary(id);
             }
 
             return _correlationMethodsMapping[entity](id);

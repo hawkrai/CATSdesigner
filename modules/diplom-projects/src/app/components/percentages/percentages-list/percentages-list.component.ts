@@ -10,8 +10,8 @@ import { TranslatePipe } from 'educats-translate'
 })
 export class PercentagesListComponent implements OnInit {
   @Input() percentages: Percentage[]
-  @Input() isLecturerMode: boolean = false
-
+  @Input() isSecretaryMode: boolean = false
+  
   constructor(
     private percentagesComponent: PercentagesComponent,
     public translatePipe: TranslatePipe

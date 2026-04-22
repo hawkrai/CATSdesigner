@@ -19,5 +19,6 @@ namespace Application.Infrastructure.DTO
         public bool IsLecturerHasGraduateStudents { get; set; }
         public bool IsGraduate { get; set; }
         public IEnumerable<int> SelectedGroupIds { get; set; }
+        public List<int> LecturerGroupIds { get; set; }
     }
 }

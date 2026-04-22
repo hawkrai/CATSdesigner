@@ -1,4 +1,18 @@
 <div *ngIf="diplomUser; else load" class="task-sheet__header">
+  <mat-select
+    matTooltip="{{
+      'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'
+    }}"
+    class="mselect"
+    [value]="theme"
+    (selectionChange)="lecturerStatusChange($event)"
+    *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents"
+  >
+    <mat-option *ngFor="let t of themes" [value]="t">
+      {{ t.name }}
+    </mat-option>
+  </mat-select>
+
   <mat-form-field class="task-sheet__header__theme">
     <mat-label>{{
       'text.diplomProject.chooseThemeDP'
@@ -9,18 +23,19 @@
       [(value)]="diplomProjectId"
       (selectionChange)="onThemeChange($event.value)"
     >
-      <mat-option *ngFor="let theme of themes" [value]="theme.Id">
+      <mat-option *ngFor="let theme of themesList" [value]="theme.Id">
         {{ theme.Name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
+
   <div class="task-sheet__header__actions">
     <app-help
       *ngIf="diplomUser.IsLecturer"
       [message]="
         'text.diplomProject.taskList.help.message'
           | translate
-            : 'В листе задания фамилии обучающегося и руководителя, а также тема дипломного проекта заполняются автоматически. Данные для пункта 8 будут отображены после заполнения информации на вкладке “График процентовки” секретарем ГЭК. Остальные пункты листа задания заполняются посредством его редактирования'
+            : 'В листе задания фамилии обучающегося и руководителя, а также тема дипломного проекта заполняются автоматически. Данные для пункта 8 будут отображены после заполнения информации на вкладке График процентовки секретарем ГЭК. Остальные пункты листа задания заполняются посредством его редактирования'
       "
       [action]="'text.diplomProject.help.clear' | translate: 'Понятно'"
     ></app-help>
@@ -70,3 +85,8 @@
 <div class="spinner" *ngIf="taskSheetHtml == null && !isEmpty">
   <mat-spinner></mat-spinner>
 </div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

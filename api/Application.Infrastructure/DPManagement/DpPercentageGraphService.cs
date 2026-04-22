@@ -29,22 +29,85 @@ namespace Application.Infrastructure.DPManagement
                 int.TryParse(parms.Filters["groupId"], out groupId);
             }
 
-            var user = Context.Users.Include(x => x.Student.Group).Include(x => x.Lecturer).Single(x => x.Id == userId);
+            var user = Context.Users
+                .Include(x => x.Student.Group)
+                .Include(x => x.Lecturer)
+                .Single(x => x.Id == userId);
 
             var isLecturer = user.Lecturer != null;
             var isStudent = user.Student != null;
             var isSecretary = isLecturer && user.Lecturer.IsSecretary;
-            if (isLecturer && !isSecretary)
+
+            var isThesisLecturer = isLecturer && Context.DiplomProjectGroups
+                .Any(dpg => dpg.DiplomProject.LecturerId == userId);
+
+            if (isSecretary && isThesisLecturer)
             {
-                return GetPercentageGraphsForLecturer(userId, parms, groupId);
+                var lecturerItems = GetPercentageGraphDataForLecturerQuery(userId, groupId).ToList();
+                var ownItems = Context.DiplomPercentagesGraphs
+                    .AsNoTracking()
+                    .Include(x => x.DiplomPercentagesGraphToGroups)
+                    .Where(x => x.LecturerId == userId)
+                    .Select(ToPercentageData)
+                    .ToList();
+
+                var merged = lecturerItems
+                    .Union(ownItems, new PercentageGraphDataComparer())
+                    .OrderBy(x => x.Date)
+                    .ToList();
+
+                return new PagedList<PercentageGraphData>
+                {
+                    Items = merged,
+                    Total = merged.Count
+                };
             }
 
-            var secretaryId = isStudent ? user.Student.Group.SecretaryId : userId;
+            if (isSecretary)
+            {
+                return Context.DiplomPercentagesGraphs
+                    .AsNoTracking()
+                    .Include(x => x.DiplomPercentagesGraphToGroups)
+                    .Where(x => x.LecturerId == userId)
+                    .Select(ToPercentageData)
+                    .ApplyPaging(parms);
+            }
+
+            if (isThesisLecturer)
+            {
+                parms.SortExpression = "Date";
+                return GetPercentageGraphDataForLecturerQuery(userId, groupId).ApplyPaging(parms);
+            }
+
+            if (isLecturer)
+            {
+                parms.SortExpression = "Date";
+                return GetPercentageGraphDataForLecturerQuery(userId, groupId).ApplyPaging(parms);
+            }
+
+            var secretaryId = user.Student.Group.SecretaryId;
+
             return Context.DiplomPercentagesGraphs
                 .AsNoTracking()
-                .Where(x => x.LecturerId == secretaryId)
-                .Select(ToPercentageDataPlain)
+                .Include(x => x.DiplomPercentagesGraphToGroups)
+                .Where(x => x.DiplomPercentagesGraphToGroups
+                    .Any(g => g.Group.SecretaryId == secretaryId))
+                .Select(ToPercentageData)
                 .ApplyPaging(parms);
+        }
+
+        public class PercentageGraphDataComparer : IEqualityComparer<PercentageGraphData>
+        {
+            public bool Equals(PercentageGraphData x, PercentageGraphData y)
+            {
+                if (x == null || y == null) return false;
+                return x.Id == y.Id;
+            }
+
+            public int GetHashCode(PercentageGraphData obj)
+            {
+                return obj.Id.GetHashCode();
+            }
         }
 
         public PagedList<PercentageGraphData> GetPercentageGraphsForLecturer(int lecturerId, GetPagedListParams parms, int secretaryId)
@@ -164,13 +227,34 @@ namespace Application.Infrastructure.DPManagement
         /// <param name="lecturerId"></param>
         /// <param name="secretaryId"></param>
         /// <returns></returns>
-        private IQueryable<PercentageGraphData> GetPercentageGraphDataForLecturerQuery(int lecturerId, int secretaryId)
+        private IQueryable<PercentageGraphData> GetPercentageGraphDataForLecturerQuery(int lecturerId, int groupId)
         {
-            return Context.Lecturers.Where(x => lecturerId == 0 || x.Id == lecturerId)
-                .SelectMany(x => x.DiplomProjects
-                    .SelectMany(dp => dp.DiplomProjectGroups.Where(dpg => secretaryId == 0 || dpg.Group.SecretaryId == secretaryId)
-                        .SelectMany(dpg => dpg.Group.Secretary.DiplomPercentagesGraphs)))
-                .Distinct().Select(ToPercentageDataPlain);
+            var lecturerGroupIds = Context.DiplomProjectGroups
+                .Where(dpg => lecturerId == 0 || dpg.DiplomProject.LecturerId == lecturerId)
+                .Select(dpg => dpg.GroupId)
+                .Distinct()
+                .ToList();
+
+            if (!lecturerGroupIds.Any())
+                return Enumerable.Empty<PercentageGraphData>().AsQueryable();
+
+            var secretaryIds = Context.Groups
+                .Where(g => lecturerGroupIds.Contains(g.Id) && g.SecretaryId != null)
+                .Select(g => g.SecretaryId.Value)
+                .Distinct()
+                .ToList();
+            System.Diagnostics.Debug.WriteLine("secretaryIds: " + string.Join(", ", secretaryIds));
+            System.Diagnostics.Debug.WriteLine("lecturerGroupIds: " + string.Join(", ", lecturerGroupIds));
+            if (!secretaryIds.Any())
+                return Enumerable.Empty<PercentageGraphData>().AsQueryable();
+
+            return Context.DiplomPercentagesGraphs
+                .Where(x => secretaryIds.Contains(x.LecturerId)
+                    && x.DiplomPercentagesGraphToGroups
+                        .Any(g => lecturerGroupIds.Contains(g.GroupId)
+                            && (groupId == 0 || g.GroupId == groupId)))
+                .Distinct()
+                .Select(ToPercentageData);
         }
 
         public PercentageGraphData GetPercentageGraph(int id)
@@ -186,48 +270,50 @@ namespace Application.Infrastructure.DPManagement
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);
 
-            
+            var exists = Context.DiplomPercentagesGraphs.Any(x =>
+                x.Name == percentageData.Name &&
+                x.Id != percentageData.Id
+            );
+
+            if (exists)
+            {
+                throw new ApplicationException("Этап с таким названием уже есть!");
+            }
 
             DiplomPercentagesGraph percentage;
             if (percentageData.Id.HasValue)
             {
                 percentage = Context.DiplomPercentagesGraphs
-                              .Include(x => x.DiplomPercentagesGraphToGroups)
-                              .Single(x => x.Id == percentageData.Id);
-                if (Context.DiplomPercentagesGraphs.Any(x => x.Name == percentageData.Name))
-                {
-                    throw new ApplicationException("Этап с таким названием уже есть!");
-                }
+                    .Include(x => x.DiplomPercentagesGraphToGroups)
+                    .Single(x => x.Id == percentageData.Id.Value);
+
+                percentage.DiplomPercentagesGraphToGroups.Clear();
             }
             else
             {
-                if (Context.DiplomPercentagesGraphs.Any(x => x.Name == percentageData.Name))
+                percentage = new DiplomPercentagesGraph
                 {
-                    throw new ApplicationException("Этап с таким названием уже есть!");
-                }
-                percentage = new DiplomPercentagesGraph();
+                    DiplomPercentagesGraphToGroups = new List<DiplomPercentagesGraphToGroup>()
+                };
                 Context.DiplomPercentagesGraphs.Add(percentage);
             }
 
-            //            percentage.DiplomPercentagesGraphToGroups = percentage.DiplomPercentagesGraphToGroups ??
-            //                                                        new Collection<DiplomPercentagesGraphToGroup>();
-
-            //            var currentGroups = percentage.DiplomPercentagesGraphToGroups.ToList();
-            //            var newGroups = percentageData.SelectedGroupsIds.Select(x => new DiplomPercentagesGraphToGroup
-            //            {
-            //                GroupId = x,
-            //                DiplomPercentagesGraphId = percentage.Id
-            //            }).ToList();
-            //
-            //            var groupsToAdd = newGroups.Except(currentGroups, grp => grp.GroupId).ToList();
-            //            var groupsToDelete = currentGroups.Except(newGroups, grp => grp.GroupId).ToList();
-            //
-            //            groupsToAdd.ForEach(grp => percentage.DiplomPercentagesGraphToGroups.Add(grp));
-            //            groupsToDelete.ForEach(grp => Context.DiplomPercentagesGraphToGroup.Remove(grp));
             percentage.LecturerId = userId;
             percentage.Name = percentageData.Name;
             percentage.Percentage = percentageData.Percentage;
             percentage.Date = percentageData.Date;
+
+            if (percentageData.SelectedGroupsIds != null)
+            {
+                foreach (var groupId in percentageData.SelectedGroupsIds)
+                {
+                    percentage.DiplomPercentagesGraphToGroups.Add(new DiplomPercentagesGraphToGroup
+                    {
+                        GroupId = groupId,
+                        DiplomPercentagesGraph = percentage
+                    });
+                }
+            }
 
             Context.SaveChanges();
         }
@@ -245,25 +331,27 @@ namespace Application.Infrastructure.DPManagement
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);
 
-            DiplomPercentagesResult diplomPercentagesResult;
+            DiplomPercentagesResult result;
+
             if (percentageResultData.Id.HasValue)
             {
-                diplomPercentagesResult = Context.DiplomPercentagesResults
-                    .Single(x => x.Id == percentageResultData.Id);
+                result = Context.DiplomPercentagesResults
+                    .Single(x => x.Id == percentageResultData.Id.Value);
             }
             else
             {
-                diplomPercentagesResult = new DiplomPercentagesResult
+                result = new DiplomPercentagesResult
                 {
                     StudentId = percentageResultData.StudentId,
                     DiplomPercentagesGraphId = percentageResultData.PercentageGraphId
                 };
-                Context.DiplomPercentagesResults.Add(diplomPercentagesResult);
+
+                Context.DiplomPercentagesResults.Add(result);
             }
 
-            diplomPercentagesResult.Mark = percentageResultData.Mark;
-            diplomPercentagesResult.Comments = percentageResultData.Comment;
-            diplomPercentagesResult.ShowForStudent = percentageResultData.ShowForStudent;
+            result.Mark = percentageResultData.Mark;
+            result.Comments = percentageResultData.Comment;
+            result.ShowForStudent = percentageResultData.ShowForStudent;
 
             Context.SaveChanges();
         }

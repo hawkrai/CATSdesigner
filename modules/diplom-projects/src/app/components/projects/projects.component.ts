@@ -16,6 +16,7 @@ import { CoreGroup } from 'src/app/models/core-group.model'
 import { GroupService } from '../../services/group.service'
 import { TranslatePipe } from 'educats-translate'
 import { ToastrService } from 'ngx-toastr'
+import { LanguageService } from 'src/app/services/language.service'
 
 @Component({
   selector: 'app-projects',
@@ -65,7 +66,8 @@ export class ProjectsComponent implements OnInit {
     private projectsService: ProjectsService,
     private dialog: MatDialog,
     private toastr: ToastrService,
-    public translatePipe: TranslatePipe
+    public translatePipe: TranslatePipe,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit() {
@@ -176,7 +178,7 @@ export class ProjectsComponent implements OnInit {
   chooseDiplomProject(projectId: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       autoFocus: false,
-      width: '540px',
+      width: '600px',
       data: {
         label: this.translatePipe.transform(
           'text.editor.edit.chooseTheme',
@@ -212,7 +214,7 @@ export class ProjectsComponent implements OnInit {
   addProject() {
     const dialogRef = this.dialog.open(AddProjectDialogComponent, {
       autoFocus: false,
-      width: '500px',
+      width: '600px',
       height: '100%',
       position: { top: '0%' },
       data: {
@@ -267,7 +269,7 @@ export class ProjectsComponent implements OnInit {
     this.projectsService.getProject(project.Id).subscribe((response) => {
       const dialogRef = this.dialog.open(AddProjectDialogComponent, {
         autoFocus: false,
-        width: '500px',
+        width: '600px',
         height: '100%',
         position: { top: '0%' },
         data: {
@@ -306,7 +308,7 @@ export class ProjectsComponent implements OnInit {
     if (project.Student === null) {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         autoFocus: false,
-        width: '500px',
+        width: '600px',
         data: {
           label: this.translatePipe.transform(
             'text.diplomProject.removeTheme',
@@ -401,7 +403,7 @@ export class ProjectsComponent implements OnInit {
   removeAssignment(project: Project) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       autoFocus: false,
-      width: '540px',
+      width: '600px',
       data: {
         label: this.translatePipe.transform(
           'text.diplomProject.cancelAssignTheme',
@@ -435,8 +437,14 @@ export class ProjectsComponent implements OnInit {
   }
 
   downloadTaskSheet(project: Project) {
+    const lang = this.languageService.current
+
     location.href =
-      location.origin + '/api/DpTaskSheetDownload?diplomProjectId=' + project.Id
+      location.origin +
+      '/api/DpTaskSheetDownload?diplomProjectId=' +
+      project.Id +
+      '&lang=' +
+      lang
   }
 
   addFlashMessageSuccess(msg: string) {

@@ -1,14 +1,30 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+h1[mat-dialog-title] {
+  font-weight: 400;
+  margin: 0;
+}
+
 .mat-dialog-content {
-  max-height: 750px;
+  flex: 1 1 auto;
   overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 750px;
 }
 
 .form-field {
   width: 100%;
-}
-
-.close-button {
-  float: right;
 }
 
 .choose-template {
@@ -70,8 +86,11 @@
 }
 
 .dialog-buttons {
-  float: right;
-  padding-top: 6.5px;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  flex-shrink: 0;
 }
 
 .applyButton {

@@ -5,6 +5,6 @@ namespace Application.Infrastructure.DPManagement
 {
     public interface ICorrelationService
     {
-        List<Correlation> GetCorrelation(string entity, int? id);
+        List<Correlation> GetCorrelation(string entity, int? id, bool isSecretary = false);
     }
 }
