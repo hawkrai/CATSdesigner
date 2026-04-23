@@ -751,12 +751,25 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             return result;
         }
 
+        private static int GetMaxPointsForAnswerSlots(Test test, IEnumerable<AnswerOnTestQuestion> testAnswers)
+        {
+            return testAnswers.Sum(ta =>
+            {
+                var question = test.Questions.FirstOrDefault(q => q.Id == ta.QuestionId);
+                return question?.ComlexityLevel ?? 0;
+            });
+        }
+
         private int GetResultPoints(IEnumerable<AnswerOnTestQuestion> testAnswers)
         {
             Test test = GetTest(testAnswers.First().TestId);
-            var result = ((double)testAnswers.Sum(testAnswer => testAnswer.Points) 
-                / (double)test.Questions.Where(q => testAnswers.Select(a => a.QuestionId).Contains(q.Id))
-                .Sum(question => question.ComlexityLevel)) * 10;
+            int maxPoints = GetMaxPointsForAnswerSlots(test, testAnswers);
+            if (maxPoints == 0)
+            {
+                return 0;
+            }
+
+            var result = ((double)testAnswers.Sum(testAnswer => testAnswer.Points) / maxPoints) * 10;
 
             return (int)Math.Round(result);
         }
@@ -764,9 +777,13 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
         private int GetPoints(IEnumerable<AnswerOnTestQuestion> testAnswers)
         {
             Test test = GetTest(testAnswers.First().TestId);
-            var result = ((double)testAnswers.Sum(testAnswer => testAnswer.Points)
-                / (double)test.Questions.Where(q => testAnswers.Select(a => a.QuestionId).Contains(q.Id))
-                .Sum(question => question.ComlexityLevel)) * 100;
+            int maxPoints = GetMaxPointsForAnswerSlots(test, testAnswers);
+            if (maxPoints == 0)
+            {
+                return 0;
+            }
+
+            var result = ((double)testAnswers.Sum(testAnswer => testAnswer.Points) / maxPoints) * 100;
 
             return (int)result;
         }
@@ -853,34 +870,42 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
         private void StartNewTest(int testId, int userId)
         {
             Test test = GetTest(testId);
-            
-            int questionsCount = test.CountOfQuestions > test.Questions.Count
-                ? test.Questions.Count
-                : test.CountOfQuestions;
-	        IEnumerable<Question> includedQuestions = null;
-
-			if (test.ForNN)
-	        {
-				includedQuestions = test.Questions.OrderBy(t => t.ConceptId).ThenBy(a => a.Id).ToList();
-	        }
-	        else
-	        {
-				var random = new Random(DateTime.Now.Millisecond);
-		        includedQuestions = test.Questions.OrderBy(t => random.Next()).Take(questionsCount);
-	        }
 
             var answersTemplate = new List<AnswerOnTestQuestion>();
 
-            int counter = 1;
-            foreach (Question includedQuestion in includedQuestions)
+            if (test.ForNN)
             {
-                answersTemplate.Add(new AnswerOnTestQuestion
+                var includedQuestions = test.Questions.OrderBy(t => t.ConceptId).ThenBy(a => a.Id).ToList();
+                int counter = 1;
+                foreach (Question includedQuestion in includedQuestions)
                 {
-                    QuestionId = includedQuestion.Id,
-                    TestId = testId,
-                    UserId = userId,
-                    Number = counter++
-                });
+                    answersTemplate.Add(new AnswerOnTestQuestion
+                    {
+                        QuestionId = includedQuestion.Id,
+                        TestId = testId,
+                        UserId = userId,
+                        Number = counter++
+                    });
+                }
+            }
+            else
+            {
+                var random = new Random(DateTime.Now.Millisecond);
+                var shuffledPool = test.Questions.OrderBy(t => random.Next()).ToList();
+                int poolCount = shuffledPool.Count;
+                int slotCount = test.CountOfQuestions;
+
+                for (int i = 0; i < slotCount && poolCount > 0; i++)
+                {
+                    var includedQuestion = shuffledPool[i % poolCount];
+                    answersTemplate.Add(new AnswerOnTestQuestion
+                    {
+                        QuestionId = includedQuestion.Id,
+                        TestId = testId,
+                        UserId = userId,
+                        Number = i + 1
+                    });
+                }
             }
 
             TestPassResult testPassResult = GetTestPassResult(testId, userId) ?? new TestPassResult
