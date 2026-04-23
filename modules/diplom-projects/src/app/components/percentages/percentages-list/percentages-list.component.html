@@ -38,7 +38,7 @@
             class="mdc-data-table__header-cell"
             role="columnheader"
             scope="col"
-            *ngIf="!isLecturerMode"
+            *ngIf="isSecretaryMode"
           >
             {{ 'text.diplomProject.action' | translate: 'Действие' }}
           </th>
@@ -55,7 +55,7 @@
           <td class="mdc-data-table__cell">
             {{ percentage.Date | date: 'dd.MM.yyyy' }}
           </td>
-          <td class="mdc-data-table__cell" *ngIf="!isLecturerMode">
+          <td class="mdc-data-table__cell" *ngIf="isSecretaryMode">
             <button
               mat-icon-button
               color="primary"

@@ -1,21 +1,26 @@
-.form-field {
-  width: 100%;
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+
+  h1 {
+    font-weight: 400;
+    margin: 0;
+  }
 
   &__close-btn {
     width: 40px;
   }
 }
 
-.dialog-buttons {
-  float: right;
-}
-
-.dialog-button {
+.form-field {
   width: 100%;
 }
 
@@ -25,19 +30,22 @@
   justify-content: space-between;
 }
 
-.add-date {
-  &__container {
-    width: auto;
-    position: relative;
-    height: 100%;
-    display: grid;
-    min-width: 450px;
-    grid-template-rows: auto 1fr auto;
-    gap: 20px;
-  }
+.dialog-button {
+  width: 100%;
+}
 
-  &__action {
-    width: 100%;
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+.add-date {
+  &__content {
+    margin-top: 10px;
   }
 
   &__table {
@@ -52,19 +60,18 @@
     &-title {
       font-size: 16px;
       margin-bottom: 5px;
+      font-weight: 400;
     }
 
     &-container {
       border-top: 0;
+      max-height: 300px;
+      overflow-y: auto;
     }
 
     &-detele-button {
       width: 10px;
     }
-  }
-
-  &__content {
-    margin-top: 10px;
   }
 }
 

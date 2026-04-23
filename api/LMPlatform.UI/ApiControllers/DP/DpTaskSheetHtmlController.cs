@@ -19,9 +19,9 @@ namespace LMPlatform.UI.ApiControllers.DP
         }
 
         // GET api/<controller>/5
-        public string Get(int diplomProjectId)
+        public string Get(int diplomProjectId, string lang = "ru")
         {
-            return DpManagementService.GetTasksSheetHtml(diplomProjectId);
+            return DpManagementService.GetTasksSheetHtml(diplomProjectId, lang);
         }
     }
 }

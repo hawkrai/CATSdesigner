@@ -24,18 +24,23 @@ namespace Application.Infrastructure.Export
         private AssignedDiplomProject awork;
         private DiplomProject work;
         private CultureInfo cultureInfo;
-
-        public GenerateDpDocument(AssignedDiplomProject awork, CultureInfo cultureInfo)
+        private string lang;
+        public GenerateDpDocument(AssignedDiplomProject awork, CultureInfo cultureInfo, string lang = "ru")
         {
             this.awork = awork;
             this.cultureInfo = cultureInfo;
+            this.lang = lang;
         }
 
-        public GenerateDpDocument(DiplomProject work, CultureInfo cultureInfo)
+        public GenerateDpDocument(DiplomProject work, CultureInfo cultureInfo, string lang = "ru")
         {
             this.work = work;
             this.cultureInfo = cultureInfo;
+            this.lang = lang;
         }
+
+        private string T(string ru, string en) => lang == "en" ? en : ru;
+
         // Creates a WordprocessingDocument.
         public void CreatePackage(string filePath)
         {
@@ -472,7 +477,7 @@ namespace Application.Infrastructure.Export
             runProperties5.Append(fontSize6);
             runProperties5.Append(fontSizeComplexScript6);
             Text text5 = new Text();
-            text5.Text = "Утверждаю";
+            text5.Text = T("Утверждаю", "Approved");
 
             run5.Append(runProperties5);
             run5.Append(text5);
@@ -592,7 +597,7 @@ namespace Application.Infrastructure.Export
             runProperties7.Append(fontSize8);
             runProperties7.Append(fontSizeComplexScript8);
             Text text7 = new Text();
-            text7.Text = "Заведующий";
+            text7.Text = T("Заведующий", "Head of");
 
             run7.Append(runProperties7);
             run7.Append(text7);
@@ -622,7 +627,7 @@ namespace Application.Infrastructure.Export
             runProperties9.Append(fontSize10);
             runProperties9.Append(fontSizeComplexScript10);
             Text text9 = new Text();
-            text9.Text = "кафедрой";
+            text9.Text = T("кафедрой", "Department");
 
             run9.Append(runProperties9);
             run9.Append(text9);
@@ -965,7 +970,7 @@ namespace Application.Infrastructure.Export
             runProperties12.Append(fontSize15);
             runProperties12.Append(fontSizeComplexScript15);
             Text text12 = new Text();
-            text12.Text = "подпись";
+            text12.Text = T("подпись", "signature");
 
             run12.Append(runProperties12);
             run12.Append(text12);
@@ -1094,7 +1099,7 @@ namespace Application.Infrastructure.Export
             runProperties15.Append(fontSize20);
             runProperties15.Append(fontSizeComplexScript20);
             Text text15 = new Text();
-            text15.Text = "фамилия";
+            text15.Text = T("фамилия", "surname");
 
             run15.Append(runProperties15);
             run15.Append(text15);
@@ -1111,7 +1116,7 @@ namespace Application.Infrastructure.Export
             runProperties16.Append(fontSizeComplexScript21);
             runProperties16.Append(languages18);
             Text text16 = new Text();
-            text16.Text = ", инициалы";
+            text16.Text = T(", инициалы", ", initials");
 
             run16.Append(runProperties16);
             run16.Append(text16);
@@ -1671,7 +1676,7 @@ namespace Application.Infrastructure.Export
             runProperties23.Append(fontSizeComplexScript32);
             runProperties23.Append(languages36);
             Text text23 = new Text();
-            text23.Text = "Задание на дипломный проект";
+            text23.Text = T("Задание на дипломный проект", "Diploma Project Assignment");
 
             run23.Append(runProperties23);
             run23.Append(text23);
@@ -1786,7 +1791,7 @@ namespace Application.Infrastructure.Export
             runProperties24.Append(fontSizeComplexScript34);
             runProperties24.Append(languages39);
             Text text24 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text24.Text = "Обучающемуся ";
+            text24.Text = T("Обучающемуся ", "Student ");
 
             run24.Append(runProperties24);
             run24.Append(text24);
@@ -1921,7 +1926,7 @@ namespace Application.Infrastructure.Export
             runProperties27.Append(fontSizeComplexScript38);
             runProperties27.Append(languages44);
             Text text27 = new Text();
-            text27.Text = "(фамилия, инициалы)";
+            text27.Text = T("(фамилия, инициалы)", "(surname, initials)");
 
             run27.Append(runProperties27);
             run27.Append(text27);
@@ -2035,7 +2040,7 @@ namespace Application.Infrastructure.Export
             runProperties28.Append(fontSizeComplexScript40);
             runProperties28.Append(languages47);
             Text text28 = new Text();
-            text28.Text = "1. Тема дипломного проекта";
+            text28.Text = T("1. Тема дипломного проекта", "1. Diploma project topic");
 
             run28.Append(runProperties28);
             run28.Append(text28);
@@ -2268,7 +2273,9 @@ namespace Application.Infrastructure.Export
             runProperties35.Append(fontSizeComplexScript51);
             runProperties35.Append(languages58);
             Text text35 = new Text();
-            text35.Text = "Утверждена приказом руководителя учреждения высшего образования   от";
+            text35.Text = T(
+    "Утверждена приказом руководителя учреждения высшего образования   от",
+    "Approved by order of the head of the higher education institution dated");
 
             run35.Append(runProperties35);
             run35.Append(text35);
@@ -2484,7 +2491,7 @@ namespace Application.Infrastructure.Export
             runProperties37.Append(fontSizeComplexScript56);
             runProperties37.Append(languages61);
             Text text37 = new Text();
-            text37.Text = "2. Исходные данные к дипломному проекту:";
+            text37.Text = T("2. Исходные данные к дипломному проекту:", "2. Initial data for the diploma project:");
 
             run37.Append(runProperties37);
             run37.Append(text37);
@@ -3016,7 +3023,9 @@ namespace Application.Infrastructure.Export
             runProperties48.Append(fontSizeComplexScript74);
             runProperties48.Append(languages75);
             Text text48 = new Text();
-            text48.Text = "3. Перечень подлежащих разработке вопросов или краткое содержание расчетно-пояснительной записки:";
+            text48.Text = T(
+    "3. Перечень подлежащих разработке вопросов или краткое содержание расчетно-пояснительной записки:",
+    "3. List of questions to be developed or brief contents of the explanatory note:");
 
             run48.Append(runProperties48);
             run48.Append(text48);
@@ -4485,7 +4494,9 @@ namespace Application.Infrastructure.Export
             runProperties67.Append(fontSizeComplexScript113);
             runProperties67.Append(languages102);
             Text text67 = new Text();
-            text67.Text = "4. Перечень графического материала (с точным указанием обязательных чертежей и графиков)";
+            text67.Text = T(
+    "4. Перечень графического материала (с точным указанием обязательных чертежей и графиков)",
+    "4. List of graphic materials (with exact indication of required drawings and graphs)");
 
             run67.Append(runProperties67);
             run67.Append(text67);
@@ -5475,7 +5486,9 @@ namespace Application.Infrastructure.Export
             runProperties78.Append(fontSizeComplexScript136);
             runProperties78.Append(languages115);
             Text text78 = new Text();
-            text78.Text = "5. Консультанты по дипломному проекту с указанием относящихся к ним разделов:";
+            text78.Text = T(
+     "5. Консультанты по дипломному проекту с указанием относящихся к ним разделов:",
+     "5. Diploma project consultants with indication of relevant sections:");
 
             run78.Append(runProperties78);
             run78.Append(text78);
@@ -5566,7 +5579,7 @@ namespace Application.Infrastructure.Export
             runProperties79.Append(fontSizeComplexScript138);
             runProperties79.Append(languages117);
             Text text79 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text79.Text = "по компьютерному проектированию – ";
+           text79.Text = T("по компьютерному проектированию – ", "computer design – ");
 
             run79.Append(runProperties79);
             run79.Append(text79);
@@ -5675,7 +5688,7 @@ namespace Application.Infrastructure.Export
             runProperties81.Append(fontSizeComplexScript141);
             runProperties81.Append(languages120);
             Text text81 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text81.Text = "по охране труда – ";
+            text81.Text = T("по охране труда – ", "occupational safety – ");
 
             run81.Append(runProperties81);
             run81.Append(text81);
@@ -5788,7 +5801,7 @@ namespace Application.Infrastructure.Export
             runProperties84.Append(fontSizeComplexScript145);
             runProperties84.Append(languages124);
             Text text84 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text84.Text = "по вопросам экономики – ";
+            text84.Text = T("по вопросам экономики – ", "economics – ");
 
             run84.Append(runProperties84);
             run84.Append(text84);
@@ -5906,7 +5919,7 @@ namespace Application.Infrastructure.Export
             runProperties87.Append(fontSize150);
             runProperties87.Append(fontSizeComplexScript149);
             Text text87 = new Text();
-            text87.Text = "нормоконтроль";
+            text87.Text = T("нормоконтроль", "standards control");
 
             run87.Append(runProperties87);
             run87.Append(text87);
@@ -6049,8 +6062,9 @@ namespace Application.Infrastructure.Export
             runProperties90.Append(fontSizeComplexScript154);
             runProperties90.Append(languages129);
             Text text90 = new Text();
-            text90.Text = "6. Примерный календарный график выполнения дипломного проекта:";
-
+            text90.Text = T(
+                "6. Примерный календарный график выполнения дипломного проекта:",
+                "6. Approximate schedule for diploma project completion:");
             run90.Append(runProperties90);
             run90.Append(text90);
 
@@ -6145,8 +6159,9 @@ namespace Application.Infrastructure.Export
             runProperties91.Append(fontSizeComplexScript157);
             runProperties91.Append(languages132);
             Text text91 = new Text();
-            text91.Text = "Наименование этапов выполнения дипломного проекта, содержание расчетно-пояснительной записки, графического материала";
-
+            text91.Text = T(
+                "Наименование этапов выполнения дипломного проекта, содержание расчетно-пояснительной записки, графического материала",
+                "Name of diploma project stages, contents of explanatory note and graphic materials");
             run91.Append(runProperties91);
             run91.Append(text91);
 
@@ -6190,7 +6205,7 @@ namespace Application.Infrastructure.Export
             runProperties92.Append(fontSize160);
             runProperties92.Append(fontSizeComplexScript159);
             Text text92 = new Text();
-            text92.Text = "Объем";
+            text92.Text = T("Объем", "Volume");
 
             run92.Append(runProperties92);
             run92.Append(text92);
@@ -6241,7 +6256,7 @@ namespace Application.Infrastructure.Export
             runProperties94.Append(fontSize163);
             runProperties94.Append(fontSizeComplexScript162);
             Text text94 = new Text();
-            text94.Text = "работы";
+            text94.Text = T("работы", "of work");
 
             run94.Append(runProperties94);
             run94.Append(text94);
@@ -6338,7 +6353,7 @@ namespace Application.Infrastructure.Export
             runProperties97.Append(fontSize168);
             runProperties97.Append(fontSizeComplexScript167);
             Text text97 = new Text();
-            text97.Text = "Сроки";
+            text97.Text = T("Сроки", "Deadlines");
 
             run97.Append(runProperties97);
             run97.Append(text97);
@@ -6390,7 +6405,7 @@ namespace Application.Infrastructure.Export
             runProperties99.Append(fontSize171);
             runProperties99.Append(fontSizeComplexScript170);
             Text text99 = new Text();
-            text99.Text = "дата";
+            text99.Text = T("дата", "date");
 
             run99.Append(runProperties99);
             run99.Append(text99);
@@ -6444,7 +6459,7 @@ namespace Application.Infrastructure.Export
             runProperties101.Append(fontSize174);
             runProperties101.Append(fontSizeComplexScript173);
             Text text101 = new Text();
-            text101.Text = "выполнения";
+            text101.Text = T("выполнения", "of completion");
 
             run101.Append(runProperties101);
             run101.Append(text101);
@@ -6495,7 +6510,7 @@ namespace Application.Infrastructure.Export
             runProperties103.Append(fontSize177);
             runProperties103.Append(fontSizeComplexScript176);
             Text text103 = new Text();
-            text103.Text = "этапа";
+            text103.Text = T("этапа", "of stage");
 
             run103.Append(runProperties103);
             run103.Append(text103);
@@ -6547,7 +6562,7 @@ namespace Application.Infrastructure.Export
             runProperties104.Append(fontSizeComplexScript178);
             runProperties104.Append(languages138);
             Text text104 = new Text();
-            text104.Text = "Примечание";
+            text104.Text = T("Примечание", "Note");
 
             run104.Append(runProperties104);
             run104.Append(text104);
@@ -6584,7 +6599,7 @@ namespace Application.Infrastructure.Export
             runProperties105.Append(fontSizeComplexScript180);
             runProperties105.Append(languages140);
             Text text105 = new Text();
-            text105.Text = "( в";
+            text105.Text = T("( в", "( incl.");
 
             run105.Append(runProperties105);
             run105.Append(text105);
@@ -6618,7 +6633,7 @@ namespace Application.Infrastructure.Export
             runProperties107.Append(fontSizeComplexScript182);
             runProperties107.Append(languages142);
             Text text107 = new Text();
-            text107.Text = "т.ч";
+            text107.Text = T("т.ч", "note");
 
             run107.Append(runProperties107);
             run107.Append(text107);
@@ -6635,7 +6650,7 @@ namespace Application.Infrastructure.Export
             runProperties108.Append(fontSizeComplexScript183);
             runProperties108.Append(languages143);
             Text text108 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text108.Text = ". отметка руководителя, консультанта ";
+            text108.Text = T(". отметка руководителя, консультанта ", ". supervisor/consultant mark ");
 
             run108.Append(runProperties108);
             run108.Append(text108);
@@ -6689,7 +6704,7 @@ namespace Application.Infrastructure.Export
             runProperties110.Append(fontSize187);
             runProperties110.Append(fontSizeComplexScript186);
             Text text110 = new Text();
-            text110.Text = "выполнении";
+            text110.Text = T("выполнении", "completion");
 
             run110.Append(runProperties110);
             run110.Append(text110);
@@ -6854,7 +6869,7 @@ namespace Application.Infrastructure.Export
             runProperties116.Append(fontSizeComplexScript195);
             runProperties116.Append(languages151);
             Text text116 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text116.Text = pgs.Count != 0 && index < pgs.Count ? "до " + pgs[index++].Date.ToString("dd.MM.yyyy") : "";
+            text116.Text = pgs.Count != 0 && index < pgs.Count ? T("до ", "to ") + pgs[index++].Date.ToString("dd.MM.yyyy") : "";
 
             run116.Append(runProperties116);
             run116.Append(text116);
@@ -7020,7 +7035,7 @@ namespace Application.Infrastructure.Export
             runProperties123.Append(fontSizeComplexScript206);
             runProperties123.Append(languages162);
             Text text123 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text123.Text = pgs.Count != 0 && index < pgs.Count ? "до " + pgs[index++].Date.ToString("dd.MM.yyyy") : "";
+            text123.Text = pgs.Count != 0 && index < pgs.Count ? T("до ", "to ") + pgs[index++].Date.ToString("dd.MM.yyyy") : "";
 
             run123.Append(runProperties123);
             run123.Append(text123);
@@ -7184,7 +7199,7 @@ namespace Application.Infrastructure.Export
             runProperties132.Append(fontSizeComplexScript219);
             runProperties132.Append(languages174);
             Text text132 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text132.Text = pgs.Count != 0 && index < pgs.Count ? "до " + pgs[index++].Date.ToString("dd.MM.yyyy") : "";
+            text132.Text = pgs.Count != 0 && index < pgs.Count ? T("до ", "to ") + pgs[index++].Date.ToString("dd.MM.yyyy") : "";
 
             run132.Append(runProperties132);
             run132.Append(text132);
@@ -7348,7 +7363,7 @@ namespace Application.Infrastructure.Export
             runProperties141.Append(fontSizeComplexScript232);
             runProperties141.Append(languages186);
             Text text141 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text141.Text = pgs.Count != 0 && index < pgs.Count ? "до " + pgs[index++].Date.ToString("dd.MM.yyyy") : "";
+            text141.Text = pgs.Count != 0 && index < pgs.Count ? T("до ", "to ") + pgs[index++].Date.ToString("dd.MM.yyyy") : "";
 
             run141.Append(runProperties141);
             run141.Append(text141);
@@ -7512,7 +7527,7 @@ namespace Application.Infrastructure.Export
             runProperties148.Append(fontSizeComplexScript243);
             runProperties148.Append(languages196);
             Text text148 = new Text();
-            text148.Text = pgs.Count != 0 && index < pgs.Count ? "до " + pgs[index++].Date.ToString("dd.MM.yyyy") : "";
+            text148.Text = pgs.Count != 0 && index < pgs.Count ? T("до ", "to ") + pgs[index++].Date.ToString("dd.MM.yyyy") : ""; ;
 
             run148.Append(runProperties148);
             run148.Append(text148);
@@ -7678,7 +7693,7 @@ namespace Application.Infrastructure.Export
             runProperties153.Append(fontSizeComplexScript252);
             runProperties153.Append(languages205);
             Text text153 = new Text();
-            text153.Text = pgs.Count != 0 && index < pgs.Count ? "до " + pgs[index++].Date.ToString("dd.MM.yyyy") : "";
+            text153.Text = pgs.Count != 0 && index < pgs.Count ? T("до ", "to ") + pgs[index++].Date.ToString("dd.MM.yyyy") : "";
 
             run153.Append(runProperties153);
             run153.Append(text153);
@@ -7811,7 +7826,7 @@ namespace Application.Infrastructure.Export
             runProperties158.Append(fontSize261);
             runProperties158.Append(fontSizeComplexScript260);
             Text text158 = new Text();
-            text158.Text = "Дата";
+            text158.Text = T("Дата", "Date");
 
             run158.Append(runProperties158);
             run158.Append(text158);
@@ -7841,7 +7856,7 @@ namespace Application.Infrastructure.Export
             runProperties160.Append(fontSize263);
             runProperties160.Append(fontSizeComplexScript262);
             Text text160 = new Text();
-            text160.Text = "выдачи";
+            text160.Text = T("выдачи", "of issue");
 
             run160.Append(runProperties160);
             run160.Append(text160);
@@ -7871,7 +7886,7 @@ namespace Application.Infrastructure.Export
             runProperties162.Append(fontSize265);
             runProperties162.Append(fontSizeComplexScript264);
             Text text162 = new Text();
-            text162.Text = "задания";
+            text162.Text = T("задания", "of assignment");
 
             run162.Append(runProperties162);
             run162.Append(text162);
@@ -8063,8 +8078,7 @@ namespace Application.Infrastructure.Export
             runProperties169.Append(fontSizeComplexScript274);
             runProperties169.Append(languages218);
             Text text169 = new Text();
-            text169.Text = "8. Срок сдачи законченного дипломного проекта";
-
+            text169.Text = T("8. Срок сдачи законченного дипломного проекта", "8. Deadline for completed diploma project submission");
             run169.Append(runProperties169);
             run169.Append(text169);
 
@@ -8295,7 +8309,7 @@ namespace Application.Infrastructure.Export
             runProperties173.Append(fontSize283);
             runProperties173.Append(fontSizeComplexScript282);
             Text text173 = new Text();
-            text173.Text = "Руководитель";
+            text173.Text = T("Руководитель", "Supervisor");
 
             run173.Append(runProperties173);
             run173.Append(text173);
@@ -8499,7 +8513,7 @@ namespace Application.Infrastructure.Export
             runProperties176.Append(fontSize290);
             runProperties176.Append(fontSizeComplexScript289);
             Text text176 = new Text();
-            text176.Text = "подпись";
+            text176.Text = T("подпись", "signature");
 
             run176.Append(runProperties176);
             run176.Append(text176);
@@ -8612,7 +8626,7 @@ namespace Application.Infrastructure.Export
             runProperties179.Append(fontSize295);
             runProperties179.Append(fontSizeComplexScript294);
             Text text179 = new Text();
-            text179.Text = "инициалы";
+            text179.Text = T("инициалы", "initials");
 
             run179.Append(runProperties179);
             run179.Append(text179);
@@ -8642,7 +8656,7 @@ namespace Application.Infrastructure.Export
             runProperties181.Append(fontSize297);
             runProperties181.Append(fontSizeComplexScript296);
             Text text181 = new Text();
-            text181.Text = "фамилия";
+            text181.Text = T("фамилия", "surname");
 
             run181.Append(runProperties181);
             run181.Append(text181);
@@ -8785,7 +8799,7 @@ namespace Application.Infrastructure.Export
             runProperties183.Append(fontSizeComplexScript299);
             runProperties183.Append(languages228);
             Text text183 = new Text();
-            text183.Text = "Подпись обучающегося";
+            text183.Text = T("Подпись обучающегося", "Student's signature");
 
             run183.Append(runProperties183);
             run183.Append(text183);
@@ -9048,7 +9062,7 @@ namespace Application.Infrastructure.Export
             runProperties187.Append(fontSize308);
             runProperties187.Append(fontSizeComplexScript307);
             Text text187 = new Text();
-            text187.Text = "подпись";
+            text187.Text = T("подпись", "signature");
 
             run187.Append(runProperties187);
             run187.Append(text187);
@@ -9179,7 +9193,7 @@ namespace Application.Infrastructure.Export
             runProperties190.Append(fontSize313);
             runProperties190.Append(fontSizeComplexScript312);
             Text text190 = new Text();
-            text190.Text = "инициалы";
+            text190.Text = T("инициалы", "initials");
 
             run190.Append(runProperties190);
             run190.Append(text190);
@@ -9209,7 +9223,7 @@ namespace Application.Infrastructure.Export
             runProperties192.Append(fontSize315);
             runProperties192.Append(fontSizeComplexScript314);
             Text text192 = new Text();
-            text192.Text = "фамилия";
+            text192.Text = T("фамилия", "surname");
 
             run192.Append(runProperties192);
             run192.Append(text192);
@@ -9302,7 +9316,7 @@ namespace Application.Infrastructure.Export
             runProperties194.Append(fontSize318);
             runProperties194.Append(fontSizeComplexScript317);
             Text text194 = new Text();
-            text194.Text = "Дата";
+            text194.Text = T("Дата", "Date");
 
             run194.Append(runProperties194);
             run194.Append(text194);

@@ -25,10 +25,10 @@ namespace Application.Infrastructure.Export
     {
         #region Export Word document
 
-        public static HttpResponseMessage DiplomProjectToWord(string fileName, DiplomProject work)
+        public static HttpResponseMessage DiplomProjectToWord(string fileName, DiplomProject work, string lang = "ru")
         {
             var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
-            byte[] byteArray = CreateDoc(work, cinfo);
+            byte[] byteArray = CreateDoc(work, cinfo, lang);
 
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
             response.Content = new StreamContent(new MemoryStream(byteArray));
@@ -39,17 +39,18 @@ namespace Application.Infrastructure.Export
             return response;
         }
 
-        private static byte[] CreateDoc(DiplomProject work, CultureInfo cultureInfo)
+        private static byte[] CreateDoc(DiplomProject work, CultureInfo cultureInfo, string lang = "ru")
         {
             var adp = work.AssignedDiplomProjects.Count == 1 ? work.AssignedDiplomProjects.First() : null;
-            var generator = adp is null ? new GenerateDpDocument(work, cultureInfo) : new GenerateDpDocument(adp, cultureInfo);
-            var array = generator.CreatePackageAsBytes();
-            return array;
+            var generator = adp is null
+                ? new GenerateDpDocument(work, cultureInfo, lang)
+                : new GenerateDpDocument(adp, cultureInfo, lang);
+            return generator.CreatePackageAsBytes();
         }
 
-        public static HttpResponseMessage DiplomProjectsToArchive(string fileName, IList<DiplomProject> diplomProjects)
+        public static HttpResponseMessage DiplomProjectsToArchive(string fileName, IList<DiplomProject> diplomProjects, string lang = "ru")
         {
-            IDictionary<string, byte[]> bytelist = CreateDocs(diplomProjects);
+            IDictionary<string, byte[]> bytelist = CreateDocs(diplomProjects, lang);
 
             var pushStreamContent = new PushStreamContent((stream, content, context) =>
             {
@@ -78,7 +79,7 @@ namespace Application.Infrastructure.Export
             return new HttpResponseMessage(HttpStatusCode.OK) { Content = pushStreamContent };
         }
 
-        private static IDictionary<string, byte[]> CreateDocs(IList<DiplomProject> diplomProjects)
+        private static IDictionary<string, byte[]> CreateDocs(IList<DiplomProject> diplomProjects, string lang = "ru")
         {
             var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
             IDictionary<string, byte[]> byteList = new Dictionary<string, byte[]>(diplomProjects.Count());
@@ -88,7 +89,7 @@ namespace Application.Infrastructure.Export
             foreach (var item in diplomProjects)
             {
                 var adp = item.AssignedDiplomProjects.Count == 1 ? item.AssignedDiplomProjects.First() : null;
-                var generator = adp is null ? new GenerateDpDocument(item, cinfo) : new GenerateDpDocument(adp, cinfo);
+                var generator = adp is null ? new GenerateDpDocument(item, cinfo, lang) : new GenerateDpDocument(adp, cinfo, lang);
                 byte[] byteArray = generator.CreatePackageAsBytes();
 
                 student = item.AssignedDiplomProjects.FirstOrDefault().Student;
@@ -102,7 +103,7 @@ namespace Application.Infrastructure.Export
 
         #region Export Html view
 
-        public static string DiplomProjectToDocView(DiplomProject work)
+        public static string DiplomProjectToDocView(DiplomProject work, string lang = "ru")
         {
             var sb = new StringBuilder();
             var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
@@ -116,15 +117,15 @@ namespace Application.Infrastructure.Export
                 xslt.Load(xmlr);
                 using (TextWriter tw = new StringWriter(sb))
                 {
-                    var result = new XsltArgumentList();
-                    xslt.Transform(doc, result, tw);
+                    var args = new XsltArgumentList();
+                    args.AddParam("lang", "", lang);
+                    xslt.Transform(doc, args, tw);
                 }
             }
-
             return sb.ToString();
         }
 
-        public static string DiplomProjectToDocView(AssignedDiplomProject work)
+        public static string DiplomProjectToDocView(AssignedDiplomProject work, string lang = "ru")
         {
             var sb = new StringBuilder();
             var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
@@ -138,11 +139,11 @@ namespace Application.Infrastructure.Export
                 xslt.Load(xmlr);
                 using (TextWriter tw = new StringWriter(sb))
                 {
-                    var result = new XsltArgumentList();
-                    xslt.Transform(doc, result, tw);
+                    var args = new XsltArgumentList();
+                    args.AddParam("lang", "", lang);
+                    xslt.Transform(doc, args, tw);
                 }
             }
-
             return sb.ToString();
         }
 

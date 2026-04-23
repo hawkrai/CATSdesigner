@@ -1,24 +1,36 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+h1[mat-dialog-title] {
+  font-weight: 400;
+  margin: 0;
+}
+
 .form-field {
   width: 100%;
 }
 
 .dialog-buttons {
-  float: right;
-  padding-top: 28px;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  flex-shrink: 0;
 }
 
-.close-button {
-  float: right;
-}
-
-::ng-deep .icon-outside .close-button {
-  float: right;
-  top: -52px;
-  right: -52px;
-}
-
-::ng-deep .icon-outside .mat-dialog-container {
-  overflow: unset;
+.mat-dialog-content {
+  flex: 1 1 auto;
+  overflow-y: auto;
 }
 
 .group-picker {

@@ -320,7 +320,7 @@ export class VisitStatsComponent implements OnInit {
 
     const dialogRef = this.dialog.open(VisitingPopoverComponent, {
       autoFocus: false,
-      width: '548px',
+      width: '600px',
       height: '100%',
       data: {
         title: this.translatePipe.transform(
@@ -391,7 +391,7 @@ export class VisitStatsComponent implements OnInit {
   addDate() {
     const dialogRef = this.dialog.open(AddDateDialogComponent, {
       autoFocus: false,
-      width: '548px',
+      width: '600px',
       height: '100%',
       data: {
         ...this.preSavedData,
@@ -430,7 +430,7 @@ export class VisitStatsComponent implements OnInit {
   deleteVisitDate(consultation: Consultation) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       autoFocus: false,
-      width: '400px',
+      width: '600px',
       data: {
         label: this.translatePipe.transform(
           'text.editor.edit.consultaionDateDelete',

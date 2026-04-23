@@ -12,6 +12,7 @@ namespace Application.Infrastructure.DPManagement
     {
         public UserData GetUserInfo(int userId)
         {
+            var currentYear = DateTime.Now.Year.ToString();
             var now = DateTime.Now;
             var user = Context.Users
                 .Include(x => x.Student)
@@ -27,10 +28,19 @@ namespace Application.Infrastructure.DPManagement
 
             var selectedGroupIds = user.Lecturer != null && user.Lecturer.IsSecretary
                 ? Context.Groups
-        .Where(g => g.SecretaryId == user.Lecturer.Id)
-        .Select(g => g.Id)
-        .ToList()
-    : new List<int>();
+                    .Where(g => g.SecretaryId == user.Lecturer.Id)
+                    .Select(g => g.Id)
+                    .ToList()
+                : new List<int>();
+
+            var lecturerGroupIds = user.Lecturer != null
+                ? Context.DiplomProjectGroups
+                    .Where(dpg => dpg.DiplomProject.LecturerId == user.Lecturer.Id
+                        && dpg.Group.GraduationYear == currentYear)
+                    .Select(dpg => dpg.GroupId)
+                    .Distinct()
+                    .ToList()
+                : new List<int>();
 
             return new UserData
             {
@@ -46,7 +56,8 @@ namespace Application.Infrastructure.DPManagement
                 IsGraduate = studentGroup != null
                     && int.TryParse(studentGroup.GraduationYear, out int gradYear)
                     && gradYear == now.Year,
-                SelectedGroupIds = selectedGroupIds
+                SelectedGroupIds = selectedGroupIds,
+                LecturerGroupIds = lecturerGroupIds
             };
         }
 

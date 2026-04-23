@@ -15,7 +15,7 @@ namespace LMPlatform.UI.ApiControllers.DP
     [JwtAuth]
     public class DpTaskSheetDownloadController : ApiController
     {
-        public HttpResponseMessage Get(int diplomProjectId)
+        public HttpResponseMessage Get(int diplomProjectId, string lang = "ru")
         {
             var diplomProject =
                 new LmPlatformModelsContext().DiplomProjects
@@ -34,29 +34,21 @@ namespace LMPlatform.UI.ApiControllers.DP
                 docName = $"{diplomProject.Theme}";
             }
 
-
-            return Word.DiplomProjectToWord(docName, diplomProject);
+            return Word.DiplomProjectToWord(docName, diplomProject, lang);
         }
 
-        public HttpResponseMessage Get()
+        public HttpResponseMessage Get(string lang = "ru")
         {
             var diplomProjects =
                 new LmPlatformModelsContext().DiplomProjects
                     .Where(x => x.LecturerId == UserContext.CurrentUserId)
                     .Where(x => x.AssignedDiplomProjects.Count() == 1)
                     .Include(x => x.AssignedDiplomProjects.Select(y => y.Student.Group.Secretary.DiplomPercentagesGraphs))
-                    .Where(x => x.AssignedDiplomProjects.FirstOrDefault().Student.Group.GraduationYear == "2021").ToList();
+                    .Where(x => x.AssignedDiplomProjects.FirstOrDefault().Student.Group.GraduationYear == "2021")
+                    .ToList();
 
-            string fileName = "NoTaskSheet.zip";
-            if (diplomProjects.Count() > 0)
-            {
-                fileName = "TaskSheets.zip";
-                return Word.DiplomProjectsToArchive(fileName, diplomProjects);
-            }
-            else
-            {
-                return Word.DiplomProjectsToArchive(fileName, diplomProjects);
-            }
+            string fileName = diplomProjects.Count() > 0 ? "TaskSheets.zip" : "NoTaskSheet.zip";
+            return Word.DiplomProjectsToArchive(fileName, diplomProjects, lang);
         }
     }
 }

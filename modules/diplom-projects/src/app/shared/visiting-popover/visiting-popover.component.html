@@ -1,11 +1,13 @@
-<button mat-icon-button class="close-button" [mat-dialog-close]="true">
-  <mat-icon class="close-icon">close</mat-icon>
-</button>
-<h1 mat-dialog-title>{{ data.title }}</h1>
+<div class="dialog-header">
+  <h1 class="title" mat-dialog-title>{{ data.title }}</h1>
+  <button mat-icon-button class="close-button" [mat-dialog-close]="true">
+    <mat-icon class="close-icon">close</mat-icon>
+  </button>
+</div>
 <div class="visiting-popover__header">
   <p>{{ data.body.date }}</p>
 </div>
-<div class="visiting-popover__table" *ngIf="data.body">
+<div mat-dialog-content class="dialog-content" *ngIf="data.body">
   <mat-table [dataSource]="data.body.students" class="mat-elevation-z8">
     <ng-container matColumnDef="position">
       <mat-header-cell *matHeaderCellDef> №</mat-header-cell>
@@ -13,9 +15,9 @@
     </ng-container>
 
     <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef
-        >{{ 'fio' | translate: 'ФИО' }}
-      </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>{{
+        'fio' | translate: 'ФИО'
+      }}</mat-header-cell>
       <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
     </ng-container>
 
@@ -41,14 +43,13 @@
     </ng-container>
 
     <ng-container matColumnDef="comment">
-      <mat-header-cell *matHeaderCellDef
-        >{{ 'comment' | translate: 'Комментарий' }}
-      </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>{{
+        'comment' | translate: 'Комментарий'
+      }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
         <mat-form-field class="example-full-width">
           <input name="comment" matInput [(ngModel)]="element.comment" />
           <mat-checkbox
-            class="checkbox"
             [(ngModel)]="element.isShow"
             matTooltip="{{
               'text.diplomProject.showComment'
@@ -67,7 +68,7 @@
     <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
   </mat-table>
 </div>
-<div mat-dialog-actions>
+<div mat-dialog-actions class="dialog-buttons">
   <button mat-raised-button (click)="onClick()">
     {{ 'chat.cancle' | translate: 'Отмена' }}
   </button>

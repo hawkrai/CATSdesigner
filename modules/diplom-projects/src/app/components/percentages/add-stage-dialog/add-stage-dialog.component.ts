@@ -8,6 +8,7 @@ interface DialogData {
   name: string
   percentage: number
   date: any
+  selectedGroupsIds?: number[]
 }
 
 @Component({

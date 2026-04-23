@@ -1,22 +1,24 @@
-<button mat-icon-button class="close-button" [mat-dialog-close]="true">
-  <mat-icon class="close-icon">close</mat-icon>
-</button>
-<h1 mat-dialog-title *ngIf="data.edit">
-  {{
-    'text.diplomProject.editTheme'
-      | translate
-        : 'Редактирование темы дипломного
+<div class="dialog-header">
+  <h1 mat-dialog-title *ngIf="data.edit">
+    {{
+      'text.diplomProject.editTheme'
+        | translate
+          : 'Редактирование темы дипломного
   проекта'
-  }}
-</h1>
-<h1 mat-dialog-title *ngIf="!data.edit">
-  {{
-    'text.diplomProject.addProjectTheme'
-      | translate
-        : 'Добавление темы дипломного
+    }}
+  </h1>
+  <h1 mat-dialog-title *ngIf="!data.edit">
+    {{
+      'text.diplomProject.addProjectTheme'
+        | translate
+          : 'Добавление темы дипломного
   проекта'
-  }}
-</h1>
+    }}
+  </h1>
+  <button mat-icon-button class="close-button" [mat-dialog-close]="true">
+    <mat-icon class="close-icon">close</mat-icon>
+  </button>
+</div>
 <div mat-dialog-content>
   <mat-form-field class="form-field">
     <mat-label>{{
@@ -77,9 +79,7 @@
         matTooltip="{{
           'text.diplomProject.assign' | translate: 'Удалить все группы'
         }}"
-      >
-        <<
-      </button>
+      ></button>
       <mat-list>
         <mat-list-item
           matRipple

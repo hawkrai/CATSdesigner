@@ -1,33 +1,50 @@
 <div class="percentages-component" *ngIf="percentages; else load">
-  <button
-    mat-raised-button
-    class="actions"
-    color="primary"
-    *ngIf="diplomUser.IsSecretary && !isLecturer"
-    (click)="addStage()"
-  >
-    {{ 'text.diplomProject.addStage' | translate: 'Добавить этап' }}
-  </button>
-  <mat-select
-    matTooltip="{{
-      'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'
-    }}"
-    class="mselect"
-    [value]="theme"
-    (selectionChange)="lecturerStatusChange($event)"
-    *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents"
-  >
-    <mat-option *ngFor="let theme of themes" [value]="theme">
-      {{ theme.name }}
-    </mat-option>
-  </mat-select>
+  <div style="display: flex; align-items: center; gap: 16px">
+    <button
+      mat-raised-button
+      class="actions"
+      color="primary"
+      *ngIf="diplomUser.IsSecretary && !isLecturer"
+      (click)="addStage()"
+    >
+      {{ 'text.diplomProject.addStage' | translate: 'Добавить этап' }}
+    </button>
+
+    <mat-form-field *ngIf="isLecturer && groups.length > 0">
+      <mat-select
+        [(ngModel)]="selectedGroup"
+        [compareWith]="compareGroups"
+        (valueChange)="onGroupChange($event)"
+      >
+        <mat-option *ngFor="let group of groups" [value]="group">
+          {{ group.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-select
+      matTooltip="{{
+        'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'
+      }}"
+      class="mselect"
+      [value]="theme"
+      (selectionChange)="lecturerStatusChange($event)"
+      *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents"
+    >
+      <mat-option *ngFor="let theme of themes" [value]="theme">
+        {{ theme.name }}
+      </mat-option>
+    </mat-select>
+  </div>
+
   <div class="percentages-component__body">
     <app-percentages-list
       [percentages]="percentages"
-      [isLecturerMode]="isLecturer"
+      [isSecretaryMode]="diplomUser.IsSecretary && !isLecturer"
     ></app-percentages-list>
   </div>
 </div>
+
 <ng-template #load>
   <div class="spinner">
     <mat-spinner></mat-spinner>

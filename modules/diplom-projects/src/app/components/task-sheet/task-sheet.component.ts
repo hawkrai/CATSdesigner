@@ -1,23 +1,24 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, OnInit, OnDestroy } from '@angular/core'
 import { Theme } from '../../models/theme.model'
 import { ProjectThemeService } from '../../services/project-theme.service'
 import { TaskSheetService } from '../../services/task-sheet.service'
 import { Subscription } from 'rxjs'
 import { DiplomUser } from '../../models/diplom-user.model'
 import { EditTaskSheetComponent } from './edit-task-sheet/edit-task-sheet.component'
-import { MatDialog, MatSnackBar } from '@angular/material'
+import { MatDialog } from '@angular/material'
 import { Template } from 'src/app/models/template.model'
 import { Student } from 'src/app/models/student.model'
 import { TranslatePipe } from 'educats-translate'
 import { ToastrService } from 'ngx-toastr'
 import { PercentageResultsService } from 'src/app/services/percentage-results.service'
+import { LanguageService } from 'src/app/services/language.service'
 
 @Component({
   selector: 'app-task-sheet',
   templateUrl: './task-sheet.component.html',
   styleUrls: ['./task-sheet.component.less'],
 })
-export class TaskSheetComponent implements OnInit {
+export class TaskSheetComponent implements OnInit, OnDestroy {
   @Input() diplomUser: DiplomUser
 
   public isEmpty = false
@@ -28,14 +29,34 @@ export class TaskSheetComponent implements OnInit {
   private sorting = 'Id'
   private direction = 'desc'
 
-  private themes: Theme[]
+  private themesList: Theme[]
   private taskSheetHtml: any
   private taskSheetSubscription: Subscription
+  private langSubscription: Subscription
 
   private diplomProjectId: number
   private templates: any[]
   private tepmlate: Template
   private students: Student[]
+
+  public isLecturer = false
+  public themes = [
+    {
+      name: this.translatePipe.transform(
+        'text.diplomProject.head',
+        'Руководитель проекта'
+      ),
+      value: true,
+    },
+    {
+      name: this.translatePipe.transform(
+        'text.diplomProject.secretary',
+        'Секретарь ГЭК'
+      ),
+      value: false,
+    },
+  ]
+  public theme = undefined
 
   constructor(
     private projectThemeService: ProjectThemeService,
@@ -43,21 +64,54 @@ export class TaskSheetComponent implements OnInit {
     private percentageResultsService: PercentageResultsService,
     private dialog: MatDialog,
     private toastr: ToastrService,
-    public translatePipe: TranslatePipe
+    public translatePipe: TranslatePipe,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit() {
+    const toggleValue: string = localStorage.getItem('toggle')
+    if (toggleValue && this.diplomUser.IsLecturer) {
+      this.isLecturer = toggleValue === 'false' ? false : true
+    } else {
+      this.isLecturer = this.diplomUser.IsLecturer
+    }
+    this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
+
     this.getStudents()
-    this.projectThemeService
-      .getThemes({ entity: 'DiplomProject' })
-      .subscribe((res) => {
-        this.themes = res
-        if (this.diplomProjectId == null && res[0]) {
-          this.diplomProjectId = res[0].Id
-        }
-        this.retrieveTaskSheetHtml()
-        this.retrieveTemplates()
-      })
+    this.loadThemes()
+
+    this.langSubscription = this.languageService.observe().subscribe(() => {
+      this.retrieveTaskSheetHtml()
+    })
+  }
+
+  ngOnDestroy() {
+    if (this.langSubscription) {
+      this.langSubscription.unsubscribe()
+    }
+    if (this.taskSheetSubscription) {
+      this.taskSheetSubscription.unsubscribe()
+    }
+  }
+
+  loadThemes() {
+    const params: any = { entity: 'DiplomProject' }
+    if (!this.isLecturer) {
+      params.isSecretary = true
+    }
+
+    this.projectThemeService.getThemes(params).subscribe((res) => {
+      this.themesList = res
+      this.diplomProjectId = res[0] ? res[0].Id : null
+      this.retrieveTaskSheetHtml()
+      this.retrieveTemplates()
+    })
+  }
+
+  lecturerStatusChange(event: any) {
+    this.isLecturer = event.value.value
+    localStorage.setItem('toggle', String(event.value.value))
+    this.loadThemes()
   }
 
   onThemeChange(themeId: number) {
@@ -69,10 +123,21 @@ export class TaskSheetComponent implements OnInit {
   }
 
   retrieveTaskSheetHtml() {
+    if (this.diplomProjectId == null) {
+      this.isEmpty = true
+      return
+    }
+
     this.taskSheetHtml = null
     this.isEmpty = false
+
+    const lang = this.languageService.current
+
     this.taskSheetSubscription = this.taskSheetService
-      .getTaskSheetHtml({ diplomProjectId: this.diplomProjectId })
+      .getTaskSheetHtml({
+        diplomProjectId: this.diplomProjectId,
+        lang: lang,
+      })
       .subscribe(
         (res) => {
           if (!res) {
@@ -117,8 +182,8 @@ export class TaskSheetComponent implements OnInit {
       .subscribe((response) => {
         const dialogRef = this.dialog.open(EditTaskSheetComponent, {
           autoFocus: false,
-          width: '548px',
-          height: '750px',
+          width: '600px',
+          height: '100%',
           position: {
             top: '0px',
           },
@@ -191,13 +256,17 @@ export class TaskSheetComponent implements OnInit {
   }
 
   downloadTaskSheet() {
+    const lang = this.languageService.current
     location.href =
       location.origin +
       '/api/DpTaskSheetDownload?diplomProjectId=' +
-      this.diplomProjectId
+      this.diplomProjectId +
+      '&lang=' +
+      lang
   }
 
   downloadArchive() {
-    location.href = location.origin + '/api/DpTaskSheetDownload'
+    const lang = this.languageService.current
+    location.href = location.origin + '/api/DpTaskSheetDownload?lang=' + lang
   }
 }

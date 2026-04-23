@@ -1,21 +1,36 @@
-.dialog-content {
+:host {
+  display: flex;
+  flex-direction: column;
   height: 100%;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  font-weight: 400;
+}
+
+.dialog-content {
+  flex: 1 1 auto;
+  overflow-y: auto;
 
   mat-form-field {
     margin-bottom: 10px;
   }
 }
 
-.title {
-  margin: 0 0 0;
-}
-
-.dialog-button {
-  flex: auto;
-}
-
-.close-button {
-  float: right;
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  flex-shrink: 0;
 }
 
 .form-field {
