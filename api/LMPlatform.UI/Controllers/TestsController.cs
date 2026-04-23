@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
@@ -242,7 +242,7 @@ namespace LMPlatform.UI.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public JsonResult GetTest(int id)
+        public JsonResult GetTest(int id, string deviceId = null)
         {
             var test = id == 0
                 ? new TestViewModel()
@@ -252,11 +252,15 @@ namespace LMPlatform.UI.Controllers
             var user = _context.GetUserById(idUser);
             if (UserContext.Role == Constants.Roles.Student && test.BeforeEUMK == false && test.ForEUMK == false && test.ForNN == false && test.ForSelfStudy == false)
             {
-                if(user.OngoingTest != null)
+                if (user.OngoingTest != null)
                 {
-                    return null;
+                    if (string.IsNullOrEmpty(deviceId)) return null;
+                    if (string.IsNullOrEmpty(user.OngoingTestDeviceId)) return null;
+                    if (!string.Equals(user.OngoingTestDeviceId, deviceId, StringComparison.Ordinal)) return null;
+                    if (user.OngoingTest.Value != id) return null;
                 }
                 user.OngoingTest = id;
+                user.OngoingTestDeviceId = deviceId;
                 _context.UpdateUser(user);
             }
 

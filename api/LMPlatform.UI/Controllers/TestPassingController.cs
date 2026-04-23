@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
@@ -49,7 +49,7 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetTestDescription(int testId)
+        public JsonResult GetTestDescription(int testId, string deviceId = null)
         {
             var test = this.TestsManagementService.GetTest(testId);
             var description = new
@@ -65,14 +65,25 @@ namespace LMPlatform.UI.Controllers
 
             if (UserContext.Role == Constants.Roles.Student && user.OngoingTest != null)
             {
-                var ongoingTest = TestsManagementService.GetTest(user.OngoingTest.Value);
-
-                description = new
+                var shouldBlock = true;
+                if (!string.IsNullOrEmpty(deviceId) &&
+                    !string.IsNullOrEmpty(user.OngoingTestDeviceId) &&
+                    string.Equals(user.OngoingTestDeviceId, deviceId, StringComparison.Ordinal))
                 {
-                    Title = $"{ongoingTest.Title}",
-                    Description = "text.test.already.launched",
-                OngoingTestId = user.OngoingTest.Value
-                };
+                    shouldBlock = false;
+                }
+
+                if (shouldBlock)
+                {
+                    var ongoingTest = TestsManagementService.GetTest(user.OngoingTest.Value);
+
+                    description = new
+                    {
+                        Title = $"{ongoingTest.Title}",
+                        Description = "text.test.already.launched",
+                        OngoingTestId = user.OngoingTest.Value
+                    };
+                }
             }
 
             return JsonResponse(description) as JsonResult;
@@ -183,6 +194,7 @@ namespace LMPlatform.UI.Controllers
             var _context = new UsersManagementService();
             var user = _context.GetUserById(idUser);
             user.OngoingTest = null;
+            user.OngoingTestDeviceId = null;
             _context.UpdateUser(user);
             return JsonResponse(closeTestRes) as JsonResult;
         }
