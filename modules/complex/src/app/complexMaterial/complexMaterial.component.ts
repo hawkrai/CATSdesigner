@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Input } from '@angular/core'
 import { Router, ActivatedRoute, ParamMap } from '@angular/router'
 import { MatDialog, MatDialogRef } from '@angular/material/dialog'
+import { forkJoin } from 'rxjs'
 
 import { ComplexService } from '../service/complex.service'
 import { AddMaterialPopoverComponent } from './components/materials/add-material-popover/add-material-popover.component'
@@ -10,6 +11,8 @@ import { DialogData } from '../models/DialogData'
 import { MaterialsPopoverComponent } from './components/materials/materials-popover/materials-popover.component'
 import { TestService } from '../service/test.service'
 import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
+import { ApiResponseCode } from '../models/api-response-code.enum'
+import { LibreOfficeAvailabilityService } from '../service/libre-office-availability.service'
 
 @Component({
   selector: 'app-labs',
@@ -29,7 +32,8 @@ export class ComplexMaterialComponent implements OnInit {
     public dialog: MatDialog,
     private adaptivityService: AdaptivityService,
     private complexService: ComplexService,
-    private testService: TestService
+    private testService: TestService,
+    private libreOfficeAvailability: LibreOfficeAvailabilityService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -81,25 +85,64 @@ export class ComplexMaterialComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const fileData = JSON.stringify(result.attachments || [])
+        const userId = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id
+        const isFolder = result.isGroup
+        const hasAttachments = result.attachments && result.attachments.length > 0
+        const fileData = isFolder ? JSON.stringify([]) : JSON.stringify(result.attachments || [])
+
         const concept: Concept = {
           conceptId: +result.id,
           conceptName: result.name,
           parentId: result.parentId,
           isGroup: result.isGroup,
           fileData: fileData,
-          userId: JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id,
+          userId: userId,
+          skipConversion: !this.libreOfficeAvailability.isAvailable,
         }
 
         this.complexService.addOrEditConcept(concept).subscribe((res) => {
-          if (res['Code'] === '200') {
-            this.router.navigateByUrl('/cMaterial').then(() => {
-              window.location.reload()
-            })
+          if (res['Code'] === ApiResponseCode.Success) {
+            if (isFolder && hasAttachments) {
+              const newFiles = result.attachments.filter((a: any) => !a.id || a.id === 0)
+              if (newFiles.length > 0) {
+                const savedConceptId = res['SavedConceptId']
+
+                const childConcepts$ = newFiles.map((file: any) => {
+                  const isExisting = file.id && file.id > 0
+                  return this.complexService.addOrEditConcept({
+                    conceptId: 0,
+                    conceptName: this.stripFileExtension(file.name),
+                    parentId: savedConceptId,
+                    isGroup: false,
+                    fileData: isExisting ? JSON.stringify([]) : JSON.stringify([file]),
+                    userId: userId,
+                    container: isExisting ? (file.pathName || undefined) : undefined,
+                    skipConversion: !this.libreOfficeAvailability.isAvailable,
+                  })
+                })
+                forkJoin(childConcepts$).subscribe(() => {
+                  this.router.navigateByUrl('/cMaterial').then(() => {
+                    window.location.reload()
+                  })
+                })
+              } else {
+                this.router.navigateByUrl('/cMaterial').then(() => {
+                  window.location.reload()
+                })
+              }
+            } else {
+              this.router.navigateByUrl('/cMaterial').then(() => {
+                window.location.reload()
+              })
+            }
           }
         })
       }
     })
+  }
+
+  private stripFileExtension(name: string): string {
+    return name ? name.replace(/\.(pdf|docx?|doc)$/i, '') : name
   }
 
   openAdaptivityPopup(adaptivityType: number): void {

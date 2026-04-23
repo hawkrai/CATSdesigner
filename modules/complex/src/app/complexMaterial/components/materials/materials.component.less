@@ -138,3 +138,21 @@ a.clickable,
   max-width: none;
   word-break: keep-all;
 }
+
+mat-tree-node.dragging,
+mat-nested-tree-node.dragging {
+  opacity: 0.4;
+}
+
+.drop-indicator {
+  height: 2px;
+  background-color: #ff3366;
+  margin: 0 8px;
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+mat-nested-tree-node.drop-inside > li > .mat-tree-node {
+  outline: 2px solid #ff3366;
+  border-radius: 4px;
+}

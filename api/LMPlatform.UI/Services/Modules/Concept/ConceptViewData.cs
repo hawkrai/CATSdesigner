@@ -48,7 +48,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
             if (!concept.Published && !(isRoot && isLector)) return;
 
             Children = new List<ConceptViewData>();
-            InitTree(concept.Children);
+            InitTree(concept.Children, isLector);
         }
 
         public ConceptViewData(Models.Concept concept, bool buildTree, IFilesManagementService filesManagementService, bool isRoot, bool isLector)
@@ -64,7 +64,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
 
             Children = new List<ConceptViewData>();
             Attachments = string.IsNullOrEmpty(concept.Container) ? new List<Attachment>() : filesManagementService.GetAttachments(concept.Container);
-            InitTree(concept.Children, filesManagementService);
+            InitTree(concept.Children, filesManagementService, isLector);
         }
 
         public ConceptViewData(Models.Concept concept, bool buildTree, Func<Models.Concept, bool> filterFirstLevelChildren, bool isRoot, bool isLector)
@@ -89,19 +89,21 @@ namespace LMPlatform.UI.Services.Modules.Concept
             }
         }
 
-        private void InitTree(ICollection<Models.Concept> ch)
+        private void InitTree(ICollection<Models.Concept> ch, bool isLector = false)
         {
 	        if (ch != null && ch.Any())
 	        {
-                Children = ch.Where(c => c.Published).Select(c => new ConceptViewData(c, true, false, false)).ToList();
+                Children = ch.Where(c => c.Published || isLector)
+                             .Select(c => new ConceptViewData(c, true, false, isLector)).ToList();
 	        }
         }
 
-        private void InitTree(ICollection<Models.Concept> ch, IFilesManagementService filesManagementService)
+        private void InitTree(ICollection<Models.Concept> ch, IFilesManagementService filesManagementService, bool isLector = false)
         {
             if (ch != null && ch.Any())
             {
-                Children = ch.Where(c => c.Published).Select(c => new ConceptViewData(c, true, filesManagementService, false, false)).ToList();
+                Children = ch.Where(c => c.Published || isLector)
+                             .Select(c => new ConceptViewData(c, true, filesManagementService, false, isLector)).ToList();
             }
         }
 

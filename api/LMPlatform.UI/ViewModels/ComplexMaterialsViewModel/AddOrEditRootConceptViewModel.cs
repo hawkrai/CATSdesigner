@@ -30,6 +30,9 @@ namespace LMPlatform.UI.ViewModels.ComplexMaterialsViewModel
         public String Container { get; set; }
         public String FileData { get; set; }
         public Boolean IsGroup { get; set; }
+        public Boolean ContainerExplicitlySet { get; set; }
+        public Boolean PreserveFiles { get; set; }
+        public Boolean SkipConversion { get; set; }
 
         [DisplayName("Родительский элемент")]
         public Int32 ParentId { get; set; }
@@ -49,9 +52,6 @@ namespace LMPlatform.UI.ViewModels.ComplexMaterialsViewModel
                 Prev = SourceConcept.PrevConcept;
                 Next = SourceConcept.NextConcept;
             }
-            
-            
-            //Attachments = new List<Attachment>();
         }
 
         public AddOrEditConceptViewModel(Int32 currentAuthorId, Int32 id, Int32 parentId)
@@ -88,10 +88,12 @@ namespace LMPlatform.UI.ViewModels.ComplexMaterialsViewModel
             return Attachments != null ? Attachments : new List<Attachment>();
         }
 
+        public Concept SavedConcept { get; private set; }
+
         public override void Save()
         {
             InitSourceConcept();
-            ConceptManagementService.SaveConcept(SourceConcept, GetAttachments());
+            SavedConcept = ConceptManagementService.SaveConcept(SourceConcept, GetAttachments(), ContainerExplicitlySet, PreserveFiles, SkipConversion);
         }
 
         private void InitSourceConcept()

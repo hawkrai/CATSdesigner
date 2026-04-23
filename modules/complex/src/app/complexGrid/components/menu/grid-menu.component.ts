@@ -161,10 +161,14 @@ export class GridMenuComponent {
       id: this.complexId,
     }
 
+    const isMobile = window.innerWidth < 768
     const dialogConfig = new MatDialogConfig()
-    dialogConfig.width = '100%'
-    dialogConfig.data = dialogData
+    dialogConfig.width = isMobile ? '100vw' : '90vw'
+    dialogConfig.height = isMobile ? '100vh' : '85vh'
     dialogConfig.maxWidth = 'none'
+    dialogConfig.maxHeight = 'none'
+    dialogConfig.data = dialogData
+    dialogConfig.panelClass = 'map-dialog-container'
 
     const dialogRef = this.dialog.open(MapPopoverComponent, dialogConfig)
 

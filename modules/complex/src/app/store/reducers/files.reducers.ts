@@ -27,10 +27,15 @@ const fileReducer = createReducer(
   ),
   on(
     filesActions.addFileSuccess,
-    (state, { file, index }): IFilesState => ({
-      ...state,
-      files: state.files.map((f, i) => (i === index ? file : f)),
-    })
+    (state, { file }): IFilesState => {
+      const idx = state.files.indexOf(null)
+      if (idx === -1) {
+        return { ...state, files: [...state.files, file] }
+      }
+      const files = state.files.slice()
+      files[idx] = file
+      return { ...state, files }
+    }
   ),
   on(
     filesActions.deleteFileSuccess,

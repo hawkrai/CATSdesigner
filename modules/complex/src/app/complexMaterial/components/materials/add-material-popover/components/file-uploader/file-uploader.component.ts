@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr'
 export class FileUploaderComponent {
   @Input() header: string
   @Input() disabled: boolean
+  @Input() maxFiles: number = 5
   @Input() files: AttachedFile[] = []
   @Output() delete = new EventEmitter<AttachedFile>()
   @Output() upload = new EventEmitter<File>()
@@ -28,13 +29,13 @@ export class FileUploaderComponent {
 
   uploadFile(input: HTMLInputElement) {
     const files = Array.from(input.files || [])
+    input.value = ''
 
     if (files.length === 0) {
       return
     }
 
     const invalidFiles = files.filter(file => !this.validTypes.includes(file.type))
-    
     if (invalidFiles.length > 0) {
       this.toastr.error(
         this.translatePipe.transform(
@@ -42,41 +43,18 @@ export class FileUploaderComponent {
           'Можно добавить файл только формата .pdf, .docx или .doc'
         )
       )
-      input.value = null
       return
     }
 
-    const maxFiles = 15
-    const currentFilesCount = this.files.length
-    const availableSlots = maxFiles - currentFilesCount
-    
+    const availableSlots = this.maxFiles - this.files.length
     if (availableSlots <= 0) {
-      this.toastr.error(
-        this.translatePipe.transform(
-          'complex.maxFilesReached',
-          'Достигнут максимальный лимит файлов (15)'
-        )
-      )
-      input.value = null
       return
     }
 
     const filesToUpload = files.slice(0, availableSlots)
-    
-    if (files.length > availableSlots) {
-      this.toastr.warning(
-        this.translatePipe.transform(
-          'complex.filesLimitWarning',
-          `Можно добавить только ${availableSlots} файл(ов). Остальные файлы не были добавлены.`
-        )
-      )
-    }
-
     filesToUpload.forEach(file => {
       this.upload.emit(file)
     })
-    
-    input.value = null
   }
 
   deleteFile(file: AttachedFile) {

@@ -1,6 +1,7 @@
 {
   "common.success.operation": "The operation was completed successfully",
   "common.error.operation": "Complex with this name already exist",
+  "common.error.move": "Failed to move the element",
   "common.kb": "KB",
   "common.addFile": "Add a file",
   "common.uploadedFile": "Uploaded file",
@@ -105,6 +106,7 @@
   "complex.test.points.many": "points",
   "complex.test.tooltip": "The test score is {points} {pointsText}. The test took {time}",
   "complex.test.score": "The test score is",
-  "complex.maxFilesReached": "Maximum file limit reached (15)",
-  "complex.filesLimitWarning": "Only {count} file(s) can be added. Other files were not added."
+  "complex.maxFilesReached": "Maximum file limit reached (5)",
+  "complex.filesLimitWarning": "Only {count} file(s) can be added. Other files were not added.",
+  "complex.loadingDocument": "Loading document..."
 }

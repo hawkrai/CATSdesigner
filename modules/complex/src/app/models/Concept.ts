@@ -5,4 +5,7 @@ export class Concept {
   isGroup: boolean
   fileData: string
   userId: string
+  container?: string
+  preserveFiles?: boolean
+  skipConversion?: boolean
 }

@@ -3,10 +3,16 @@
   [treeControl]="treeControl"
   class="example-tree"
 >
-  <!-- This is the tree node template for leaf nodes -->
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+  <!-- Leaf node template -->
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle
+    [draggable]="isLecturer && !isMandatoryNode(node)"
+    (dragstart)="onDragStart($event, node)"
+    (dragover)="onDragOver($event, node)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event, node)"
+    (dragend)="onDragEnd($event)"
+  >
     <li class="mat-tree-node">
-      <!-- use a disabled button to provide padding for tree leaf -->
       <button class="invisible" mat-icon-button></button>
       <mat-icon
         class="expandable-external"
@@ -79,9 +85,19 @@
         </a>
       </div>
     </li>
+    <div class="drop-indicator" *ngIf="dropIndicatorNodeId === +node.Id"></div>
   </mat-tree-node>
-  <!-- This is the tree node template for expandable nodes -->
-  <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+
+  <!-- Expandable node template -->
+  <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild"
+    [draggable]="isLecturer && !isMandatoryNode(node)"
+    (dragstart)="onDragStart($event, node)"
+    (dragover)="onDragOver($event, node)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event, node)"
+    (dragend)="onDragEnd($event)"
+    [class.drop-inside]="dropInsideNodeId === +node.Id"
+  >
     <li>
       <div class="mat-tree-node">
         <button
@@ -121,13 +137,13 @@
           {{ node.Name }}
         </span>
         <div class="work-icons" *ngIf="isLecturer">
-        <a
-          class="btn clickable"
-          (click)="openEditPopup(node)"
-          [matTooltip]="'common.edit' | translate: 'Редактировать'"
-          matTooltipPosition="below"
-          *ngIf="!isMandatoryComponent(node) && !node.TestId"
-        >
+          <a
+            class="btn clickable"
+            (click)="openEditPopup(node)"
+            [matTooltip]="'common.edit' | translate: 'Редактировать'"
+            matTooltipPosition="below"
+            *ngIf="!isMandatoryComponent(node) && !node.TestId"
+          >
             <span class="btn clickable"
               ><mat-icon class="icon">edit</mat-icon></span
             >
@@ -144,6 +160,7 @@
           </a>
         </div>
       </div>
+      <div class="drop-indicator" *ngIf="dropIndicatorNodeId === +node.Id"></div>
       <ul
         [class.example-tree-invisible]="!treeControl.isExpanded(node)"
         class="contents"

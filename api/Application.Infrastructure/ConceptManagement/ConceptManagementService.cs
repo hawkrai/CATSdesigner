@@ -427,18 +427,97 @@ namespace Application.Infrastructure.ConceptManagement
             }
         }
 
-        private IList<Attachment> ProcessWordAttachmentsIfExist(IList<Attachment> attachments)
+        public void ConvertPendingDocxToPdf(int conceptId)
+        {
+            var concept = GetById(conceptId);
+            if (concept == null || string.IsNullOrEmpty(concept.Container))
+                return;
+
+            var attachments = FilesManagementService.GetAttachments(concept.Container);
+            var docxFiles = attachments
+                .Where(a => a.FileName.EndsWith(".docx", StringComparison.OrdinalIgnoreCase)
+                         || a.FileName.EndsWith(".doc", StringComparison.OrdinalIgnoreCase)
+                         || a.FileName.EndsWith(".rtf", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (!docxFiles.Any())
+                return;
+
+            var convertor = new WordToPdfConvertor();
+
+            foreach (var attach in docxFiles)
+            {
+                var sourceFilePath = Path.Combine(
+                    _storageRoot.TrimEnd('/', '\\'),
+                    attach.PathName,
+                    attach.FileName);
+
+                if (!File.Exists(sourceFilePath))
+                    continue;
+
+                string convertedFileName;
+                try
+                {
+                    var tempSourcePath = Path.Combine(_storageRootTemp.TrimEnd('/', '\\'), attach.FileName);
+                    File.Copy(sourceFilePath, tempSourcePath, true);
+
+                    convertedFileName = convertor.Convert(tempSourcePath);
+                }
+                catch
+                {
+                    continue;
+                }
+
+                var friendlyName = $"{Path.GetFileNameWithoutExtension(attach.Name)}.pdf";
+                var newPathName = GetGuidFileName();
+
+                var pdfAttachment = new Attachment
+                {
+                    AttachmentType = AttachmentType.Document,
+                    Name = friendlyName,
+                    PathName = newPathName,
+                    FileName = convertedFileName,
+                    UserId = attach.UserId,
+                    CreationDate = DateTime.UtcNow
+                };
+
+                FilesManagementService.SaveFiles(new[] { pdfAttachment }, x => x.PathName);
+
+                using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+                {
+                    repositoriesContainer.AttachmentRepository.Save(pdfAttachment);
+                    repositoriesContainer.ApplyChanges();
+                }
+
+                FilesManagementService.DeleteFileAttachment(attach);
+
+                using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+                {
+                    concept.Container = newPathName;
+                    repositoriesContainer.ConceptRepository.Save(concept);
+                    repositoriesContainer.ApplyChanges();
+                }
+            }
+        }
+
+        private IList<Attachment> ProcessWordAttachmentsIfExist(IList<Attachment> attachments, bool skipConversion = false)
         {
             var res = new List<Attachment>();
             if (attachments == null)
             {
                 return res;
             }
+
+            if (skipConversion)
+            {
+                return attachments.ToList();
+            }
+
             var convertor = new WordToPdfConvertor();
 
             foreach (var attach in attachments)
             {
-                var extension = Path.GetExtension(attach.FileName);
+                var extension = Path.GetExtension(attach.Name);
                 if (string.Compare(extension, ".doc", true) == 0 || string.Compare(extension, ".docx", true) == 0 || string.Compare(extension, ".rtf", true) == 0)
                 {
                     var friendlyFileName = Path.GetFileNameWithoutExtension(attach.Name);
@@ -459,30 +538,45 @@ namespace Application.Infrastructure.ConceptManagement
             return res;
         }
 
-        public Concept SaveConcept(Concept concept, IList<Attachment> attachments)
+        public Concept SaveConcept(Concept concept, IList<Attachment> attachments, bool containerExplicitlySet = false, bool preserveFiles = false, bool skipConversion = false)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                attachments = ProcessWordAttachmentsIfExist(attachments);
+                attachments = ProcessWordAttachmentsIfExist(attachments, skipConversion);
                 
-                if (attachments != null && attachments.Count > 15)
+                if (attachments != null && attachments.Count > 5)
                 {
-                    throw new InvalidOperationException("Максимальное количество файлов - 15");
+                    throw new InvalidOperationException("Максимальное количество файлов - 5");
                 }
                 
                 if (!string.IsNullOrEmpty(concept.Container))
                 {
-                    var existingFiles = repositoriesContainer.AttachmentRepository
-                        .GetAll(new Query<Attachment>(e => e.PathName == concept.Container)).ToList();  
-                    
-                    var attachmentIds = new HashSet<int>(attachments?.Select(x => x.Id) ?? Enumerable.Empty<int>());   
-                    var deleteFiles = attachmentIds.Any() 
-                        ? existingFiles.Where(e => !attachmentIds.Contains(e.Id)).ToList() 
-                        : existingFiles;
-                    
-                    foreach (var attachment in deleteFiles)
+                    if (!containerExplicitlySet && (attachments == null || !attachments.Any()))
                     {
-                        FilesManagementService.DeleteFileAttachment(attachment);
+                        if (!preserveFiles)
+                        {
+                            var existingFiles = repositoriesContainer.AttachmentRepository
+                                .GetAll(new Query<Attachment>(e => e.PathName == concept.Container)).ToList();
+                            foreach (var attachment in existingFiles)
+                            {
+                                FilesManagementService.DeleteFileAttachment(attachment);
+                            }
+                        }
+                        concept.Container = null;
+                    }
+                    else if (!containerExplicitlySet)
+                    {
+                        var existingFiles = repositoriesContainer.AttachmentRepository
+                            .GetAll(new Query<Attachment>(e => e.PathName == concept.Container)).ToList();
+                        var attachmentIds = new HashSet<int>(attachments.Select(x => x.Id));
+                        var deleteFiles = attachmentIds.Any()
+                            ? existingFiles.Where(e => !attachmentIds.Contains(e.Id)).ToList()
+                            : existingFiles;
+
+                        foreach (var attachment in deleteFiles)
+                        {
+                            FilesManagementService.DeleteFileAttachment(attachment);
+                        }
                     }
                 }
                 else if (attachments?.Any() == true)
@@ -865,7 +959,7 @@ namespace Application.Infrastructure.ConceptManagement
             repositoriesContainer.ConceptRepository.Save(itemsToUpdate);
         }
 
-        private void AddConceptAttachements(IEnumerable<Attachment> existedRecords, Concept parent, LmPlatformRepositoriesContainer currentRepContainer)
+        private void AddConceptAttachements(IEnumerable<Attachment> existedRecords, Concept parent, LmPlatformRepositoriesContainer currentRepContainer, bool skipConversion = false)
         {
 
             var existedRecordsList = existedRecords as List<Attachment> ?? existedRecords.ToList();
@@ -884,7 +978,10 @@ namespace Application.Infrastructure.ConceptManagement
                       || fileName.EndsWith(".docx", StringComparison.OrdinalIgnoreCase)
                       || fileName.EndsWith(".rtf", StringComparison.OrdinalIgnoreCase))
                 {
-                    readableNonPdfFiles.Add(record);
+                    if (skipConversion)
+                        pdfAttachements.Add(record);
+                    else
+                        readableNonPdfFiles.Add(record);
                 }
             }
 
@@ -970,6 +1067,51 @@ namespace Application.Infrastructure.ConceptManagement
                 repositoriesContainer.ConceptRepository.Save(nextItem);
             }
             repositoriesContainer.ApplyChanges();
+        }
+
+        public Concept MoveConceptNode(int conceptId, int newParentId, int prevConceptId, int nextConceptId)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            Func<int, Query<Concept>> queryById = id => new Query<Concept>(c => c.Id == id);
+
+            var concept = repositoriesContainer.ConceptRepository.GetBy(queryById(conceptId));
+            if (concept == null)
+                return null;
+
+            var mandatorySectionNames = new[] { TitlePageSectionName, ProgramSectionName, LectSectionName, PracticalSectionName, TestSectionName };
+            if (concept.ReadOnly == true && mandatorySectionNames.Contains(concept.Name))
+                throw new InvalidOperationException($"Cannot move read-only concept");
+
+            var oldPrev = concept.PrevConcept;
+            var oldNext = concept.NextConcept;
+
+            concept.ParentId = newParentId;
+            concept.PrevConcept = prevConceptId > 0 ? prevConceptId : (int?)null;
+            concept.NextConcept = nextConceptId > 0 ? nextConceptId : (int?)null;
+            repositoriesContainer.ConceptRepository.Save(concept);
+
+            ResetSiblings(oldPrev, oldNext, repositoriesContainer);
+
+            if (prevConceptId > 0)
+            {
+                var prevNode = repositoriesContainer.ConceptRepository.GetBy(queryById(prevConceptId));
+                if (prevNode != null)
+                {
+                    prevNode.NextConcept = concept.Id;
+                    repositoriesContainer.ConceptRepository.Save(prevNode);
+                }
+            }
+            if (nextConceptId > 0)
+            {
+                var nextNode = repositoriesContainer.ConceptRepository.GetBy(queryById(nextConceptId));
+                if (nextNode != null)
+                {
+                    nextNode.PrevConcept = concept.Id;
+                    repositoriesContainer.ConceptRepository.Save(nextNode);
+                }
+            }
+            repositoriesContainer.ApplyChanges();
+            return repositoriesContainer.ConceptRepository.GetById(concept.Id);
         }
 
         public bool IsTestModule(string moduleName)

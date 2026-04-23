@@ -31,7 +31,7 @@ export class ConverterService {
   public mapConverter(concept: any) {
     const tree = new ComplexTree([])
     tree.result.push(
-      new TreeNode(concept.Id, concept.Name, null, concept.FilePath)
+      new TreeNode(concept.Id, concept.Name, null, concept.FilePath, concept.TestId)
     )
     this.childMapConverter(concept.children, tree, concept.Id)
 
@@ -48,7 +48,7 @@ export class ConverterService {
     }
     for (const concept of childConcepts) {
       tree.result.push(
-        new TreeNode(concept.Id, concept.Name, parentId, concept.FilePath)
+        new TreeNode(concept.Id, concept.Name, parentId, concept.FilePath, concept.TestId)
       )
       this.childMapConverter(concept.children, tree, concept.Id)
     }

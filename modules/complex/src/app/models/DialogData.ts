@@ -36,4 +36,5 @@ export interface DialogData {
   parentId?: number
   testId?: number
   isMandatoryComponent?: boolean
+  children?: any[]
 }
