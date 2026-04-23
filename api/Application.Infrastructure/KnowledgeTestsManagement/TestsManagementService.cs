@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Application.Core.Data;
@@ -13,6 +13,20 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 	{
 		public void CheckForTestIsNotLocked(int testId)
 		{
+			AssertTestEditableIfUnlocked(testId, null);
+		}
+
+		private static bool UnlocksDoNotBlockEdits(Test typeSource)
+		{
+			return typeSource != null &&
+				(typeSource.ForSelfStudy ||
+				typeSource.ForEUMK ||
+				typeSource.BeforeEUMK ||
+				typeSource.ForNN);
+		}
+
+		private void AssertTestEditableIfUnlocked(int testId, Test incomingSavedTest)
+		{
 			if (testId == 0)
 			{
 				return;
@@ -24,7 +38,10 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var test = repositoriesContainer.TestsRepository.GetBy(testsQuery);
-				if (test.TestUnlocks != null && test.TestUnlocks.Count > 0)
+				if (!UnlocksDoNotBlockEdits(test) &&
+					!UnlocksDoNotBlockEdits(incomingSavedTest) &&
+					test.TestUnlocks != null &&
+					test.TestUnlocks.Count > 0)
 				{
 					throw new InvalidDataException("Тест не может быть изменён, т.к. доступен для прохождения");
 				}
@@ -54,7 +71,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 		{
 			if (!withountValidation)
 			{
-				CheckForTestIsNotLocked(test.Id);
+				AssertTestEditableIfUnlocked(test.Id, test);
 				ValidateTest(test);
 			}
 
