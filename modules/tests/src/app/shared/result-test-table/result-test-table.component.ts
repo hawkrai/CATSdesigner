@@ -75,6 +75,7 @@ export class ResultTestTableComponent
   public barChartPlugins = [pluginDataLabels]
   public barChartData: ChartDataSets[]
   public showChart: boolean = false
+  public testColumnIndices: number[] = []
   @Input()
   public tests: any
   @Input()
@@ -154,6 +155,10 @@ export class ResultTestTableComponent
           this.scareThing[2][0][1] &&
           this.scareThing[2][0][1].test &&
           this.scareThing[2][0][1].test.length))
+    this.testColumnIndices =
+      this.testSize > 0
+        ? Array.from({ length: this.testSize }, (_, i) => i)
+        : []
     for (let i = 0; i < this.testSize; i++) {
       this.displayedColumns.push('test' + i)
     }
@@ -295,8 +300,37 @@ export class ResultTestTableComponent
       this.barChartLabels.push(entire[0])
       this.barChartData[0].data.push(entire[1])
     }
-    this.showChart = (<number[]>this.barChartData[0]?.data).some(
-      (value) => value.toString() != 'NaN'
+    this.showChart =
+      this.hasAnyGradedTestResults() &&
+      Array.isArray(this.barChartData[0]?.data) &&
+      this.barChartData[0].data.length > 0
+  }
+
+  private hasAnyGradedTestResults(): boolean {
+    for (const subGroup of this.scareThing) {
+      if (!subGroup?.length) {
+        continue
+      }
+      for (const pupil of subGroup) {
+        if (!pupil?.[1]?.test?.length) {
+          continue
+        }
+        if (pupil[1].test.some((t) => Number.isInteger(t.points))) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  public getTestHeaderTooltip(studentResults: any[], index: number): string {
+    const full =
+      studentResults?.[0]?.[1]?.test?.[index]?.testName?.trim() || ''
+    if (full) {
+      return full
+    }
+    return (
+      this.translatePipe.transform('text.test', 'Тест') + ' ' + (index + 1)
     )
   }
 

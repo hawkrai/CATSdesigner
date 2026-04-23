@@ -128,38 +128,16 @@ export class ResultTeacherComponent
           // @ts-ignore
           this.groupsList.push({ display: group.Name, value: <string>group.Id })
         })
-        this.getResults(groups[0].Id)
       })
   }
 
-  public getResults(groupId): void {
-    this.loading = true
-    this.testPassingService
-      .getResultsByGroupsAndSubject([groupId], this.subject.id)
-      .pipe(
-        takeUntil(this.unsubscribeStream$),
-        finalize(() => (this.loading = false))
-      )
-      .subscribe((results: Results[]) => {
-        const groupName: AutocompleteModel = this.groupsList.find(
-          (group: AutocompleteModel) =>
-            group.value.toString() === results[0].GroupId.toString()
-        )
-        this.results = results[0].Results
-        this.results.forEach((result: Result) => {
-          result.groupName = groupName.display
-          result.groupId = groupName.value
-        })
-        this.resultsOriginal.push(results[0].Results)
-        this.resultsOriginal.forEach((results: Result[]) => {
-          results.forEach((result: Result) => {
-            result.groupName = groupName.display
-            result.groupId = groupName.value
-          })
-        })
-        /*console.log("decompose 1");
-        this.decomposeResult(results[0].Results);*/
-      })
+  private groupIdsSelectionEqual(a: string[], b: string[]): boolean {
+    if (!a || !b || a.length !== b.length) {
+      return false
+    }
+    const sa = a.map((x) => String(x)).sort()
+    const sb = b.map((x) => String(x)).sort()
+    return sa.every((v, i) => v === sb[i])
   }
 
   /*public filterStudents(event: string): void {
@@ -205,43 +183,50 @@ export class ResultTeacherComponent
     this.cdr.detectChanges();*/
   }
 
-  public groupChange(eventChange) {
-    if (eventChange.length && this.groupChangeCheckBoxes !== eventChange) {
-      this.groupChangeCheckBoxes = eventChange
-      this.testPassingService
-        .getResultsByGroupsAndSubject(eventChange, this.subject.id)
-        .subscribe((results: Results[]) => {
-          this.initArraysMass()
-          this.resultsOriginal = []
-          this.studentList = []
-          results.forEach((results: Results) => {
-            this.resultsOriginal.push(results.Results)
-            this.resultsOriginal.forEach((resultsOriginal: Result[]) => {
-              resultsOriginal.forEach((result: Result) => {
-                if (!result.groupName) {
-                  const groupName: AutocompleteModel = this.groupsList.find(
-                    (group: AutocompleteModel) =>
-                      Number(group.value) === results.GroupId
-                  )
-                  result.groupName = groupName.display
-                  result.groupId = groupName.value
-                  console.log('result.groupName = groupName.display')
-                }
-              })
-            })
-          })
-          /*this.resultsOriginal.forEach((resultsOriginal: Result[])=>{
-          const groupName: AutocompleteModel = this.groupsList.find((group: AutocompleteModel) => group.value.toString() === resultsOriginal.GroupId.toString());
-
-        });*/
-
-          this.resultsOriginal.forEach((res) => {
-            this.decomposeResult(res, false, false)
-          })
-          console.log('rer')
-          console.log(results)
-        })
+  public groupChange(eventChange: string[]): void {
+    if (!eventChange?.length) {
+      return
     }
+    if (this.groupIdsSelectionEqual(this.groupChangeCheckBoxes, eventChange)) {
+      return
+    }
+    this.groupChangeCheckBoxes = [...eventChange]
+    this.loading = true
+    this.testPassingService
+      .getResultsByGroupsAndSubject(eventChange, this.subject.id)
+      .pipe(
+        takeUntil(this.unsubscribeStream$),
+        finalize(() => {
+          this.loading = false
+          this.cdr.detectChanges()
+        })
+      )
+      .subscribe((apiResults: Results[]) => {
+        this.initArraysMass()
+        this.initArrays()
+        this.resultsOriginal = []
+        this.studentList = []
+
+        apiResults.forEach((groupBlock: Results) => {
+          const groupIdRaw = groupBlock.GroupId ?? groupBlock.groupId
+          const groupMeta = this.groupsList.find(
+            (g: AutocompleteModel) => Number(g.value) === Number(groupIdRaw)
+          )
+          groupBlock.Results.forEach((result: Result) => {
+            if (groupMeta) {
+              result.groupName = groupMeta.display
+              result.groupId = groupMeta.value
+            }
+          })
+          this.resultsOriginal.push(groupBlock.Results)
+        })
+
+        this.results = this.resultsOriginal[0] || []
+
+        this.resultsOriginal.forEach((res) => {
+          this.decomposeResult(res, false, false)
+        })
+      })
   }
 
   public testsChange(eventChange) {
