@@ -29,6 +29,10 @@ import { StorageKeys } from '../../../../../../../container/src/app/core/models/
   styleUrls: ['./question.component.less'],
 })
 export class QuestionComponent extends AutoUnsubscribeBase implements AfterViewInit {
+  private readonly answerComparer = new Intl.Collator(undefined, {
+    usage: 'search',
+    sensitivity: 'accent',
+  })
   @ViewChild('description') descriptionElement: ElementRef<HTMLDivElement>
   private _question
   public get question(): TestQuestion {
@@ -208,12 +212,9 @@ export class QuestionComponent extends AutoUnsubscribeBase implements AfterViewI
     if (raw == null) {
       return null
     }
-    const withoutControls = Array.from(raw)
-      .filter((ch) => {
-        const code = ch.charCodeAt(0)
-        return code > 31 && code !== 127
-      })
-      .join('')
+    const withoutControls = raw
+      .replace(/[\x00-\x1F\x7F-\x9F]/g, '')
+      .replace(/[\u200B-\u200D\uFEFF]/g, '')
     const trimmed = withoutControls.trim()
     return trimmed.length === 0 ? null : trimmed
   }
@@ -227,12 +228,13 @@ export class QuestionComponent extends AutoUnsubscribeBase implements AfterViewI
     if (!normalizedUser) {
       return false
     }
-    const userKey = normalizedUser.toLowerCase()
     const referenceKeys = this.question.Question.Answers.map((a) =>
       this.normalizeKeyboardAnswer(a.Content)
     )
       .filter((ref): ref is string => ref != null && ref !== '')
-      .map((ref) => ref.toLowerCase())
-    return referenceKeys.includes(userKey)
+
+    return referenceKeys.some(
+      (ref) => this.answerComparer.compare(ref, normalizedUser) === 0
+    )
   }
 }

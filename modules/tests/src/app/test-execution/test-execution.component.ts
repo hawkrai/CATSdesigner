@@ -117,16 +117,12 @@ export class TestExecutionComponent
         return
       }
       if (answer.answered) {
-        const index = this.questionArray.indexOf(Number(this.questionNumber))
-        const index1 = this.allAnswersArray.indexOf(Number(this.questionNumber))
-        this.questionArray.splice(index, 1)
-        if (answer.isTrue) {
-          this.allAnswersArray.splice(index1, 1)
-          this.trueAnswersArray.push(Number(this.questionNumber))
-        } else {
-          this.allAnswersArray.splice(index1, 1)
-          this.falseAnswersArray.push(Number(this.questionNumber))
+        const currentQuestionNumber = Number(this.questionNumber)
+        const index = this.questionArray.indexOf(currentQuestionNumber)
+        if (index >= 0) {
+          this.questionArray.splice(index, 1)
         }
+        this.syncQuestionProgress(currentQuestionNumber, answer.isTrue)
       }
       if (this.questionArray.length !== 0) {
         if (questionNumber && this.questionArray.includes(questionNumber)) {
@@ -196,5 +192,23 @@ export class TestExecutionComponent
       (x, index) => index + 1
     )
     console.log('this.questionArray', this.questionArray)
+  }
+
+  private syncQuestionProgress(questionNumber: number, isTrue: boolean): void {
+    this.allAnswersArray = this.allAnswersArray.filter(
+      (value) => value !== questionNumber
+    )
+    this.trueAnswersArray = this.trueAnswersArray.filter(
+      (value) => value !== questionNumber
+    )
+    this.falseAnswersArray = this.falseAnswersArray.filter(
+      (value) => value !== questionNumber
+    )
+
+    if (isTrue) {
+      this.trueAnswersArray.push(questionNumber)
+    } else {
+      this.falseAnswersArray.push(questionNumber)
+    }
   }
 }

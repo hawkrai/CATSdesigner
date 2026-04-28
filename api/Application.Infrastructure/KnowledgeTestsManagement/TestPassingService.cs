@@ -810,11 +810,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             }
 
             Question resultQuestion = GetQuestionById(questionId);
-            if (resultQuestion.QuestionType == QuestionType.TextAnswer)
-            {
-                resultQuestion.Answers = resultQuestion.Answers.Take(1).ToList();
-            }
-            else if(resultQuestion.QuestionType == QuestionType.SequenceAnswer)
+            if(resultQuestion.QuestionType == QuestionType.SequenceAnswer)
             {
                 var indicator = 0;
                 foreach(var answer in resultQuestion.Answers)
