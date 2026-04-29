@@ -58,7 +58,11 @@
     [disabled]="true"
     (click)="processsTest()"
   >
-    {{ 'common.finishTest' | translate: 'Завершить тест' }}
+    {{
+      isPredTest
+        ? ('complex.goToLearning' | translate: 'Перейти к обучению')
+        : ('common.finishTest' | translate: 'Завершить тест')
+    }}
   </button>
   <div class="cancel-button" *ngIf="!isTest">
     <button mat-icon-button (click)="onNoClick()">

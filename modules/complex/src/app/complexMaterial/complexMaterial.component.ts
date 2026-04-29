@@ -1,11 +1,13 @@
 import { Component, EventEmitter, OnInit, Input } from '@angular/core'
 import { Router, ActivatedRoute, ParamMap } from '@angular/router'
 import { MatDialog, MatDialogRef } from '@angular/material/dialog'
-import { forkJoin } from 'rxjs'
+import { forkJoin, from, of } from 'rxjs'
+import { catchError, concatMap } from 'rxjs/operators'
 
 import { ComplexService } from '../service/complex.service'
 import { AddMaterialPopoverComponent } from './components/materials/add-material-popover/add-material-popover.component'
 import { Concept } from '../models/Concept'
+import { ComplexCascade } from '../models/ComplexCascade'
 import { AdaptivityService } from '../service/adaptivity.service'
 import { DialogData } from '../models/DialogData'
 import { MaterialsPopoverComponent } from './components/materials/materials-popover/materials-popover.component'
@@ -25,7 +27,8 @@ export class ComplexMaterialComponent implements OnInit {
   public complexName: string
   isLector: boolean
   public hasPredTest: boolean = false
-  public isAdaptiveLearningDisabled: boolean = false
+  public hasTheoryMaterials: boolean = false
+  public isAdaptiveLearningDisabled: boolean = true
 
   constructor(
     private router: Router,
@@ -55,6 +58,7 @@ export class ComplexMaterialComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.libreOfficeAvailability.getAvailability().subscribe()
     const savedComplexId = localStorage.getItem('selectedComplex')
     if (savedComplexId && savedComplexId !== this.complexID) {
       this.complexID = savedComplexId
@@ -62,14 +66,63 @@ export class ComplexMaterialComponent implements OnInit {
         .getConceptNameById(this.complexID)
         .subscribe((name) => (this.complexName = name))
     }
-    this.checkForPredTest()
+    this.checkAdaptiveLearningAvailability()
   }
 
-  checkForPredTest(): void {
-    this.testService.getPredTest().subscribe((predTestId) => {
+  checkAdaptiveLearningAvailability(): void {
+    forkJoin([
+      this.testService.getPredTest().pipe(catchError(() => of(0))),
+      this.complexService
+        .getConceptCascade(this.complexID)
+        .pipe(catchError(() => of(null))),
+    ]).subscribe(([predTestId, conceptCascade]) => {
       this.hasPredTest = predTestId > 0
-      this.isAdaptiveLearningDisabled = !this.hasPredTest
+      this.hasTheoryMaterials = this.hasAttachmentsInCascade(conceptCascade)
+      this.isAdaptiveLearningDisabled = !this.hasPredTest || !this.hasTheoryMaterials
     })
+  }
+
+  getAdaptiveLearningDisabledReason(): string {
+    if (!this.hasPredTest && !this.hasTheoryMaterials) {
+      return 'Отсутствуют предтест и прикрепленные материалы'
+    }
+
+    if (!this.hasPredTest) {
+      return 'Отсутствует предтест'
+    }
+
+    if (!this.hasTheoryMaterials) {
+      return 'Отсутствуют прикрепленные материалы'
+    }
+
+    return ''
+  }
+
+  private hasAttachmentsInCascade(node: ComplexCascade | ComplexCascade[] | any): boolean {
+    if (!node) {
+      return false
+    }
+
+    if (Array.isArray(node)) {
+      return node.some((child) => this.hasAttachmentsInCascade(child))
+    }
+
+    const attachments = node.Attachments || node.attachments
+    if (Array.isArray(attachments) && attachments.length > 0) {
+      return true
+    }
+
+    const filePath = node.FilePath || node.filePath || node.PathName || node.pathName
+    if (typeof filePath === 'string' && filePath.trim().length > 0) {
+      return true
+    }
+
+    const children = node.children || node.Children
+    if (!Array.isArray(children) || children.length === 0) {
+      return false
+    }
+
+    return children.some((child) => this.hasAttachmentsInCascade(child))
   }
 
   openAddPopup(): void {
@@ -85,42 +138,47 @@ export class ComplexMaterialComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const userId = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id
-        const isFolder = result.isGroup
-        const hasAttachments = result.attachments && result.attachments.length > 0
-        const fileData = isFolder ? JSON.stringify([]) : JSON.stringify(result.attachments || [])
+        this.libreOfficeAvailability.resolveAvailability().subscribe((isLibreOfficeAvailable) => {
+          const userId = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id
+          const isFolder = result.isGroup
+          const hasAttachments = result.attachments && result.attachments.length > 0
+          const fileData = isFolder ? JSON.stringify([]) : JSON.stringify(result.attachments || [])
 
-        const concept: Concept = {
-          conceptId: +result.id,
-          conceptName: result.name,
-          parentId: result.parentId,
-          isGroup: result.isGroup,
-          fileData: fileData,
-          userId: userId,
-          skipConversion: !this.libreOfficeAvailability.isAvailable,
-        }
+          const concept: Concept = {
+            conceptId: +result.id,
+            conceptName: result.name,
+            parentId: result.parentId,
+            isGroup: result.isGroup,
+            fileData: fileData,
+            userId: userId,
+            skipConversion: !isLibreOfficeAvailable,
+          }
 
-        this.complexService.addOrEditConcept(concept).subscribe((res) => {
-          if (res['Code'] === ApiResponseCode.Success) {
-            if (isFolder && hasAttachments) {
-              const newFiles = result.attachments.filter((a: any) => !a.id || a.id === 0)
-              if (newFiles.length > 0) {
+          this.complexService.addOrEditConcept(concept).subscribe((res) => {
+            if (res['Code'] === ApiResponseCode.Success) {
+              if (isFolder && hasAttachments) {
                 const savedConceptId = res['SavedConceptId']
 
-                const childConcepts$ = newFiles.map((file: any) => {
-                  const isExisting = file.id && file.id > 0
-                  return this.complexService.addOrEditConcept({
-                    conceptId: 0,
-                    conceptName: this.stripFileExtension(file.name),
-                    parentId: savedConceptId,
-                    isGroup: false,
-                    fileData: isExisting ? JSON.stringify([]) : JSON.stringify([file]),
-                    userId: userId,
-                    container: isExisting ? (file.pathName || undefined) : undefined,
-                    skipConversion: !this.libreOfficeAvailability.isAvailable,
+                from(result.attachments).pipe(
+                  concatMap((file: any) => {
+                    const isExisting = file.id && file.id > 0
+                    return this.complexService.addOrEditConcept({
+                      conceptId: 0,
+                      conceptName: this.stripFileExtension(file.name),
+                      parentId: savedConceptId,
+                      isGroup: false,
+                      fileData: JSON.stringify([file]),
+                      userId: userId,
+                      container: isExisting ? (file.pathName || undefined) : undefined,
+                      skipConversion: !isLibreOfficeAvailable,
+                    }).pipe(
+                      catchError((error) => {
+                        console.error('Error creating child concept:', error)
+                        return of(null)
+                      })
+                    )
                   })
-                })
-                forkJoin(childConcepts$).subscribe(() => {
+                ).subscribe(() => {}, () => {}, () => {
                   this.router.navigateByUrl('/cMaterial').then(() => {
                     window.location.reload()
                   })
@@ -130,12 +188,8 @@ export class ComplexMaterialComponent implements OnInit {
                   window.location.reload()
                 })
               }
-            } else {
-              this.router.navigateByUrl('/cMaterial').then(() => {
-                window.location.reload()
-              })
             }
-          }
+          })
         })
       }
     })
@@ -146,7 +200,7 @@ export class ComplexMaterialComponent implements OnInit {
   }
 
   openAdaptivityPopup(adaptivityType: number): void {
-    if (this.hasPredTest) {
+    if (this.hasPredTest && this.hasTheoryMaterials) {
       this.adaptivityService
         .getFirstThema(adaptivityType)
         .subscribe((themaRes) => {
