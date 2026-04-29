@@ -13,8 +13,8 @@ import { Result } from '../models/result.model'
 import { ResultForTable } from '../models/result-for-table.model'
 import { AutoUnsubscribe } from '../decorator/auto-unsubscribe'
 import { AutoUnsubscribeBase } from '../core/auto-unsubscribe-base'
-import { Subject } from 'rxjs'
-import { finalize, takeUntil } from 'rxjs/operators'
+import { of, Subject, timer } from 'rxjs'
+import { catchError, exhaustMap, filter, finalize, takeUntil } from 'rxjs/operators'
 import { AutocompleteModel } from '../models/autocomplete.model'
 import { Results } from '../models/results.model'
 import { TranslatePipe } from 'educats-translate'
@@ -59,6 +59,7 @@ export class ResultTeacherComponent
   public user: any
   public subject: any
   private unsubscribeStream$: Subject<void> = new Subject<void>()
+  private readonly refreshMs = 10000
   public showAsSubGroup: boolean
   public help: Help
 
@@ -128,6 +129,55 @@ export class ResultTeacherComponent
           // @ts-ignore
           this.groupsList.push({ display: group.Name, value: <string>group.Id })
         })
+      })
+
+    timer(this.refreshMs, this.refreshMs)
+      .pipe(
+        takeUntil(this.unsubscribeStream$),
+        filter(() => {
+          return (
+            !!this.groupChangeCheckBoxes?.length &&
+            typeof document !== 'undefined' &&
+            document.visibilityState === 'visible'
+          )
+        }),
+        exhaustMap(() => {
+          return this.testPassingService.getResultsByGroupsAndSubject(
+            this.groupChangeCheckBoxes,
+            this.subject.id
+          )
+          .pipe(catchError(() => of([] as Results[])))
+        })
+      )
+      .subscribe((apiResults: Results[]) => {
+        if (!apiResults?.length) {
+          return
+        }
+        this.initArraysMass()
+        this.initArrays()
+        this.resultsOriginal = []
+        this.studentList = []
+
+        apiResults.forEach((groupBlock: Results) => {
+          const groupIdRaw = groupBlock.GroupId ?? groupBlock.groupId
+          const groupMeta = this.groupsList.find(
+            (g: AutocompleteModel) => Number(g.value) === Number(groupIdRaw)
+          )
+          groupBlock.Results.forEach((result: Result) => {
+            if (groupMeta) {
+              result.groupName = groupMeta.display
+              result.groupId = groupMeta.value
+            }
+          })
+          this.resultsOriginal.push(groupBlock.Results)
+        })
+
+        this.results = this.resultsOriginal[0] || []
+
+        this.resultsOriginal.forEach((res) => {
+          this.decomposeResult(res, false, false)
+        })
+        this.cdr.detectChanges()
       })
   }
 
@@ -227,7 +277,7 @@ export class ResultTeacherComponent
           this.decomposeResult(res, false, false)
         })
       })
-  }
+    }
 
   public testsChange(eventChange) {
     if (this.testChangeCheckBoxes !== eventChange) {
