@@ -55,7 +55,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     this.addComponentHelp = {
       message: this.translatePipe.transform(
         'text.help.addComponent',
-        'Чтобы добавить элемент электронного учебно-методического комплекса, необходимо выбрать для него раздел и тему. Далее отметьте тип элемента: Папка может иметь вложения, а Файл нет. Введите название элемента (темы ЭУМК). Для типа элемента Файл прикрепите файл в формате .pdf.'
+        'Чтобы добавить элемент электронного учебно-методического комплекса, необходимо выбрать для него раздел и тему. Далее отметьте тип элемента: Папка может иметь вложенные папки и файлы, а Файл может иметь только один прикрепленный файл.'
       ),
       action: this.translatePipe.transform('common.clear', 'Понятно'),
     }
@@ -166,7 +166,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
           this.addComponentHelp = {
             message: this.translatePipe.transform(
               'text.help.editComponent',
-              'To edit an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.'
+              'Для редактирования элемента электронного учебно-методического комплекса, необходимо выбрать для него раздел и тему. Далее отметьте тип элемента: Папка может иметь вложенные папки и файлы, а Файл может иметь только один прикрепленный файл.'
             ),
             action: this.translatePipe.transform(
               'common.clear',
@@ -177,7 +177,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
           this.addComponentHelp = {
             message: this.translatePipe.transform(
               'text.help.addComponent',
-              'To add an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.'
+              'Чтобы добавить элемент электронного учебно-методического комплекса, необходимо выбрать для него раздел и тему. Далее отметьте тип элемента: Папка может иметь вложенные папки и файлы, а Файл может иметь только один прикрепленный файл.'
             ),
             action: this.translatePipe.transform(
               'common.clear',

@@ -45,6 +45,16 @@
   overflow-y: hidden;
 }
 
+.map-dialog-container .mat-dialog-container {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  padding: 8px 12px !important;
+}
+
 .mat-checkbox-layout {
   width: 95%;
 }

@@ -18,17 +18,24 @@
         >
           {{ 'complex.addComponent' | translate: 'Добавить элемент' }}
         </button>
-        <button
-          mat-raised-button
-          class="add-button adaptive-learning"
-          [matMenuTriggerFor]="menu"
-          [disabled]="isAdaptiveLearningDisabled"
+        <span
+          class="adaptive-learning-wrapper"
+          [matTooltip]="getAdaptiveLearningDisabledReason()"
+          [matTooltipDisabled]="!isAdaptiveLearningDisabled"
+          matTooltipPosition="right"
         >
-          {{ 'complex.adaptiveLearning' | translate: 'Адаптивное обучение' }}
-          <mat-icon>keyboard_arrow_down</mat-icon>
-        </button>
+          <button
+            mat-raised-button
+            class="add-button adaptive-learning"
+            [matMenuTriggerFor]="menu"
+            [disabled]="isAdaptiveLearningDisabled"
+          >
+            {{ 'complex.adaptiveLearning' | translate: 'Адаптивное обучение' }}
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </button>
+        </span>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="openAdaptivityPopup(0)">
+          <button mat-menu-item (click)="openAdaptivityPopup(2)">
             {{
               'complex.algorithm.base' | translate: 'Базовый алгоритм обучения'
             }}

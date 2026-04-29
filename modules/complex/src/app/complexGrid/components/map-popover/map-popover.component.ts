@@ -114,6 +114,14 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
           el.attr('x', 0)
           el.attr('text-anchor', 'middle')
           el.attr('dy', `${NODE_RADIUS + 16}px`)
+          el.style('font-family', 'Inter, system-ui, -apple-system, sans-serif')
+          el.style('font-size', '13px')
+          el.style('font-weight', '600')
+          el.style('fill', '#1f1f1f')
+          el.style('stroke', 'none')
+          el.style('paint-order', 'stroke')
+          el.style('text-rendering', 'geometricPrecision')
+          el.style('-webkit-font-smoothing', 'antialiased')
 
           if (fullName.length > MAX_LABEL_CHARS) {
             el.text(fullName.substring(0, MAX_LABEL_CHARS) + '\u2026')
@@ -143,6 +151,14 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
               .on('mouseleave.tooltip', null)
           }
         })
+
+        self.applyLinkStyles()
+      }
+
+      const originalSetLinks = treeModel.setLinks.bind(treeModel)
+      treeModel.setLinks = function (source: any, treeData: any) {
+        originalSetLinks(source, treeData)
+        self.applyLinkStyles()
       }
 
       treeModel.createLayout = function () {
@@ -252,7 +268,27 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
 
     this.treeService.createChart('#chartContainer', this.chartData)
 
-    setTimeout(() => { this.markTestNodes() }, 400)
+    setTimeout(() => {
+      this.applyLinkStyles()
+      this.markTestNodes()
+    }, 400)
+  }
+
+  private applyLinkStyles() {
+    const svg = this.treeService.treeModel && this.treeService.treeModel.svg
+    if (!svg) { return }
+
+    svg.selectAll('path')
+      .filter(function () {
+        const className = ((this as SVGPathElement).getAttribute('class') || '').toLowerCase()
+        return className.indexOf('link') !== -1
+      })
+      .style('stroke', '#2b2b2b')
+      .style('stroke-width', '1px')
+      .style('fill', 'none')
+      .style('shape-rendering', 'geometricPrecision')
+      .style('vector-effect', 'non-scaling-stroke')
+      .style('stroke-linecap', 'round')
   }
 
   private markTestNodes() {
