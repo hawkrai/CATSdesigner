@@ -5,6 +5,7 @@ import { TranslatePipe } from 'educats-translate'
 
 interface DialogData {
   title: string
+  id: number
   name: string
   percentage: number
   date: any

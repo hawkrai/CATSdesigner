@@ -244,7 +244,10 @@
               <tr>
                 <div style="display: flex; justify-content: space-between">
                   <h6
-                    matTooltip="{{ getToolTip(event?.title) }}"
+                    [matTooltip]="
+                      'text.schedule.graduation.project.full'
+                        | translate: 'Дипломное проектирование'
+                    "
                     matTooltipClass="example-tooltip-blue"
                     (click)="rerouteToSubject(event.title)"
                     style="
@@ -358,7 +361,9 @@
                     white-space: pre-wrap;
                   "
                 >
-                  <ng-container *ngIf="memo?.startsWith('\n\n'); else notOnlyPersonal">
+                  <ng-container
+                    *ngIf="memo?.startsWith('\n\n'); else notOnlyPersonal"
+                  >
                     <span
                       style="
                         color: #383838;
@@ -390,7 +395,9 @@
                           white-space: pre-wrap;
                         "
                       >
-                        {{ lessonservice.getMemo(event.title).split('\n\n')[0] }}
+                        {{
+                          lessonservice.getMemo(event.title).split('\n\n')[0]
+                        }}
                       </span>
                       <br /><br />
                       <span
@@ -405,7 +412,9 @@
                           white-space: pre-wrap;
                         "
                       >
-                        {{ lessonservice.getMemo(event.title).split('\n\n')[1] }}
+                        {{
+                          lessonservice.getMemo(event.title).split('\n\n')[1]
+                        }}
                       </span>
                     </ng-container>
                     <ng-template #singleMemo>
@@ -555,13 +564,13 @@
           overflow: auto;
         "
         [ngStyle]="{
-          'border-left-color': lessonservice.getColorLesson(weekEvent.event)
+          'border-left-color': lessonservice.getColorLesson(weekEvent.event),
         }"
         [style.backgroundColor]="weekEvent.event.color?.primary"
         (mwlClick)="
           eventClicked.emit({
             event: weekEvent.event,
-            sourceEvent: weekEvent.event
+            sourceEvent: weekEvent.event,
           })
         "
       >

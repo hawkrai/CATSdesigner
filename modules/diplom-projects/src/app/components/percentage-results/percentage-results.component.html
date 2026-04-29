@@ -89,6 +89,17 @@
     </div>
   </div>
   <div class="percentage-results-component__body">
+    <div
+      *ngIf="diplomUser.IsStudent"
+      class="percentage-results-component__group-label"
+    >
+      {{ 'text.diplomProject.group' | translate: 'Группа' }}:
+      {{
+        filteredPercentageResults && filteredPercentageResults.length > 0
+          ? filteredPercentageResults[0].Group
+          : ''
+      }}
+    </div>
     <app-percentage-results-list
       [filteredPercentageResults]="filteredPercentageResults"
       [isLecturer]="isLecturer"

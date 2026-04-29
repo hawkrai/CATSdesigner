@@ -111,6 +111,14 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   retrievePercentageResults() {
     this.percentageResults = null
+
+    let isSecretaryFilter: boolean
+    if (this.diplomUser.IsStudent) {
+      isSecretaryFilter = false
+    } else {
+      isSecretaryFilter = !this.isLecturer
+    }
+
     this.percentageResultsSubscription = this.percentageResultsService
       .getPercentageResults(
         'count=' +
@@ -118,9 +126,11 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
           '&page=' +
           this.PAGE +
           '&filter={"isSecretary":"' +
-          !this.isLecturer +
+          isSecretaryFilter +
           '","searchString":"' +
           this.searchString +
+          '","studentId":"' +
+          (this.diplomUser.IsStudent ? this.diplomUser.UserId : 0) +
           '"}' +
           '&sorting[' +
           this.sorting +
@@ -129,14 +139,20 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
       )
       .subscribe((res) => {
         if (this.diplomUser.IsStudent) {
-          var group = res.Students.Items.filter(
+          const currentStudent = res.Students.Items.find(
             (x) => x.Id == this.diplomUser.UserId
-          )[0].Group
-          var students = res.Students.Items.filter((x) => x.Group == group)
-          this.percentageResults = this.assignResults(
-            students,
-            res.PercentageGraphs
           )
+          if (currentStudent) {
+            const students = res.Students.Items.filter(
+              (x) => x.Group == currentStudent.Group
+            )
+            this.percentageResults = this.assignResults(
+              students,
+              res.PercentageGraphs
+            )
+          } else {
+            this.percentageResults = []
+          }
         } else {
           this.percentageResults = this.assignResults(
             res.Students.Items,

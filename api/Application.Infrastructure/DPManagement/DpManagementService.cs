@@ -524,11 +524,18 @@ namespace Application.Infrastructure.DPManagement
                 int.TryParse(parms.Filters["groupId"], out groupId);
             }
 
+            var lecturerId = 0;
+            if (parms.Filters.ContainsKey("lecturerId"))
+            {
+                int.TryParse(parms.Filters["lecturerId"], out lecturerId);
+            }
+
             var isStudent = AuthorizationHelper.IsStudent(Context, userId);
             var isLecturer = AuthorizationHelper.IsLecturer(Context, userId);
-            var isLecturerSecretary = isLecturer && Context.Lecturers.Single(x => x.Id == userId).IsSecretary;
-            isLecturerSecretary = isSecretary;
+            var isLecturerSecretary = isSecretary;
+
             secretaryId = isLecturerSecretary ? userId : secretaryId;
+
             if (isStudent)
             {
                 if (getBySecretaryForStudent)
@@ -553,10 +560,11 @@ namespace Application.Infrastructure.DPManagement
             }
 
             var query = Context.GetGraduateStudents()
-                .Where(x => isLecturerSecretary || (isStudent && getBySecretaryForStudent) || x.AssignedDiplomProjects.Any(asd => asd.DiplomProject.LecturerId == userId))
-                .Where(x => secretaryId == 0 || x.Group.SecretaryId == secretaryId)
-                .Where(x => x.Confirmed == null || x.Confirmed.Value)
-                .Where(x => groupId == 0 || x.GroupId == groupId);  // <-- добавили фильтр
+    .Where(x => isLecturerSecretary || (isStudent && getBySecretaryForStudent) || x.AssignedDiplomProjects.Any(asd => asd.DiplomProject.LecturerId == userId))
+    .Where(x => secretaryId == 0 || x.Group.SecretaryId == secretaryId)
+    .Where(x => lecturerId == 0 || x.AssignedDiplomProjects.Any(asd => asd.DiplomProject.LecturerId == lecturerId))
+    .Where(x => x.Confirmed == null || x.Confirmed.Value)
+    .Where(x => groupId == 0 || x.GroupId == groupId);
 
             return (from s in query
                     let dp = s.AssignedDiplomProjects.FirstOrDefault()
@@ -572,7 +580,7 @@ namespace Application.Infrastructure.DPManagement
                             ? lecturer.LastName + " " + lecturer.FirstName + " " + lecturer.MiddleName
                             : null,
                         Group = s.Group.Name,
-                        GroupId = s.GroupId,  // <-- добавили
+                        GroupId = s.GroupId,
                         Comment = dp != null ? dp.Comment : null,
                         ShowForStudent = dp != null ? dp.ShowForStudent : (bool?)null,
                         LecturerName = dp != null ? dp.LecturerName : null,
@@ -741,7 +749,7 @@ namespace Application.Infrastructure.DPManagement
             var diplomProject =
                 new LmPlatformModelsContext().DiplomProjects
                     .Include(x =>
-                        x.AssignedDiplomProjects.Select(y => y.Student.Group.Secretary.DiplomPercentagesGraphs))
+                        x.AssignedDiplomProjects.Select(y => y.Student.Group.Secretary.DiplomPercentagesGraphs.Select(pg => pg.DiplomPercentagesGraphToGroups)))
                     .Single(x => x.DiplomProjectId == diplomProjectId);
 
             return diplomProject.AssignedDiplomProjects.Count == 1

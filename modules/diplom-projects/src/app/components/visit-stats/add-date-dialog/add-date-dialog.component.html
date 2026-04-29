@@ -28,30 +28,22 @@
   </mat-form-field>
 
   <div class="form-container">
-    <mat-form-field class="form-field">
-      <mat-label>{{
+    <app-time-picker
+      [label]="
         'text.diplomProject.startConsultation'
           | translate: 'Начало консультации'
-      }}</mat-label>
-      <input
-        matInput
-        type="time"
-        [formControl]="startTimeControl"
-        [(ngModel)]="data.start"
-      />
-    </mat-form-field>
+      "
+      [control]="startTimeControl"
+      [(ngModelValue)]="data.start"
+    ></app-time-picker>
 
-    <mat-form-field class="form-field">
-      <mat-label>{{
+    <app-time-picker
+      [label]="
         'text.diplomProject.endConsultation' | translate: 'Конец консультации'
-      }}</mat-label>
-      <input
-        matInput
-        type="time"
-        [formControl]="endTimeControl"
-        [(ngModel)]="data.end"
-      />
-    </mat-form-field>
+      "
+      [control]="endTimeControl"
+      [(ngModelValue)]="data.end"
+    ></app-time-picker>
   </div>
 
   <div class="form-container">

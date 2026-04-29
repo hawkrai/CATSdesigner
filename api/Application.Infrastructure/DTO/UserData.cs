@@ -20,5 +20,6 @@ namespace Application.Infrastructure.DTO
         public bool IsGraduate { get; set; }
         public IEnumerable<int> SelectedGroupIds { get; set; }
         public List<int> LecturerGroupIds { get; set; }
+        public int StudentGroupId { get; set; }
     }
 }

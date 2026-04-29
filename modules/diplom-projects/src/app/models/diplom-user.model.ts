@@ -6,6 +6,7 @@ export class DiplomUser {
   HasChosenDiplomProject: boolean
   HasAssignedDiplomProject: boolean
   IsLecturerHasGraduateStudents: boolean
+  StudentGroupId: number
   SelectedGroupIds: number[]
   LecturerGroupIds: number[]
 }

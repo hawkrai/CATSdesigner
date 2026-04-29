@@ -9,7 +9,9 @@
   <div class="edit-popover__body">
     <div class="form-container">
       <mat-form-field class="form-field">
-        <mat-label>{{ 'text.diplomProject.date' | translate: 'Дата' }}</mat-label>
+        <mat-label>{{
+          'text.diplomProject.date' | translate: 'Дата'
+        }}</mat-label>
         <input
           matInput
           [matDatepicker]="dp"
@@ -24,7 +26,8 @@
     <div class="form-container">
       <mat-form-field class="form-field">
         <mat-label>{{
-          'text.diplomProject.startConsultation' | translate: 'Начало консультации'
+          'text.diplomProject.startConsultation'
+            | translate: 'Начало консультации'
         }}</mat-label>
         <input matInput type="time" [formControl]="startTimeControl" />
       </mat-form-field>
@@ -44,7 +47,8 @@
         }}</mat-label>
         <input matInput [formControl]="buildingControl" />
         <mat-error *ngIf="buildingControl.invalid">{{
-          'text.course.visit.dialog.add.error.small' | translate: 'От 1 до 3 символов'
+          'text.course.visit.dialog.add.error.small'
+            | translate: 'От 1 до 3 символов'
         }}</mat-error>
       </mat-form-field>
 
@@ -54,23 +58,28 @@
         }}</mat-label>
         <input matInput [formControl]="audienceControl" />
         <mat-error *ngIf="audienceControl.invalid">{{
-          'text.course.visit.dialog.add.error.small' | translate: 'От 1 до 3 символов'
+          'text.course.visit.dialog.add.error.small'
+            | translate: 'От 1 до 3 символов'
         }}</mat-error>
       </mat-form-field>
     </div>
   </div>
 
   <div class="edit-popover__actions">
-    <button mat-raised-button (click)="onClose()">
-      {{ 'text.editor.close' | translate: 'Закрыть' }}
-    </button>
     <button
-      mat-flat-button
-      color="primary"
+      mat-icon-button
+      class="action-btn action-btn--save"
       [disabled]="isFormInvalid"
       (click)="onSave()"
     >
-      {{ 'date.save' | translate: 'Сохранить' }}
+      <mat-icon>check</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="action-btn action-btn--close"
+      (click)="onClose()"
+    >
+      <mat-icon>close</mat-icon>
     </button>
   </div>
 </div>

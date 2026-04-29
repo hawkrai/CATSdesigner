@@ -79,38 +79,56 @@
                 | translate: 'Тема дипломного проекта'
             }}
           </th>
+
           <th
             class="mdc-data-table__header-cell data-cell"
             role="columnheader"
             scope="col"
-            *ngFor="let consultation of consultations"
+            *ngIf="
+              visitStatsComponent.getDiplomUser().IsSecretary &&
+              !visitStatsComponent.isLecturer
+            "
           >
-            <div class="header-date">
-              <span
-                class="clickable"
-                (dblclick)="visitStatsComponent.deleteVisitDate(consultation)"
-                matTooltip="{{
-                  'text.diplomProject.dateRemove' | translate: 'Удалить дату'
-                }}"
-                *ngIf="visitStatsComponent.isLecturer"
-              >
-                {{ consultation.Day | date: 'dd.MM.yyyy' }}
-              </span>
-              <p *ngIf="visitStatsComponent.getDiplomUser().IsStudent">
-                {{ consultation.Day | date: 'dd.MM.yyyy' }}
-              </p>
-              <p
-                *ngIf="
-                  !visitStatsComponent.isLecturer &&
-                  visitStatsComponent.getDiplomUser().IsSecretary
-                "
-              >
-                {{ consultation.Day | date: 'dd.MM.yyyy' }}
-              </p>
-            </div>
+            {{
+              'text.diplomProject.missedHoursHeader'
+                | translate: 'Пропущено часов'
+            }}
           </th>
+
+          <ng-container
+            *ngIf="
+              !(
+                visitStatsComponent.getDiplomUser().IsSecretary &&
+                !visitStatsComponent.isLecturer
+              )
+            "
+          >
+            <th
+              class="mdc-data-table__header-cell data-cell"
+              role="columnheader"
+              scope="col"
+              *ngFor="let consultation of consultations"
+            >
+              <div class="header-date">
+                <span
+                  class="clickable"
+                  (dblclick)="visitStatsComponent.deleteVisitDate(consultation)"
+                  matTooltip="{{
+                    'text.diplomProject.dateRemove' | translate: 'Удалить дату'
+                  }}"
+                  *ngIf="visitStatsComponent.isLecturer"
+                >
+                  {{ consultation.Day | date: 'dd.MM.yyyy' }}
+                </span>
+                <p *ngIf="visitStatsComponent.getDiplomUser().IsStudent">
+                  {{ consultation.Day | date: 'dd.MM.yyyy' }}
+                </p>
+              </div>
+            </th>
+          </ng-container>
         </tr>
       </thead>
+
       <tbody *ngIf="filteredVisitStatsList; else load">
         <tr
           class="mdc-data-table__row"
@@ -158,6 +176,22 @@
           >
             {{ stats.DiplomProjectTheme }}
           </td>
+          <ng-container
+            *ngIf="
+              visitStatsComponent.getDiplomUser().IsSecretary &&
+              !visitStatsComponent.isLecturer
+            "
+          >
+            <td
+              class="mdc-data-table__cell data-cell"
+              [matTooltip]="getMissedTooltip(stats)"
+              matTooltipPosition="above"
+            >
+              {{ getMissedHours(stats) }}
+            </td>
+          </ng-container>
+
+          <!-- Ячейки с метками — для студента -->
           <ng-container *ngIf="visitStatsComponent.getDiplomUser().IsStudent">
             <td
               class="mdc-data-table__cell data-cell"
@@ -168,21 +202,7 @@
               {{ consultationMark.Mark }}
             </td>
           </ng-container>
-          <ng-container
-            *ngIf="
-              !visitStatsComponent.isLecturer &&
-              visitStatsComponent.getDiplomUser().IsSecretary
-            "
-          >
-            <td
-              class="mdc-data-table__cell data-cell"
-              *ngFor="
-                let consultationMark of stats.DiplomProjectConsultationMarks
-              "
-            >
-              {{ consultationMark.Mark }}
-            </td>
-          </ng-container>
+
           <ng-container
             *ngIf="
               visitStatsComponent.getDiplomUser().IsLecturer &&
@@ -203,6 +223,7 @@
               {{ consultationMark.Mark }}
             </td>
           </ng-container>
+
           <ng-container *ngIf="visitStatsComponent.isLecturer">
             <td
               class="mdc-data-table__cell data-cell"

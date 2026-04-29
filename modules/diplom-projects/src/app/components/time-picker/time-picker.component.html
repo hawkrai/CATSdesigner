@@ -1,0 +1,60 @@
+<div class="timepicker-wrapper">
+
+  <ng-container *ngIf="isFirefox">
+    <div class="timepicker-field">
+      <span class="timepicker-label">{{ label }}</span>
+      <div class="timepicker-input-row">
+        <input
+          class="timepicker-native-input"
+          type="text"
+          [value]="value"
+          (input)="onManualInput($event)"
+          (blur)="onManualBlur($event)"
+          placeholder="чч:мм"
+        />
+        <mat-icon
+          class="timepicker-icon"
+          (click)="toggle(); $event.stopPropagation()"
+        >schedule</mat-icon>
+      </div>
+    </div>
+
+    <div class="timepicker-dropdown" *ngIf="isOpen">
+      <div class="timepicker-columns">
+        <div class="timepicker-column" #hoursColumn>
+          <div
+            *ngFor="let h of hours"
+            class="timepicker-item"
+            [class.selected]="h === selectedHour"
+            (click)="selectHour(h); $event.stopPropagation()"
+          >
+            {{ h | number: '2.0-0' }}
+          </div>
+        </div>
+        <div class="timepicker-column" #minutesColumn>
+          <div
+            *ngFor="let m of minutes"
+            class="timepicker-item"
+            [class.selected]="m === selectedMinute"
+            (click)="selectMinute(m); $event.stopPropagation()"
+          >
+            {{ m | number: '2.0-0' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!isFirefox">
+    <mat-form-field class="form-field">
+      <mat-label>{{ label }}</mat-label>
+      <input
+        matInput
+        type="time"
+        [formControl]="control"
+        [value]="value"
+        (change)="onNativeTimeChange($event)"
+      />
+    </mat-form-field>
+  </ng-container>
+
+</div>

@@ -56,6 +56,7 @@ namespace Application.Infrastructure.DPManagement
                 IsGraduate = studentGroup != null
                     && int.TryParse(studentGroup.GraduationYear, out int gradYear)
                     && gradYear == now.Year,
+                StudentGroupId = user.Student != null ? user.Student.GroupId : 0,
                 SelectedGroupIds = selectedGroupIds,
                 LecturerGroupIds = lecturerGroupIds
             };

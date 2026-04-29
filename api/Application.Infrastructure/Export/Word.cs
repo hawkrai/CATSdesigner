@@ -224,26 +224,22 @@ namespace Application.Infrastructure.Export
 
             var specialty = doc.CreateElement("item");
             specialty.SetAttribute("name", "Specialty");
-
-            //            specialty.InnerText = awork.Student.Group.Speciality.Specialty;  TODO
+            //specialty.InnerText = awork.Student.Group.Speciality.Specialty;  TODO
             children.Add(specialty);
 
             var specialtyShifr = doc.CreateElement("item");
             specialtyShifr.SetAttribute("name", "SpecialtyShifr");
-
-            //            specialtyShifr.InnerText = awork.Student.Group.Speciality.SpecialtyShifr;
+            //specialtyShifr.InnerText = awork.Student.Group.Speciality.SpecialtyShifr;
             children.Add(specialtyShifr);
 
             var specializationShifr = doc.CreateElement("item");
             specializationShifr.SetAttribute("name", "SpecializationShifr");
-
-            //            specializationShifr.InnerText = awork.Student.Group.Speciality.SpecializationShifr;
+            //specializationShifr.InnerText = awork.Student.Group.Speciality.SpecializationShifr;
             children.Add(specializationShifr);
 
             var specialization = doc.CreateElement("item");
             specialization.SetAttribute("name", "Specialization");
-
-            //            specialization.InnerText = awork.Student.Group.Speciality.Specialization;
+            //specialization.InnerText = awork.Student.Group.Speciality.Specialization;
             children.Add(specialization);
 
             var univer = doc.CreateElement("item");
@@ -271,24 +267,41 @@ namespace Application.Infrastructure.Export
 
             var pd = doc.CreateElement("item");
             pd.SetAttribute("name", "PublishData");
-            pd.InnerText = awork.DiplomProject.DateStart.HasValue ? awork.DiplomProject.DateStart.Value.ToString("d' 'MMMM' 'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
+            pd.InnerText = awork.DiplomProject.DateStart.HasValue
+                ? awork.DiplomProject.DateStart.Value.ToString("d' 'MMMM' 'yyyy'г.'", cultureInfo.DateTimeFormat)
+                : string.Empty;
             children.Add(pd);
 
             var ed = doc.CreateElement("item");
             ed.SetAttribute("name", "EndData");
-            ed.InnerText = awork.DiplomProject.DateEnd.HasValue ? awork.DiplomProject.DateEnd.Value.ToString("d' 'MMMM' 'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
+            ed.InnerText = awork.DiplomProject.DateEnd.HasValue
+                ? awork.DiplomProject.DateEnd.Value.ToString("d' 'MMMM' 'yyyy'г.'", cultureInfo.DateTimeFormat)
+                : string.Empty;
             children.Add(ed);
 
-            //SubjectGroup sg = work.Subject.Groups.GetByGroupId(work.Student.GroupId);
+            var currentYearStart = DateTime.Now.Month >= 9
+    ? new DateTime(DateTime.Now.Year, 9, 1)
+    : new DateTime(DateTime.Now.Year - 1, 9, 1);
+            var currentYearEnd = currentYearStart.AddYears(1);
+
+            var groupId = awork.Student.GroupId;
+
+            var pgs = awork.Student.Group.Secretary != null
+    ? awork.Student.Group.Secretary.DiplomPercentagesGraphs
+        .Where(x => x.Date >= currentYearStart && x.Date < currentYearEnd)
+        .OrderBy(x => x.Date)
+        .ToList()
+    : new List<DiplomPercentagesGraph>();
+           
+
             var percentageGraph = new StringBuilder();
-
-            var pgs = awork.Student.Group.Secretary != null ?
-                awork.Student.Group.Secretary.DiplomPercentagesGraphs : new List<DiplomPercentagesGraph>();
-
             var i = 1;
             foreach (var pg in pgs)
             {
-                percentageGraph.AppendFormat(CultureInfo.CreateSpecificCulture("ru-RU"), "{3}. {0} \t{1}% \t{2:d MMMM yyyy} г.\n", pg.Name, pg.Percentage, pg.Date, i++);
+                percentageGraph.AppendFormat(
+                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    "{3}. {0} \t{1}% \t{2:d MMMM yyyy} г.\n",
+                    pg.Name, pg.Percentage, pg.Date, i++);
             }
 
             children.AddRange(CreateStringNodes(doc, "Workflow", percentageGraph.ToString(), 638, 638, 14));

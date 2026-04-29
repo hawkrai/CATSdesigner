@@ -2,14 +2,21 @@
   &__header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 
     &__theme {
+      width: 30%;
+    }
+
+    &__theme--full {
       width: 100%;
     }
 
     &__actions {
       padding: 10px;
       display: flex;
+      align-items: center;
+      gap: 4px;
     }
   }
 
@@ -19,9 +26,10 @@
 }
 
 .mselect {
-  width: 180px;
-  margin-right: 16px;
+  width: 170px;
   flex-shrink: 0;
+  margin-left: 0px; 
+  margin-right: 500px
 }
 
 .iconify {
@@ -32,4 +40,25 @@
 
 ::ng-deep .mat-select-panel.theme-panel {
   max-height: 400px;
+
+  .mat-option {
+    height: auto !important;
+    white-space: normal !important;
+    line-height: 1.4 !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .mat-option-text {
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+}
+
+::ng-deep .task-sheet__header__theme--full {
+  width: 100% !important;
+
+  .mat-form-field-infix {
+    width: 100% !important;
+  }
 }
