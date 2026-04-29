@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core'
 import { TestPassingService } from '../service/test-passing.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { UserAnswers } from '../models/user-answers.model'
-import { takeUntil } from 'rxjs/operators'
+import { catchError, finalize, takeUntil } from 'rxjs/operators'
 import { AutoUnsubscribe } from '../decorator/auto-unsubscribe'
 import { AutoUnsubscribeBase } from '../core/auto-unsubscribe-base'
-import { Subject } from 'rxjs'
+import { of, Subject } from 'rxjs'
 import moment from 'moment'
 import { ClosedTestResult } from '../models/closed-test-result.model'
 import { DataValues } from '../models/data-values.model'
@@ -35,6 +35,7 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
   public result: UserAnswers[]
   public testName: string
   public testId: string
+  public isLoading = true
   public mark: number = 0
   public endTime: string
   public startTime: string
@@ -71,66 +72,69 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
     
     this.testPassingService
       .CloseTestAndGetResult(this.testId)
-      .pipe(takeUntil(this.unsubscribeStream$))
+      .pipe(
+        takeUntil(this.unsubscribeStream$),
+        catchError(() => of(null)),
+        finalize(() => {
+          this.isLoading = false
+        })
+      )
       .subscribe((result: ClosedTestResult) => {
-        this.result = result.Data.find(
-          (res: DataValues) => res.Key === Constants.ANSWERS
-        ).Value
-        this.testName = result.Data.find(
-          (res: DataValues) => res.Key === Constants.TEST_NAME
-        ).Value
-        this.mark = result.Data.find(
-          (res: DataValues) => res.Key === Constants.MARK
-        ).Value
-        this.percent = result.Data.find(
-          (res: DataValues) => res.Key === Constants.PERCENT
-        ).Value
-        this.startTime = moment(
-          result.Data.find(
-            (res: DataValues) => res.Key === Constants.START_TIME
-          ).Value
-        ).format('HH:mm:ss')
-        this.endTime = moment(
-          result.Data.find((res: DataValues) => res.Key === Constants.END_TIME)
-            .Value
-        ).format('HH:mm:ss')
-        this.endDate = moment(
-          result.Data.find((res: DataValues) => res.Key === Constants.END_TIME)
-            .Value
-        ).format('DD.MM.YYYY')
-        this.themes = result.Data.find(
-          (res: DataValues) => res.Key === Constants.THEMS
-        ).Value.reduce(
+        if (!result || !Array.isArray(result.Data)) {
+          this.result = []
+          return
+        }
+
+        const answers = this.getDataValue<UserAnswers[]>(result.Data, Constants.ANSWERS, [])
+        const testName = this.getDataValue<string>(result.Data, Constants.TEST_NAME, '')
+        const mark = this.getDataValue<number>(result.Data, Constants.MARK, 0)
+        const percent = this.getDataValue<number>(result.Data, Constants.PERCENT, 0)
+        const startTimeRaw = this.getDataValue<any>(result.Data, Constants.START_TIME, null)
+        const endTimeRaw = this.getDataValue<any>(result.Data, Constants.END_TIME, null)
+        const themes = this.getDataValue<Theme[]>(result.Data, Constants.THEMS, [])
+        const neuralRaw = this.getDataValue<string>(result.Data, Constants.NEURAL_DATA, null)
+
+        this.result = answers || []
+        this.testName = testName || ''
+        this.mark = mark || 0
+        this.percent = percent || 0
+        this.startTime = startTimeRaw ? moment(startTimeRaw).format('HH:mm:ss') : '—'
+        this.endTime = endTimeRaw ? moment(endTimeRaw).format('HH:mm:ss') : '—'
+        this.endDate = endTimeRaw ? moment(endTimeRaw).format('DD.MM.YYYY') : '—'
+        this.themes = (themes || []).reduce(
           (old, item: Theme) =>
             old.find((x) => x.id === item.id) ? old : [...old, item],
           []
         )
-        this.isNN = !!result.Data.find(
-          (res: DataValues) => res.Key === Constants.FO_NN
-        ).Value
+        this.isNN = !!this.getDataValue<any>(result.Data, Constants.FO_NN, null)
 
-        neuralNetworkV2.neuralNetworkV2.fromJSON(
-          JSON.parse(
-            result.Data.find(
-              (res: DataValues) => res.Key === Constants.NEURAL_DATA
-            ).Value
+        if (this.isNN && neuralRaw) {
+          neuralNetworkV2.neuralNetworkV2.fromJSON(JSON.parse(neuralRaw))
+          const nnResult = neuralNetworkV2.neuralNetworkV2.run(
+            this.result.map((x) => (x.Points !== 0 ? 1 : 0))
           )
-        )
-        const nnResult = neuralNetworkV2.neuralNetworkV2.run(
-          this.result.map((x) => (x.Points !== 0 ? 1 : 0))
-        )
-        for (const [index, value] of nnResult.entries()) {
-          const status = !(parseFloat(value) > 0.7)
-          const score = value
-          const theme = this.themes[index].name
+          for (const [index, value] of nnResult.entries()) {
+            const status = !(parseFloat(value) > 0.7)
+            const score = value
+            const theme = this.themes[index]?.name || ''
 
-          this.nnDatasource.push({
-            status,
-            score,
-            theme,
-          })
+            this.nnDatasource.push({
+              status,
+              score,
+              theme,
+            })
+          }
         }
       })
+  }
+
+  private getDataValue<T>(
+    data: DataValues[],
+    key: string,
+    defaultValue: T
+  ): T {
+    const item = data.find((res: DataValues) => res.Key === key)
+    return (item?.Value as T) ?? defaultValue
   }
 
   public navigate(): void {

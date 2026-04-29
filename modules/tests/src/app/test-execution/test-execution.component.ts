@@ -19,6 +19,8 @@ import { StorageKeys } from '../../../../../container/src/app/core/models/storag
 export class TestExecutionComponent
   extends AutoUnsubscribeBase
   implements OnInit {
+  private static readonly CURRENT_QUESTION_STORAGE_PREFIX =
+    'test-execution-current-question-'
   public question: TestQuestion
   public questionNumber: string
   public testId: string
@@ -42,9 +44,8 @@ export class TestExecutionComponent
   }
 
   ngOnInit() {
-    localStorage.setItem('start', JSON.stringify(new Date()))
     this.testId = this.route.snapshot.paramMap.get('id')
-    this.questionNumber = '1'
+    this.questionNumber = this.getSavedQuestionNumber()
     this.testService
       .getTestById(this.testId)
       .pipe(
@@ -62,6 +63,7 @@ export class TestExecutionComponent
         tap((question: TestQuestion) => {
           this.question = question
           if (!this.question.Seconds && this.question.Seconds === 0) {
+            this.clearSavedQuestionNumber()
             const queryParams: any = { testId: this.test.Id }
             if (sessionStorage.getItem(StorageKeys.TestFromComplex) === 'true') {
               queryParams.fromEUMK = 'true'
@@ -72,7 +74,11 @@ export class TestExecutionComponent
           }
 
           this.questionNumber = question && question.Number.toString()
-          this.allAnswersArray = question && question.IncompleteQuestionsNumbers
+          this.saveQuestionNumber(this.questionNumber)
+          this.allAnswersArray = question?.IncompleteQuestionsNumbers || []
+          if (this.allAnswersArray.length !== 0) {
+            this.questionArray = [...this.allAnswersArray]
+          }
 
           this.counter$ = timer(0, 1000).pipe(
             map(() => {
@@ -83,6 +89,7 @@ export class TestExecutionComponent
                 const minute: number = Math.floor(restTime / 60)
                 restTime = restTime - 60 * minute
                 if (hour === 0 && minute === 0 && restTime === 0) {
+                  this.clearSavedQuestionNumber()
                   const queryParams: any = { testId: this.test.Id }
                   if (sessionStorage.getItem(StorageKeys.TestFromComplex) === 'true') {
                     queryParams.fromEUMK = 'true'
@@ -101,6 +108,7 @@ export class TestExecutionComponent
                     : '0' + restTime.toString())
                 )
               } else {
+                this.clearSavedQuestionNumber()
                 return '00:00:00'
               }
             })
@@ -156,7 +164,10 @@ export class TestExecutionComponent
           .subscribe((question: TestQuestion) => {
             if (question && question.Question) {
               this.question = question
+              this.questionNumber = question.Number?.toString()
+              this.saveQuestionNumber(this.questionNumber)
             } else {
+              this.clearSavedQuestionNumber()
               const queryParams: any = { testId: this.test.Id }
               if (sessionStorage.getItem(StorageKeys.TestFromComplex) === 'true') {
                 queryParams.fromEUMK = 'true'
@@ -167,6 +178,7 @@ export class TestExecutionComponent
             }
           })
       } else {
+        this.clearSavedQuestionNumber()
         const queryParams: any = { testId: this.test.Id }
         if (sessionStorage.getItem(StorageKeys.TestFromComplex) === 'true') {
           queryParams.fromEUMK = 'true'
@@ -176,6 +188,7 @@ export class TestExecutionComponent
         })
       }
     } else {
+      this.clearSavedQuestionNumber()
       const queryParams: any = { testId: this.test.Id }
       if (sessionStorage.getItem(StorageKeys.TestFromComplex) === 'true') {
         queryParams.fromEUMK = 'true'
@@ -191,7 +204,37 @@ export class TestExecutionComponent
       Array(this.test.CountOfQuestions),
       (x, index) => index + 1
     )
-    console.log('this.questionArray', this.questionArray)
+  }
+
+  private getSavedQuestionNumber(): string {
+    if (!this.testId) {
+      return '1'
+    }
+    const key = this.getCurrentQuestionStorageKey()
+    const savedValue = localStorage.getItem(key)
+    if (!savedValue) {
+      return '1'
+    }
+    const parsed = Number(savedValue)
+    return Number.isInteger(parsed) && parsed > 0 ? parsed.toString() : '1'
+  }
+
+  private saveQuestionNumber(questionNumber: string): void {
+    if (!this.testId || !questionNumber) {
+      return
+    }
+    localStorage.setItem(this.getCurrentQuestionStorageKey(), questionNumber)
+  }
+
+  private clearSavedQuestionNumber(): void {
+    if (!this.testId) {
+      return
+    }
+    localStorage.removeItem(this.getCurrentQuestionStorageKey())
+  }
+
+  private getCurrentQuestionStorageKey(): string {
+    return `${TestExecutionComponent.CURRENT_QUESTION_STORAGE_PREFIX}${this.testId}`
   }
 
   private syncQuestionProgress(questionNumber: number, isTrue: boolean): void {
