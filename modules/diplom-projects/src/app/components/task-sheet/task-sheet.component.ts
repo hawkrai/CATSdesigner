@@ -95,18 +95,20 @@ export class TaskSheetComponent implements OnInit, OnDestroy {
   }
 
   loadThemes() {
-    const params: any = { entity: 'DiplomProject' }
-    if (!this.isLecturer) {
-      params.isSecretary = true
-    }
+  const params: any = { entity: 'DiplomProject' }
 
-    this.projectThemeService.getThemes(params).subscribe((res) => {
-      this.themesList = res
-      this.diplomProjectId = res[0] ? res[0].Id : null
-      this.retrieveTaskSheetHtml()
-      this.retrieveTemplates()
-    })
+  if (this.diplomUser.IsStudent) {
+  } else if (!this.isLecturer) {
+    params.isSecretary = true
   }
+
+  this.projectThemeService.getThemes(params).subscribe((res) => {
+    this.themesList = res
+    this.diplomProjectId = res[0] ? res[0].Id : null
+    this.retrieveTaskSheetHtml()
+    this.retrieveTemplates()
+  })
+}
 
   lecturerStatusChange(event: any) {
     this.isLecturer = event.value.value
@@ -266,7 +268,11 @@ export class TaskSheetComponent implements OnInit, OnDestroy {
   }
 
   downloadArchive() {
-    const lang = this.languageService.current
+  const lang = this.languageService.current
+  if (this.isLecturer) {
     location.href = location.origin + '/api/DpTaskSheetDownload?lang=' + lang
+  } else {
+    location.href = location.origin + '/api/DpTaskSheetDownload?lang=' + lang + '&isSecretary=true'
   }
+}
 }

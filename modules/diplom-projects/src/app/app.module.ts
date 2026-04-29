@@ -59,8 +59,10 @@ import { HelpPopoverScheduleComponent } from './shared/help-popover/help-popover
 import { HelpComponent } from './shared/help/help.component'
 import { PopoverModule } from 'ngx-smart-popover'
 import { EditComponent } from './components/projects/edit/edit.component'
+import { TimePickerComponent } from './components/time-picker/time-picker.component'
 @NgModule({
   declarations: [
+    TimePickerComponent,
     AppComponent,
     ProjectsComponent,
     ProjectsListComponent,

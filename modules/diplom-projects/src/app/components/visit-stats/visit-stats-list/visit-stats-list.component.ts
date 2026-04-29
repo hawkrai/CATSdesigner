@@ -46,4 +46,36 @@ export class VisitStatsListComponent implements OnInit {
     }
     return false
   }
+
+  getStudentConsultations(stats: VisitStats): Consultation[] {
+    if (!this.consultations) return []
+    return this.consultations.filter(
+      (c) => c.LecturerFullName === stats.Lecturer
+    )
+  }
+
+  getMissedHours(stats: VisitStats): number {
+  if (!stats.DiplomProjectConsultationMarks) return 0
+  return stats.DiplomProjectConsultationMarks.reduce((sum, mark) => {
+    const val = parseFloat(mark.Mark)
+    return sum + (isNaN(val) ? 0 : val)
+  }, 0)
+}
+
+getTotalHours(stats: VisitStats): number {
+  return this.getStudentConsultations(stats).length * 2
+}
+
+getMissedTooltip(stats: VisitStats): string {
+  const missed = this.getMissedHours(stats)
+  const total = this.getTotalHours(stats)
+  return this.translatePipe.transform(
+    'text.diplomProject.missedHoursTooltip',
+    `Пропустил(а) ${missed} часа(ов) из ${total}`,
+    {
+      missed: String(missed),
+      total: String(total),
+    }
+  )
+}
 }

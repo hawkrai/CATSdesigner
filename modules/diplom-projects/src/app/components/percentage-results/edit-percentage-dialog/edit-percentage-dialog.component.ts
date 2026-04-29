@@ -53,7 +53,6 @@ export class EditPercentageDialogComponent {
       validators.push(Validators.required)
     }
     this.percentageControl.setValidators(validators)
-    console.log(data)
     this.data.date = this.date.value
   }
 

@@ -15,7 +15,7 @@ export class PercentagesService {
   }
 
   public editStage(
-    id: string,
+    id: number,
     date: string,
     name: string,
     percentage: number,
@@ -30,7 +30,7 @@ export class PercentagesService {
     })
   }
 
-  public deleteStage(id: string): Observable<any> {
+  public deleteStage(id: number): Observable<any> {
     return this.http.post('api/DpPercentage/' + id, null)
   }
 }

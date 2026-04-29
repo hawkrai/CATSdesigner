@@ -5,6 +5,7 @@ import { TranslatePipe } from 'educats-translate'
 import { Consultation } from 'src/app/models/consultation.model'
 import { VisitStatsService } from 'src/app/services/visit-stats.service'
 import { ToastrService } from 'ngx-toastr'
+import { TimePickerComponent } from '../../time-picker/time-picker.component'
 
 interface DialogData {
   consultations: Consultation[]
@@ -112,6 +113,7 @@ export class AddDateDialogComponent {
         EndTime: String(this.data.end),
         Building: String(this.data.building),
         Audience: String(this.data.audience),
+         LecturerFullName: lastConsultation ? lastConsultation.LecturerFullName : '',
       }
 
       this.data.consultations.push(consultation)

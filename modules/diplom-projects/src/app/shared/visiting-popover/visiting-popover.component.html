@@ -5,7 +5,9 @@
   </button>
 </div>
 <div class="visiting-popover__header">
-  <p>{{ data.body.date }}</p>
+  <div class="visiting-popover__header">
+    <p class="theme-subtitle">{{ data.body.date }}</p>
+  </div>
 </div>
 <div mat-dialog-content class="dialog-content" *ngIf="data.body">
   <mat-table [dataSource]="data.body.students" class="mat-elevation-z8">

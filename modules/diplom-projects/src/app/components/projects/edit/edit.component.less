@@ -19,8 +19,22 @@
   &__actions {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 4px;
     margin-top: 8px;
+
+    .action-btn {
+      &--save {
+        color: #4caf50;
+
+        &[disabled] {
+          color: rgba(0, 0, 0, 0.26);
+        }
+      }
+
+      &--close {
+        color: #f44336;
+      }
+    }
   }
 }
 

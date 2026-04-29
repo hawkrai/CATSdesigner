@@ -106,34 +106,40 @@ export class PercentagesComponent implements OnInit {
       })
   }
 
-  retrievePercentages() {
-    const params: any = {
-      count: this.COUNT,
-      page: this.PAGE,
-    }
+retrievePercentages() {
+  const params: any = {
+    count: this.COUNT,
+    page: this.PAGE,
+  }
 
-    this.percentagesService.getPercentages(params).subscribe((res) => {
-      if (this.isLecturer) {
-        if (this.selectedGroupId) {
-          this.percentages = res.Items.filter(
-            (item: any) =>
-              item.SelectedGroupsIds &&
-              item.SelectedGroupsIds.includes(this.selectedGroupId)
-          )
-        } else {
-          this.percentages = res.Items
-        }
-      } else {
+  this.percentagesService.getPercentages(params).subscribe((res) => {
+    if (this.isLecturer) {
+      if (this.selectedGroupId) {
         this.percentages = res.Items.filter(
           (item: any) =>
             item.SelectedGroupsIds &&
-            item.SelectedGroupsIds.some((gId: number) =>
-              this.diplomUser.SelectedGroupIds.includes(gId)
-            )
+            item.SelectedGroupsIds.includes(this.selectedGroupId)
         )
+      } else {
+        this.percentages = res.Items
       }
-    })
-  }
+    } else if (this.diplomUser.IsStudent) {
+      this.percentages = res.Items.filter(
+        (item: any) =>
+          item.SelectedGroupsIds &&
+          item.SelectedGroupsIds.includes(this.diplomUser.StudentGroupId)
+      )
+    } else {
+      this.percentages = res.Items.filter(
+        (item: any) =>
+          item.SelectedGroupsIds &&
+          item.SelectedGroupsIds.some((gId: number) =>
+            this.diplomUser.SelectedGroupIds.includes(gId)
+          )
+      )
+    }
+  })
+}
 
   onGroupChange(group: { id: number; name: string }) {
     this.selectedGroup = group
@@ -218,63 +224,64 @@ export class PercentagesComponent implements OnInit {
   }
 
   editStage(stage: Percentage) {
-    const dialogRef = this.dialog.open(AddStageDialogComponent, {
-      autoFocus: false,
-      height: '100%',
-      width: '600px',
-      data: {
-        id: stage.Id,
-        title: this.translatePipe.transform(
-          'text.diplomProject.editStage',
-          'Редактирование этапа процентовки'
-        ),
-        name: stage.Name,
-        percentage: stage.Percentage,
-        date: stage.Date,
-      },
-    })
+  const dialogRef = this.dialog.open(AddStageDialogComponent, {
+    autoFocus: false,
+    height: '100%',
+    width: '600px',
+    data: {
+      id: stage.Id,
+      title: this.translatePipe.transform(
+        'text.diplomProject.editStage',
+        'Редактирование этапа процентовки'
+      ),
+      name: stage.Name,
+      percentage: stage.Percentage,
+      date: stage.Date,
+      selectedGroupsIds: stage.SelectedGroupsIds,
+    },
+  })
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result != null && result.name != null) {
-        result.name = result.name.replace('\n', '')
-        var checkTheme = this.percentages.find((i) => i.Name === result.name)
-        const date = new Date(result.date)
-        var stageDate = new Date(stage.Date)
-        if (
-          result.Id ||
-          checkTheme == undefined ||
-          stage.Percentage != result.percentage ||
-          date.toISOString() != stageDate.toISOString()
-        ) {
-          date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
-          this.percentagesService
-            .editStage(
-              stage.Id,
-              date.toISOString(),
-              result.name,
-              result.percentage,
-              result.selectedGroupsIds
-            )
-            .subscribe(() => {
-              this.ngOnInit()
-              this.addFlashMessage(
-                this.translatePipe.transform(
-                  'text.diplomProject.editStageAlert',
-                  'Этап успешно изменен'
-                )
-              )
-            })
-        } else {
-          this.addFlashErrorMessage(
-            this.translatePipe.transform(
-              'text.diplomProject.stageExists',
-              'Этап с такими данными уже существует'
-            )
+  dialogRef.afterClosed().subscribe((result) => {
+    if (result != null && result.name != null) {
+      result.name = result.name.replace('\n', '')
+      var checkTheme = this.percentages.find((i) => i.Name === result.name)
+      const date = new Date(result.date)
+      var stageDate = new Date(stage.Date)
+      if (
+        result.Id ||
+        checkTheme == undefined ||
+        stage.Percentage != result.percentage ||
+        date.toISOString() != stageDate.toISOString()
+      ) {
+        date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+        this.percentagesService
+          .editStage(
+            Number(stage.Id),
+            date.toISOString(),
+            result.name,
+            result.percentage,
+            result.selectedGroupsIds,
           )
-        }
+          .subscribe(() => {
+            this.ngOnInit()
+            this.addFlashMessage(
+              this.translatePipe.transform(
+                'text.diplomProject.editStageAlert',
+                'Этап успешно изменен'
+              )
+            )
+          })
+      } else {
+        this.addFlashErrorMessage(
+          this.translatePipe.transform(
+            'text.diplomProject.stageExists',
+            'Этап с такими данными уже существует'
+          )
+        )
       }
-    })
-  }
+    }
+  })
+}
 
   deleteStage(id: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -299,7 +306,7 @@ export class PercentagesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result != null && result) {
-        this.percentagesService.deleteStage(id).subscribe(() => {
+        this.percentagesService.deleteStage(Number(id)).subscribe(() => {
           this.ngOnInit()
           this.addFlashMessage(
             this.translatePipe.transform(

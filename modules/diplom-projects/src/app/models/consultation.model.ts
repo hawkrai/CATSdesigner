@@ -6,5 +6,6 @@ export class Consultation {
   EndTime: string
   Building: string
   Audience: string
+  LecturerFullName: string
   isClose?: boolean
 }

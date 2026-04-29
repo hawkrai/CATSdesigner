@@ -1,21 +1,22 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using Ap = DocumentFormat.OpenXml.ExtendedProperties;
-using Vt = DocumentFormat.OpenXml.VariantTypes;
-using DocumentFormat.OpenXml;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using A = DocumentFormat.OpenXml.Drawing;
-using Ds = DocumentFormat.OpenXml.CustomXmlDataProperties;
-using M = DocumentFormat.OpenXml.Math;
-using Ovml = DocumentFormat.OpenXml.Vml.Office;
-using V = DocumentFormat.OpenXml.Vml;
-using W14 = DocumentFormat.OpenXml.Office2010.Word;
-using W15 = DocumentFormat.OpenXml.Office2013.Word;
-using Op = DocumentFormat.OpenXml.CustomProperties;
 using LMPlatform.Models.DP;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Collections.Generic;
 using System.Linq;
+using A = DocumentFormat.OpenXml.Drawing;
+using Ap = DocumentFormat.OpenXml.ExtendedProperties;
+using Ds = DocumentFormat.OpenXml.CustomXmlDataProperties;
+using M = DocumentFormat.OpenXml.Math;
+using Op = DocumentFormat.OpenXml.CustomProperties;
+using Ovml = DocumentFormat.OpenXml.Vml.Office;
+using V = DocumentFormat.OpenXml.Vml;
+using Vt = DocumentFormat.OpenXml.VariantTypes;
+using W14 = DocumentFormat.OpenXml.Office2010.Word;
+using W15 = DocumentFormat.OpenXml.Office2013.Word;
 
 namespace Application.Infrastructure.Export
 {
@@ -241,7 +242,22 @@ namespace Application.Infrastructure.Export
             {
                 dateStart = awork.DiplomProject.DateStart.HasValue ? awork.DiplomProject.DateStart.Value.ToString("dd'.'MM'.'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
                 dateEnd = awork.DiplomProject.DateEnd != null && awork.DiplomProject.DateEnd.HasValue ? awork.DiplomProject.DateEnd.Value.ToString("dd'.'MM'.'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
-                lecturer = string.Format("{0}.{1}. {2}", awork.DiplomProject.Lecturer.FirstName[0], awork.DiplomProject.Lecturer.MiddleName[0], awork.DiplomProject.Lecturer.LastName);
+
+                if (awork.DiplomProject.Lecturer != null)
+                {
+                    var firstName = !string.IsNullOrWhiteSpace(awork.DiplomProject.Lecturer.FirstName)
+                        ? awork.DiplomProject.Lecturer.FirstName[0] + "."
+                        : "";
+                    var middleName = !string.IsNullOrWhiteSpace(awork.DiplomProject.Lecturer.MiddleName)
+                        ? awork.DiplomProject.Lecturer.MiddleName[0] + "."
+                        : "";
+                    lecturer = $"{firstName}{middleName} {awork.DiplomProject.Lecturer.LastName}".Trim();
+                }
+                else
+                {
+                    lecturer = string.Empty;
+                }
+
                 var firstInitial = !string.IsNullOrWhiteSpace(awork.Student.FirstName)
                     ? awork.Student.FirstName[0] + "."
                     : "";
@@ -1422,10 +1438,12 @@ namespace Application.Infrastructure.Export
             }
             else
             {
-                text20.Text = awork.DiplomProject.DateStart.Value.Year.ToString();
+                if (awork.DiplomProject.DateStart != null)
+                {
+                    text20.Text = awork.DiplomProject.DateStart.Value.Year.ToString();
+                }
             }
             text20.Text = text20.Text ?? "";
-
             run20.Append(runProperties20);
             run20.Append(text20);
 
@@ -6766,8 +6784,17 @@ namespace Application.Infrastructure.Export
             paragraphProperties99.Append(paragraphMarkRunProperties99);
 
             // get percentages
-            var pgs = awork?.Student.Group.Secretary != null ?
-                awork.Student.Group.Secretary.DiplomPercentagesGraphs.ToList() : new List<DiplomPercentagesGraph>();
+            var currentYearStart = DateTime.Now.Month >= 9
+    ? new DateTime(DateTime.Now.Year, 9, 1)
+    : new DateTime(DateTime.Now.Year - 1, 9, 1);
+            var currentYearEnd = currentYearStart.AddYears(1);
+
+            var pgs = awork?.Student.Group.Secretary != null
+                ? awork.Student.Group.Secretary.DiplomPercentagesGraphs
+                    .Where(x => x.Date >= currentYearStart && x.Date < currentYearEnd)
+                    .OrderBy(x => x.Date)
+                    .ToList()
+                : new List<DiplomPercentagesGraph>();
             int index = 0;
 
             Run run112 = new Run() { RsidRunProperties = "003578D5" };
