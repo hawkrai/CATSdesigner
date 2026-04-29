@@ -14,7 +14,7 @@ import { ResultForTable } from '../models/result-for-table.model'
 import { AutoUnsubscribe } from '../decorator/auto-unsubscribe'
 import { AutoUnsubscribeBase } from '../core/auto-unsubscribe-base'
 import { of, Subject, timer } from 'rxjs'
-import { finalize, switchMap, takeUntil } from 'rxjs/operators'
+import { catchError, exhaustMap, filter, finalize, takeUntil } from 'rxjs/operators'
 import { AutocompleteModel } from '../models/autocomplete.model'
 import { Results } from '../models/results.model'
 import { TranslatePipe } from 'educats-translate'
@@ -59,6 +59,7 @@ export class ResultTeacherComponent
   public user: any
   public subject: any
   private unsubscribeStream$: Subject<void> = new Subject<void>()
+  private readonly refreshMs = 10000
   public showAsSubGroup: boolean
   public help: Help
 
@@ -130,17 +131,22 @@ export class ResultTeacherComponent
         })
       })
 
-    timer(3000, 3000)
+    timer(this.refreshMs, this.refreshMs)
       .pipe(
         takeUntil(this.unsubscribeStream$),
-        switchMap(() => {
-          if (!this.groupChangeCheckBoxes?.length) {
-            return of([] as Results[])
-          }
+        filter(() => {
+          return (
+            !!this.groupChangeCheckBoxes?.length &&
+            typeof document !== 'undefined' &&
+            document.visibilityState === 'visible'
+          )
+        }),
+        exhaustMap(() => {
           return this.testPassingService.getResultsByGroupsAndSubject(
             this.groupChangeCheckBoxes,
             this.subject.id
           )
+          .pipe(catchError(() => of([] as Results[])))
         })
       )
       .subscribe((apiResults: Results[]) => {
