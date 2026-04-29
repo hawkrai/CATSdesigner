@@ -140,7 +140,15 @@ namespace LMPlatform.UI.Controllers
                         .Where(qs => qs.Value == PassedQuestionResult.NotPassed).Select(qs => qs.Key)
                 }) as JsonResult;
 
-            if (excludeCorrectnessIndicator) result.Question.Answers.ForEach(a => a.СorrectnessIndicator = default);
+            if (excludeCorrectnessIndicator)
+            {
+                if (result.Question.QuestionType == QuestionType.TextAnswer)
+                {
+                    result.Question.Answers = result.Question.Answers.Take(1).ToList();
+                }
+
+                result.Question.Answers.ForEach(a => a.СorrectnessIndicator = default);
+            }
             question = result.Question.Clone() as Question;
 
             return JsonResponse(new
