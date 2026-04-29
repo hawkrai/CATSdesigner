@@ -17,8 +17,8 @@ import { Complex } from '../../../models/Complex'
 import { TranslatePipe } from 'educats-translate'
 import { CatsService, CodeType } from 'src/app/service/cats.service'
 import { DeleteConfirmationPopupComponent } from './delete-confirmation-popup/delete-confirmation-popup.component'
-import { takeUntil } from 'rxjs/operators'
-import { Subject, forkJoin, of } from 'rxjs'
+import { takeUntil, catchError, concatMap } from 'rxjs/operators'
+import { Subject, forkJoin, from, of } from 'rxjs'
 import { MenuService } from '../../../../../../../container/src/app/core/services/menu.service'
 import { ModuleType } from '../../../../../../../container/src/app/core/models/module.model'
 import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
@@ -81,6 +81,7 @@ export class MaterialComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    this.libreOfficeAvailability.getAvailability().subscribe()
     this.loadConceptCascade()
   }
 
@@ -250,24 +251,7 @@ export class MaterialComponent implements OnInit, OnChanges {
   }
 
   openPDF(nodeId: number, filename: string): void {
-    if (this.libreOfficeAvailability.isAvailable &&
-        (filename.toLowerCase().endsWith('.docx') || filename.toLowerCase().endsWith('.doc'))) {
-      this.complexService.convertPendingDocx(nodeId).subscribe((res) => {
-        if (res && res['Code'] === ApiResponseCode.Success) {
-          this.loadConceptCascade(() => {
-            const updatedNode = this.findNodeById(this.dataSource.data, nodeId)
-            const updatedFilename = (updatedNode && updatedNode.FilePath) ? updatedNode.FilePath : filename
-            this._openPDFDialog(nodeId, updatedFilename)
-          })
-        } else {
-          this._openPDFDialog(nodeId, filename)
-        }
-      }, () => {
-        this._openPDFDialog(nodeId, filename)
-      })
-    } else {
-      this._openPDFDialog(nodeId, filename)
-    }
+    this._openPDFDialog(nodeId, filename)
   }
 
   private _openPDFDialog(nodeId: number, filename: string): void {
@@ -427,105 +411,114 @@ export class MaterialComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const wasFolder = node.IsGroup
-        const isNowFolder = result.isGroup
-        const isNowFile = !result.isGroup
-        const hasNoAttachments = !result.attachments || result.attachments.length === 0
-        const hadNoInitialAttachments = !attachments || attachments.length === 0
+        this.libreOfficeAvailability.resolveAvailability().subscribe((isLibreOfficeAvailable) => {
+          const wasFolder = node.IsGroup
+          const isNowFolder = result.isGroup
+          const isNowFile = !result.isGroup
+          const hasNoAttachments = !result.attachments || result.attachments.length === 0
+          const hadNoInitialAttachments = !attachments || attachments.length === 0
 
-        const userId = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id
+          const userId = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser)).id
 
-        const initialAttachmentIds = new Set(
-          (attachments || []).filter(a => a.id > 0).map(a => a.id)
-        )
+          const initialAttachmentIds = new Set(
+            (attachments || []).filter(a => a.id > 0).map(a => a.id)
+          )
 
-        const newFiles = isNowFolder
-          ? (result.attachments || []).filter(
-              (a: any) => !a.id || a.id === 0 || !initialAttachmentIds.has(a.id)
-            )
-          : []
+          const newFiles = isNowFolder
+            ? (result.attachments || []).filter(
+                (a: any) => !a.id || a.id === 0 || !initialAttachmentIds.has(a.id)
+              )
+            : []
 
-        const convertedFromFileToFolder = !wasFolder && isNowFolder
-        const fileToFolderAttachments = convertedFromFileToFolder
-          ? (attachments || [])
-          : []
+          const convertedFromFileToFolder = !wasFolder && isNowFolder
+          const fileToFolderAttachments = convertedFromFileToFolder
+            ? (attachments || [])
+            : []
 
-        const convertedFromFolderToFile = wasFolder && isNowFile
-        let folderToFileContainer: string | null = null
-        if (convertedFromFolderToFile) {
-          const children: any[] = node.children || []
-          const childWithFile = children.find((c: any) => !c.IsGroup && c.FilePath)
-          if (childWithFile && childWithFile.Attachments && childWithFile.Attachments.length > 0) {
-            folderToFileContainer = childWithFile.Attachments[0].PathName
-          }
-        }
-
-        let fileData: string
-        if (isNowFile && hasNoAttachments && hadNoInitialAttachments && !folderToFileContainer) {
-          fileData = JSON.stringify([])
-        } else if (isNowFolder) {
-          fileData = JSON.stringify([])
-        } else if (convertedFromFolderToFile && folderToFileContainer) {
-          fileData = JSON.stringify([])
-        } else if (result.isGroup) {
-          fileData = JSON.stringify([])
-        } else {
-          fileData = JSON.stringify(result.attachments || [])
-        }
-
-        const concept: Concept = {
-          conceptId: result.id,
-          conceptName: result.name,
-          parentId: result.parentId,
-          isGroup: result.isGroup,
-          fileData: fileData,
-          userId,
-          container: folderToFileContainer || undefined,
-          preserveFiles: convertedFromFileToFolder && fileToFolderAttachments.length > 0,
-          skipConversion: !this.libreOfficeAvailability.isAvailable,
-        }
-
-        const deleteChildren$ = convertedFromFolderToFile
-          ? (node.children || []).map((child: any) =>
-              this.complexService.deleteConcept({ elementId: parseInt(child.Id, 10) })
-            )
-          : []
-
-        const doSave = () => {
-          this.complexService.addOrEditConcept(concept).subscribe((res) => {
-            if (res['Code'] === ApiResponseCode.Success) {
-              const allNewChildFiles = [
-                ...newFiles,
-                ...fileToFolderAttachments,
-              ]
-
-              if (isNowFolder && allNewChildFiles.length > 0) {
-                const childConcepts$ = allNewChildFiles.map((file: any) => {
-                  const isExisting = file.id && file.id > 0
-                  return this.complexService.addOrEditConcept({
-                    conceptId: 0,
-                    conceptName: this.stripFileExtension(file.name),
-                    parentId: result.id,
-                    isGroup: false,
-                    fileData: isExisting ? JSON.stringify([]) : JSON.stringify([file]),
-                    userId,
-                    container: isExisting ? (file.pathName || undefined) : undefined,
-                    skipConversion: !this.libreOfficeAvailability.isAvailable,
-                  })
-                })
-                forkJoin(childConcepts$).subscribe(() => this.loadConceptCascade())
-              } else {
-                this.loadConceptCascade()
-              }
+          const convertedFromFolderToFile = wasFolder && isNowFile
+          let folderToFileContainer: string | null = null
+          if (convertedFromFolderToFile) {
+            const children: any[] = node.children || []
+            const childWithFile = children.find((c: any) => !c.IsGroup && c.FilePath)
+            if (childWithFile && childWithFile.Attachments && childWithFile.Attachments.length > 0) {
+              folderToFileContainer = childWithFile.Attachments[0].PathName
             }
-          })
-        }
+          }
 
-        if (deleteChildren$.length > 0) {
-          forkJoin(deleteChildren$).subscribe(() => doSave())
-        } else {
-          doSave()
-        }
+          let fileData: string
+          if (isNowFile && hasNoAttachments && hadNoInitialAttachments && !folderToFileContainer) {
+            fileData = JSON.stringify([])
+          } else if (isNowFolder) {
+            fileData = JSON.stringify([])
+          } else if (convertedFromFolderToFile && folderToFileContainer) {
+            fileData = JSON.stringify([])
+          } else if (result.isGroup) {
+            fileData = JSON.stringify([])
+          } else {
+            fileData = JSON.stringify(result.attachments || [])
+          }
+
+          const concept: Concept = {
+            conceptId: result.id,
+            conceptName: result.name,
+            parentId: result.parentId,
+            isGroup: result.isGroup,
+            fileData: fileData,
+            userId,
+            container: folderToFileContainer || undefined,
+            preserveFiles: convertedFromFileToFolder && fileToFolderAttachments.length > 0,
+            skipConversion: !isLibreOfficeAvailable,
+          }
+
+          const deleteChildren$ = convertedFromFolderToFile
+            ? (node.children || []).map((child: any) =>
+                this.complexService.deleteConcept({ elementId: parseInt(child.Id, 10) })
+              )
+            : []
+
+          const doSave = () => {
+            this.complexService.addOrEditConcept(concept).subscribe((res) => {
+              if (res['Code'] === ApiResponseCode.Success) {
+                const allNewChildFiles = [
+                  ...newFiles,
+                  ...fileToFolderAttachments,
+                ]
+                const parentConceptId = res['SavedConceptId'] || result.id
+
+                if (isNowFolder && allNewChildFiles.length > 0) {
+                  from(allNewChildFiles).pipe(
+                    concatMap((file: any) => {
+                      const isExisting = file.id && file.id > 0
+                      return this.complexService.addOrEditConcept({
+                        conceptId: 0,
+                        conceptName: this.stripFileExtension(file.name),
+                        parentId: parentConceptId,
+                        isGroup: false,
+                        fileData: JSON.stringify([file]),
+                        userId,
+                        container: isExisting ? (file.pathName || undefined) : undefined,
+                        skipConversion: !isLibreOfficeAvailable,
+                      }).pipe(
+                        catchError((error) => {
+                          console.error('Error creating child concept:', error)
+                          return of(null)
+                        })
+                      )
+                    })
+                  ).subscribe(() => {}, () => {}, () => this.loadConceptCascade())
+                } else {
+                  this.loadConceptCascade()
+                }
+              }
+            })
+          }
+
+          if (deleteChildren$.length > 0) {
+            forkJoin(deleteChildren$).subscribe(() => doSave())
+          } else {
+            doSave()
+          }
+        })
       }
     })
   }

@@ -85,7 +85,11 @@
       [disabled]="true"
       (click)="processsTest()"
     >
-      {{ 'common.finishTest' | translate: 'Завершить тест' }}
+      {{
+        isPredTest
+          ? ('complex.goToLearning' | translate: 'Перейти к обучению')
+          : ('common.finishTest' | translate: 'Завершить тест')
+      }}
     </button>
   </div>
 </div>

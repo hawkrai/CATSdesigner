@@ -586,7 +586,12 @@ namespace Application.Infrastructure.ConceptManagement
 
                 if (attachments?.Any() == true)
                 {
-                    FilesManagementService.SaveFiles(attachments.Where(e => e.Id == 0), concept.Container);
+                    var newAttachments = attachments.Where(e => e.Id == 0).ToList();
+                    
+                    if (newAttachments.Any())
+                    {
+                        FilesManagementService.SaveFiles(newAttachments, concept.Container);
+                    }
 
                     foreach (var attachment in attachments)
                     {

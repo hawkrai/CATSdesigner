@@ -105,6 +105,9 @@ export class MaterialsPopoverComponent {
     )
 
     this.toTestButtonVisible = this.showMaterial
+    this.endTestButtonVisible = true
+    this.zoomOutButtonVisible = true
+    this.zoomInButtonVisible = true
 
     if (this.materialPathes) {
       this.checkMaterialsContainerForButtonsVisibility()
@@ -165,9 +168,6 @@ export class MaterialsPopoverComponent {
         this.nextButtonVisible = false
         this.needToGetInitialTest = false
         this.shouldWaitPresettedTime = false
-        this.zoomOutButtonVisible = false
-        this.zoomInButtonVisible = false
-        this.endTestButtonVisible = false
       })
   }
 
@@ -183,9 +183,6 @@ export class MaterialsPopoverComponent {
       this.nextButtonVisible = false
       this.needToGetInitialTest = false
       this.shouldWaitPresettedTime = false
-      this.zoomOutButtonVisible = false
-      this.zoomInButtonVisible = false
-      this.endTestButtonVisible = false
     })
   }
 
