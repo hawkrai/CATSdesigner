@@ -13,8 +13,8 @@ import { Result } from '../models/result.model'
 import { ResultForTable } from '../models/result-for-table.model'
 import { AutoUnsubscribe } from '../decorator/auto-unsubscribe'
 import { AutoUnsubscribeBase } from '../core/auto-unsubscribe-base'
-import { Subject } from 'rxjs'
-import { finalize, takeUntil } from 'rxjs/operators'
+import { of, Subject, timer } from 'rxjs'
+import { finalize, switchMap, takeUntil } from 'rxjs/operators'
 import { AutocompleteModel } from '../models/autocomplete.model'
 import { Results } from '../models/results.model'
 import { TranslatePipe } from 'educats-translate'
@@ -129,6 +129,50 @@ export class ResultTeacherComponent
           this.groupsList.push({ display: group.Name, value: <string>group.Id })
         })
       })
+
+    timer(3000, 3000)
+      .pipe(
+        takeUntil(this.unsubscribeStream$),
+        switchMap(() => {
+          if (!this.groupChangeCheckBoxes?.length) {
+            return of([] as Results[])
+          }
+          return this.testPassingService.getResultsByGroupsAndSubject(
+            this.groupChangeCheckBoxes,
+            this.subject.id
+          )
+        })
+      )
+      .subscribe((apiResults: Results[]) => {
+        if (!apiResults?.length) {
+          return
+        }
+        this.initArraysMass()
+        this.initArrays()
+        this.resultsOriginal = []
+        this.studentList = []
+
+        apiResults.forEach((groupBlock: Results) => {
+          const groupIdRaw = groupBlock.GroupId ?? groupBlock.groupId
+          const groupMeta = this.groupsList.find(
+            (g: AutocompleteModel) => Number(g.value) === Number(groupIdRaw)
+          )
+          groupBlock.Results.forEach((result: Result) => {
+            if (groupMeta) {
+              result.groupName = groupMeta.display
+              result.groupId = groupMeta.value
+            }
+          })
+          this.resultsOriginal.push(groupBlock.Results)
+        })
+
+        this.results = this.resultsOriginal[0] || []
+
+        this.resultsOriginal.forEach((res) => {
+          this.decomposeResult(res, false, false)
+        })
+        this.cdr.detectChanges()
+      })
   }
 
   private groupIdsSelectionEqual(a: string[], b: string[]): boolean {
@@ -227,7 +271,7 @@ export class ResultTeacherComponent
           this.decomposeResult(res, false, false)
         })
       })
-  }
+    }
 
   public testsChange(eventChange) {
     if (this.testChangeCheckBoxes !== eventChange) {

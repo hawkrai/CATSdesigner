@@ -3,8 +3,8 @@ import { TestPassingService } from '../service/test-passing.service'
 import { Test } from '../models/test.model'
 import { AutoUnsubscribeBase } from '../core/auto-unsubscribe-base'
 import { AutoUnsubscribe } from '../decorator/auto-unsubscribe'
-import { takeUntil } from 'rxjs/operators'
-import { Subject } from 'rxjs'
+import { switchMap, takeUntil } from 'rxjs/operators'
+import { Subject, timer } from 'rxjs'
 import { Router } from '@angular/router'
 import { ActivatedRoute } from '@angular/router'
 import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
@@ -57,6 +57,8 @@ export class PageComponent extends AutoUnsubscribeBase implements OnInit {
     this.knowledgeControlTests = []
     this.selfControlTests = []
     this.nNTests = []
+    this.beforeEUMKTests = []
+    this.forEUMKTests = []
     tests.forEach((test) => {
       if (test.ForSelfStudy) {
         this.selfControlTests.push(test)
@@ -87,12 +89,15 @@ export class PageComponent extends AutoUnsubscribeBase implements OnInit {
   }
 
   private getTests(subjectId): void {
-    this.testPassingService
-      .getAvailableTests(subjectId)
+    timer(0, 3000)
       .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((tests) => {
+      .pipe(switchMap(() => this.testPassingService.getAvailableTests(subjectId)))
+      .subscribe((tests: Test[]) => {
         this.allTests = tests
-        this.sortTests(tests)
+        const filteredTests = this.filterResult
+          ? tests.filter((test: Test) => test.Title.includes(this.filterResult))
+          : tests
+        this.sortTests(filteredTests)
       })
   }
 }
