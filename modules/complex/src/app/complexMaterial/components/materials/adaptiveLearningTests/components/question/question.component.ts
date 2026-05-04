@@ -7,6 +7,7 @@ import { TestService } from '../../../../../../service/test.service'
 import { TestQuestion } from '../../../../../../models/question/TestQuestion'
 import { Test } from '../../../../../../models/Test'
 import { Answer } from '../../../../../../models/question/Answer'
+import { UserRole } from '../../../../../../../../../../container/src/app/core/models/user-role.enum'
 
 @Component({
   selector: 'app-question',
@@ -14,6 +15,11 @@ import { Answer } from '../../../../../../models/question/Answer'
   styleUrls: ['./question.component.less'],
 })
 export class QuestionComponent implements OnInit {
+  private readonly answerComparer = new Intl.Collator(undefined, {
+    usage: 'search',
+    sensitivity: 'accent',
+  })
+
   @Input()
   public question: TestQuestion
 
@@ -27,10 +33,11 @@ export class QuestionComponent implements OnInit {
   public charsNeskolko: { [key: string]: any } = {}
   public charsNew: { [key: string]: any } = {}
   public charsSequence: { [key: string]: any } = {}
+  public value = ''
+
   @Output()
   public goToNextQuestion: EventEmitter<any> = new EventEmitter()
   private unsubscribeStream$: Subject<void> = new Subject<void>()
-  private value: string
   private isTrue: boolean
   private answers: number = 0
 
@@ -69,10 +76,8 @@ export class QuestionComponent implements OnInit {
         this.question.Question.Answers.forEach((answer) => {
           if (answer.Id === this.chosenAnswer.Id) {
             request.answers.push({ Id: answer.Id.toString(), IsCorrect: 1 })
-            this.isTrue = true
           } else {
             request.answers.push({ Id: answer.Id.toString(), IsCorrect: 0 })
-            this.isTrue = false
           }
         })
       } else if (this.question.Question.QuestionType === 1) {
@@ -81,23 +86,27 @@ export class QuestionComponent implements OnInit {
             Id: answer.Id.toString(),
             IsCorrect: this.charsNeskolko[index] ? 1 : 0,
           })
-          this.isTrue = this.charsNeskolko[index] ? true : false
         })
       } else if (this.question.Question.QuestionType === 2) {
         request.answers.push({ Content: this.value, IsCorrect: 0 })
-        this.isTrue = false
       } else if (this.question.Question.QuestionType === 3) {
         this.question.Question.Answers.forEach((answer, index) => {
           request.answers.push({ Id: answer.Id.toString(), IsCorrect: index })
-          this.isTrue = index === 1 ? true : false
         })
+      }
+
+      if (this.canShowAnswers()) {
+        this.isTrue = this.checkSelfStudyAnswer(request)
       }
 
       this.chosenAnswer = null
       this.testPassingService
         .answerQuestionAndGetNext(request)
         .pipe(
-          tap(() => this.getOnNextQuestion(true, this.isTrue)),
+          tap(() => {
+            this.getOnNextQuestion(true, this.isTrue)
+            this.value = ''
+          }),
           takeUntil(this.unsubscribeStream$),
           catchError(() => {
             this.router.navigate(['/test-result'], {
@@ -110,14 +119,9 @@ export class QuestionComponent implements OnInit {
     }
   }
 
-  public getOnNextQuestion(answered: boolean, isTrue: boolean): void {
+  public getOnNextQuestion(answered: boolean, isTrue = true): void {
     this.charsNeskolko = {}
     this.goToNextQuestion.emit({ answered, isTrue })
-  }
-
-  public onValueChange(event): void {
-    this.value = event.currentTarget.value
-    console.log(event)
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -128,7 +132,27 @@ export class QuestionComponent implements OnInit {
     )
   }
 
+  private canShowAnswers(): boolean {
+    if (!this.test) {
+      return false
+    }
+    if (this.test.ForSelfStudy) {
+      return true
+    }
+    let isLector = false
+    try {
+      const u = JSON.parse(localStorage.getItem('currentUser'))
+      isLector = u && u.role === UserRole.Lector
+    } catch (_e) {
+      isLector = false
+    }
+    return isLector && !!(this.test.BeforeEUMK || this.test.ForEUMK)
+  }
+
   private checkSelfStudyAnswer(request): boolean {
+    if (this.question.Question.QuestionType === 2) {
+      return this.checkSelfStudyTextAnswer(request)
+    }
     this.answers = 0
     const answersLength: number = request.answers.length
     request.answers.forEach((answer) => {
@@ -142,5 +166,36 @@ export class QuestionComponent implements OnInit {
       })
     })
     return this.answers === answersLength
+  }
+
+  private normalizeKeyboardAnswer(raw: string | null | undefined): string | null {
+    if (raw == null) {
+      return null
+    }
+    const withoutControls = raw
+      .replace(/[\x00-\x1F\x7F-\x9F]/g, '')
+      .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    const trimmed = withoutControls.trim()
+    return trimmed.length === 0 ? null : trimmed
+  }
+
+  private checkSelfStudyTextAnswer(request: {
+    answers: Array<{ Content?: string }>
+  }): boolean {
+    const userEntry = request.answers.find((a) => a.Content != null)
+    if (!userEntry) {
+      return false
+    }
+    const normalizedUser = this.normalizeKeyboardAnswer(userEntry.Content)
+    if (!normalizedUser) {
+      return false
+    }
+    const referenceKeys = this.question.Question.Answers.map((a) =>
+      this.normalizeKeyboardAnswer(a.Content)
+    ).filter((ref): ref is string => ref != null && ref !== '')
+
+    return referenceKeys.some(
+      (ref) => this.answerComparer.compare(ref, normalizedUser) === 0
+    )
   }
 }

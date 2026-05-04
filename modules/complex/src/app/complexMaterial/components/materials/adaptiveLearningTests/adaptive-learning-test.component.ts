@@ -5,6 +5,7 @@ import { Observable, Subject, timer } from 'rxjs'
 import { Test } from '../../../../models/Test'
 import { TestService } from '../../../../service/test.service'
 import { TestQuestion } from '../../../../models/question/TestQuestion'
+import { UserRole } from '../../../../../../../../container/src/app/core/models/user-role.enum'
 declare var $: any
 
 @Component({
@@ -16,6 +17,7 @@ export class TestExecutionComponent implements OnInit {
   @Input()
   testId: string
 
+  public isLector = false
   public question: TestQuestion
   public questionNumber: string
   public test: Test
@@ -43,6 +45,12 @@ export class TestExecutionComponent implements OnInit {
   ngOnInit() {
     this.questionNumber = '1'
     this.showTest = true
+    try {
+      const user = JSON.parse(localStorage.getItem('currentUser'))
+      this.isLector = user && user.role === UserRole.Lector
+    } catch (_e) {
+      this.isLector = false
+    }
     const now = new Date()
     this.startTime = now.toLocaleTimeString()
     this.testService
@@ -56,7 +64,7 @@ export class TestExecutionComponent implements OnInit {
           this.testService.getNextQuestion(
             this.testId,
             this.questionNumber,
-            !test.ForSelfStudy
+            this.shouldExcludeCorrectnessIndicator(test)
           )
         ),
         tap((question: TestQuestion) => {
@@ -153,7 +161,7 @@ export class TestExecutionComponent implements OnInit {
           .getNextQuestion(
             this.testId,
             this.questionNumber,
-            !this.test.ForSelfStudy
+            this.shouldExcludeCorrectnessIndicator(this.test)
           )
           .pipe(takeUntil(this.unsubscribeStream$))
           .subscribe((question: TestQuestion) => {
@@ -168,9 +176,29 @@ export class TestExecutionComponent implements OnInit {
         $('#continueButton').attr('disabled', false)
       }
     } else {
-      debugger
       this.showTest = false
     }
+  }
+
+  public showColorAnswerFeedback(): boolean {
+    const t = this.test
+    if (!t) {
+      return false
+    }
+    if (t.ForSelfStudy) {
+      return true
+    }
+    return this.isLector && !!(t.BeforeEUMK || t.ForEUMK)
+  }
+
+  private shouldExcludeCorrectnessIndicator(test: Test): boolean {
+    if (test.ForSelfStudy) {
+      return false
+    }
+    if (this.isLector && (test.BeforeEUMK || test.ForEUMK)) {
+      return false
+    }
+    return true
   }
 
   private fillQuestionArray(): void {

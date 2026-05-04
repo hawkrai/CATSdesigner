@@ -28,10 +28,10 @@
           "
           [class.not-answered]="allAnswersArray?.includes(i + 1)"
           [class.answered-show]="
-            trueAnswersArray?.includes(i + 1) && test?.ForSelfStudy
+            trueAnswersArray?.includes(i + 1) && showColorAnswerFeedback()
           "
           [class.answered]="
-            trueAnswersArray?.includes(i + 1) && !test?.ForSelfStudy
+            trueAnswersArray?.includes(i + 1) && !showColorAnswerFeedback()
           "
           [class.now]="questionNumber == i + 1"
           *ngFor="
