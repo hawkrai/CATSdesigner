@@ -1,11 +1,14 @@
+import { HttpClient } from '@angular/common/http'
 import { Component, OnInit } from '@angular/core'
 import { TestPassingService } from '../service/test-passing.service'
+import { TestService } from '../service/test.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { UserAnswers } from '../models/user-answers.model'
+import { Test } from '../models/test.model'
 import { catchError, finalize, takeUntil } from 'rxjs/operators'
 import { AutoUnsubscribe } from '../decorator/auto-unsubscribe'
 import { AutoUnsubscribeBase } from '../core/auto-unsubscribe-base'
-import { of, Subject } from 'rxjs'
+import { forkJoin, of, Subject } from 'rxjs'
 import moment from 'moment'
 import { ClosedTestResult } from '../models/closed-test-result.model'
 import { DataValues } from '../models/data-values.model'
@@ -46,10 +49,13 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
   public displayedColumns = ['theme', 'status', 'score']
   public nnDatasource: NNItem[] = []
   public isFromEUMK: boolean = false
+  public showGoToAdaptiveLearning = false
   private unsubscribeStream$: Subject<void> = new Subject<void>()
 
   constructor(
     private testPassingService: TestPassingService,
+    private testService: TestService,
+    private http: HttpClient,
     private router: Router,
     private route: ActivatedRoute,
     private catsService: CatsService
@@ -70,16 +76,27 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
       sessionStorage.removeItem(StorageKeys.ComplexTestId)
     }
     
-    this.testPassingService
-      .CloseTestAndGetResult(this.testId)
-      .pipe(
+    forkJoin({
+      result: this.testPassingService.CloseTestAndGetResult(this.testId).pipe(
         takeUntil(this.unsubscribeStream$),
-        catchError(() => of(null)),
+        catchError(() => of(null))
+      ),
+      testMeta: this.testService.getTestById(this.testId).pipe(
+        takeUntil(this.unsubscribeStream$),
+        catchError(() => of(null as Test))
+      ),
+    })
+      .pipe(
         finalize(() => {
           this.isLoading = false
         })
       )
-      .subscribe((result: ClosedTestResult) => {
+      .subscribe(({ result, testMeta }) => {
+        const isPredTestMeta =
+          !!testMeta &&
+          !!(testMeta.BeforeEUMK || (testMeta as any).beforeEUMK)
+        this.showGoToAdaptiveLearning = this.isFromEUMK && isPredTestMeta
+
         if (!result || !Array.isArray(result.Data)) {
           this.result = []
           return
@@ -126,6 +143,38 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
           }
         }
       })
+  }
+
+  goToAdaptiveLearningAfterPredTest(): void {
+    const userRaw = localStorage.getItem(StorageKeys.CurrentUser)
+    if (!userRaw || !this.testId) {
+      this.navigate()
+      return
+    }
+    const user = JSON.parse(userRaw)
+    const adaptivityType = Number(
+      sessionStorage.getItem(StorageKeys.AdaptiveLearningAlgorithm) || 2
+    )
+    this.http
+      .post(
+        '/Services/AdaptiveLearning/AdaptiveLearningService.svc/ProcessPredTestResults',
+        {
+          userId: user.id,
+          testId: parseInt(this.testId, 10),
+          adaptivityType,
+        }
+      )
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(
+        (res) => {
+          sessionStorage.setItem(
+            StorageKeys.AdaptiveLearningResume,
+            JSON.stringify({ adaptivityType, raw: res })
+          )
+          this.navigate()
+        },
+        () => this.navigate()
+      )
   }
 
   private getDataValue<T>(

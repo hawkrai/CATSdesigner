@@ -49,9 +49,20 @@
   >
     {{ 'complex.toTests' | translate: 'К тестам' }}
   </button>
+  <div class="cancel-button">
+    <button mat-icon-button (click)="onNoClick()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div
+  mat-dialog-actions
+  *ngIf="!needToGetInitialTest && isTest && endTestButtonVisible"
+  class="adaptive-test-actions"
+>
   <button
     id="continueButton"
-    *ngIf="isTest && endTestButtonVisible"
     mat-raised-button
     mat-button
     class="color-button"
@@ -64,11 +75,6 @@
         : ('common.finishTest' | translate: 'Завершить тест')
     }}
   </button>
-  <div class="cancel-button" *ngIf="!isTest">
-    <button mat-icon-button (click)="onNoClick()">
-      <mat-icon>clear</mat-icon>
-    </button>
-  </div>
 </div>
 
 <div mat-dialog-content class="lab-work-component__popover" #popoverContent>

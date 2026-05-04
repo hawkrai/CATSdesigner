@@ -70,6 +70,13 @@
         ></div>
       </div>
     </div>
+    <div class="test-result__resume-adaptive" *ngIf="showGoToAdaptiveLearning">
+      <button mat-raised-button color="primary" (click)="goToAdaptiveLearningAfterPredTest()">
+        {{
+          'complex.goToLearning' | translate: 'Перейти к обучению'
+        }}
+      </button>
+    </div>
     <div *ngIf="isNN" class="nn">
       <h4>
         {{
