@@ -1,92 +1,91 @@
 .visit-stats-component {
   &__header {
-    overflow: auto;
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    overflow: auto;
+  }
 
-    & > div:first-child {
-      display: flex;
-      align-items: center;
-    }
+  &__header > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 30px;
   }
 
   .addDateBtn {
-  vertical-align: middle;
-  margin-right: 10px;
-  }
-
-  .detached-toggle {
-    margin-left: 15px;
-  }
-
-  .detached-toggle-lecturer {
-    margin-top: 15px;
-    margin-left: 15px;
-  }
-
-  &__lecturer-select {
-    width: 180px;
+    margin-right: 10px;
   }
 
   &__group-select-wrapper {
-    margin-left: 20px;
-    margin-right: 20px;
-  }
-
-  &__search {
-    float: right;
-  }
-
-  &__body {
-    margin-top: 3px;
+    margin: 0;
+    display: flex;
+    align-items: center;
   }
 
   &__controls {
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     width: 100%;
     max-width: 240px;
   }
-}
 
-.addDateBtn {
-  vertical-align: middle;
-  margin-right: 10px;
+  &__search {
+    width: 320px;
+    min-width: 320px;
+    margin-bottom: 8px;
+  }
+
+  &__body {
+    margin-top: 23px;
+  }
 }
 
 .mselect {
-  margin-top: 0;
-  margin-right: 10px;
-  margin-left: 10px;
-  vertical-align: middle;
+  margin: 0 10px;
   font-weight: 300;
-  background-color: #ffffff00;
-  border: 0px;
-  color: #fff;
-  font-family:
-    Roboto,
-    Helvetica Neue,
-    sans-serif;
+  font-family: Roboto, Helvetica Neue, sans-serif;
   font-size: 14px;
   width: 165px;
+  color: #fff;
 }
 
 .group-select {
   display: flex;
-  margin-bottom: 10px;
   align-items: center;
-  justify-content: flex-end;
-}
-
-.excel {
-  margin-right: 13px;
-  font-size: 30px;
-}
-
-.archive {
-  font-size: 30px;
+  gap: 12px;
 }
 
 .help {
-  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.help ::ng-deep {
+  display: flex;
+  align-items: center;
+}
+
+.group-select button.mat-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconify {
+  width: 30px;
+  height: 30px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.excel,
+.archive {
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -22,15 +22,6 @@
           >
             {{ 'text.diplomProject.student' | translate: 'Студент' }}
           </th>
-          <th
-            *ngIf="isLecturer"
-            mat-sort-header="Group"
-            class="mdc-data-table__header-cell"
-            role="columnheader"
-            scope="col"
-          >
-            {{ 'text.diplomProject.group' | translate: 'Группа' }}
-          </th>
 
           <th
             class="mdc-data-table__header-cell"
@@ -47,11 +38,12 @@
               percentageResultsComponent.getDiplomUser().IsStudent ||
               !isLecturer
             "
+            mat-sort-header="Lecturer"
             class="mdc-data-table__header-cell"
             role="columnheader"
             scope="col"
           >
-            {{ 'text.diplomProject.lecturer' | translate: 'Руководитель' }}
+            {{ 'text.diplomProject.lecturer' | translate: 'Руководитель проекта' }}
           </th>
           <th
             class="mdc-data-table__header-cell data-cell"
@@ -80,9 +72,6 @@
         >
           <td class="mdc-data-table__cell">{{ i + 1 }}</td>
           <td class="mdc-data-table__cell">{{ student.Name }}</td>
-          <td *ngIf="isLecturer" class="mdc-data-table__cell">
-            {{ student.Group }}
-          </td>
           <td class="mdc-data-table__cell">
             {{ student.DiplomProjectTheme ? student.DiplomProjectTheme : '' }}
           </td>
@@ -127,7 +116,6 @@
               </div>
             </td>
           </ng-container>
-
           <ng-container
             *ngIf="
               !percentageResultsComponent.getDiplomUser().IsStudent &&

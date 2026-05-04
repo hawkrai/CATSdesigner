@@ -55,15 +55,31 @@ export class AddDateDialogComponent {
   selectedDayId: string | null = null
 
   constructor(
-    public dialogRef: MatDialogRef<AddDateDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private visitStatsService: VisitStatsService,
-    private toastr: ToastrService,
-    private translatePipe: TranslatePipe
-  ) {
-    this.data.date = this.dateControl.value
-    this.initControls()
-  }
+  public dialogRef: MatDialogRef<AddDateDialogComponent>,
+  @Inject(MAT_DIALOG_DATA) public data: DialogData,
+  private visitStatsService: VisitStatsService,
+  private toastr: ToastrService,
+  private translatePipe: TranslatePipe
+) {
+  this.initControls()
+
+  this.audienceControl.setValue(this.data.audience)
+  this.buildingControl.setValue(this.data.building)
+  this.startTimeControl.setValue(this.data.start)
+  this.endTimeControl.setValue(this.data.end)
+
+  this.dateControl.setValue(
+    this.data.date ? new Date(this.data.date) : new Date()
+  )
+
+  this.data.date = this.dateControl.value
+
+  this.audienceControl.updateValueAndValidity()
+  this.buildingControl.updateValueAndValidity()
+  this.startTimeControl.updateValueAndValidity()
+  this.endTimeControl.updateValueAndValidity()
+  this.dateControl.updateValueAndValidity()
+}
 
   initControls(): void {
     const data = this.data.consultations[0]
@@ -93,52 +109,76 @@ export class AddDateDialogComponent {
   }
 
   onAddClick(): void {
-    if (this.data != null) {
-      const date = new Date(this.data.date)
-      date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+  if (this.data != null) {
+    const date = new Date(this.data.date)
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
 
-      const lastConsultation = this.data.consultations.length
-        ? this.data.consultations[this.data.consultations.length - 1]
-        : null
-
-      const consultation: Consultation = {
-        Id: lastConsultation
-          ? String(Number(lastConsultation.Id) + 1)
-          : '1',
-        LecturerId: lastConsultation
-          ? String(lastConsultation.LecturerId)
-          : this.getCurrentLecturerIdAsString(),
-        Day: date.toISOString(),
-        StartTime: String(this.data.start),
-        EndTime: String(this.data.end),
-        Building: String(this.data.building),
-        Audience: String(this.data.audience),
-         LecturerFullName: lastConsultation ? lastConsultation.LecturerFullName : '',
-      }
-
-      this.data.consultations.push(consultation)
-      this.data.consultations = this.data.consultations.sort((a, b) =>
-        a.Day > b.Day ? 1 : b.Day > a.Day ? -1 : 0
-      )
-
-      this.visitStatsService
-        .addDate(
-          date.toISOString(),
-          String(this.data.start),
-          String(this.data.end),
-          String(this.data.audience),
-          String(this.data.building)
-        )
-        .subscribe(() => {
-          this.addFlashMessage(
-            this.translatePipe.transform(
-              'text.course.visit.dialog.add.save.success',
-              'Дата консультации успешно добавлена'
-            )
-          )
-        })
+    const toMinutes = (time: string): number => {
+      const parts = time.slice(0, 5).split(':')
+      return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10)
     }
+
+    const isDuplicate = this.data.consultations.some(c => {
+      const sameDay = new Date(c.Day).toDateString() === date.toDateString()
+      if (!sameDay) return false
+
+      const newStart = toMinutes(String(this.data.start))
+      const newEnd = toMinutes(String(this.data.end))
+      const existStart = toMinutes(c.StartTime)
+      const existEnd = toMinutes(c.EndTime)
+
+      const newEndAdj = newEnd <= newStart ? newEnd + 1440 : newEnd
+      const existEndAdj = existEnd <= existStart ? existEnd + 1440 : existEnd
+
+      const isOverlap = newStart < existEndAdj && newEndAdj > existStart
+
+      const samePlace =
+        c.Building === String(this.data.building) &&
+        c.Audience === String(this.data.audience)
+
+      return isOverlap && samePlace
+    })
+
+    if (isDuplicate) {
+      this.toastr.warning(
+        this.translatePipe.transform(
+          'text.consultation.duplicate',
+          'В этой аудитории уже есть консультация в указанное время'
+        )
+      )
+      return
+    }
+
+    this.visitStatsService
+      .addDate(
+        date.toISOString(),
+        String(this.data.start),
+        String(this.data.end),
+        String(this.data.audience),
+        String(this.data.building)
+      )
+      .subscribe(() => {
+        this.visitStatsService.getVisitStats({
+          count: 1000,
+          page: 1,
+          filter: '{"isSecretary":"false","searchString":""}',
+        }).subscribe((res: any) => {
+          if (res && res.DiplomProjectConsultationDates) {
+            this.data.consultations = res.DiplomProjectConsultationDates.sort(
+              (a, b) => a.Day > b.Day ? 1 : b.Day > a.Day ? -1 : 0
+            )
+          }
+        })
+
+        this.addFlashMessage(
+          this.translatePipe.transform(
+            'text.course.visit.dialog.add.save.success',
+            'Дата консультации успешно добавлена'
+          )
+        )
+      })
   }
+}
 
   private getCurrentLecturerIdAsString(): string {
     if (this.data.consultations && this.data.consultations.length > 0) {
@@ -153,12 +193,12 @@ export class AddDateDialogComponent {
   }
 
   deleteDate(id: string): void {
-    const index: number = this.data.consultations
-      .map((item) => +item.Id)
-      .indexOf(+id)
-    this.data.consultations.splice(index, 1)
-    this.visitStatsService.deleteDate(id).subscribe(() => {})
-  }
+  const index: number = this.data.consultations
+    .map((item) => +item.Id)
+    .indexOf(+id)
+  this.data.consultations.splice(index, 1)
+  this.visitStatsService.deleteDate(id).subscribe(() => {})
+}
 
   editPopover(day: Consultation): void {
     this.selectedDayId = day.Id

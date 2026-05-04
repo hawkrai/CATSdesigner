@@ -45,7 +45,8 @@ namespace Application.Infrastructure.DPManagement
                     .Include(x => x.AssignedDiplomProjects.Select(adp => adp.DiplomProject.Lecturer))
                     .Where(x => x.Group.SecretaryId == userId)
                     .Where(x => x.Group.GraduationYear == currentYear)
-                    .Where(x => x.Confirmed == null || x.Confirmed.Value);
+                    .Where(x => x.IsActive == true)
+                    .Where(x => x.Confirmed == true || (x.Confirmed == null && x.DeletedOn == null));
 
                 if (searchString.Length > 0)
                 {
@@ -554,17 +555,35 @@ namespace Application.Infrastructure.DPManagement
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(parms.SortExpression) || parms.SortExpression == "Id")
-            {
-                parms.SortExpression = "Name";
-            }
+            parms.SortExpression = "Name";
 
-            var query = Context.GetGraduateStudents()
-    .Where(x => isLecturerSecretary || (isStudent && getBySecretaryForStudent) || x.AssignedDiplomProjects.Any(asd => asd.DiplomProject.LecturerId == userId))
-    .Where(x => secretaryId == 0 || x.Group.SecretaryId == secretaryId)
-    .Where(x => lecturerId == 0 || x.AssignedDiplomProjects.Any(asd => asd.DiplomProject.LecturerId == lecturerId))
-    .Where(x => x.Confirmed == null || x.Confirmed.Value)
-    .Where(x => groupId == 0 || x.GroupId == groupId);
+            var currentYear = DateTime.Now.Month < 9
+                ? new DateTime(DateTime.Now.Year, 9, 1).Year.ToString()
+                : new DateTime(DateTime.Now.Year + 1, 9, 1).Year.ToString();
+
+            IQueryable<Student> query;
+
+            if (isLecturerSecretary)
+            {
+                query = Context.Students
+                    .AsNoTracking()
+                    .Where(x => x.IsActive == true)
+                    .Where(x => x.Confirmed == true || (x.Confirmed == null && x.DeletedOn == null))
+                    .Where(x => x.Group.SecretaryId == secretaryId)
+                    .Where(x => x.Group.GraduationYear == currentYear)
+                    .Where(x => groupId == 0 || x.GroupId == groupId)
+                    .Where(x => string.IsNullOrEmpty(searchString) ||
+                        x.LastName.Contains(searchString) ||
+                        x.AssignedDiplomProjects.Any(adp => adp.DiplomProject.Theme.Contains(searchString)));
+            }
+            else
+            {
+                query = Context.GetGraduateStudents()
+                    .Where(x => (isStudent && getBySecretaryForStudent) || x.AssignedDiplomProjects.Any(asd => asd.DiplomProject.LecturerId == userId))
+                    .Where(x => secretaryId == 0 || x.Group.SecretaryId == secretaryId)
+                    .Where(x => lecturerId == 0 || x.AssignedDiplomProjects.Any(asd => asd.DiplomProject.LecturerId == lecturerId))
+                    .Where(x => groupId == 0 || x.GroupId == groupId);
+            }
 
             return (from s in query
                     let dp = s.AssignedDiplomProjects.FirstOrDefault()
