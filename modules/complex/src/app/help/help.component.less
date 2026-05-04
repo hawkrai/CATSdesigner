@@ -1,3 +1,9 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+
 .mat-icon-button-help {
   &:hover,
   &:active {
@@ -5,27 +11,35 @@
   }
 
   color: #757575;
-  padding: 5px;
+}
+
+.app-help-menu-surface {
+  padding: 0;
+  outline: none;
 }
 
 .help-popover {
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-  font-size: 14px;
-  color: #363636;
-  background-color: #fff;
-  padding: 20px 12px 25px;
+  padding: 15px 12px 18px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  max-width: 350px;
-  position: absolute;
-  z-index: 1000;
-  left: 47%;
+  gap: 15px;
+  max-width: 440px;
+  box-sizing: border-box;
+
+  &--wide {
+    max-width: 520px;
+  }
+
+  &-text {
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #363636;
+    white-space: normal;
+  }
 
   &-actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 15px;
   }
 }

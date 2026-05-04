@@ -1,28 +1,33 @@
 <button
-  [popover]="popover"
-  [popoverOnHover]="false"
-  [popoverPlacement]="placement"
-  [popoverCloseOnClickOutside]="true"
   mat-icon-button
+  type="button"
   class="mat-icon-button-help"
+  [matMenuTriggerFor]="helpMenu"
+  #helpMenuTrigger="matMenuTrigger"
   [matTooltip]="'common.help' | translate: 'Помощь'"
   matTooltipPosition="below"
-  (click)="showHelpPopover()"
 >
   <mat-icon color="primary">help_outline</mat-icon>
 </button>
-<popover-content
-  #popover
-  [placement]="'left'"
-  [animation]="true"
-  [closeOnClickOutside]="true"
+
+<mat-menu
+  #helpMenu="matMenu"
+  [overlapTrigger]="false"
+  [hasBackdrop]="true"
 >
-  <div class="help-popover" [style.display]="popoverVisible ? 'block' : 'none'">
-    <div>{{ message }}</div>
-    <div class="help-popover-actions">
-      <button mat-raised-button color="primary" (click)="hideHelpPopover()">
-        {{ action }}
-      </button>
+  <div class="app-help-menu-surface" (click)="$event.stopPropagation()">
+    <div class="help-popover" [class.help-popover--wide]="wide">
+      <div class="help-popover-text">{{ message }}</div>
+      <div class="help-popover-actions">
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="helpMenuTrigger.closeMenu()"
+        >
+          {{ action }}
+        </button>
+      </div>
     </div>
   </div>
-</popover-content>
+</mat-menu>

@@ -1,6 +1,7 @@
 ﻿using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Concept;
 using LMPlatform.UI.Services.Modules.CoreModels;
+using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using static LMPlatform.UI.Services.Concept.ConceptService;
@@ -113,6 +114,10 @@ namespace LMPlatform.UI.Services.Concept
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/ConvertPendingDocx?conceptId={conceptId}")]
         ResultViewData ConvertPendingDocx(int conceptId);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "/ExportEumk?complexId={complexId}&format={format}&title={title}&testQuestionsHeading={testQuestionsHeading}&attachedMaterialsHeading={attachedMaterialsHeading}")]
+        Stream ExportEumk(int complexId, string format, string title, string testQuestionsHeading, string attachedMaterialsHeading);
 
     }
 }
