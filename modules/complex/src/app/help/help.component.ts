@@ -8,15 +8,5 @@ import { Component, Input } from '@angular/core'
 export class HelpComponent {
   @Input() message: string
   @Input() action: string
-  @Input() placement = 'top-left'
-
-  popoverVisible = false
-
-  showHelpPopover() {
-    this.popoverVisible = true
-  }
-
-  hideHelpPopover() {
-    this.popoverVisible = false
-  }
+  @Input() wide = false
 }

@@ -6,6 +6,7 @@ import { TestExecutionComponent } from '../adaptiveLearningTests/adaptive-learni
 import { TestService } from '../../../../service/test.service'
 import { Adaptivity } from '../../../../models/Adaptivity'
 import { LibreOfficeAvailabilityService } from '../../../../service/libre-office-availability.service'
+import { StorageKeys } from '../../../../../../../../container/src/app/core/models/storage-keys.enum'
 
 @Component({
   selector: 'app-materials-popover',
@@ -173,6 +174,10 @@ export class MaterialsPopoverComponent {
 
   goToPredTest() {
     this.testService.getPredTest().subscribe((res) => {
+      sessionStorage.setItem(
+        StorageKeys.AdaptiveLearningAlgorithm,
+        String(this.adaptivityType)
+      )
       this.testId = `${res}`
       this.isTest = true
       this.isPredTest = true

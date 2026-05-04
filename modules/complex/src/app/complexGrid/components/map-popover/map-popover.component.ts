@@ -7,12 +7,8 @@ import { AngularD3TreeLibService } from 'angular-d3-tree'
 import { forkJoin } from 'rxjs'
 import * as d3 from 'd3'
 import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
-
-const MAX_LABEL_CHARS = 20
-const CHAR_WIDTH_PX = 7
-const NODE_RADIUS = 5
-const TEXT_OFFSET = 10
-const COLUMN_GAP = 20
+import { MapPopoverLayout } from '../../../models/map-popover-layout.enum'
+import { ApiResponseCode } from '../../../models/api-response-code.enum'
 
 @Component({
   selector: 'map-popover',
@@ -57,10 +53,10 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
       const treeModel = self.treeService.treeModel
       treeModel.nodeWidth = 1.8
       treeModel.nodeHeight = 1
-      treeModel.nodeRadius = NODE_RADIUS
+      treeModel.nodeRadius = MapPopoverLayout.NodeRadius
       treeModel.horizontalSeparationBetweenNodes = -0.5
       treeModel.verticalSeparationBetweenNodes = 0
-      treeModel.nodeTextDistanceX = TEXT_OFFSET
+      treeModel.nodeTextDistanceX = MapPopoverLayout.TextOffset
 
       if (self.isLector) {
         treeModel.nodechanged = function (movedNode: any) { self.onNodeMoved(movedNode) }
@@ -103,32 +99,36 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
             .style('box-shadow', '0 2px 8px rgba(0,0,0,0.3)')
         }
 
-        const allNodes = treeData.descendants()
-
         treeModel.svg.selectAll('g.node text').each(function (d: any) {
           const el = d3.select(this)
+          const g = d3.select((this as Element).parentNode as SVGGElement)
+          g.select('rect.node-label-bg').remove()
+
           const fullName: string = (d && d.data)
             ? (d.data.description || d.data.name || String(d.id))
             : ''
 
-          el.attr('x', 0)
-          el.attr('text-anchor', 'middle')
-          el.attr('dy', `${NODE_RADIUS + 16}px`)
+          const labelX = MapPopoverLayout.NodeRadius + MapPopoverLayout.TextOffset
+          el.attr('x', labelX)
+          el.attr('y', 0)
+          el.attr('dy', null)
+          el.attr('text-anchor', 'start')
+          el.attr('dominant-baseline', 'middle')
           el.style('font-family', 'Inter, system-ui, -apple-system, sans-serif')
           el.style('font-size', '13px')
           el.style('font-weight', '600')
           el.style('fill', '#1f1f1f')
           el.style('stroke', 'none')
-          el.style('paint-order', 'stroke')
+          el.style('paint-order', 'normal')
           el.style('text-rendering', 'geometricPrecision')
           el.style('-webkit-font-smoothing', 'antialiased')
 
-          if (fullName.length > MAX_LABEL_CHARS) {
-            el.text(fullName.substring(0, MAX_LABEL_CHARS) + '\u2026')
+          if (fullName.length > MapPopoverLayout.MaxLabelChars) {
+            el.text(fullName.substring(0, MapPopoverLayout.MaxLabelChars) + '\u2026')
 
-            d3.select((this as Element).parentNode as Element).select('title').remove()
+            g.select('title').remove()
 
-            d3.select((this as Element).parentNode as Element)
+            g
               .on('mouseenter.tooltip', function () {
                 tooltip
                   .style('display', 'block')
@@ -145,11 +145,26 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
               })
           } else {
             el.text(fullName)
-            d3.select((this as Element).parentNode as Element)
+            g
               .on('mouseenter.tooltip', null)
               .on('mousemove.tooltip', null)
               .on('mouseleave.tooltip', null)
           }
+
+          try {
+            const textEl = el.node() as SVGTextElement
+            const bbox = textEl.getBBox()
+            g.insert('rect', 'text')
+              .attr('class', 'node-label-bg')
+              .attr('x', bbox.x - MapPopoverLayout.LabelBgPadX)
+              .attr('y', bbox.y - MapPopoverLayout.LabelBgPadY)
+              .attr('width', Math.max(0, bbox.width + 2 * MapPopoverLayout.LabelBgPadX))
+              .attr('height', Math.max(0, bbox.height + 2 * MapPopoverLayout.LabelBgPadY))
+              .attr('rx', 2)
+              .attr('ry', 2)
+              .attr('fill', '#ffffff')
+              .style('pointer-events', 'none')
+          } catch {}
         })
 
         self.applyLinkStyles()
@@ -193,6 +208,25 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
           d.y = cumulativeY[d.depth] !== undefined ? cumulativeY[d.depth] : d.depth * 180
         })
 
+        const desc = treeData.descendants()
+        if (desc.length > 0) {
+          let minX = Infinity
+          let maxX = -Infinity
+          desc.forEach(function (d: any) {
+            if (typeof d.x === 'number') {
+              if (d.x < minX) { minX = d.x }
+              if (d.x > maxX) { maxX = d.x }
+            }
+          })
+          if (minX !== Infinity && maxX !== -Infinity && treeModel.height > 0) {
+            const mid = (minX + maxX) / 2
+            const deltaX = treeModel.height / 2 - mid
+            desc.forEach(function (d: any) {
+              if (typeof d.x === 'number') { d.x += deltaX }
+            })
+          }
+        }
+
         treeModel.setNodes(source, treeData)
         treeModel.setLinks(source, treeData)
       }
@@ -225,8 +259,12 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
       const depth = depthMap[n.id]
       if (depth === undefined) { return }
       const name: string = n.description || n.name || ''
-      const labelLen = Math.min(name.length, MAX_LABEL_CHARS)
-      const labelPx = labelLen * CHAR_WIDTH_PX + NODE_RADIUS + TEXT_OFFSET + COLUMN_GAP
+      const labelLen = Math.min(name.length, MapPopoverLayout.MaxLabelChars)
+      const labelPx =
+        labelLen * MapPopoverLayout.CharWidthPx +
+        MapPopoverLayout.NodeRadius +
+        MapPopoverLayout.TextOffset +
+        MapPopoverLayout.ColumnGap
       if (!depthMaxWidth[depth] || labelPx > depthMaxWidth[depth]) {
         depthMaxWidth[depth] = labelPx
       }
@@ -257,6 +295,9 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
   customTreeService() {
     // 1) оригинал createChart @url https://github.com/jgpATs2w/angular-d3-tree/blob/374aa9948f39138f7341d72777e8954d5b5e9194/projects/angular-d3-tree-lib/src/lib/angular-d3-tree-lib.service.ts#L12
     // 2) оригинал createTreeData (внутри createChart) @url https://github.com/jgpATs2w/angular-d3-tree/blob/374aa9948f39138f7341d72777e8954d5b5e9194/projects/angular-d3-tree-lib/src/lib/tree.dendo.model.ts#L70
+    const tm: any = this.treeService.treeModel
+    tm.margin = { top: 40, bottom: 40, left: 72, right: 40 }
+
     this.treeService.treeModel.createTreeData = () => {
       this.treeService.treeModel.root = d3
         .stratify<any>()
@@ -264,14 +305,28 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
         .parentId(function (d) { return d.parent })(this.chartData)
       this.treeService.treeModel.root.x0 = this.treeService.treeModel.height / 2
       this.treeService.treeModel.root.y0 = 0
+      if (tm.root && tm.root.children && tm.root.children.length) {
+        tm.root.children.forEach((child: any) => tm.collapse(child))
+      }
     }
 
-    this.treeService.createChart('#chartContainer', this.chartData)
-
-    setTimeout(() => {
-      this.applyLinkStyles()
-      this.markTestNodes()
-    }, 400)
+    const host = document.getElementById('chartContainer')
+    const run = () => {
+      if (!host) {
+        setTimeout(() => this.customTreeService(), 50)
+        return
+      }
+      this.treeService.createChart({ nativeElement: host } as any, this.chartData)
+      const svc: any = this.treeService
+      if (typeof svc.update === 'function') {
+        svc.update()
+      }
+      requestAnimationFrame(() => {
+        this.applyLinkStyles()
+        this.markTestNodes()
+      })
+    }
+    requestAnimationFrame(run)
   }
 
   private applyLinkStyles() {
@@ -327,7 +382,7 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
     this.complexService.moveConceptNode(conceptId, newParentId, prevConceptId, nextConceptId)
       .subscribe({
         next: (res: any) => {
-          if (res && res['Code'] === '200') {
+          if (res && res['Code'] === ApiResponseCode.Success) {
             this.chartDataSnapshot = null
           } else {
             this.rollbackChartData()

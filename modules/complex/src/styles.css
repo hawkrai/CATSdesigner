@@ -53,6 +53,18 @@
   margin: 0 !important;
   border-radius: 0 !important;
   padding: 8px 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  min-height: 0 !important;
+}
+
+.map-dialog-container map-popover {
+  display: block;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .mat-checkbox-layout {
@@ -117,4 +129,10 @@
   font-family: 'Roboto';
   font-weight: normal;
   font-size: 14px;
+}
+
+/* app-help: MatMenu body lives in overlay (AM8 mat-menu has no panelClass) */
+.mat-menu-panel .mat-menu-content > .app-help-menu-surface {
+  max-width: min(96vw, 560px);
+  box-sizing: border-box;
 }

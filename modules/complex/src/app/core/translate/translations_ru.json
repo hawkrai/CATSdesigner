@@ -108,5 +108,14 @@
   "complex.test.score": "Оценка за тест",
   "complex.maxFilesReached": "Достигнут максимальный лимит файлов (5)",
   "complex.filesLimitWarning": "Можно добавить только {count} файл(ов). Остальные файлы не были добавлены.",
-  "complex.loadingDocument": "Загрузка документа..."
+  "complex.loadingDocument": "Загрузка документа...",
+  "complex.eumk.help.message": "В ЭУМК можно добавлять новые элементы в виде файла или папки. Если связать теоретические элементы ЭУМК с соответствующими тестами из модуля «Тестирование знаний», то можно организовать адаптивное обучение по ЭУМК. Для скачивания ЭУМК нажмите на иконку справа.",
+  "complex.eumk.download.tooltip": "Скачать ЭУМК",
+  "complex.eumk.download.docx": "Сохранить как Word (.docx)",
+  "complex.eumk.download.pdf": "Сохранить как PDF (.pdf)",
+  "complex.eumk.export.working": "Идёт формирование файла…",
+  "complex.eumk.export.done": "Файл сохранён",
+  "complex.eumk.export.error": "Не удалось сформировать файл",
+  "complex.eumk.export.testQuestions": "Вопросы теста (без вариантов ответов)",
+  "complex.eumk.export.attachments": "Прикреплённые материалы"
 }

@@ -2,19 +2,24 @@ import { Component, EventEmitter, OnInit, Input } from '@angular/core'
 import { Router, ActivatedRoute, ParamMap } from '@angular/router'
 import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 import { forkJoin, from, of } from 'rxjs'
-import { catchError, concatMap } from 'rxjs/operators'
+import { catchError, concatMap, map, switchMap } from 'rxjs/operators'
 
 import { ComplexService } from '../service/complex.service'
 import { AddMaterialPopoverComponent } from './components/materials/add-material-popover/add-material-popover.component'
 import { Concept } from '../models/Concept'
 import { ComplexCascade } from '../models/ComplexCascade'
 import { AdaptivityService } from '../service/adaptivity.service'
+import { ConverterService } from '../service/converter.service'
 import { DialogData } from '../models/DialogData'
+import { Adaptivity } from '../models/Adaptivity'
 import { MaterialsPopoverComponent } from './components/materials/materials-popover/materials-popover.component'
 import { TestService } from '../service/test.service'
 import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
 import { ApiResponseCode } from '../models/api-response-code.enum'
 import { LibreOfficeAvailabilityService } from '../service/libre-office-availability.service'
+import { EumkExportService, EumkExportFormat } from '../service/eumk-export.service'
+import { MatSnackBar } from '@angular/material'
+import { TranslatePipe } from 'educats-translate'
 
 @Component({
   selector: 'app-labs',
@@ -29,14 +34,20 @@ export class ComplexMaterialComponent implements OnInit {
   public hasPredTest: boolean = false
   public hasTheoryMaterials: boolean = false
   public isAdaptiveLearningDisabled: boolean = true
+  public eumkExportInProgress = false
+  public libreOfficeAvailable = false
 
   constructor(
     private router: Router,
     public dialog: MatDialog,
     private adaptivityService: AdaptivityService,
+    private converterService: ConverterService,
     private complexService: ComplexService,
     private testService: TestService,
-    private libreOfficeAvailability: LibreOfficeAvailabilityService
+    private libreOfficeAvailability: LibreOfficeAvailabilityService,
+    private eumkExportService: EumkExportService,
+    private snackBar: MatSnackBar,
+    private translatePipe: TranslatePipe
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -58,7 +69,9 @@ export class ComplexMaterialComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.libreOfficeAvailability.getAvailability().subscribe()
+    this.libreOfficeAvailability.getAvailability().subscribe((available) => {
+      this.libreOfficeAvailable = available
+    })
     const savedComplexId = localStorage.getItem('selectedComplex')
     if (savedComplexId && savedComplexId !== this.complexID) {
       this.complexID = savedComplexId
@@ -67,6 +80,48 @@ export class ComplexMaterialComponent implements OnInit {
         .subscribe((name) => (this.complexName = name))
     }
     this.checkAdaptiveLearningAvailability()
+    setTimeout(() => this.tryResumeAdaptiveLearningAfterPredTest(), 0)
+  }
+
+  private tryResumeAdaptiveLearningAfterPredTest(): void {
+    const json = sessionStorage.getItem(StorageKeys.AdaptiveLearningResume)
+    if (!json) {
+      return
+    }
+    sessionStorage.removeItem(StorageKeys.AdaptiveLearningResume)
+    let parsed: { adaptivityType: number; raw: any }
+    try {
+      parsed = JSON.parse(json)
+    } catch {
+      return
+    }
+    if (!parsed || parsed.raw == null || parsed.adaptivityType == null) {
+      return
+    }
+    const themaRes = this.converterService.nextThemaResConverter(parsed.raw)
+    this.openAdaptiveMaterialsFullScreen(parsed.adaptivityType, themaRes)
+  }
+
+  private openAdaptiveMaterialsFullScreen(
+    adaptivityType: number,
+    themaRes: Adaptivity
+  ): void {
+    const path =
+      '/api/Upload?fileName=' +
+      (themaRes.nextMaterialPaths && themaRes.nextMaterialPaths[0])
+    const diaogData: DialogData = {
+      name: `${themaRes.nextThemaId}`,
+      url: path,
+      adaptivityType: adaptivityType,
+      isAdaptive: true,
+      adaptivity: themaRes,
+    }
+
+    this.dialog.open(MaterialsPopoverComponent, {
+      width: '100%',
+      height: '100%',
+      data: diaogData,
+    })
   }
 
   checkAdaptiveLearningAvailability(): void {
@@ -75,11 +130,39 @@ export class ComplexMaterialComponent implements OnInit {
       this.complexService
         .getConceptCascade(this.complexID)
         .pipe(catchError(() => of(null))),
-    ]).subscribe(([predTestId, conceptCascade]) => {
-      this.hasPredTest = predTestId > 0
-      this.hasTheoryMaterials = this.hasAttachmentsInCascade(conceptCascade)
-      this.isAdaptiveLearningDisabled = !this.hasPredTest || !this.hasTheoryMaterials
-    })
+    ])
+      .pipe(
+        switchMap(([predTestId, conceptCascade]) => {
+          if (!predTestId || predTestId <= 0) {
+            return of({
+              conceptCascade,
+              predTestHasQuestions: false,
+            })
+          }
+          return this.testService.getQuestionsByTest(String(predTestId)).pipe(
+            map(
+              (questions) =>
+                ({
+                  conceptCascade,
+                  predTestHasQuestions:
+                    Array.isArray(questions) && questions.length > 0,
+                } as const)
+            ),
+            catchError(() =>
+              of({
+                conceptCascade,
+                predTestHasQuestions: false,
+              } as const)
+            )
+          )
+        })
+      )
+      .subscribe(({ conceptCascade, predTestHasQuestions }) => {
+        this.hasPredTest = predTestHasQuestions
+        this.hasTheoryMaterials = this.hasAttachmentsInCascade(conceptCascade)
+        this.isAdaptiveLearningDisabled =
+          !this.hasPredTest || !this.hasTheoryMaterials
+      })
   }
 
   getAdaptiveLearningDisabledReason(): string {
@@ -201,29 +284,14 @@ export class ComplexMaterialComponent implements OnInit {
 
   openAdaptivityPopup(adaptivityType: number): void {
     if (this.hasPredTest && this.hasTheoryMaterials) {
+      sessionStorage.setItem(
+        StorageKeys.AdaptiveLearningAlgorithm,
+        String(adaptivityType)
+      )
       this.adaptivityService
         .getFirstThema(adaptivityType)
         .subscribe((themaRes) => {
-          const path =
-            '/api/Upload?fileName=' +
-            (themaRes.nextMaterialPaths && themaRes.nextMaterialPaths[0])
-          const diaogData: DialogData = {
-            name: `${themaRes.nextThemaId}`,
-            url: path,
-            adaptivityType: adaptivityType,
-            isAdaptive: true,
-            adaptivity: themaRes,
-          }
-
-          const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
-            width: '100%',
-            height: '100%',
-            data: diaogData,
-          })
-
-          dialogRef.afterClosed().subscribe((result) => {
-            console.log('The dialog was closed')
-          })
+          this.openAdaptiveMaterialsFullScreen(adaptivityType, themaRes)
         })
     }
   }
@@ -231,5 +299,60 @@ export class ComplexMaterialComponent implements OnInit {
   navigateToComplexList(): void {
     localStorage.removeItem(StorageKeys.SelectedComplex)
     this.router.navigate(['/main'])
+  }
+
+  exportEumk(format: EumkExportFormat): void {
+    if (!this.complexID || this.eumkExportInProgress) {
+      return
+    }
+    this.eumkExportInProgress = true
+    const progress = this.snackBar.open(
+      this.translatePipe.transform(
+        'complex.eumk.export.working',
+        'Идёт формирование файла…'
+      ),
+      undefined,
+      { duration: 0 }
+    )
+    const title = this.complexName || 'EUMK'
+    const labels = {
+      testQuestionsHeading: this.translatePipe.transform(
+        'complex.eumk.export.testQuestions',
+        'Вопросы теста (без вариантов ответов)'
+      ),
+      attachedMaterials: this.translatePipe.transform(
+        'complex.eumk.export.attachments',
+        'Прикреплённые материалы'
+      ),
+    }
+    this.eumkExportService
+      .exportEumk(String(this.complexID), title, format, labels)
+      .subscribe(
+        () => {
+          this.eumkExportInProgress = false
+          progress.dismiss()
+          this.snackBar.open(
+            this.translatePipe.transform(
+              'complex.eumk.export.done',
+              'Файл сохранён'
+            ),
+            undefined,
+            { duration: 3000 }
+          )
+        },
+        (err) => {
+          this.eumkExportInProgress = false
+          progress.dismiss()
+          console.error(err)
+          this.snackBar.open(
+            this.translatePipe.transform(
+              'complex.eumk.export.error',
+              'Не удалось сформировать файл'
+            ),
+            undefined,
+            { duration: 5000 }
+          )
+        }
+      )
   }
 }

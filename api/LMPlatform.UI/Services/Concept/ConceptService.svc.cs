@@ -1,7 +1,10 @@
 ﻿using Application.Core;
 using Application.Core.Helpers;
+using Application.Core.PdfConvertor;
 using Application.Infrastructure.ConceptManagement;
+using Application.Infrastructure.Export;
 using Application.Infrastructure.FilesManagement;
+using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Infrastructure.SubjectManagement;
 using Application.Infrastructure.UserManagement;
 using LMPlatform.UI.Services.Modules.Concept;
@@ -10,6 +13,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.ServiceModel.Web;
 using Application.Core.Data;
 using Application.Infrastructure.WatchingTimeManagement;
 using Application.Infrastructure.StudentManagement;
@@ -40,6 +45,7 @@ namespace LMPlatform.UI.Services.Concept
         private readonly LazyDependency<IUsersManagementService> _usersManagementService = new LazyDependency<IUsersManagementService>();
         private readonly LazyDependency<IFilesManagementService> _filesManagementService = new LazyDependency<IFilesManagementService>();
         private readonly LazyDependency<IModulesManagementService> _modulesManagementService = new LazyDependency<IModulesManagementService>();
+        private readonly LazyDependency<ITestsManagementService> _testsManagementService = new LazyDependency<ITestsManagementService>();
 
         public IConceptManagementService ConceptManagementService => _conceptManagementService.Value;
         public IStudentManagementService StudentManagementService => _studentManagementService.Value;
@@ -49,6 +55,8 @@ namespace LMPlatform.UI.Services.Concept
         public ISubjectManagementService SubjectManagementService => _subjectManagementService.Value;
 
         public IModulesManagementService ModulesManagementService => _modulesManagementService.Value;
+
+        public ITestsManagementService TestsManagementService => _testsManagementService.Value;
 
         #region Used by complex module
         
@@ -747,6 +755,136 @@ namespace LMPlatform.UI.Services.Concept
             {
                 return new ResultViewData { Message = ex.Message, Code = ServerErrorCode };
             }
+        }
+
+        public Stream ExportEumk(int complexId, string format, string title, string testQuestionsHeading, string attachedMaterialsHeading)
+        {
+            if (!CurrentUserIsLector())
+            {
+                throw new WebFaultException(HttpStatusCode.Forbidden);
+            }
+
+            var fmt = (format ?? "docx").Trim().ToLowerInvariant();
+            if (fmt != "docx" && fmt != "pdf")
+            {
+                throw new WebFaultException(HttpStatusCode.BadRequest);
+            }
+
+            if (fmt == "pdf" && !IsLibreOfficeInstalled())
+            {
+                throw new WebFaultException(HttpStatusCode.BadRequest);
+            }
+
+            var hiddenTestIds = GetHiddenTestIdSet(complexId);
+            var root = ConceptManagementService.GetTreeConceptByElementId(complexId);
+            if (root == null)
+            {
+                throw new WebFaultException(HttpStatusCode.NotFound);
+            }
+
+            var docTitle = string.IsNullOrWhiteSpace(title) ? root.Name : title;
+            var tqh = string.IsNullOrWhiteSpace(testQuestionsHeading)
+                ? "Вопросы теста (без вариантов ответов)"
+                : testQuestionsHeading;
+            var amh = string.IsNullOrWhiteSpace(attachedMaterialsHeading)
+                ? "Прикреплённые материалы"
+                : attachedMaterialsHeading;
+
+            var generator = new EumkExportDocumentGenerator(FilesManagementService, TestsManagementService);
+            var docxBytes = generator.BuildDocx(root, docTitle, tqh, amh, hiddenTestIds);
+
+            var safeBase = SanitizeFileName(docTitle);
+            if (fmt == "docx")
+            {
+                SetEumkDownloadHeaders(safeBase + ".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+                return new MemoryStream(docxBytes, writable: false);
+            }
+
+            var tempRoot = ConfigurationManager.AppSettings["FileUploadPathTemp"];
+            if (string.IsNullOrWhiteSpace(tempRoot))
+            {
+                throw new WebFaultException(HttpStatusCode.InternalServerError);
+            }
+
+            tempRoot = Path.GetFullPath(tempRoot.Replace("//", "\\").TrimEnd('/', '\\'));
+            var baseName = "eumk_" + Guid.NewGuid().ToString("N");
+            var docxPath = Path.Combine(tempRoot, baseName + ".docx");
+            File.WriteAllBytes(docxPath, docxBytes);
+            try
+            {
+                var convertor = new WordToPdfConvertor();
+                var pdfFileName = convertor.Convert(docxPath);
+                var pdfPath = Path.Combine(tempRoot, pdfFileName);
+                var pdfBytes = File.ReadAllBytes(pdfPath);
+                TryDelete(docxPath);
+                TryDelete(pdfPath);
+                SetEumkDownloadHeaders(safeBase + ".pdf", "application/pdf");
+                return new MemoryStream(pdfBytes, writable: false);
+            }
+            catch
+            {
+                TryDelete(docxPath);
+                throw;
+            }
+        }
+
+        private static void TryDelete(string path)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(path) && File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+            catch{}
+        }
+
+        private static bool IsLibreOfficeInstalled()
+        {
+            var path = ConfigurationManager.AppSettings["LibreOfficePath"]
+                       ?? @"C:\Program Files\LibreOffice\program\soffice.exe";
+            return File.Exists(path);
+        }
+
+        private HashSet<int> GetHiddenTestIdSet(int complexId)
+        {
+            try
+            {
+                using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+                {
+                    var hiddenTests = repositoriesContainer.HiddenTestRepository
+                        .GetAll(new Query<HiddenTest>(ht => ht.ComplexId == complexId))
+                        .ToList();
+                    return new HashSet<int>(hiddenTests.Where(ht => ht.TestId.HasValue).Select(ht => ht.TestId.Value));
+                }
+            }
+            catch
+            {
+                return new HashSet<int>();
+            }
+        }
+
+        private static string SanitizeFileName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return "EUMK";
+            }
+
+            var invalid = Path.GetInvalidFileNameChars();
+            var cleaned = new string(name.Where(c => !invalid.Contains(c)).ToArray()).Trim();
+            return string.IsNullOrEmpty(cleaned) ? "EUMK" : cleaned;
+        }
+
+        private static void SetEumkDownloadHeaders(string fileName, string contentType)
+        {
+            var response = WebOperationContext.Current.OutgoingResponse;
+            response.ContentType = contentType;
+            var ascii = new string(fileName.Select(c => c < 32 || c > 126 ? '_' : c).ToArray());
+            var utf8Star = Uri.EscapeDataString(fileName);
+            response.Headers["Content-Disposition"] =
+                $"attachment; filename=\"{ascii}\"; filename*=UTF-8''{utf8Star}";
         }
 	}
 }
