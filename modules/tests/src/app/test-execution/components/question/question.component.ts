@@ -21,6 +21,7 @@ import { MatSnackBar } from '@angular/material'
 import { TranslatePipe } from 'educats-translate'
 import { AppToastrService } from '../../../service/toastr.service'
 import { StorageKeys } from '../../../../../../../container/src/app/core/models/storage-keys.enum'
+import { UserRole } from '../../../../../../../container/src/app/core/models/user-role.enum'
 
 @AutoUnsubscribe
 @Component({
@@ -135,7 +136,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements AfterViewI
           request.answers.push({ Id: answer.Id.toString(), IsCorrect: index })
         })
       }
-      if (this.test.ForSelfStudy) {
+      if (this.canShowAnswers()) {
         this.isTrue = this.checkSelfStudyAnswer(request)
       }
       this.chosenAnswer = null
@@ -187,6 +188,23 @@ export class QuestionComponent extends AutoUnsubscribeBase implements AfterViewI
       event.previousIndex,
       event.currentIndex
     )
+  }
+
+  private canShowAnswers(): boolean {
+    if (!this.test) {
+      return false
+    }
+    if (this.test.ForSelfStudy) {
+      return true
+    }
+    let isLector = false
+    try {
+      const user = JSON.parse(localStorage.getItem('currentUser'))
+      isLector = user?.role === UserRole.Lector
+    } catch {
+      isLector = false
+    }
+    return isLector && !!(this.test.BeforeEUMK || this.test.ForEUMK)
   }
 
   private checkSelfStudyAnswer(request): boolean {

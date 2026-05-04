@@ -9,6 +9,7 @@ import { Observable, Subject, timer } from 'rxjs'
 import { AutoUnsubscribe } from '../decorator/auto-unsubscribe'
 import { AutoUnsubscribeBase } from '../core/auto-unsubscribe-base'
 import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
+import { UserRole } from '../../../../../container/src/app/core/models/user-role.enum'
 
 @AutoUnsubscribe
 @Component({
@@ -21,6 +22,7 @@ export class TestExecutionComponent
   implements OnInit {
   private static readonly CURRENT_QUESTION_STORAGE_PREFIX =
     'test-execution-current-question-'
+  public isLector = false
   public question: TestQuestion
   public questionNumber: string
   public testId: string
@@ -46,6 +48,12 @@ export class TestExecutionComponent
   ngOnInit() {
     this.testId = this.route.snapshot.paramMap.get('id')
     this.questionNumber = this.getSavedQuestionNumber()
+    try {
+      const user = JSON.parse(localStorage.getItem('currentUser'))
+      this.isLector = user?.role === UserRole.Lector
+    } catch {
+      this.isLector = false
+    }
     this.testService
       .getTestById(this.testId)
       .pipe(
@@ -57,7 +65,7 @@ export class TestExecutionComponent
           this.testPassingService.getNextQuestion(
             this.testId,
             this.questionNumber,
-            !test.ForSelfStudy
+            this.shouldExcludeCorrectnessIndicator(test)
           )
         ),
         tap((question: TestQuestion) => {
@@ -158,7 +166,7 @@ export class TestExecutionComponent
           .getNextQuestion(
             this.testId,
             this.questionNumber,
-            !this.test.ForSelfStudy
+            this.shouldExcludeCorrectnessIndicator(this.test)
           )
           .pipe(takeUntil(this.unsubscribeStream$))
           .subscribe((question: TestQuestion) => {
@@ -235,6 +243,29 @@ export class TestExecutionComponent
 
   private getCurrentQuestionStorageKey(): string {
     return `${TestExecutionComponent.CURRENT_QUESTION_STORAGE_PREFIX}${this.testId}`
+  }
+
+  public showColorAnswerFeedback(): boolean {
+    const t = this.test
+    if (!t) {
+      return false
+    }
+    if (t.ForSelfStudy) {
+      return true
+    }
+    return (
+      this.isLector && !!(t.BeforeEUMK || t.ForEUMK)
+    )
+  }
+
+  private shouldExcludeCorrectnessIndicator(test: Test): boolean {
+    if (test.ForSelfStudy) {
+      return false
+    }
+    if (this.isLector && (test.BeforeEUMK || test.ForEUMK)) {
+      return false
+    }
+    return true
   }
 
   private syncQuestionProgress(questionNumber: number, isTrue: boolean): void {
