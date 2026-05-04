@@ -102,139 +102,137 @@ export class VisitStatsComponent implements OnInit {
   }
 
   retrieveVisitStats() {
-    if (this.diplomUser.IsSecretary && !this.isLecturer) {
-      this.visitStatsList = null
+  if (this.diplomUser.IsSecretary && !this.isLecturer) {
+    this.visitStatsList = null
 
-      this.visitStatsService
-        .getLecturerDiplomGroups({
-          entity: 'LecturerForSecretary',
-          id: this.diplomUser.UserId,
-        })
-        .subscribe((res) => {
-          this.lecturers = res.sort((a: any, b: any) =>
-            a.Name < b.Name ? -1 : 1
-          )
+    this.visitStatsService
+      .getLecturerDiplomGroups({
+        entity: 'LecturerForSecretary',
+        id: this.diplomUser.UserId,
+      })
+      .subscribe((res) => {
+        this.lecturers = res.sort((a: any, b: any) =>
+          a.Name < b.Name ? -1 : 1
+        )
 
-          if (
-            this.groups.length === 0 &&
-            this.diplomUser.SelectedGroupIds &&
-            this.diplomUser.SelectedGroupIds.length > 0
-          ) {
-            const groupRequests = this.lecturers.map((lecturer: any) =>
-              this.visitStatsService
-                .getVisitStats({
-                  count: this.COUNT,
-                  page: this.PAGE,
-                  filter:
-                    '{"isSecretary":"' +
-                    this.isLecturer +
-                    '","lecturerId":"' +
-                    lecturer.Id +
-                    '","groupId":"0","searchString":""}',
-                })
-                .toPromise()
-            )
-
-            Promise.all(groupRequests).then((allResults: any[]) => {
-              const seen = new Set<number>()
-              const allGroups: { id: number; name: string }[] = []
-
-              allResults.forEach((allRes: any) => {
-                if (allRes && allRes.Students && allRes.Students.Items) {
-                  allRes.Students.Items.forEach((s: any) => {
-                    if (
-                      s.GroupId &&
-                      !seen.has(s.GroupId) &&
-                      this.diplomUser.SelectedGroupIds.includes(s.GroupId)
-                    ) {
-                      seen.add(s.GroupId)
-                      allGroups.push({ id: s.GroupId, name: s.Group.trim() })
-                    }
-                  })
-                }
+        if (this.groups.length === 0) {
+          const groupRequests = this.lecturers.map((lecturer: any) =>
+            this.visitStatsService
+              .getVisitStats({
+                count: this.COUNT,
+                page: this.PAGE,
+                filter:
+                  '{"isSecretary":"' +
+                  true +
+                  '","lecturerId":"' +
+                  lecturer.Id +
+                  '","groupId":"0","searchString":""}',
               })
-
-              this.groups = allGroups.sort((a, b) => (a.name < b.name ? -1 : 1))
-
-              if (this.groups.length > 0 && !this.selectedGroup) {
-                this.selectedGroup = this.groups[0]
-              }
-
-              this.loadStudentsForAllLecturers()
-            })
-          } else {
-            this.loadStudentsForAllLecturers()
-          }
-        })
-    } else {
-      this.visitStatsList = null
-      this.visitStatsSubscription = this.visitStatsService
-        .getVisitStats({
-          count: this.COUNT,
-          page: this.PAGE,
-          filter:
-            '{"isSecretary":"' +
-            false +
-            '","searchString":"' +
-            this.searchString +
-            '"}',
-        })
-        .subscribe((res) => {
-          this.visitStatsList = this.assignResults(
-            res.Students.Items,
-            res.DiplomProjectConsultationDates
+              .toPromise()
           )
-          this.consultations = res.DiplomProjectConsultationDates
-          this.filteredVisitStatsList = this.visitStatsList
-        })
-    }
-  }
 
-  private loadStudentsForAllLecturers() {
-    const groupId = this.selectedGroup ? this.selectedGroup.id : 0
-    const requests = this.lecturers.map((lecturer: any) =>
-      this.visitStatsService
-        .getVisitStats({
-          count: this.COUNT,
-          page: this.PAGE,
-          filter:
-            '{"isSecretary":"' +
-            this.isLecturer +
-            '","lecturerId":"' +
-            lecturer.Id +
-            '","groupId":"' +
-            groupId +
-            '","searchString":"' +
-            this.searchString +
-            '"}',
-        })
-        .toPromise()
-    )
+          Promise.all(groupRequests).then((allResults: any[]) => {
+            const seen = new Set<number>()
+            const allGroups: { id: number; name: string }[] = []
 
-    Promise.all(requests).then((results: any[]) => {
-      let allStudents: VisitStats[] = []
-      let allConsultations: Consultation[] = []
-      const consultationIds = new Set<number>()
+            allResults.forEach((allRes: any) => {
+              if (allRes && allRes.Students && allRes.Students.Items) {
+                allRes.Students.Items.forEach((s: any) => {
+                  if (s.GroupId && !seen.has(s.GroupId)) {
+                    seen.add(s.GroupId)
+                    allGroups.push({ id: s.GroupId, name: s.Group.trim() })
+                  }
+                })
+              }
+            })
 
-      results.forEach((res) => {
-        if (res && res.Students && res.Students.Items) {
-          allStudents = allStudents.concat(res.Students.Items)
-        }
-        if (res && res.DiplomProjectConsultationDates) {
-          res.DiplomProjectConsultationDates.forEach((c: Consultation) => {
-            if (!consultationIds.has(Number(c.Id))) {
-              consultationIds.add(Number(c.Id))
-              allConsultations.push(c)
+            this.groups = allGroups.sort((a, b) => (a.name < b.name ? -1 : 1))
+
+            if (this.groups.length > 0 && !this.selectedGroup) {
+              this.selectedGroup = this.groups[0]
             }
+
+            this.loadStudentsForAllLecturers()
           })
+        } else {
+          this.loadStudentsForAllLecturers()
         }
       })
-
-      this.consultations = allConsultations
-      this.visitStatsList = this.assignResults(allStudents, allConsultations)
-      this.filteredVisitStatsList = this.visitStatsList
-    })
+  } else {
+    this.visitStatsList = null
+    this.visitStatsSubscription = this.visitStatsService
+      .getVisitStats({
+        count: this.COUNT,
+        page: this.PAGE,
+        filter:
+          '{"isSecretary":"' +
+          false +
+          '","searchString":"' +
+          this.searchString +
+          '"}',
+      })
+      .subscribe((res) => {
+        this.visitStatsList = this.assignResults(
+          res.Students.Items,
+          res.DiplomProjectConsultationDates
+        )
+        this.consultations = res.DiplomProjectConsultationDates
+        this.filteredVisitStatsList = this.visitStatsList
+      })
   }
+}
+
+  private loadStudentsForAllLecturers() {
+  const groupId = this.selectedGroup ? this.selectedGroup.id : 0
+  const requests = this.lecturers.map((lecturer: any) =>
+    this.visitStatsService
+      .getVisitStats({
+        count: this.COUNT,
+        page: this.PAGE,
+        filter:
+          '{"isSecretary":"' +
+          true +
+          '","lecturerId":"' +
+          lecturer.Id +
+          '","groupId":"' +
+          groupId +
+          '","searchString":"' +
+          this.searchString +
+          '"}',
+      })
+      .toPromise()
+  )
+
+  Promise.all(requests).then((results: any[]) => {
+    const studentMap = new Map<any, VisitStats>()
+    let allConsultations: Consultation[] = []
+    const consultationIds = new Set<number>()
+
+    results.forEach((res) => {
+      if (res && res.Students && res.Students.Items) {
+        res.Students.Items.forEach((s: VisitStats) => {
+          if (!studentMap.has(s.Id)) {
+            studentMap.set(s.Id, s)
+          }
+        })
+      }
+      if (res && res.DiplomProjectConsultationDates) {
+        res.DiplomProjectConsultationDates.forEach((c: Consultation) => {
+          if (!consultationIds.has(Number(c.Id))) {
+            consultationIds.add(Number(c.Id))
+            allConsultations.push(c)
+          }
+        })
+      }
+    })
+
+    const allStudents = Array.from(studentMap.values())
+
+    this.consultations = allConsultations
+    this.visitStatsList = this.assignResults(allStudents, allConsultations)
+    this.filteredVisitStatsList = this.visitStatsList
+  })
+}
 
   compareGroups(
     a: { id: number; name: string },
@@ -389,43 +387,23 @@ export class VisitStatsComponent implements OnInit {
   }
 
   addDate() {
-    const dialogRef = this.dialog.open(AddDateDialogComponent, {
-      autoFocus: false,
-      width: '600px',
-      height: '100%',
-      data: {
-        ...this.preSavedData,
-        consultations: this.consultations,
-      },
-    })
+  const dialogRef = this.dialog.open(AddDateDialogComponent, {
+    autoFocus: false,
+    width: '600px',
+    height: '100%',
+    data: {
+      ...this.preSavedData,
+      consultations: this.consultations,
+    },
+  })
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result != null && !result.isClose) {
-        const date = new Date(result.date)
-        date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
-        this.visitStatsService
-          .addDate(
-            date.toISOString(),
-            result.start,
-            result.end,
-            result.audience,
-            result.building
-          )
-          .subscribe(() => {
-            this.ngOnInit()
-            this.addFlashMessage(
-              this.translatePipe.transform(
-                'text.course.visit.dialog.add.save.success',
-                'Дата консультации успешно добавлена'
-              )
-            )
-          })
-      }
-      if (result.isClose) {
-        this.preSavedData = result
-      }
-    })
-  }
+  dialogRef.afterClosed().subscribe((result) => {
+    this.retrieveVisitStats()
+    if (result && result.isClose) {
+      this.preSavedData = result
+    }
+  })
+}
 
   deleteVisitDate(consultation: Consultation) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {

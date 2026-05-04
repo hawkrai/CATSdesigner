@@ -1694,7 +1694,7 @@ namespace Application.Infrastructure.Export
             runProperties23.Append(fontSizeComplexScript32);
             runProperties23.Append(languages36);
             Text text23 = new Text();
-            text23.Text = T("Задание на дипломный проект", "Diploma Project Assignment");
+            text23.Text = T("Задание на дипломный проект", "Graduation Project Assignment");
 
             run23.Append(runProperties23);
             run23.Append(text23);
@@ -2058,7 +2058,7 @@ namespace Application.Infrastructure.Export
             runProperties28.Append(fontSizeComplexScript40);
             runProperties28.Append(languages47);
             Text text28 = new Text();
-            text28.Text = T("1. Тема дипломного проекта", "1. Diploma project topic");
+            text28.Text = T("1. Тема дипломного проекта", "1. Graduation project theme");
 
             run28.Append(runProperties28);
             run28.Append(text28);
@@ -6790,11 +6790,12 @@ namespace Application.Infrastructure.Export
             var currentYearEnd = currentYearStart.AddYears(1);
 
             var pgs = awork?.Student.Group.Secretary != null
-                ? awork.Student.Group.Secretary.DiplomPercentagesGraphs
-                    .Where(x => x.Date >= currentYearStart && x.Date < currentYearEnd)
-                    .OrderBy(x => x.Date)
-                    .ToList()
-                : new List<DiplomPercentagesGraph>();
+    ? awork.Student.Group.Secretary.DiplomPercentagesGraphs
+        .Where(x => x.Date >= currentYearStart && x.Date < currentYearEnd)
+        .Where(x => x.DiplomPercentagesGraphToGroups != null && x.DiplomPercentagesGraphToGroups.Any())
+        .OrderBy(x => x.Date)
+        .ToList()
+    : new List<DiplomPercentagesGraph>();
             int index = 0;
 
             Run run112 = new Run() { RsidRunProperties = "003578D5" };
@@ -8336,7 +8337,7 @@ namespace Application.Infrastructure.Export
             runProperties173.Append(fontSize283);
             runProperties173.Append(fontSizeComplexScript282);
             Text text173 = new Text();
-            text173.Text = T("Руководитель", "Supervisor");
+            text173.Text = T("Руководитель", "Graduation project supervisor");
 
             run173.Append(runProperties173);
             run173.Append(text173);

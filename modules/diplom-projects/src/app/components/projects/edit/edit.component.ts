@@ -12,6 +12,7 @@ import { TranslatePipe } from 'educats-translate'
 })
 export class EditComponent implements OnInit {
   @Input() day: Consultation
+  @Input() consultations: Consultation[] = []
   @Output() close = new EventEmitter<boolean>()
   @Output() dataUpdated = new EventEmitter<Consultation>()
 
@@ -65,51 +66,89 @@ export class EditComponent implements OnInit {
     )
   }
 
+  private toMinutes(time: string): number {
+    const parts = time.slice(0, 5).split(':')
+    return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10)
+  }
+
   onSave(): void {
-  if (this.isFormInvalid) return;
+    if (this.isFormInvalid) return
 
-  const date = new Date(this.dateControl.value);
-  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    const date = new Date(this.dateControl.value)
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
 
-  this.visitStatsService
-    .addDate(
-      date.toISOString(),
-      this.startTimeControl.value,
-      this.endTimeControl.value,
-      this.audienceControl.value,
-      this.buildingControl.value,
-      this.day.Id
-    )
-    .subscribe(
-      () => {
-        this.toastr.success(
-          this.translatePipe.transform(
-            'text.diplomProject.editDate.success',
-            'Дата консультации успешно обновлена'
+    const newStart = this.toMinutes(this.startTimeControl.value)
+    const newEnd = this.toMinutes(this.endTimeControl.value)
+    const newEndAdj = newEnd <= newStart ? newEnd + 1440 : newEnd
+
+    const isDuplicate = this.consultations.some(c => {
+      if (String(c.Id) === String(this.day.Id)) return false
+
+      const sameDay = new Date(c.Day).toDateString() === date.toDateString()
+      if (!sameDay) return false
+
+      const existStart = this.toMinutes(c.StartTime)
+      const existEnd = this.toMinutes(c.EndTime)
+      const existEndAdj = existEnd <= existStart ? existEnd + 1440 : existEnd
+
+      const isOverlap = newStart < existEndAdj && newEndAdj > existStart
+
+      const samePlace =
+        c.Building === this.buildingControl.value &&
+        c.Audience === this.audienceControl.value
+
+      return isOverlap && samePlace
+    })
+
+    if (isDuplicate) {
+      this.toastr.warning(
+        this.translatePipe.transform(
+          'text.consultation.duplicate',
+          'В этой аудитории уже есть консультация в указанное время'
+        )
+      )
+      return
+    }
+
+    this.visitStatsService
+      .addDate(
+        date.toISOString(),
+        this.startTimeControl.value,
+        this.endTimeControl.value,
+        this.audienceControl.value,
+        this.buildingControl.value,
+        this.day.Id
+      )
+      .subscribe(
+        () => {
+          this.toastr.success(
+            this.translatePipe.transform(
+              'text.diplomProject.editDate.success',
+              'Дата консультации успешно обновлена'
+            )
           )
-        );
 
-        const updated: Consultation = {
-          ...this.day,
-          Day: date.toISOString(),
-          StartTime: this.startTimeControl.value,
-          EndTime: this.endTimeControl.value,
-          Building: this.buildingControl.value,
-          Audience: this.audienceControl.value,
-        };
+          const updated: Consultation = {
+            ...this.day,
+            Day: date.toISOString(),
+            StartTime: this.startTimeControl.value,
+            EndTime: this.endTimeControl.value,
+            Building: this.buildingControl.value,
+            Audience: this.audienceControl.value,
+          }
 
-        this.dataUpdated.emit(updated);
-      },
-      (err) => {
-        this.toastr.error(
-          this.translatePipe.transform(
-            'text.diplomProject.editDate.error',
-            'Ошибка при обновлении даты'
+          this.dataUpdated.emit(updated)
+        },
+        (err) => {
+          this.toastr.error(
+            this.translatePipe.transform(
+              'text.diplomProject.editDate.error',
+              'Ошибка при обновлении даты'
+            )
           )
-        );
-      }
-    );
-}
+        }
+      )
+  }
 
   onClose(): void {
     this.close.emit(false)

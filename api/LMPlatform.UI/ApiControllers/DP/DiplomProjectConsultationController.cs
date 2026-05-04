@@ -16,7 +16,9 @@ namespace LMPlatform.UI.ApiControllers.DP
     {
         public object Get([System.Web.Http.ModelBinding.ModelBinder] GetPagedListParams parms)
         {
-            var lecturerId = UserContext.CurrentUserId;
+            var currentUserId = UserContext.CurrentUserId;
+            var lecturerId = currentUserId;
+
             if (parms.Filters.ContainsKey("lecturerId"))
             {
                 var parsedId = int.Parse(parms.Filters["lecturerId"]);
@@ -28,7 +30,7 @@ namespace LMPlatform.UI.ApiControllers.DP
 
             return new
             {
-                Students = DpManagementService.GetGraduateStudentsForUser(lecturerId, parms, false),
+                Students = DpManagementService.GetGraduateStudentsForUser(currentUserId, parms, false),
                 DiplomProjectConsultationDates = PercentageService.GetConsultationDatesForUser(lecturerId)
             };
         }

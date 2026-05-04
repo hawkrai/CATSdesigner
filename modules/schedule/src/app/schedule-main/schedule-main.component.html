@@ -564,13 +564,13 @@
           overflow: auto;
         "
         [ngStyle]="{
-          'border-left-color': lessonservice.getColorLesson(weekEvent.event),
+          'border-left-color': lessonservice.getColorLesson(weekEvent.event)
         }"
         [style.backgroundColor]="weekEvent.event.color?.primary"
         (mwlClick)="
           eventClicked.emit({
             event: weekEvent.event,
-            sourceEvent: weekEvent.event,
+            sourceEvent: weekEvent.event
           })
         "
       >

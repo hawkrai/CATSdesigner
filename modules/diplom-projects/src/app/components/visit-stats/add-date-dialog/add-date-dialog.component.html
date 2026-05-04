@@ -104,12 +104,13 @@
     >
       <ng-container *ngFor="let day of data.consultations">
         <app-edit
-          *ngIf="showEditPopover && selectedDayId === day.Id"
-          [day]="day"
-          (close)="closeEditPopover($event)"
-          (dataUpdated)="onDataUpdated($event)"
-        >
-        </app-edit>
+  *ngIf="showEditPopover && selectedDayId === day.Id"
+  [day]="day"
+  [consultations]="data.consultations"
+  (close)="closeEditPopover($event)"
+  (dataUpdated)="onDataUpdated($event)"
+>
+</app-edit>
 
         <table class="mdc-data-table__table">
           <tbody class="mdc-data-table__content">

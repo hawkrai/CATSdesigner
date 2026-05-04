@@ -188,7 +188,7 @@ namespace Application.Infrastructure.Export
 
             var pd = doc.CreateElement("item");
             pd.SetAttribute("name", "PublishData");
-            pd.InnerText = work.DateStart.HasValue ? work.DateStart.Value.ToString("d' 'MMMM' 'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
+            pd.InnerText = work.DateStart.HasValue ? work.DateStart.Value.ToString("dd.MM.yyyy") : string.Empty;
             children.Add(pd);
             children.AddRange(CreateStringNodes(doc, "Workflow", string.Empty, 638, 638, 14));
 
@@ -268,7 +268,7 @@ namespace Application.Infrastructure.Export
             var pd = doc.CreateElement("item");
             pd.SetAttribute("name", "PublishData");
             pd.InnerText = awork.DiplomProject.DateStart.HasValue
-                ? awork.DiplomProject.DateStart.Value.ToString("d' 'MMMM' 'yyyy'г.'", cultureInfo.DateTimeFormat)
+                ? awork.DiplomProject.DateStart.Value.ToString("dd.MM.yyyy")
                 : string.Empty;
             children.Add(pd);
 
@@ -280,19 +280,19 @@ namespace Application.Infrastructure.Export
             children.Add(ed);
 
             var currentYearStart = DateTime.Now.Month >= 9
-    ? new DateTime(DateTime.Now.Year, 9, 1)
-    : new DateTime(DateTime.Now.Year - 1, 9, 1);
+                ? new DateTime(DateTime.Now.Year, 9, 1)
+                : new DateTime(DateTime.Now.Year - 1, 9, 1);
             var currentYearEnd = currentYearStart.AddYears(1);
 
             var groupId = awork.Student.GroupId;
 
             var pgs = awork.Student.Group.Secretary != null
-    ? awork.Student.Group.Secretary.DiplomPercentagesGraphs
-        .Where(x => x.Date >= currentYearStart && x.Date < currentYearEnd)
-        .OrderBy(x => x.Date)
-        .ToList()
-    : new List<DiplomPercentagesGraph>();
-           
+                ? awork.Student.Group.Secretary.DiplomPercentagesGraphs
+                    .Where(x => x.Date >= currentYearStart && x.Date < currentYearEnd)
+                    .Where(x => x.DiplomPercentagesGraphToGroups != null && x.DiplomPercentagesGraphToGroups.Any())
+                    .OrderBy(x => x.Date)
+                    .ToList()
+                : new List<DiplomPercentagesGraph>();
 
             var percentageGraph = new StringBuilder();
             var i = 1;
@@ -300,7 +300,7 @@ namespace Application.Infrastructure.Export
             {
                 percentageGraph.AppendFormat(
                     CultureInfo.CreateSpecificCulture("ru-RU"),
-                    "{3}. {0} \t{1}% \t{2:d MMMM yyyy} г.\n",
+                    "{3}. {0} - {1}% - {2:dd.MM.yyyy}\n",
                     pg.Name, pg.Percentage, pg.Date, i++);
             }
 

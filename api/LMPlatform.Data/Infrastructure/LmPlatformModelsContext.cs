@@ -52,7 +52,8 @@ namespace LMPlatform.Data.Infrastructure
         {
             return Students
                 .Where(StudentIsGraduate)
-                .Where(x => x.Confirmed == null || x.Confirmed.Value);
+                .Where(x => x.IsActive == true)
+                .Where(x => x.Confirmed == true || (x.Confirmed == null && x.DeletedOn == null));
         }
 
         public Expression<Func<Student, bool>> StudentIsGraduate

@@ -201,6 +201,10 @@
   "text.test.time.for.question": "Время на вопрос (сек)",
   "text.test.result.mark": "Оценка: {mark} ({percent}%)",
   "text.test.new.questions.for.test": "Вопрос №{number}",
+  "text.course.visit.dialog.add.save.success": "Дата консультации успешно добавлена",
+  "text.consultation.duplicate": "В этой аудитории уже есть консультация в указанное время",
+  "text.diplomProject.editDate.error": "Ошибка при обновлении даты",
+  "text.diplomProject.editDate.success": "Дата консультации успешно обновлена",
 
   "text.editor.yes": "Да",
   "text.editor.no": "Нет",
@@ -262,7 +266,7 @@
   "text.schedule.date.and.connected.data": "дату и все связанные с ней данные",
 
   "text.visiting.date.editing": "Редактируемая дата",
-
+  "date.edit": "Редактировать дату",
   "text.average.mark": "Средняя оценка",
   "text.average.test": "Средняя оценка за тесты",
   "text.rating": "Рейтинговая оценка",
@@ -556,6 +560,7 @@
   "text.help": "Помощь",
   "text.diplomProject.missedHoursHeader": "Пропущено часов",
   "text.diplomProject.missedHoursTooltip": "Пропустил(а) {missed} часа(ов) из {total}",
+  "text.diplomProject.lecturer": "Руководитель проекта",
   "text.help.lectures": "Для добавления или удаления дат лекций нажмите на кнопку 'Управление расписанием'. Нажмите 2 раза на ячейку с нужной датой, чтобы отметить посещаемость и оставить комментарии.",
   "text.help.news": "Чтобы скрыть или показать все новости нажмите одноимённую кнопку. Для редактирования или удаления новости наведите курсор на нужную новость и нажмите на нужную иконку.",
   "text.help.visit.statistic": "Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.",

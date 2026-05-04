@@ -41,14 +41,14 @@
 
 	<xsl:variable name="t_title">
 		<xsl:choose>
-			<xsl:when test="$lang='en'">DIPLOMA PROJECT ASSIGNMENT</xsl:when>
+			<xsl:when test="$lang='en'">GRADUATION PROJECT ASSIGNMENT</xsl:when>
 			<xsl:otherwise>ЗАДАНИЕ ПО ДИПЛОМНОМУ ПРОЕКТИРОВАНИЮ</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 
 	<xsl:variable name="t_student_group">
 		<xsl:choose>
-			<xsl:when test="$lang='en'">Diploma student, group</xsl:when>
+			<xsl:when test="$lang='en'">For student of the group</xsl:when>
 			<xsl:otherwise>Cтуденту-дипломнику группы</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -69,7 +69,7 @@
 
 	<xsl:variable name="t_item1">
 		<xsl:choose>
-			<xsl:when test="$lang='en'">1. Project topic</xsl:when>
+			<xsl:when test="$lang='en'">1. Graduation project theme</xsl:when>
 			<xsl:otherwise>1. Тема проекта</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -132,14 +132,14 @@
 
 	<xsl:variable name="t_supervisor">
 		<xsl:choose>
-			<xsl:when test="$lang='en'">Supervisor</xsl:when>
+			<xsl:when test="$lang='en'">Graduation project supervisor</xsl:when>
 			<xsl:otherwise>Руководитель</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 
 	<xsl:variable name="t_student_accepted">
 		<xsl:choose>
-			<xsl:when test="$lang='en'">Diploma student accepted the assignment</xsl:when>
+			<xsl:when test="$lang='en'">Student accepted the assignment</xsl:when>
 			<xsl:otherwise>Студент-дипломник задание принял к исполнению</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>

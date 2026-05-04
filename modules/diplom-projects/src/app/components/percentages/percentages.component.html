@@ -1,5 +1,5 @@
 <div class="percentages-component" *ngIf="percentages; else load">
-  <div style="display: flex; align-items: center; gap: 16px">
+  <div class="percentages-component__header">
     <button
       mat-raised-button
       class="actions"
@@ -10,7 +10,10 @@
       {{ 'text.diplomProject.addStage' | translate: 'Добавить этап' }}
     </button>
 
-    <mat-form-field *ngIf="isLecturer && groups.length > 0">
+    <mat-form-field
+      class="percentages-component__group-select"
+      *ngIf="isLecturer && groups.length > 0"
+    >
       <mat-select
         [(ngModel)]="selectedGroup"
         [compareWith]="compareGroups"

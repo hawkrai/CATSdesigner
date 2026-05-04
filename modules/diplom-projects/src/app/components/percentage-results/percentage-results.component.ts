@@ -34,7 +34,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   private PAGE = 1
 
   private percentageResults: StudentPercentageResults[]
-  private filteredPercentageResults: StudentPercentageResults[]
+  public filteredPercentageResults: StudentPercentageResults[]
   private percentageGraphs: PercentageGraph[]
   public groups: String[]
   public themes = [
@@ -57,10 +57,10 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   private percentageResultsSubscription: Subscription
 
-  private searchString = ''
+  public searchString = ''
   private sorting = 'Id'
-  private direction = 'desc'
-  private selectedGroup: String
+  private direction = 'asc'
+  public selectedGroup: String
   public isLecturer = false
 
   constructor(
@@ -91,78 +91,121 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   lecturerStatusChange(event) {
     this.isLecturer = event.value.value
+    this.selectedGroup = undefined
     localStorage.setItem('toggle', event.value.value)
     this.retrievePercentageResults()
   }
 
   sort(field: string, direction: string) {
-    if (!direction) {
+  if (!direction) {
+    this.sorting = 'Id'
+    this.direction = 'asc'
+  } else {
+    if (field === 'Student') {
       this.sorting = 'Id'
-      this.direction = 'desc'
+    } else if (field === 'Lecturer') {
+      this.sorting = 'Lecturer'
     } else {
       this.sorting = field
-      if (field === 'Student') {
-        this.sorting = 'Id'
-      }
-      this.direction = direction
     }
-    this.retrievePercentageResults()
+    this.direction = direction
   }
+  if (this.filteredPercentageResults) {
+    this.filteredPercentageResults = this.applySort([...this.filteredPercentageResults])
+  }
+}
 
   retrievePercentageResults() {
-    this.percentageResults = null
+  this.percentageResults = null
 
-    let isSecretaryFilter: boolean
-    if (this.diplomUser.IsStudent) {
-      isSecretaryFilter = false
-    } else {
-      isSecretaryFilter = !this.isLecturer
-    }
+  let isSecretaryFilter: boolean
+  if (this.diplomUser.IsStudent) {
+    isSecretaryFilter = false
+  } else {
+    isSecretaryFilter = !this.isLecturer
+  }
 
-    this.percentageResultsSubscription = this.percentageResultsService
-      .getPercentageResults(
-        'count=' +
-          this.COUNT +
-          '&page=' +
-          this.PAGE +
-          '&filter={"isSecretary":"' +
-          isSecretaryFilter +
-          '","searchString":"' +
-          this.searchString +
-          '","studentId":"' +
-          (this.diplomUser.IsStudent ? this.diplomUser.UserId : 0) +
-          '"}' +
-          '&sorting[' +
-          this.sorting +
-          ']=' +
-          this.direction
-      )
-      .subscribe((res) => {
-        if (this.diplomUser.IsStudent) {
-          const currentStudent = res.Students.Items.find(
-            (x) => x.Id == this.diplomUser.UserId
+  this.percentageResultsSubscription = this.percentageResultsService
+    .getPercentageResults(
+      'count=' +
+        this.COUNT +
+        '&page=' +
+        this.PAGE +
+        '&filter={"isSecretary":"' +
+        isSecretaryFilter +
+        '","searchString":"' +
+        this.searchString +
+        '","studentId":"' +
+        (this.diplomUser.IsStudent ? this.diplomUser.UserId : 0) +
+        '"}' +
+        '&sorting[' +
+        this.sorting +
+        ']=' +
+        this.direction
+    )
+    .subscribe((res) => {
+      if (this.diplomUser.IsStudent) {
+        const currentStudent = res.Students.Items.find(
+          (x) => x.Id == this.diplomUser.UserId
+        )
+        if (currentStudent) {
+          const students = res.Students.Items.filter(
+            (x) => x.Group == currentStudent.Group
           )
-          if (currentStudent) {
-            const students = res.Students.Items.filter(
-              (x) => x.Group == currentStudent.Group
-            )
-            this.percentageResults = this.assignResults(
-              students,
-              res.PercentageGraphs
-            )
-          } else {
-            this.percentageResults = []
-          }
-        } else {
           this.percentageResults = this.assignResults(
-            res.Students.Items,
+            students,
             res.PercentageGraphs
           )
+        } else {
+          this.percentageResults = []
         }
-        this.percentageGraphs = res.PercentageGraphs
-        this.filteredPercentageResults = this.percentageResults
-      })
-  }
+      } else {
+        this.percentageResults = this.assignResults(
+          res.Students.Items,
+          res.PercentageGraphs
+        )
+      }
+      this.percentageGraphs = res.PercentageGraphs
+
+      if (
+        (this.isLecturer || (this.diplomUser.IsSecretary && !this.isLecturer)) &&
+        this.groups &&
+        this.groups.length > 0
+      ) {
+        if (!this.selectedGroup || !this.groups.includes(this.selectedGroup)) {
+          this.selectedGroup = this.groups[0]
+        }
+        this.filteredPercentageResults = this.applySort(
+          this.percentageResults.filter((x) => x.Group === this.selectedGroup)
+        )
+      } else {
+        this.filteredPercentageResults = this.applySort(
+          this.percentageResults ? [...this.percentageResults] : []
+        )
+      }
+    })
+}
+
+applySort(students: StudentPercentageResults[]): StudentPercentageResults[] {
+  if (!students) return []
+  return students.sort((a, b) => {
+    if (this.sorting === 'Lecturer') {
+      const lecA = a.Lecturer || null
+      const lecB = b.Lecturer || null
+      if (!lecA && !lecB) return 0
+      if (!lecA) return 1
+      if (!lecB) return -1
+      return this.direction === 'asc'
+        ? lecA.localeCompare(lecB, 'ru', { sensitivity: 'base' })
+        : lecB.localeCompare(lecA, 'ru', { sensitivity: 'base' })
+    }
+    const nameA = a.Name || ''
+    const nameB = b.Name || ''
+    return this.direction === 'asc'
+      ? nameA.localeCompare(nameB, 'ru', { sensitivity: 'base' })
+      : nameB.localeCompare(nameA, 'ru', { sensitivity: 'base' })
+  })
+}
 
   onSearchChange(searchText: string) {
     this.searchString = searchText
@@ -170,15 +213,17 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   }
 
   _selectedGroup(event: MatOptionSelectionChange) {
-    if (event.isUserInput) {
-      this.selectedGroup = event.source.value
-      if (this.percentageResults) {
-        this.filteredPercentageResults = this.percentageResults.filter(
-          (x) => x.Group == event.source.value
-        )
-      }
+  if (event.isUserInput) {
+    this.selectedGroup = event.source.value
+    this.sorting = 'Id'
+    this.direction = 'asc'
+    if (this.percentageResults) {
+      this.filteredPercentageResults = this.applySort(
+        [...this.percentageResults.filter((x) => x.Group === this.selectedGroup)]
+      )
     }
   }
+}
 
   updateStats() {
     if (this.percentageResultsSubscription) {
