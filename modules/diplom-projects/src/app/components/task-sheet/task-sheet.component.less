@@ -2,14 +2,17 @@
   &__header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
 
     &__theme {
-      width: 20%;
+      flex: 0 0 20%;
+      min-width: 180px;
     }
 
     &__theme--full {
-      width: 100%;
+      flex: 1 1 auto; 
+      min-width: 180px;
     }
 
     &__actions {
@@ -17,6 +20,8 @@
       display: flex;
       align-items: center;
       gap: 4px;
+      margin-left: auto;
+      flex-shrink: 0;
     }
   }
 
@@ -28,8 +33,7 @@
 .mselect {
   width: 170px;
   flex-shrink: 0;
-  margin-left: 0px; 
-  margin-right: 1050px
+  margin-left: 20px;
 }
 
 .iconify {
@@ -56,8 +60,6 @@
 }
 
 ::ng-deep .task-sheet__header__theme--full {
-  width: 100% !important;
-
   .mat-form-field-infix {
     width: 100% !important;
   }

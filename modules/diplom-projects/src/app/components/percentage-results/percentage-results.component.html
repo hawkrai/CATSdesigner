@@ -32,18 +32,18 @@
       </mat-select>
     </div>
     <div class="percentage-results-component__controls">
-      <mat-form-field class="percentage-results-component__search">
-        <mat-label>{{
-          'text.diplomProject.searchThemeAndName'
-            | translate: 'Поиск по теме, фамилии'
-        }}</mat-label>
-        <input
-          matInput
-          [value]="searchString"
-          (input)="onSearchChange($event.target.value)"
-        />
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
+      <mat-form-field *ngIf="!diplomUser.IsStudent" class="percentage-results-component__search">
+  <mat-label>{{
+    'text.diplomProject.searchThemeAndName'
+      | translate: 'Поиск по теме, фамилии'
+  }}</mat-label>
+  <input
+    matInput
+    [value]="searchString"
+    (input)="onSearchChange($event.target.value)"
+  />
+  <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>
       <div class="group-select">
   <app-help
     *ngIf="!diplomUser.IsStudent"

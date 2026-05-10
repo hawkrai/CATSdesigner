@@ -214,7 +214,14 @@ namespace Application.Infrastructure.Export
 
             var student = doc.CreateElement("item");
             student.SetAttribute("name", "Student");
-            student.InnerText = string.Format("{0} {1} {2}", awork.Student.LastName, awork.Student.FirstName, awork.Student.MiddleName);
+            var s = awork.Student;
+            var sFirstInitial = !string.IsNullOrWhiteSpace(s.FirstName)
+                ? s.FirstName[0] + "."
+                : string.Empty;
+            var sMiddleInitial = !string.IsNullOrWhiteSpace(s.MiddleName)
+                ? " " + s.MiddleName[0] + "."
+                : string.Empty;
+            student.InnerText = string.Format("{0}{1} {2}", sFirstInitial, sMiddleInitial, s.LastName);
             children.Add(student);
 
             var group = doc.CreateElement("item");
@@ -257,6 +264,25 @@ namespace Application.Infrastructure.Export
             head.InnerText = awork.DiplomProject.HeadCathedra;
             children.Add(head);
 
+            var lecturer = doc.CreateElement("item");
+            lecturer.SetAttribute("name", "Lecturer");
+            if (awork.DiplomProject.Lecturer != null)
+            {
+                var l = awork.DiplomProject.Lecturer;
+                var firstInitial = !string.IsNullOrWhiteSpace(l.FirstName)
+                    ? l.FirstName[0] + "."
+                    : string.Empty;
+                var middleInitial = !string.IsNullOrWhiteSpace(l.MiddleName)
+                    ? " " + l.MiddleName[0] + "."
+                    : string.Empty;
+                lecturer.InnerText = string.Format("{0}{1} {2}", firstInitial, middleInitial, l.LastName);
+            }
+            else
+            {
+                lecturer.InnerText = string.Empty;
+            }
+            children.Add(lecturer);
+
             children.AddRange(CreateStringNodes(doc, "InputData", awork.DiplomProject.InputData, 439, 638, 13));
 
             children.AddRange(CreateStringNodes(doc, "RPZContent", awork.DiplomProject.RpzContent, 331, 638, 15));
@@ -275,7 +301,7 @@ namespace Application.Infrastructure.Export
             var ed = doc.CreateElement("item");
             ed.SetAttribute("name", "EndData");
             ed.InnerText = awork.DiplomProject.DateEnd.HasValue
-                ? awork.DiplomProject.DateEnd.Value.ToString("d' 'MMMM' 'yyyy'г.'", cultureInfo.DateTimeFormat)
+                ? awork.DiplomProject.DateEnd.Value.ToString("dd.MM.yyyy", cultureInfo.DateTimeFormat)
                 : string.Empty;
             children.Add(ed);
 

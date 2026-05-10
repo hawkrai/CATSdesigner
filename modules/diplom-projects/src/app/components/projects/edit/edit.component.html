@@ -1,11 +1,4 @@
 <div class="edit-popover mat-elevation-z4">
-  <div class="edit-popover__header">
-    <span>{{ 'date.edit' | translate: 'Редактировать дату' }}</span>
-    <button mat-icon-button (click)="onClose()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-
   <div class="edit-popover__body">
     <div class="form-container">
       <mat-form-field class="form-field">
@@ -71,6 +64,7 @@
       class="action-btn action-btn--save"
       [disabled]="isFormInvalid"
       (click)="onSave()"
+      [matTooltip]="'button.save' | translate: 'Сохранить'"
     >
       <mat-icon>check</mat-icon>
     </button>
@@ -78,6 +72,7 @@
       mat-icon-button
       class="action-btn action-btn--close"
       (click)="onClose()"
+      [matTooltip]="'button.cancel' | translate: 'Отмена'"
     >
       <mat-icon>close</mat-icon>
     </button>

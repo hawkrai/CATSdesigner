@@ -35,7 +35,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   private percentageResults: StudentPercentageResults[]
   public filteredPercentageResults: StudentPercentageResults[]
-  private percentageGraphs: PercentageGraph[]
+  public percentageGraphs: PercentageGraph[]
   public groups: String[]
   public themes = [
     {
@@ -56,7 +56,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   public theme = undefined
 
   private percentageResultsSubscription: Subscription
-
+  private studentItems: any[] = []
   public searchString = ''
   private sorting = 'Id'
   private direction = 'asc'
@@ -144,6 +144,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         this.direction
     )
     .subscribe((res) => {
+      this.studentItems = res.Students.Items
+
       if (this.diplomUser.IsStudent) {
         const currentStudent = res.Students.Items.find(
           (x) => x.Id == this.diplomUser.UserId
@@ -152,10 +154,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
           const students = res.Students.Items.filter(
             (x) => x.Group == currentStudent.Group
           )
-          this.percentageResults = this.assignResults(
-            students,
-            res.PercentageGraphs
-          )
+          this.percentageResults = this.assignResults(students, res.PercentageGraphs)
         } else {
           this.percentageResults = []
         }
@@ -165,7 +164,33 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
           res.PercentageGraphs
         )
       }
-      this.percentageGraphs = res.PercentageGraphs
+
+      if (this.isLecturer) {
+        const currentSelectedGroup = (this.selectedGroup && this.groups && this.groups.includes(this.selectedGroup))
+          ? this.selectedGroup
+          : (this.groups && this.groups.length > 0 ? this.groups[0] : null)
+
+        const groupStudent = res.Students.Items.find(
+          (s) => s.Group === currentSelectedGroup
+        )
+        const groupId = groupStudent ? groupStudent.GroupId : null
+
+        if (groupId) {
+          this.percentageGraphs = res.PercentageGraphs.filter((graph) =>
+            graph.SelectedGroupsIds && graph.SelectedGroupsIds.includes(groupId)
+          )
+          this.percentageResults = this.assignResults(
+            res.Students.Items,
+            this.percentageGraphs
+          )
+        } else {
+          this.percentageGraphs = res.PercentageGraphs
+        }
+      } else {
+        this.percentageGraphs = res.PercentageGraphs.filter((graph) =>
+          graph.SelectedGroupsIds && graph.SelectedGroupsIds.length > 0
+        )
+      }
 
       if (
         (this.isLecturer || (this.diplomUser.IsSecretary && !this.isLecturer)) &&
@@ -201,6 +226,21 @@ applySort(students: StudentPercentageResults[]): StudentPercentageResults[] {
     }
     const nameA = a.Name || ''
     const nameB = b.Name || ''
+
+    const getOrder = (name: string): number => {
+      if (/^[0-9]/.test(name)) return 0
+      if (/^[a-zA-Z]/.test(name)) return 1
+      if (/^[а-яёА-ЯЁ]/.test(name)) return 2
+      return 3
+    }
+
+    const orderA = getOrder(nameA)
+    const orderB = getOrder(nameB)
+
+    if (orderA !== orderB) {
+      return this.direction === 'asc' ? orderA - orderB : orderB - orderA
+    }
+
     return this.direction === 'asc'
       ? nameA.localeCompare(nameB, 'ru', { sensitivity: 'base' })
       : nameB.localeCompare(nameA, 'ru', { sensitivity: 'base' })
@@ -217,6 +257,12 @@ applySort(students: StudentPercentageResults[]): StudentPercentageResults[] {
     this.selectedGroup = event.source.value
     this.sorting = 'Id'
     this.direction = 'asc'
+
+    if (this.isLecturer) {
+      this.retrievePercentageResults()
+      return
+    }
+
     if (this.percentageResults) {
       this.filteredPercentageResults = this.applySort(
         [...this.percentageResults.filter((x) => x.Group === this.selectedGroup)]

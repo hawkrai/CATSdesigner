@@ -886,5 +886,22 @@ namespace LMPlatform.UI.Services.Concept
             response.Headers["Content-Disposition"] =
                 $"attachment; filename=\"{ascii}\"; filename*=UTF-8''{utf8Star}";
         }
-	}
+
+        private class EumkExportDocumentGenerator
+        {
+            private IFilesManagementService filesManagementService;
+            private ITestsManagementService testsManagementService;
+
+            public EumkExportDocumentGenerator(IFilesManagementService filesManagementService, ITestsManagementService testsManagementService)
+            {
+                this.filesManagementService = filesManagementService;
+                this.testsManagementService = testsManagementService;
+            }
+
+            internal byte[] BuildDocx(Models.Concept root, string docTitle, string tqh, string amh, HashSet<int> hiddenTestIds)
+            {
+                throw new NotImplementedException();
+            }
+        }
+    }
 }
