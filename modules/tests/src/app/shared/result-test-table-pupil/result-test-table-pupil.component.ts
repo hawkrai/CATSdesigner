@@ -35,6 +35,7 @@ export class ResultTestTablePupilComponent implements OnChanges, OnInit, OnDestr
 
   public barChartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       xAxes: [{}],
       yAxes: [

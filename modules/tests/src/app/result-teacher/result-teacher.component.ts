@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   SimpleChanges,
 } from '@angular/core'
@@ -29,7 +30,7 @@ import { Help } from '../models/help.model'
 })
 export class ResultTeacherComponent
   extends AutoUnsubscribeBase
-  implements OnInit, OnChanges
+  implements OnInit, OnChanges, OnDestroy
 {
   @Input()
   public size: number
@@ -60,6 +61,7 @@ export class ResultTeacherComponent
   public subject: any
   private unsubscribeStream$: Subject<void> = new Subject<void>()
   private readonly refreshMs = 10000
+  private studentFilterClearTimer: ReturnType<typeof setTimeout> | undefined
   public showAsSubGroup: boolean
   public help: Help
 
@@ -177,6 +179,9 @@ export class ResultTeacherComponent
         this.resultsOriginal.forEach((res) => {
           this.decomposeResult(res, false, false)
         })
+        if (this.studentChangeCheckBoxes?.length) {
+          this.filterStudentsLogin([...this.studentChangeCheckBoxes])
+        }
         this.cdr.detectChanges()
       })
   }
@@ -188,6 +193,27 @@ export class ResultTeacherComponent
     const sa = a.map((x) => String(x)).sort()
     const sb = b.map((x) => String(x)).sort()
     return sa.every((v, i) => v === sb[i])
+  }
+
+  private sameStringArray(a: string[], b: string[]): boolean {
+    const aa = a?.map((x) => String(x)).filter((x) => x) ?? []
+    const bb = b?.map((x) => String(x)).filter((x) => x) ?? []
+    if (aa.length !== bb.length) {
+      return false
+    }
+    if (aa.length === 0) {
+      return true
+    }
+    const sa = [...aa].sort()
+    const sb = [...bb].sort()
+    return sa.every((v, i) => v === sb[i])
+  }
+
+  ngOnDestroy(): void {
+    if (this.studentFilterClearTimer) {
+      clearTimeout(this.studentFilterClearTimer)
+    }
+    super.ngOnDestroy()
   }
 
   /*public filterStudents(event: string): void {
@@ -285,14 +311,31 @@ export class ResultTeacherComponent
     }
   }
 
-  public studentChange(eventChange) {
-    if (
-      (this.studentChangeCheckBoxes.length || eventChange.length) &&
-      this.studentChangeCheckBoxes !== eventChange
-    ) {
-      this.studentChangeCheckBoxes = eventChange
-      this.filterStudentsLogin(eventChange)
+  public studentChange(eventChange: string[]): void {
+    const next =
+      eventChange?.map((x) => String(x)).filter((x) => x?.length) ?? []
+    if (this.sameStringArray(this.studentChangeCheckBoxes, next)) {
+      return
     }
+    if (next.length === 0 && this.studentChangeCheckBoxes.length > 0) {
+      if (this.studentFilterClearTimer) {
+        clearTimeout(this.studentFilterClearTimer)
+      }
+      this.studentFilterClearTimer = setTimeout(() => {
+        this.studentFilterClearTimer = undefined
+        this.studentChangeCheckBoxes = []
+        this.filterStudentsLogin([])
+        this.cdr.detectChanges()
+      }, 400)
+      return
+    }
+    if (this.studentFilterClearTimer) {
+      clearTimeout(this.studentFilterClearTimer)
+      this.studentFilterClearTimer = undefined
+    }
+    this.studentChangeCheckBoxes = [...next]
+    this.filterStudentsLogin(next)
+    this.cdr.detectChanges()
   }
 
   private initArrays(): void {

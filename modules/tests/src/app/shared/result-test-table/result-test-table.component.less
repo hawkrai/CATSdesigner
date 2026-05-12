@@ -50,6 +50,16 @@
       }
     }
 
+    &-scroll {
+      height: 100%;
+    }
+
+    &-canvas-host {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
     &-graph {
       width: 100%;
     }
@@ -103,19 +113,120 @@
 }
 
 @media only screen and (max-width: 768px) {
-  .mat-header-cell-description {
-    flex: 0 0 25%;
+  .table-test-bg {
+    min-width: 880px;
+    width: max-content;
+    max-width: none;
   }
 
-  .mat-header-cell-average {
-    flex: 0 0 3%;
+  .result-test-table-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-right: 0;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+    padding: 0 4px;
+    box-sizing: border-box;
   }
 
-  .mat-header-cell-action {
-    display: flex;
-    width: inherit;
+  .result-test-table-container {
+    margin-left: 15px;
+    margin-right: 20px;
+    box-sizing: border-box;
+  }
+
+  .result-test-table-subgroup {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-right: 4px;
+    box-sizing: border-box;
+  }
+
+  .result-test-table-warning {
+    margin-left: 15px;
+    margin-right: 20px;
+  }
+
+  .result-test-table-chart {
+    height: auto;
+    min-height: 300px;
+    margin-left: 15px;
+    padding-right: 20px;
+    overflow-x: visible;
+    box-sizing: border-box;
+  }
+
+  .result-test-table-chart-name {
+    margin-left: 0;
+  }
+
+  .result-test-table-chart-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    min-height: 280px;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+  }
+
+  .result-test-table-chart-canvas-host {
+    width: 720px;
+    height: 280px;
+    flex-shrink: 0;
+  }
+
+  .result-test-table-chart-graph {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none;
+  }
+
+  /* Same flex basis on header + body so «Тест N» columns stay aligned on narrow screens */
+  .result-test-table-table .mat-header-cell.mat-header-cell-id,
+  .result-test-table-table .mat-cell.mat-header-cell-id {
+    flex: 0 0 44px;
+    min-width: 44px;
+    max-width: 44px;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+
+  .result-test-table-table .mat-header-cell.mat-header-cell-description,
+  .result-test-table-table .mat-cell.mat-header-cell-description {
+    flex: 0 0 200px;
+    min-width: 200px;
+    max-width: 200px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .result-test-table-table .mat-header-cell.mat-header-cell-action,
+  .result-test-table-table .mat-cell.mat-header-cell-action {
+    flex: 0 0 128px;
+    min-width: 128px;
+    max-width: 128px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    white-space: nowrap;
+    box-sizing: border-box;
     justify-content: center;
-    align-items: center;
-    cursor: pointer;
+  }
+
+  .result-test-table-table .mat-header-cell.mat-header-cell-average,
+  .result-test-table-table .mat-cell.mat-header-cell-average {
+    flex: 0 0 120px;
+    min-width: 120px;
+    max-width: 120px;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+
+  .result-test-table-table .mat-cell,
+  .result-test-table-table .mat-header-cell {
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
   }
 }

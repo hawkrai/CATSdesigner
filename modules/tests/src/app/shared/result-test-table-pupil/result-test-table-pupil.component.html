@@ -1,4 +1,5 @@
 <ng-container *ngIf="tests?.length && !loading">
+  <div class="result-test-table-pupil-table-scroll">
   <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg">
     <!-- Position Column -->
     <ng-container matColumnDef="Id">
@@ -68,8 +69,11 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
   </mat-table>
+  </div>
 
   <div class="result-test-table-chart">
+    <div class="result-test-table-chart-scroll">
+    <div class="result-test-table-chart-canvas-host">
     <canvas baseChart
             [datasets]="barChartData"
             [labels]="barChartLabels"
@@ -79,6 +83,8 @@
             [legend]="barChartLegend"
             [chartType]="barChartType">
     </canvas>
+    </div>
+    </div>
   </div>
 </ng-container>
 

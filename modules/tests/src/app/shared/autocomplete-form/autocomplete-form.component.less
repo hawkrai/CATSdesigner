@@ -1,0 +1,25 @@
+:host {
+  display: block;
+}
+
+@media only screen and (max-width: 768px) {
+  :host {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  form {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  ::ng-deep {
+    .autocomplete-form,
+    mat-form-field {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+}

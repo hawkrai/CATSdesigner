@@ -1,3 +1,7 @@
+:host {
+  display: block;
+}
+
 .mat-header-cell-id {
   flex: 0 0 5%;
   padding: 0 8px;
@@ -82,49 +86,82 @@
   align-items: center;
 }
 
-@media only screen and (max-width: 768px) {
-  .mat-header-cell-id,
-  .mat-cell.mat-header-cell-id {
-    flex: 0 0 8%;
-  }
-
-  .mat-header-cell-description,
-  .mat-cell.mat-header-cell-description {
-    flex: 0 0 20%;
-  }
-
-  .mat-header-cell-date,
-  .mat-cell.mat-header-cell-date {
-    flex: 0 0 14%;
-  }
-
-  .mat-header-cell-time,
-  .mat-cell.mat-header-cell-time {
-    flex: 0 0 14%;
-  }
-
-  .mat-header-cell-end-time,
-  .mat-cell.mat-header-cell-end-time {
-    flex: 0 0 14%;
-  }
-
-  .mat-header-cell-action,
-  .mat-cell.mat-header-cell-action {
-    flex: 0 0 14%;
-  }
-}
-
 .table-test-bg {
   min-width: 800px;
-}
-
-@media only screen and (max-width: 768px) {
-  .table-test-bg {
-    min-width: 650px;
-  }
 }
 
 .result-test-table-chart {
   margin-top: 20px;
   padding-bottom: 20px;
+}
+
+.result-test-table-chart-canvas-host {
+  width: 100%;
+  min-height: 260px;
+  box-sizing: border-box;
+}
+
+@media only screen and (max-width: 768px) {
+  :host {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: visible;
+    box-sizing: border-box;
+  }
+
+  .result-test-table-pupil-table-scroll {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+    padding: 0 12px;
+    direction: ltr;
+    scroll-padding-inline: 12px;
+  }
+
+  .result-test-table-pupil-table-scroll .mat-table.table-test-bg {
+    width: max-content;
+    max-width: none;
+    min-width: 960px;
+  }
+
+  .table-test-bg {
+    min-width: 960px;
+  }
+
+  .mat-cell.mat-header-cell-description,
+  .mat-header-cell-description {
+    flex: 0 0 220px;
+    min-width: 160px;
+  }
+
+  .result-test-table-chart {
+    overflow-x: visible;
+  }
+
+  .result-test-table-chart-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    min-height: 280px;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+  }
+
+  .result-test-table-chart-canvas-host {
+    width: 720px;
+    height: 280px;
+    flex-shrink: 0;
+  }
+
+  .result-test-table-chart-canvas-host canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none;
+  }
 }
