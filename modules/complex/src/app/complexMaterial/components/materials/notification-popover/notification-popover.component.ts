@@ -2,7 +2,6 @@ import { Component, Inject } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { DialogData } from '../../../../models/DialogData'
 import { AdaptivityService } from '../../../../service/adaptivity.service'
-import { TestExecutionComponent } from '../adaptiveLearningTests/adaptive-learning-test.component'
 import { TestService } from '../../../../service/test.service'
 import { Adaptivity } from '../../../../models/Adaptivity'
 import { StorageKeys } from '../../../../../../../../container/src/app/core/models/storage-keys.enum'
@@ -36,6 +35,7 @@ export class NotificationPopoverComponent {
   isTest: boolean
   testId: string
   isPredTest: boolean
+  monitoringPhaseComplete: boolean = false
 
   nextButtonVisible: boolean
   prevButtonVisible: boolean
@@ -68,6 +68,7 @@ export class NotificationPopoverComponent {
   }
 
   initFieldsByAdaptivity(adaptivity: Adaptivity) {
+    this.monitoringPhaseComplete = false
     this.themaId = adaptivity.nextThemaId
     this.currentPathIndex = 0
     this.materialPathes = adaptivity.nextMaterialPaths
@@ -98,6 +99,14 @@ export class NotificationPopoverComponent {
     }
   }
 
+  onMonitoringPhaseComplete(): void {
+    this.monitoringPhaseComplete = true
+  }
+
+  onAdaptiveFlowContinue(): void {
+    this.processsTest()
+  }
+
   processsTest() {
     if (this.isPredTest) {
       this.processAndSavePredTest()
@@ -110,9 +119,11 @@ export class NotificationPopoverComponent {
     this.adaptivityService
       .getNextThemaRes(this.testId, this.themaId, this.adaptivityType)
       .subscribe((res) => {
-        this.path = '/api/Upload?fileName=' + res.nextMaterialPaths[0]
         this.isTest = false
         this.studentSeconds = 0
+        if (res.nextMaterialPaths && res.nextMaterialPaths.length) {
+          this.path = '/api/Upload?fileName=' + res.nextMaterialPaths[0]
+        }
         this.initFieldsByAdaptivity(res)
       })
   }
@@ -121,9 +132,15 @@ export class NotificationPopoverComponent {
     this.adaptivityService
       .processPredTtest(this.testId, this.adaptivityType)
       .subscribe((res) => {
-        this.path = '/api/Upload?fileName=' + res.nextMaterialPaths[0]
         this.isTest = false
         this.studentSeconds = 0
+        if (
+          !res.isLearningEnded &&
+          res.nextMaterialPaths &&
+          res.nextMaterialPaths.length
+        ) {
+          this.path = '/api/Upload?fileName=' + res.nextMaterialPaths[0]
+        }
         this.initFieldsByAdaptivity(res)
       })
   }
@@ -135,6 +152,7 @@ export class NotificationPopoverComponent {
         this.testId = `${res}`
         this.isTest = true
         this.isPredTest = false
+        this.monitoringPhaseComplete = false
 
         this.showMaterial = false
         this.toTestButtonVisible = false
@@ -154,6 +172,7 @@ export class NotificationPopoverComponent {
       this.testId = `${res}`
       this.isTest = true
       this.isPredTest = true
+      this.monitoringPhaseComplete = false
 
       this.showMaterial = false
       this.toTestButtonVisible = false

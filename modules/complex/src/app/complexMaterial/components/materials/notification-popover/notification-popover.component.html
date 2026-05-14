@@ -33,7 +33,12 @@
     ></pdf-viewer>
 
     <div *ngIf="isTest">
-      <app-test-execution testId="{{ testId }}"></app-test-execution>
+      <app-test-execution
+        [testId]="testId"
+        [isPredTest]="isPredTest"
+        (monitoringPhaseCompleted)="onMonitoringPhaseComplete()"
+        (predTestFlowContinue)="onAdaptiveFlowContinue()"
+      ></app-test-execution>
     </div>
 
     <div *ngIf="isEndLearning">
@@ -80,16 +85,12 @@
     </button>
     <button
       id="continueButton"
-      *ngIf="isTest"
+      *ngIf="isTest && !isPredTest"
       mat-raised-button
-      [disabled]="true"
+      [disabled]="!monitoringPhaseComplete"
       (click)="processsTest()"
     >
-      {{
-        isPredTest
-          ? ('complex.goToLearning' | translate: 'Перейти к обучению')
-          : ('common.finishTest' | translate: 'Завершить тест')
-      }}
+      {{ 'common.finishTest' | translate: 'Завершить тест' }}
     </button>
   </div>
 </div>
