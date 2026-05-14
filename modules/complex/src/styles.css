@@ -119,6 +119,13 @@
   background: #3d497b;
 }
 
+#toast-container > div.toast-info.eumk-export-progress-toast,
+#toast-container > .toast-info.eumk-export-progress-toast {
+  background-image: none !important;
+  background-color: #3949ab !important;
+  opacity: 1;
+}
+
 .mat-tooltip {
   font-size: 14px;
 }

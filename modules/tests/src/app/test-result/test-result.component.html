@@ -13,6 +13,13 @@
 
 <ng-template #resultContent>
   <div class="test-result__container">
+    <div class="test-result__backlink main-anchor" *ngIf="showGoToAdaptiveLearning">
+      <span (click)="goToAdaptiveLearningAfterPredTest()">
+        {{
+          'complex.goToLearning' | translate: 'Перейти к обучению'
+        }}
+      </span>
+    </div>
     <div class="test-result-list">
       <div class="test-result-text__title" *ngIf="testName">
         {{
@@ -69,13 +76,6 @@
           [matTooltip]="question.QuestionTitle"
         ></div>
       </div>
-    </div>
-    <div class="test-result__resume-adaptive" *ngIf="showGoToAdaptiveLearning">
-      <button mat-raised-button color="primary" (click)="goToAdaptiveLearningAfterPredTest()">
-        {{
-          'complex.goToLearning' | translate: 'Перейти к обучению'
-        }}
-      </button>
     </div>
     <div *ngIf="isNN" class="nn">
       <h4>

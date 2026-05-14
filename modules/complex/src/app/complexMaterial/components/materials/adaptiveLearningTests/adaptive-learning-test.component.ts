@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core'
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 import { Observable, Subject, timer } from 'rxjs'
@@ -6,7 +6,6 @@ import { Test } from '../../../../models/Test'
 import { TestService } from '../../../../service/test.service'
 import { TestQuestion } from '../../../../models/question/TestQuestion'
 import { UserRole } from '../../../../../../../../container/src/app/core/models/user-role.enum'
-declare var $: any
 
 @Component({
   selector: 'app-test-execution',
@@ -16,6 +15,15 @@ declare var $: any
 export class TestExecutionComponent implements OnInit {
   @Input()
   testId: string
+
+  @Input()
+  isPredTest = false
+
+  @Output()
+  monitoringPhaseCompleted = new EventEmitter<void>()
+
+  @Output()
+  predTestFlowContinue = new EventEmitter<void>()
 
   public isLector = false
   public question: TestQuestion
@@ -168,15 +176,25 @@ export class TestExecutionComponent implements OnInit {
             if (question && question.Question) {
               this.question = question
             } else {
-              this.showTest = false
+              this.onAdaptiveResultsShown()
             }
           })
       } else {
-        this.showTest = false
-        $('#continueButton').attr('disabled', false)
+        this.onAdaptiveResultsShown()
       }
     } else {
-      this.showTest = false
+      this.onAdaptiveResultsShown()
+    }
+  }
+
+  public onPredTestContinueClick(): void {
+    this.predTestFlowContinue.emit()
+  }
+
+  private onAdaptiveResultsShown(): void {
+    this.showTest = false
+    if (!this.isPredTest) {
+      this.monitoringPhaseCompleted.emit()
     }
   }
 
@@ -206,6 +224,5 @@ export class TestExecutionComponent implements OnInit {
       Array(this.test.CountOfQuestions),
       (x, index) => index + 1
     )
-    console.log('this.questionArray', this.questionArray)
   }
 }

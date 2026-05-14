@@ -574,6 +574,10 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             {
                 answerOntestQuestion.Points = question.ComlexityLevel;
             }
+            else
+            {
+                answerOntestQuestion.Points = 0;
+            }
 
             answerOntestQuestion.AnswerString = normalizedUserKey;
         }

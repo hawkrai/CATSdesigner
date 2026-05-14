@@ -136,6 +136,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements AfterViewI
           request.answers.push({ Id: answer.Id.toString(), IsCorrect: index })
         })
       }
+      this.isTrue = false
       if (this.canShowAnswers()) {
         this.isTrue = this.checkSelfStudyAnswer(request)
       }
@@ -177,7 +178,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements AfterViewI
     })
   }
 
-  public getOnNextQuestion(answered: boolean, isTrue = true): void {
+  public getOnNextQuestion(answered: boolean, isTrue = false): void {
     this.charsNeskolko = {}
     this.goToNextQuestion.emit({ answered, isTrue })
   }

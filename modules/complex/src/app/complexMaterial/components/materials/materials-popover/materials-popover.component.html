@@ -58,7 +58,7 @@
 
 <div
   mat-dialog-actions
-  *ngIf="!needToGetInitialTest && isTest && endTestButtonVisible"
+  *ngIf="!needToGetInitialTest && isTest && endTestButtonVisible && !isPredTest"
   class="adaptive-test-actions"
 >
   <button
@@ -66,7 +66,7 @@
     mat-raised-button
     mat-button
     class="color-button"
-    [disabled]="true"
+    [disabled]="!monitoringPhaseComplete"
     (click)="processsTest()"
   >
     {{
@@ -156,7 +156,12 @@
   </ng-container>
 
   <div *ngIf="isTest">
-    <app-test-execution testId="{{ testId }}"></app-test-execution>
+    <app-test-execution
+      [testId]="testId"
+      [isPredTest]="isPredTest"
+      (monitoringPhaseCompleted)="onMonitoringPhaseComplete()"
+      (predTestFlowContinue)="onAdaptiveFlowContinue()"
+    ></app-test-execution>
   </div>
 
   <div *ngIf="isEndLearning">

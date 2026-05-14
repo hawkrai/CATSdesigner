@@ -18,7 +18,9 @@ using System.Text;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using LMPlatform.UI.Attributes;
-using Application.Infrastructure.UserManagement;
+using Application.Core.Constants;
+using Application.Core.Helpers;
+using LMPlatform.UI.Services.Modules.Concept;
 
 namespace LMPlatform.UI.Services.AdaptiveLearning
 {
@@ -35,7 +37,6 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		private readonly LazyDependency<ITestPassingService> testPassingService = new LazyDependency<ITestPassingService>();
 		private readonly LazyDependency<IConceptManagementService> _conceptManagementService = new LazyDependency<IConceptManagementService>(); 
 		private readonly LazyDependency<IWatchingTimeService> _watchingTimeService = new LazyDependency<IWatchingTimeService>();
-		private readonly LazyDependency<IUsersManagementService> _usersManagementService = new LazyDependency<IUsersManagementService>();
 		private readonly LazyDependency<IFilesManagementService> _filesManagementService =
 			 new LazyDependency<IFilesManagementService>();
 
@@ -46,9 +47,8 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		public ITestPassingService TestPassingService => testPassingService.Value;
 		public IConceptManagementService ConceptManagementService => _conceptManagementService.Value;
 		public IWatchingTimeService WatchingTimeService => _watchingTimeService.Value;
-		public IUsersManagementService UsersManagementService => _usersManagementService.Value;
 
-		public AdaptivityViewResult GetNextThema(int userId, int subjectId, int testId, int currentThemaId, int adaptivityType)
+		public AdaptivityViewResult GetNextThema(int userId, int subjectId, int testId, int currentThemaId, int adaptivityType, int eumkRootConceptId)
 		{
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			
@@ -74,18 +74,6 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 
 			if (currentRes.NextStepSolution == ThemaSolutions.END_PROCCESS)
 			{
-				if (CurrentUserIsLector())
-				{
-					AdaptiveLearningManagementService.ClearAllEducationData(userId);
-					return new AdaptivityViewResult
-					{
-						NextThemaId = null,
-						NextMaterialPath = null,
-						NeedToDoPredTest = true,
-						Code = "500"
-					};
-				}
-
 				return new AdaptivityViewResult
 				{
 					NextThemaId = null,
@@ -100,7 +88,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			return new AdaptivityViewResult
 			{
 				NextThemaId = currentRes.NextThemaId,
-				NextMaterialPath = GetNextThemaPath(currentRes.NextThemaId.Value, out int timeToWait),
+				NextMaterialPath = GetNextThemaPath(currentRes.NextThemaId.Value, eumkRootConceptId, out int timeToWait),
 				NeedToDoPredTest = false,
 				ShouldWaitBeforeTest = currentRes.NextStepSolution == ThemaSolutions.REPEAT_CURRENT,
 				TimeToWait = timeToWait,
@@ -108,7 +96,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			};
 		}
 
-		public AdaptivityViewResult ProcessPredTestResults(int userId, int testId, int adaptivityType)
+		public AdaptivityViewResult ProcessPredTestResults(int userId, int testId, int adaptivityType, int eumkRootConceptId)
 		{
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			
@@ -119,18 +107,40 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					ThemaId = x.ThemaId,
 					ThemaResult = x.ThemaResult,
 					ThemaResume = ThemaResume.NEED_TO_LEARN
-				});
-			
+				})
+				.ToList();
+
+			if (availableThemas == null || !availableThemas.Any())
+			{
+				return new AdaptivityViewResult
+				{
+					NextThemaId = null,
+					NextMaterialPath = null,
+					NeedToDoPredTest = true,
+					Code = "500"
+				};
+			}
+
 			adaptivityProcessor.ProcessPredTestResults(availableThemas);
 			AdaptiveLearningManagementService.SaveProcessedPredTestResult(testId, userId, adaptivityType, availableThemas);
 
-			var first = availableThemas.First();
-			var firstConcept = ConceptManagementService.GetLiteById(first.ThemaId);
+			var nextThema = availableThemas.FirstOrDefault(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN);
+			if (nextThema == null)
+			{
+				return new AdaptivityViewResult
+				{
+					NextThemaId = null,
+					NextMaterialPath = null,
+					NeedToDoPredTest = false,
+					IsLearningEnded = true,
+					Code = "200"
+				};
+			}
 
 			return new AdaptivityViewResult
 			{
-				NextThemaId = first.ThemaId,
-				NextMaterialPath = GetNextThemaPath(first.ThemaId, out int timeToWait),
+				NextThemaId = nextThema.ThemaId,
+				NextMaterialPath = GetNextThemaPath(nextThema.ThemaId, eumkRootConceptId, out int timeToWait),
 				NeedToDoPredTest = false,
 				Code = "200"
 			};
@@ -180,7 +190,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			return dynamicTestId;
 		}
 
-		public AdaptivityViewResult GetFirstThema(int userId, int subjectId, int adaptivityType)
+		public AdaptivityViewResult GetFirstThema(int userId, int subjectId, int adaptivityType, int eumkRootConceptId)
 		{
 			var allAvailableThemas = AdaptiveLearningManagementService.GetAllAvaiableThemas(subjectId, adaptivityType, userId);
 			if (allAvailableThemas is null || !allAvailableThemas.Any())
@@ -209,7 +219,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			return new AdaptivityViewResult
 			{
 				NextThemaId = first.ThemaId,
-				NextMaterialPath = GetNextThemaPath(first.ThemaId, out int timeToWait),
+				NextMaterialPath = GetNextThemaPath(first.ThemaId, eumkRootConceptId, out int timeToWait),
 				ShouldWaitBeforeTest = (ThemaSolutions)first.ThemaResume == ThemaSolutions.REPEAT_CURRENT,
 				TimeToWait = timeToWait,
 				NeedToDoPredTest = false,
@@ -236,7 +246,126 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			return  $"{attach.PathName}//{ attach.FileName}";
 		}
 		
-		private List<string> GetNextThemaPath(int themaId, out int generalTime)
+		private bool CurrentUserIsLector()
+		{
+			return string.Equals(UserContext.Role, Constants.Roles.Lector, StringComparison.OrdinalIgnoreCase);
+		}
+
+		private ConceptViewData FindConceptViewById(ConceptViewData root, int conceptId)
+		{
+			if (root == null)
+			{
+				return null;
+			}
+
+			if (root.Id == conceptId)
+			{
+				return root;
+			}
+
+			if (root.Children == null)
+			{
+				return null;
+			}
+
+			foreach (var ch in root.Children)
+			{
+				var hit = FindConceptViewById(ch, conceptId);
+				if (hit != null)
+				{
+					return hit;
+				}
+			}
+
+			return null;
+		}
+
+		private void CollectTheoryPathsUnderThema(ConceptViewData node, List<string> paths, ref int totalSeconds)
+		{
+			if (node == null)
+			{
+				return;
+			}
+
+			if (node.TestId.HasValue)
+			{
+				return;
+			}
+
+			if (node.IsGroup)
+			{
+				if (node.Children == null || !node.Children.Any())
+				{
+					return;
+				}
+
+				foreach (var child in node.Children)
+				{
+					CollectTheoryPathsUnderThema(child, paths, ref totalSeconds);
+				}
+
+				return;
+			}
+
+			if (!node.HasData)
+			{
+				return;
+			}
+
+			var att = (node.Attachments != null && node.Attachments.Count > 0)
+				? node.Attachments.FirstOrDefault()
+				: FilesManagementService.GetAttachments(node.Container).FirstOrDefault();
+			if (att == null)
+			{
+				return;
+			}
+
+			var rel = $"{att.PathName}//{att.FileName}";
+			if (string.IsNullOrWhiteSpace(rel) || rel == "//")
+			{
+				return;
+			}
+
+			paths.Add(rel);
+			totalSeconds += WatchingTimeService.GetEstimatedTime(node.Container);
+		}
+
+		private List<string> GetNextThemaPath(int themaId, int eumkRootConceptId, out int generalTime)
+		{
+			if (eumkRootConceptId <= 0)
+			{
+				return GetNextThemaPathLegacy(themaId, out generalTime);
+			}
+
+			try
+			{
+				var rootConcept = ConceptManagementService.GetTreeConceptByElementId(eumkRootConceptId);
+				var viewRoot = new ConceptViewData(rootConcept, true, FilesManagementService, true, CurrentUserIsLector());
+				var themaView = FindConceptViewById(viewRoot, themaId);
+				if (themaView == null)
+				{
+					return GetNextThemaPathLegacy(themaId, out generalTime);
+				}
+
+				var paths = new List<string>();
+				var seconds = 0;
+				CollectTheoryPathsUnderThema(themaView, paths, ref seconds);
+				paths = paths.Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+				if (!paths.Any())
+				{
+					return GetNextThemaPathLegacy(themaId, out generalTime);
+				}
+
+				generalTime = seconds;
+				return paths;
+			}
+			catch
+			{
+				return GetNextThemaPathLegacy(themaId, out generalTime);
+			}
+		}
+
+		private List<string> GetNextThemaPathLegacy(int themaId, out int generalTime)
 		{
 			var concept = ConceptManagementService.GetLiteById(themaId);
 
@@ -248,11 +377,6 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			}
 			generalTime = WatchingTimeService.GetEstimatedTime(concept.Container);
 			return new List<string> { GetFilePath(concept.Container) };
-		}
-
-		private bool CurrentUserIsLector()
-		{
-			return UsersManagementService.CurrentUser.Membership.Roles.Any(r => r.RoleName.Equals("lector"));
 		}
 
 	}

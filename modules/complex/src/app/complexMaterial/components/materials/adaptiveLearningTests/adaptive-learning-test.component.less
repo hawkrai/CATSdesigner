@@ -41,6 +41,16 @@
   background-color: #00a65a;
 }
 
+.answered-show {
+  background-color: #00a65a;
+  color: white;
+}
+
+.absent {
+  background-color: #5d6158;
+  color: #42463d;
+}
+
 .failed {
   background-color: #980403;
 }
@@ -55,6 +65,19 @@
 }
 
 .test-result {
+  &__backlink {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 16px;
+    color: #363636 !important;
+    font-family:
+      Roboto,
+      Helvetica Neue,
+      sans-serif;
+    font-size: 16px;
+  }
+
   &__container {
     padding: 10px 20px 0 20px;
     color: #363636 !important;

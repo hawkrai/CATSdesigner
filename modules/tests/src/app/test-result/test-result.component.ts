@@ -95,10 +95,10 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
         const isPredTestMeta =
           !!testMeta &&
           !!(testMeta.BeforeEUMK || (testMeta as any).beforeEUMK)
-        this.showGoToAdaptiveLearning = this.isFromEUMK && isPredTestMeta
 
         if (!result || !Array.isArray(result.Data)) {
           this.result = []
+          this.showGoToAdaptiveLearning = false
           return
         }
 
@@ -124,6 +124,12 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
           []
         )
         this.isNN = !!this.getDataValue<any>(result.Data, Constants.FO_NN, null)
+
+        const hasAnyMissed = (answers || []).some((a) => !a || a.Points === 0)
+        this.showGoToAdaptiveLearning =
+          this.isFromEUMK &&
+          isPredTestMeta &&
+          (this.percent < 100 || hasAnyMissed)
 
         if (this.isNN && neuralRaw) {
           neuralNetworkV2.neuralNetworkV2.fromJSON(JSON.parse(neuralRaw))
@@ -155,6 +161,13 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
     const adaptivityType = Number(
       sessionStorage.getItem(StorageKeys.AdaptiveLearningAlgorithm) || 2
     )
+    const rawEumk =
+      localStorage.getItem(StorageKeys.SelectedComplex) ||
+      sessionStorage.getItem(StorageKeys.ComplexId) ||
+      '0'
+    const eumkParsed = parseInt(rawEumk, 10)
+    const eumkRootConceptId =
+      isNaN(eumkParsed) || eumkParsed <= 0 ? 0 : eumkParsed
     this.http
       .post(
         '/Services/AdaptiveLearning/AdaptiveLearningService.svc/ProcessPredTestResults',
@@ -162,6 +175,7 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
           userId: user.id,
           testId: parseInt(this.testId, 10),
           adaptivityType,
+          eumkRootConceptId,
         }
       )
       .pipe(takeUntil(this.unsubscribeStream$))
