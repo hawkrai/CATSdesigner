@@ -19,6 +19,7 @@ using Application.Infrastructure.SubjectManagement;
 using Application.Infrastructure.TestQuestionPassingManagement;
 using Application.Infrastructure.UserManagement;
 using Bootstrap;
+using LMPlatform.Models;
 using LMPlatform.Models.KnowledgeTesting;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.KnowledgeTestingViewModels;
@@ -362,27 +363,66 @@ namespace LMPlatform.UI.Controllers
 
         [JwtAuth]
         [HttpGet]
-        public void GetResultsExcel(int groupId, int subjectId, bool forSelfStudy)
+        public void GetResultsExcel(int groupId, int subjectId, bool forSelfStudy, string studentLogins = null, string testIds = null)
         {
             var tests = this.TestsManagementService.GetTestsForSubject(subjectId)
-                .Where(x => x.ForSelfStudy == forSelfStudy);
+                .Where(x => x.ForSelfStudy == forSelfStudy)
+                .ToList();
 
             var subGroups = this.SubjectManagementService.GetSubGroupsV2(subjectId, groupId);
 
             var results = this.TestPassingService.GetPassTestResults(groupId, subjectId)
                 .Select(x => TestResultItemListViewModel.FromStudent(x, tests, subGroups))
-                .OrderBy(res => res.StudentName).ToArray();
+                .OrderBy(res => res.StudentName)
+                .ToArray();
 
-            var data = new SLExcelData();
+            if (!string.IsNullOrWhiteSpace(studentLogins))
+            {
+                var loginSet = new HashSet<string>(
+                    studentLogins.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => s.Trim())
+                        .Where(s => s.Length > 0),
+                    StringComparer.OrdinalIgnoreCase);
+                if (loginSet.Count > 0)
+                {
+                    results = results.Where(r => loginSet.Contains(r.Login)).ToArray();
+                }
+            }
+
+            var testIdOrder = ParseTestIdsList(testIds);
+            if (testIdOrder != null && testIdOrder.Count > 0)
+            {
+                foreach (var result in results)
+                {
+                    result.TestPassResults = this.BuildFilteredTestPassResults(result, testIdOrder, tests);
+                }
+            }
+
+            var data = new SLExcelData
+            {
+                ApplyThinBorders = false,
+                ApplyHeaderRowBorderOnly = true
+            };
+
+            if (results.Length == 0 || results[0].TestPassResults.Length == 0)
+            {
+                data.Headers.Add("Нет данных для выбранных фильтров");
+                this.WriteResultsExcelResponse(data);
+                return;
+            }
 
             var rowsData = new List<List<string>>();
 
             foreach (var result in results)
             {
-                var datas = new List<string>();
-                datas.Add(result.StudentName);
-                datas.AddRange(result.TestPassResults.Select(e =>
-                    e.Points != null ? $"{e.Points} ({e.Percent}%)" : string.Empty));
+                var datas = new List<string> { result.StudentName };
+                foreach (var pass in result.TestPassResults)
+                {
+                    datas.Add(FormatTestPassStartForExcel(pass));
+                    datas.Add(FormatTestPassEndForExcel(pass));
+                    datas.Add(FormatTestGradeForExcel(pass));
+                }
+
                 if (result.TestPassResults.Count(e => e.Points != null) > 0)
                 {
                     var pointsSum =
@@ -394,6 +434,10 @@ namespace LMPlatform.UI.Controllers
 
                     datas.Add(pointsSum.ToString());
                 }
+                else
+                {
+                    datas.Add(string.Empty);
+                }
 
                 rowsData.Add(datas);
             }
@@ -404,36 +448,125 @@ namespace LMPlatform.UI.Controllers
                 "Средняя оценка (процент) за тест"
             };
 
-            foreach (var testResultItemListViewModel in results[0].TestPassResults)
+            foreach (var _ in results[0].TestPassResults)
             {
                 var count = 0;
                 decimal sum = 0;
-                decimal sumPoint = 0;
                 foreach (var resultItemListViewModel in results)
                 {
                     if (resultItemListViewModel.TestPassResults[index].Points != null)
                     {
                         count += 1;
-                        sumPoint += resultItemListViewModel.TestPassResults[index].Points.Value;
                     }
 
                     if (resultItemListViewModel.TestPassResults[index].Percent != null)
+                    {
                         sum += resultItemListViewModel.TestPassResults[index].Percent.Value;
+                    }
                 }
 
                 index += 1;
                 //total.Add((int)Math.Round(sumPoint/count, 0, MidpointRounding.AwayFromZero) + " (" + Math.Round(sum / count, 0) + "%)");
-                var percent = sum / count;
-                var mark = Math.Round(percent / 10, 0);
-                total.Add($"{mark} ({Math.Round(percent, 0)}%)");
+                if (count == 0)
+                {
+                    total.Add(string.Empty);
+                    total.Add(string.Empty);
+                    total.Add(string.Empty);
+                }
+                else
+                {
+                    var percent = sum / count;
+                    var mark = Math.Round(percent / 10, 0);
+                    total.Add(string.Empty);
+                    total.Add(string.Empty);
+                    total.Add($"{mark} ({Math.Round(percent, 0)}%)");
+                }
             }
 
-            data.Headers.Add("Студент");
-            data.Headers.AddRange(results[0].TestPassResults.Select(e => e.TestName));
-            data.Headers.Add("Средняя оценка за тесты");
+            total.Add(string.Empty);
+
+            var testCount = results[0].TestPassResults.Length;
+            data.SparseHeaderRows = BuildTestResultsSparseHeaders(results[0].TestPassResults);
+            data.HeaderMergeReferences = BuildTestResultsHeaderMerges(testCount);
+            var avgColIdx = 1 + (3 * testCount);
+            var avgLetter = ToExcelColumnName(avgColIdx);
+            data.HeaderCellStylesByReference = new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "A1", 3U },
+                { "A2", 4U },
+                { $"{avgLetter}1", 3U },
+                { $"{avgLetter}2", 4U },
+            };
             data.DataRows.AddRange(rowsData);
             data.DataRows.Add(total);
 
+            this.WriteResultsExcelResponse(data);
+        }
+
+        private static List<string> BuildTestResultsHeaderMerges(int testCount)
+        {
+            var merges = new List<string>();
+            for (var i = 0; i < testCount; i++)
+            {
+                var c0 = 1 + (3 * i);
+                var c1 = 3 + (3 * i);
+                merges.Add($"{ToExcelColumnName(c0)}1:{ToExcelColumnName(c1)}1");
+            }
+
+            var avgCol = 1 + (3 * testCount);
+            var avgLetter = ToExcelColumnName(avgCol);
+            merges.Add("A1:A2");
+            merges.Add($"{avgLetter}1:{avgLetter}2");
+            return merges;
+        }
+
+        private static List<Dictionary<int, string>> BuildTestResultsSparseHeaders(
+            TestResultItemListViewModel.TestPassResultViewModel[] tests)
+        {
+            var n = tests.Length;
+            var avgCol = 1 + (3 * n);
+            var row1 = new Dictionary<int, string> { [0] = "Студент" };
+            for (var i = 0; i < n; i++)
+            {
+                var title = tests[i].TestName;
+                if (string.IsNullOrWhiteSpace(title))
+                {
+                    title = "Тест " + (i + 1);
+                }
+
+                row1[1 + (3 * i)] = title;
+            }
+
+            row1[avgCol] = "Средняя оценка за тесты";
+
+            var row2 = new Dictionary<int, string>
+            {
+                [0] = "\u00A0",
+                [avgCol] = "\u00A0",
+            };
+            for (var i = 0; i < n; i++)
+            {
+                row2[1 + (3 * i)] = "Дата начала";
+                row2[2 + (3 * i)] = "Дата окончания";
+                row2[3 + (3 * i)] = "Оценка";
+            }
+
+            return new List<Dictionary<int, string>> { row1, row2 };
+        }
+
+        private static string ToExcelColumnName(int columnIndex)
+        {
+            var intFirstLetter = (columnIndex / 676) + 64;
+            var intSecondLetter = ((columnIndex % 676) / 26) + 64;
+            var intThirdLetter = (columnIndex % 26) + 65;
+            var firstLetter = (intFirstLetter > 64) ? (char)intFirstLetter : ' ';
+            var secondLetter = (intSecondLetter > 64) ? (char)intSecondLetter : ' ';
+            var thirdLetter = (char)intThirdLetter;
+            return string.Concat(firstLetter, secondLetter, thirdLetter).Trim();
+        }
+
+        private void WriteResultsExcelResponse(SLExcelData data)
+        {
             var file = new SLExcelWriter().GenerateExcel(data);
 
             this.Response.Clear();
@@ -445,6 +578,92 @@ namespace LMPlatform.UI.Controllers
             this.Response.BinaryWrite(file);
             this.Response.Flush();
             this.Response.End();
+        }
+
+        private static List<int> ParseTestIdsList(string testIds)
+        {
+            if (string.IsNullOrWhiteSpace(testIds))
+            {
+                return null;
+            }
+
+            var list = testIds.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Trim())
+                .Where(p => p.Length > 0)
+                .Select(p => int.TryParse(p, out var id) ? (int?)id : null)
+                .Where(id => id.HasValue)
+                .Select(id => id.Value)
+                .ToList();
+            return list.Count > 0 ? list : null;
+        }
+
+        private TestResultItemListViewModel.TestPassResultViewModel[] BuildFilteredTestPassResults(
+            TestResultItemListViewModel result,
+            IList<int> testIdOrder,
+            IList<Test> testsMetadata)
+        {
+            var list = new List<TestResultItemListViewModel.TestPassResultViewModel>();
+            var studentId = result.TestPassResults.Select(t => t.StudentId).FirstOrDefault();
+            foreach (var testId in testIdOrder)
+            {
+                var existing = result.TestPassResults.FirstOrDefault(t => t.TestId == testId);
+                if (existing != null)
+                {
+                    list.Add(existing);
+                }
+                else
+                {
+                    var testMeta = testsMetadata.FirstOrDefault(t => t.Id == testId);
+                    list.Add(new TestResultItemListViewModel.TestPassResultViewModel
+                    {
+                        StudentId = studentId,
+                        TestId = testId,
+                        Points = null,
+                        Percent = null,
+                        StartTime = default,
+                        EndTime = null,
+                        TestName = testMeta != null ? testMeta.Title : string.Empty,
+                        ForSelfStudy = testMeta != null ? testMeta.ForSelfStudy : true,
+                        ForNN = testMeta != null ? testMeta.ForNN : false,
+                        ForEUMK = testMeta != null ? testMeta.ForEUMK : true,
+                        BeforeEUMK = testMeta != null ? testMeta.BeforeEUMK : true,
+                        TestNumber = testMeta != null ? testMeta.TestNumber : null
+                    });
+                }
+            }
+
+            return list.ToArray();
+        }
+
+        private static string FormatTestGradeForExcel(TestResultItemListViewModel.TestPassResultViewModel e)
+        {
+            if (e.Points == null)
+            {
+                return string.Empty;
+            }
+
+            return e.Percent.HasValue
+                ? $"{e.Points} ({e.Percent}%)" : e.Points.ToString();
+        }
+
+        private static string FormatTestPassStartForExcel(TestResultItemListViewModel.TestPassResultViewModel e)
+        {
+            if (e.StartTime == default(DateTime) || e.StartTime.Year <= 1)
+            {
+                return string.Empty;
+            }
+
+            return e.StartTime.ToString("dd.MM.yyyy HH:mm");
+        }
+
+        private static string FormatTestPassEndForExcel(TestResultItemListViewModel.TestPassResultViewModel e)
+        {
+            if (!e.EndTime.HasValue || e.EndTime.Value.Year <= 1)
+            {
+                return string.Empty;
+            }
+
+            return e.EndTime.Value.ToString("dd.MM.yyyy HH:mm");
         }
 
         private JsonResult GetCloseTestResult(int testId, int mark, int percent, UserAnswersCallback answersCallback, bool fillTestPassResult = false)

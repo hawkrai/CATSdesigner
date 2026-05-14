@@ -1,5 +1,7 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -8,7 +10,7 @@ namespace Application.Core.SLExcel
 {
 	public class SLExcelWriter
 	{
-		private string ColumnLetter(int intCol)
+		private static string ColumnLetter(int intCol)
 		{
 			var intFirstLetter = ((intCol) / 676) + 64;
 			var intSecondLetter = ((intCol % 676) / 26) + 64;
@@ -24,19 +26,164 @@ namespace Application.Core.SLExcel
 				thirdLetter).Trim();
 		}
 
-		private Cell CreateTextCell(string header, UInt32 index, string text)
+		private Cell CreateTextCell(string header, UInt32 index, string text, uint? styleIndex = null)
 		{
 			var cell = new Cell
 			{
 				DataType = CellValues.InlineString,
 				CellReference = header + index
 			};
+			if (styleIndex.HasValue)
+			{
+				cell.StyleIndex = styleIndex.Value;
+			}
 
 			var istring = new InlineString();
 			var t = new Text { Text = text };
 			istring.AppendChild(t);
 			cell.AppendChild(istring);
 			return cell;
+		}
+
+		private static Stylesheet CreateBorderedStylesheet()
+		{
+			var defaultFont = new Font(
+				new FontSize { Val = 11 },
+				new Color { Theme = 1U },
+				new FontName { Val = "Calibri" });
+			var boldFont = new Font(
+				new FontSize { Val = 11 },
+				new Color { Theme = 1U },
+				new FontName { Val = "Calibri" },
+				new Bold());
+			var fonts = new Fonts(defaultFont, boldFont) { Count = 2U };
+
+			var fills = new Fills(
+				new Fill(new PatternFill { PatternType = PatternValues.None }),
+				new Fill(new PatternFill { PatternType = PatternValues.Gray125 }))
+			{
+				Count = 2U
+			};
+
+			var borderEmpty = new Border(
+				new LeftBorder(),
+				new RightBorder(),
+				new TopBorder(),
+				new BottomBorder(),
+				new DiagonalBorder());
+			var borderThin = new Border(
+				new LeftBorder(new Color { Rgb = "FF000000" }) { Style = BorderStyleValues.Thin },
+				new RightBorder(new Color { Rgb = "FF000000" }) { Style = BorderStyleValues.Thin },
+				new TopBorder(new Color { Rgb = "FF000000" }) { Style = BorderStyleValues.Thin },
+				new BottomBorder(new Color { Rgb = "FF000000" }) { Style = BorderStyleValues.Thin },
+				new DiagonalBorder());
+			var borderTopLeftRight = new Border(
+				new LeftBorder(new Color { Rgb = "FF000000" }) { Style = BorderStyleValues.Thin },
+				new RightBorder(new Color { Rgb = "FF000000" }) { Style = BorderStyleValues.Thin },
+				new TopBorder(new Color { Rgb = "FF000000" }) { Style = BorderStyleValues.Thin },
+				new BottomBorder(),
+				new DiagonalBorder());
+			var borderLeftRightBottom = new Border(
+				new LeftBorder(new Color { Rgb = "FF000000" }) { Style = BorderStyleValues.Thin },
+				new RightBorder(new Color { Rgb = "FF000000" }) { Style = BorderStyleValues.Thin },
+				new TopBorder(),
+				new BottomBorder(new Color { Rgb = "FF000000" }) { Style = BorderStyleValues.Thin },
+				new DiagonalBorder());
+			var borders = new Borders(borderEmpty, borderThin, borderTopLeftRight, borderLeftRightBottom) { Count = 4U };
+
+			var cellStyleFormats = new CellStyleFormats(
+				new CellFormat
+				{
+					NumberFormatId = 0U,
+					FontId = 0U,
+					FillId = 0U,
+					BorderId = 0U
+				})
+			{
+				Count = 1U
+			};
+
+			var cellFormats = new CellFormats(
+				new CellFormat
+				{
+					NumberFormatId = 0U,
+					FontId = 0U,
+					FillId = 0U,
+					BorderId = 0U,
+					FormatId = 0U,
+					ApplyFill = true
+				},
+				new CellFormat
+				{
+					NumberFormatId = 0U,
+					FontId = 0U,
+					FillId = 0U,
+					BorderId = 1U,
+					FormatId = 0U,
+					ApplyBorder = true,
+					ApplyAlignment = true,
+					Alignment = new Alignment
+					{
+						WrapText = true,
+						Vertical = VerticalAlignmentValues.Top
+					}
+				},
+				new CellFormat
+				{
+					NumberFormatId = 0U,
+					FontId = 1U,
+					FillId = 0U,
+					BorderId = 1U,
+					FormatId = 0U,
+					ApplyBorder = true,
+					ApplyFont = true,
+					ApplyAlignment = true,
+					Alignment = new Alignment
+					{
+						WrapText = true,
+						Horizontal = HorizontalAlignmentValues.Center,
+						Vertical = VerticalAlignmentValues.Center
+					}
+				},
+				new CellFormat
+				{
+					NumberFormatId = 0U,
+					FontId = 1U,
+					FillId = 0U,
+					BorderId = 2U,
+					FormatId = 0U,
+					ApplyBorder = true,
+					ApplyFont = true,
+					ApplyAlignment = true,
+					Alignment = new Alignment
+					{
+						WrapText = true,
+						Horizontal = HorizontalAlignmentValues.Center,
+						Vertical = VerticalAlignmentValues.Center
+					}
+				},
+				new CellFormat
+				{
+					NumberFormatId = 0U,
+					FontId = 1U,
+					FillId = 0U,
+					BorderId = 3U,
+					FormatId = 0U,
+					ApplyBorder = true,
+					ApplyFont = true,
+					ApplyAlignment = true,
+					Alignment = new Alignment
+					{
+						WrapText = true,
+						Horizontal = HorizontalAlignmentValues.Center,
+						Vertical = VerticalAlignmentValues.Center
+					}
+				})
+			{
+				Count = 5U
+			};
+
+			return new Stylesheet(fonts, fills, borders, cellStyleFormats, cellFormats);
 		}
 
 		public byte[] GenerateExcel(SLExcelData data)
@@ -47,6 +194,14 @@ namespace Application.Core.SLExcel
 
 			var workbookpart = document.AddWorkbookPart();
 			workbookpart.Workbook = new Workbook();
+			var useBorderStyles = data.ApplyThinBorders || data.ApplyHeaderRowBorderOnly;
+			if (useBorderStyles)
+			{
+				var stylesPart = workbookpart.AddNewPart<WorkbookStylesPart>();
+				stylesPart.Stylesheet = CreateBorderedStylesheet();
+				stylesPart.Stylesheet.Save();
+			}
+
 			var worksheetPart = workbookpart.AddNewPart<WorksheetPart>();
 			var sheetData = new SheetData();
 
@@ -66,39 +221,88 @@ namespace Application.Core.SLExcel
 
 			// Add header
 			UInt32 rowIdex = 0;
-			var row = new Row { RowIndex = ++rowIdex };
-			sheetData.AppendChild(row);
-			var cellIdex = 0;
+			var headerStyle = useBorderStyles ? (uint?)2U : null;
 
-			foreach (var header in data.Headers)
+			if (data.SparseHeaderRows != null && data.SparseHeaderRows.Count > 0)
 			{
-				row.AppendChild(CreateTextCell(ColumnLetter(cellIdex++),
-					rowIdex, header ?? string.Empty));
+				foreach (var sparseRow in data.SparseHeaderRows)
+				{
+					rowIdex++;
+					var row = new Row { RowIndex = rowIdex };
+					foreach (var kv in sparseRow.OrderBy(k => k.Key))
+					{
+						var cellRef = ColumnLetter(kv.Key) + rowIdex;
+						uint? cellHeaderStyle = headerStyle;
+						if (useBorderStyles && data.HeaderCellStylesByReference != null
+							&& data.HeaderCellStylesByReference.TryGetValue(cellRef, out var styleOverride))
+						{
+							cellHeaderStyle = styleOverride;
+						}
+
+						row.AppendChild(CreateTextCell(
+							ColumnLetter(kv.Key),
+							rowIdex,
+							kv.Value ?? string.Empty,
+							cellHeaderStyle));
+					}
+
+					sheetData.AppendChild(row);
+				}
 			}
-			if (data.Headers.Count > 0)
+			else
+			{
+				rowIdex++;
+				var row = new Row { RowIndex = rowIdex };
+				var cellIdex = 0;
+				foreach (var header in data.Headers)
+				{
+					row.AppendChild(CreateTextCell(ColumnLetter(cellIdex++),
+						rowIdex, header ?? string.Empty, headerStyle));
+				}
+
+				sheetData.AppendChild(row);
+			}
+
+			if ((data.SparseHeaderRows != null && data.SparseHeaderRows.Count > 0) || data.Headers.Count > 0)
 			{
 				// Add the column configuration if available
 				if (data.ColumnConfigurations != null)
 				{
-					var columns = (Columns)data.ColumnConfigurations.Clone();
-					worksheetPart.Worksheet
-						.InsertAfter(columns, worksheetPart
-						.Worksheet.SheetFormatProperties);
+					var ws = worksheetPart.Worksheet;
+					var sfp = ws.SheetFormatProperties;
+					if (sfp != null)
+					{
+						var columns = (Columns)data.ColumnConfigurations.Clone();
+						ws.InsertAfter(columns, sfp);
+					}
 				}
 			}
 
-			// Add sheet data
+			var bodyStyle = data.ApplyThinBorders && !data.ApplyHeaderRowBorderOnly ? (uint?)1U : null;
 			foreach (var rowData in data.DataRows)
 			{
-				cellIdex = 0;
-				row = new Row { RowIndex = ++rowIdex };
+				var cellIdex = 0;
+				rowIdex++;
+				var row = new Row { RowIndex = rowIdex };
 				sheetData.AppendChild(row);
 				foreach (var callData in rowData)
 				{
 					var cell = CreateTextCell(ColumnLetter(cellIdex++),
-						rowIdex, callData ?? string.Empty);
+						rowIdex, callData ?? string.Empty, bodyStyle);
 					row.AppendChild(cell);
 				}
+			}
+
+			if (data.HeaderMergeReferences != null && data.HeaderMergeReferences.Count > 0)
+			{
+				var mergeCells = new MergeCells();
+				foreach (var reference in data.HeaderMergeReferences)
+				{
+					mergeCells.Append(new MergeCell { Reference = reference });
+				}
+
+				mergeCells.Count = (UInt32)data.HeaderMergeReferences.Count;
+				worksheetPart.Worksheet.InsertAfter(mergeCells, sheetData);
 			}
 
 			workbookpart.Workbook.Save();

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Application.Core.SLExcel
@@ -24,6 +24,16 @@ namespace Application.Core.SLExcel
 		public List<List<string>> DataRows { get; set; }
 
 		public string SheetName { get; set; }
+
+		public bool ApplyThinBorders { get; set; }
+
+		public bool ApplyHeaderRowBorderOnly { get; set; }
+
+		public List<Dictionary<int, string>> SparseHeaderRows { get; set; }
+
+		public List<string> HeaderMergeReferences { get; set; }
+
+		public Dictionary<string, uint> HeaderCellStylesByReference { get; set; }
 
 		public SLExcelData()
 		{
