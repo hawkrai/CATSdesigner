@@ -338,13 +338,33 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             foreach (int testId in testIds)
             {
                 var t = tests.SingleOrDefault(test => test.Id == testId);
+                var passes = rawStudent.User.TestPassResults.Where(result => result.TestId == testId).ToList();
+                DateTime startTime = default;
+                DateTime? endTime = null;
+                if (passes.Count == 1)
+                {
+                    startTime = passes[0].StartTime;
+                    endTime = passes[0].EndTime;
+                }
+                else if (passes.Count > 1)
+                {
+                    var pick = passes
+                        .OrderByDescending(p => p.EndTime ?? DateTime.MinValue)
+                        .ThenByDescending(p => p.StartTime)
+                        .First();
+                    startTime = pick.StartTime;
+                    endTime = pick.EndTime;
+                }
+
                 testPassResults.Add(new TestPassResult
                 {
                     StudentId = rawStudent.Id,
                     TestId = testId,
-                    TestName = t != null ? t.Title : "Тест", 
+                    TestName = t != null ? t.Title : "Тест",
                     Points = GetPoints(rawStudent, testId),
-                    Percent = GetPercent(rawStudent, testId)
+                    Percent = GetPercent(rawStudent, testId),
+                    StartTime = startTime,
+                    EndTime = endTime
                 });
             }
 

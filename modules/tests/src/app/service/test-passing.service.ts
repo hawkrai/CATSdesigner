@@ -36,15 +36,24 @@ export class TestPassingService {
     )
   }
 
-  downloadExcel(groupId, subjectId, forSelfStudy): Observable<Response> {
-    return this.downloadFile(
-      '/TestPassing/GetResultsExcel?groupId=' +
-        groupId +
-        '&subjectId=' +
-        subjectId +
-        '&forSelfStudy=' +
-        forSelfStudy
-    ).pipe(
+  downloadExcel(
+    groupId,
+    subjectId,
+    forSelfStudy,
+    studentLogins?: string[],
+    testIds?: number[]
+  ): Observable<Response> {
+    let params = new HttpParams()
+      .set('groupId', String(groupId))
+      .set('subjectId', String(subjectId))
+      .set('forSelfStudy', String(forSelfStudy))
+    if (studentLogins?.length) {
+      params = params.set('studentLogins', studentLogins.join(','))
+    }
+    if (testIds?.length) {
+      params = params.set('testIds', testIds.join(','))
+    }
+    return this.downloadFile('/TestPassing/GetResultsExcel?' + params.toString()).pipe(
       tap((response: Response) => {
         if (response.headers.get('content-disposition')) {
           FileUtils.downloadFile(response)

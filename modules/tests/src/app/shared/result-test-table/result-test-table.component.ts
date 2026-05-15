@@ -257,10 +257,31 @@ export class ResultTestTableComponent
       })
   }
 
-  public downloadExcel(): void {
+  public downloadExcel(studentResults: any[]): void {
+    if (!studentResults?.length) {
+      return
+    }
     const subject = JSON.parse(localStorage.getItem('currentSubject'))
+    const dataRows =
+      studentResults.length > 1
+        ? studentResults.slice(0, -1)
+        : studentResults
+    const logins = dataRows
+      .map((row) => row[0])
+      .filter((l) => l != null && String(l).trim().length > 0)
+    const testsFromFirstRow = dataRows[0]?.[1]?.test
+    const testIds =
+      Array.isArray(testsFromFirstRow) && testsFromFirstRow.length
+        ? testsFromFirstRow.map((t: { testId: number }) => t.testId)
+        : []
     this.testPassingService
-      .downloadExcel(this.groupId, subject.id, this.forSelf)
+      .downloadExcel(
+        this.groupId,
+        subject.id,
+        this.forSelf,
+        logins,
+        testIds
+      )
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe()
   }
