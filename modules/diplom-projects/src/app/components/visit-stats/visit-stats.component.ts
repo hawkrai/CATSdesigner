@@ -379,7 +379,7 @@ export class VisitStatsComponent implements OnInit {
       this.ngOnInit()
       this.addFlashMessage(
         this.translatePipe.transform(
-          'text.editor.edit.attendanceAlert',
+          'text.diplomProject.attendanceAlert',
           'Посещаемость успешно обновлена'
         )
       )

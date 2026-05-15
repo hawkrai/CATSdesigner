@@ -245,9 +245,10 @@
                 <div style="display: flex; justify-content: space-between">
                   <h6
                     [matTooltip]="
-                      'text.schedule.graduation.project.full'
-                        | translate: 'Дипломное проектирование'
-                    "
+  lessonservice.getType(event.title).trim() === 'ДП' || lessonservice.getType(event.title).trim() === 'GP'
+    ? ('text.schedule.graduation.project.full' | translate: 'Дипломное проектирование')
+    : getToolTip(event.title)
+"
                     matTooltipClass="example-tooltip-blue"
                     (click)="rerouteToSubject(event.title)"
                     style="

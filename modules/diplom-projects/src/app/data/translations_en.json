@@ -519,7 +519,7 @@
   "text.diplomProject.cancelAssignQuestion": "Do you really want to cancel the assignment of the thesis project topic?",
   "text.diplomProject.removeAssign": "Remove assignment",
   "text.diplomProject.responseRemove": "Assignment canceled successfully",
-  "text.diplomProject.chooseThemeDP": "Choose a theme for your graduation project",
+  "text.diplomProject.chooseThemeDP": "Choose a theme",
   "text.diplomProject.downloadArchieveTaskSheet": "Download task sheets as an archive",
   "text.diplomProject.saveTaskSheet": "Task sheet saved successfully",
   "text.diplomProject.patternSave": "Template saved successfully",

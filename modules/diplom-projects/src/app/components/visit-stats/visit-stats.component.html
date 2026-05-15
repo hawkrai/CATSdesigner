@@ -40,7 +40,7 @@
     </div>
 
     <div class="visit-stats-component__controls">
-      <mat-form-field class="visit-stats-component__search">
+      <mat-form-field *ngIf="!diplomUser.IsStudent" class="visit-stats-component__search">
         <mat-label>{{
           'text.diplomProject.searchThemeAndName'
             | translate: 'Поиск по теме, фамилии'
@@ -102,6 +102,10 @@
   </div>
 
   <div class="visit-stats-component__body">
+    <div *ngIf="diplomUser.IsStudent" class="visit-stats-component__lecturer-label">
+      {{ 'text.diplomProject.head' | translate: 'Руководитель проекта' }}:
+      {{ filteredVisitStatsList && filteredVisitStatsList.length > 0 ? filteredVisitStatsList[0].Lecturer : '' }}
+    </div>
     <app-visit-stats-list
       [filteredVisitStatsList]="filteredVisitStatsList"
       [consultations]="consultations"

@@ -34,8 +34,8 @@
 
 	<xsl:variable name="t_signature_date">
 		<xsl:choose>
-			<xsl:when test="$lang='en'">(signature, date)</xsl:when>
-			<xsl:otherwise>(подпись, дата)</xsl:otherwise>
+			<xsl:when test="$lang='en'">(date, signature)</xsl:when>
+			<xsl:otherwise>(дата, подпись)</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 
@@ -621,13 +621,21 @@ div.Section1
 								</p>
 							</td>
 							<td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
-								<p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
+								<p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
+									<span style='font-size:10.0pt'>
+										<xsl:value-of select='string(item[@name="PublishData"])' disable-output-escaping='no'/>
+									</span>
+								</p>
 							</td>
 							<td width="10%" valign="top" style='padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
 							</td>
 							<td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
-								<p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
+								<p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
+									<span>
+										<xsl:value-of select='string(item[@name="Lecturer"])' disable-output-escaping='no'/>
+									</span>
+								</p>
 							</td>
 						</tr>
 						<tr>
@@ -647,7 +655,7 @@ div.Section1
 								<p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
 							</td>
 							<td width="20%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
-								<p class="MsoNormal" style='line-height:normal'>
+								<p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
 									<span style='font-size:8.0pt'>
 										<xsl:value-of select="$t_name_initials"/>
 									</span>
@@ -688,13 +696,21 @@ div.Section1
 								</p>
 							</td>
 							<td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
-								<p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
+								<p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
+									<span style='font-size:10.0pt'>
+										<xsl:value-of select='string(item[@name="PublishData"])' disable-output-escaping='no'/>
+									</span>
+								</p>
 							</td>
 							<td width="10%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
 							</td>
 							<td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
-								<p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
+								<p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
+									<span>
+										<xsl:value-of select='string(item[@name="Student"])' disable-output-escaping='no'/>
+									</span>
+								</p>
 							</td>
 						</tr>
 						<tr>
@@ -714,7 +730,7 @@ div.Section1
 								<p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
 							</td>
 							<td width="20%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
-								<p class="MsoNormal" style='line-height:normal'>
+								<p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
 									<span style='font-size:8.0pt'>
 										<xsl:value-of select="$t_name_initials"/>
 									</span>

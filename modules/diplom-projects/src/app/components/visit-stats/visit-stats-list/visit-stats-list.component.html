@@ -191,34 +191,10 @@
             </td>
           </ng-container>
 
-          <!-- Ячейки с метками — для студента -->
           <ng-container *ngIf="visitStatsComponent.getDiplomUser().IsStudent">
             <td
               class="mdc-data-table__cell data-cell"
-              *ngFor="
-                let consultationMark of stats.DiplomProjectConsultationMarks
-              "
-            >
-              {{ consultationMark.Mark }}
-            </td>
-          </ng-container>
-
-          <ng-container
-            *ngIf="
-              visitStatsComponent.getDiplomUser().IsLecturer &&
-              !visitStatsComponent.getDiplomUser().IsSecretary
-            "
-          >
-            <td
-              class="mdc-data-table__cell data-cell"
-              *ngFor="
-                let consultationMark of stats.DiplomProjectConsultationMarks
-              "
-              (dblclick)="
-                visitStatsComponent.setVisitMarks(
-                  consultationMark.ConsultationDateId
-                )
-              "
+              *ngFor="let consultationMark of stats.DiplomProjectConsultationMarks"
             >
               {{ consultationMark.Mark }}
             </td>
@@ -227,14 +203,8 @@
           <ng-container *ngIf="visitStatsComponent.isLecturer">
             <td
               class="mdc-data-table__cell data-cell"
-              *ngFor="
-                let consultationMark of stats.DiplomProjectConsultationMarks
-              "
-              (dblclick)="
-                visitStatsComponent.setVisitMarks(
-                  consultationMark.ConsultationDateId
-                )
-              "
+              *ngFor="let consultationMark of stats.DiplomProjectConsultationMarks"
+              (dblclick)="visitStatsComponent.setVisitMarks(consultationMark.ConsultationDateId)"
             >
               {{ consultationMark.Mark }}
             </td>

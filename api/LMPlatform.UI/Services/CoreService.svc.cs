@@ -279,7 +279,8 @@ namespace LMPlatform.UI.Services
 				var students = this.GroupManagementService.GetGroups(
 					new Query<Group>(g => g.Id == id).Include(g => g.Students.Select(x => x.ConfirmedBy.User)))
 					.Single().Students
-					.OrderBy(e => e.FullName);
+                    .Where(x => x.IsActive == true)
+                    .OrderBy(e => e.FullName);
 
 				return new StudentsResult
 				{
