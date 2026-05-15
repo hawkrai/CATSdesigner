@@ -95,6 +95,7 @@ export class QuestionComponent implements OnInit {
         })
       }
 
+      this.isTrue = false
       if (this.canShowAnswers()) {
         this.isTrue = this.checkSelfStudyAnswer(request)
       }
@@ -119,7 +120,7 @@ export class QuestionComponent implements OnInit {
     }
   }
 
-  public getOnNextQuestion(answered: boolean, isTrue = true): void {
+  public getOnNextQuestion(answered: boolean, isTrue = false): void {
     this.charsNeskolko = {}
     this.goToNextQuestion.emit({ answered, isTrue })
   }

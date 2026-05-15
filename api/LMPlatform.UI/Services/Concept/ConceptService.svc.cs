@@ -770,11 +770,6 @@ namespace LMPlatform.UI.Services.Concept
                 throw new WebFaultException(HttpStatusCode.BadRequest);
             }
 
-            if (fmt == "pdf" && !IsLibreOfficeInstalled())
-            {
-                throw new WebFaultException(HttpStatusCode.BadRequest);
-            }
-
             var hiddenTestIds = GetHiddenTestIdSet(complexId);
             var root = ConceptManagementService.GetTreeConceptByElementId(complexId);
             if (root == null)
@@ -798,6 +793,13 @@ namespace LMPlatform.UI.Services.Concept
             {
                 SetEumkDownloadHeaders(safeBase + ".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
                 return new MemoryStream(docxBytes, writable: false);
+            }
+
+            if (!IsLibreOfficeInstalled())
+            {
+                var pdfBytesFallback = generator.BuildPdfFallback(root, docTitle, tqh, amh, hiddenTestIds);
+                SetEumkDownloadHeaders(safeBase + ".pdf", "application/pdf");
+                return new MemoryStream(pdfBytesFallback, writable: false);
             }
 
             var tempRoot = ConfigurationManager.AppSettings["FileUploadPathTemp"];

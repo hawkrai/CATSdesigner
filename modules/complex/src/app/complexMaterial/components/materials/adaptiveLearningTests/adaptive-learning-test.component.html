@@ -45,6 +45,15 @@
     </div>
   </div>
   <div class="test-execution-block-question" *ngIf="!showTest">
+    <div
+      class="test-result__backlink main-anchor"
+      *ngIf="isPredTest"
+      (click)="onPredTestContinueClick()"
+    >
+      {{
+        'complex.goToLearning' | translate: 'Перейти к обучению'
+      }}
+    </div>
     <div class="test-result-list">
       <div class="test-result-text__title">
         {{

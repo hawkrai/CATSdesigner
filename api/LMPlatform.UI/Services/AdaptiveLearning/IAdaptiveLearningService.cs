@@ -20,14 +20,14 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 
 		[OperationContract]
 		[WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetNextThema")]
-		AdaptivityViewResult GetNextThema(int userId, int subjectId, int testId, int currentThemaId, int adaptivityType);
+		AdaptivityViewResult GetNextThema(int userId, int subjectId, int testId, int currentThemaId, int adaptivityType, int eumkRootConceptId);
 
 		[OperationContract]
 		[WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/ProcessPredTestResults")]
-		AdaptivityViewResult ProcessPredTestResults(int userId, int testId, int adaptivityType);
+		AdaptivityViewResult ProcessPredTestResults(int userId, int testId, int adaptivityType, int eumkRootConceptId);
 
 		[OperationContract]
-		[WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetFirstThema?userId={userId}&subjectId={subjectId}&adaptivityType={adaptivityType}")]
-		AdaptivityViewResult GetFirstThema(int userId, int subjectId, int adaptivityType);
+		[WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetFirstThema?userId={userId}&subjectId={subjectId}&adaptivityType={adaptivityType}&eumkRootConceptId={eumkRootConceptId}")]
+		AdaptivityViewResult GetFirstThema(int userId, int subjectId, int adaptivityType, int eumkRootConceptId);
 	}
 }

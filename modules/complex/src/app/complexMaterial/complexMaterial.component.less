@@ -50,18 +50,37 @@ a.main-anchor:hover {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.complex-toolbar-left {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .eumk-teacher-actions {
   display: inline-flex;
   align-items: center;
-  margin-left: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
 
   app-help {
     display: inline-flex;
     align-items: center;
     line-height: 0;
   }
+}
+
+.eumk-pdf-fallback-hint {
+  display: block;
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.54);
+  white-space: normal;
+  line-height: 1.2;
+  margin-top: 2px;
 }
 
 .eumk-download-trigger {

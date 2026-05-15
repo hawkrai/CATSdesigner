@@ -36,16 +36,18 @@
   &-description {
     border: 1px solid #bfbfbf;
     padding: 10px;
+    max-height: 180px;
+    overflow: auto;
 
     &-text {
-      font-size: 20px;
+      font-size: 18px;
     }
   }
 
   &-block {
-    padding-top: 20px;
+    padding-top: 16px;
     display: flex;
-    min-height: 200px;
+    min-height: 120px;
     justify-content: space-between;
     max-width: 100%;
 
@@ -133,8 +135,15 @@
 
         &-word {
           margin-top: 5px;
-          font-size: 25px;
+          font-size: 18px;
           margin-bottom: 5px;
+          width: 100%;
+          box-sizing: border-box;
+          padding: 8px 10px;
+          border: 1px solid #d0d0d0;
+          border-radius: 4px;
+          outline: none;
+          font-family: Roboto, 'Helvetica Neue', sans-serif;
         }
 
         &-values {

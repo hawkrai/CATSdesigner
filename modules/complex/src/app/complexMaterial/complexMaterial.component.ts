@@ -18,7 +18,7 @@ import { StorageKeys } from '../../../../../container/src/app/core/models/storag
 import { ApiResponseCode } from '../models/api-response-code.enum'
 import { LibreOfficeAvailabilityService } from '../service/libre-office-availability.service'
 import { EumkExportService, EumkExportFormat } from '../service/eumk-export.service'
-import { MatSnackBar } from '@angular/material'
+import { ToastrService } from 'ngx-toastr'
 import { TranslatePipe } from 'educats-translate'
 
 @Component({
@@ -46,7 +46,7 @@ export class ComplexMaterialComponent implements OnInit {
     private testService: TestService,
     private libreOfficeAvailability: LibreOfficeAvailabilityService,
     private eumkExportService: EumkExportService,
-    private snackBar: MatSnackBar,
+    private toastr: ToastrService,
     private translatePipe: TranslatePipe
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -106,9 +106,10 @@ export class ComplexMaterialComponent implements OnInit {
     adaptivityType: number,
     themaRes: Adaptivity
   ): void {
-    const path =
-      '/api/Upload?fileName=' +
-      (themaRes.nextMaterialPaths && themaRes.nextMaterialPaths[0])
+    const paths = themaRes.nextMaterialPaths
+    const firstFile =
+      paths && paths.length > 0 ? paths[0] : null
+    const path = firstFile ? '/api/Upload?fileName=' + firstFile : ''
     const diaogData: DialogData = {
       name: `${themaRes.nextThemaId}`,
       url: path,
@@ -306,13 +307,17 @@ export class ComplexMaterialComponent implements OnInit {
       return
     }
     this.eumkExportInProgress = true
-    const progress = this.snackBar.open(
+    const progressToast = this.toastr.info(
       this.translatePipe.transform(
         'complex.eumk.export.working',
         'Идёт формирование файла…'
       ),
-      undefined,
-      { duration: 0 }
+      '',
+      {
+        disableTimeOut: true,
+        tapToDismiss: false,
+        toastClass: 'ngx-toastr eumk-export-progress-toast',
+      }
     )
     const title = this.complexName || 'EUMK'
     const labels = {
@@ -330,27 +335,27 @@ export class ComplexMaterialComponent implements OnInit {
       .subscribe(
         () => {
           this.eumkExportInProgress = false
-          progress.dismiss()
-          this.snackBar.open(
+          if (progressToast && progressToast.toastId != null) {
+            this.toastr.clear(progressToast.toastId)
+          }
+          this.toastr.success(
             this.translatePipe.transform(
               'complex.eumk.export.done',
               'Файл сохранён'
-            ),
-            undefined,
-            { duration: 3000 }
+            )
           )
         },
         (err) => {
           this.eumkExportInProgress = false
-          progress.dismiss()
+          if (progressToast && progressToast.toastId != null) {
+            this.toastr.clear(progressToast.toastId)
+          }
           console.error(err)
-          this.snackBar.open(
+          this.toastr.error(
             this.translatePipe.transform(
               'complex.eumk.export.error',
               'Не удалось сформировать файл'
-            ),
-            undefined,
-            { duration: 5000 }
+            )
           )
         }
       )

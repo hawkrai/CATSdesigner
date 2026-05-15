@@ -10,43 +10,45 @@
     </tr>
     <tr>
       <td class="complex-toolbar-row">
-        <button
-          *ngIf="isLector"
-          mat-raised-button
-          class="add-button"
-          (click)="openAddPopup()"
-        >
-          {{ 'complex.addComponent' | translate: 'Добавить элемент' }}
-        </button>
-        <span
-          class="adaptive-learning-wrapper"
-          [matTooltip]="getAdaptiveLearningDisabledReason()"
-          [matTooltipDisabled]="!isAdaptiveLearningDisabled"
-          matTooltipPosition="right"
-        >
+        <span class="complex-toolbar-left">
           <button
+            *ngIf="isLector"
             mat-raised-button
-            class="add-button adaptive-learning"
-            [matMenuTriggerFor]="menu"
-            [disabled]="isAdaptiveLearningDisabled"
+            class="add-button"
+            (click)="openAddPopup()"
           >
-            {{ 'complex.adaptiveLearning' | translate: 'Адаптивное обучение' }}
-            <mat-icon>keyboard_arrow_down</mat-icon>
+            {{ 'complex.addComponent' | translate: 'Добавить элемент' }}
           </button>
+          <span
+            class="adaptive-learning-wrapper"
+            [matTooltip]="getAdaptiveLearningDisabledReason()"
+            [matTooltipDisabled]="!isAdaptiveLearningDisabled"
+            matTooltipPosition="right"
+          >
+            <button
+              mat-raised-button
+              class="add-button adaptive-learning"
+              [matMenuTriggerFor]="menu"
+              [disabled]="isAdaptiveLearningDisabled"
+            >
+              {{ 'complex.adaptiveLearning' | translate: 'Адаптивное обучение' }}
+              <mat-icon>keyboard_arrow_down</mat-icon>
+            </button>
+          </span>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="openAdaptivityPopup(2)">
+              {{
+                'complex.algorithm.base' | translate: 'Базовый алгоритм обучения'
+              }}
+            </button>
+            <button mat-menu-item (click)="openAdaptivityPopup(1)">
+              {{
+                'complex.algorithm.advanced'
+                  | translate: 'Углубленный алгоритм обучения'
+              }}
+            </button>
+          </mat-menu>
         </span>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="openAdaptivityPopup(2)">
-            {{
-              'complex.algorithm.base' | translate: 'Базовый алгоритм обучения'
-            }}
-          </button>
-          <button mat-menu-item (click)="openAdaptivityPopup(1)">
-            {{
-              'complex.algorithm.advanced'
-                | translate: 'Углубленный алгоритм обучения'
-            }}
-          </button>
-        </mat-menu>
         <span *ngIf="isLector" class="eumk-teacher-actions">
           <app-help
             [wide]="true"
@@ -57,56 +59,47 @@
             "
             [action]="'common.clear' | translate: 'Понятно'"
           ></app-help>
-          <ng-container *ngIf="libreOfficeAvailable; else eumkDownloadSingle">
-            <button
-              mat-icon-button
-              color="primary"
-              class="eumk-download-trigger"
-              [matMenuTriggerFor]="eumkDownloadMenu"
-              [matTooltip]="
-                'complex.eumk.download.tooltip'
+          <button
+            mat-icon-button
+            color="primary"
+            class="eumk-download-trigger"
+            [matMenuTriggerFor]="eumkDownloadMenu"
+            [matTooltip]="
+              'complex.eumk.download.tooltip'
+                | translate
+                  : 'Скачать ЭУМК'
+            "
+            matTooltipPosition="below"
+            [disabled]="eumkExportInProgress"
+          >
+            <mat-icon>cloud_download</mat-icon>
+          </button>
+          <mat-menu #eumkDownloadMenu="matMenu">
+            <button mat-menu-item (click)="exportEumk('docx')">
+              {{
+                'complex.eumk.download.docx'
                   | translate
-                    : 'Скачать ЭУМК'
-              "
-              matTooltipPosition="below"
-              [disabled]="eumkExportInProgress"
-            >
-              <mat-icon>cloud_download</mat-icon>
+                    : 'Сохранить как Word (.docx)'
+              }}
             </button>
-            <mat-menu #eumkDownloadMenu="matMenu">
-              <button mat-menu-item (click)="exportEumk('docx')">
-                {{
-                  'complex.eumk.download.docx'
-                    | translate
-                      : 'Сохранить как Word (.docx)'
-                }}
-              </button>
-              <button mat-menu-item (click)="exportEumk('pdf')">
-                {{
-                  'complex.eumk.download.pdf'
-                    | translate
-                      : 'Сохранить как PDF (.pdf)'
-                }}
-              </button>
-            </mat-menu>
-          </ng-container>
-          <ng-template #eumkDownloadSingle>
-            <button
-              mat-icon-button
-              color="primary"
-              class="eumk-download-trigger"
-              (click)="exportEumk('docx')"
-              [matTooltip]="
-                'complex.eumk.download.tooltip'
+            <button mat-menu-item (click)="exportEumk('pdf')">
+              {{
+                'complex.eumk.download.pdf'
                   | translate
-                    : 'Скачать ЭУМК'
-              "
-              matTooltipPosition="below"
-              [disabled]="eumkExportInProgress"
-            >
-              <mat-icon>cloud_download</mat-icon>
+                    : 'Сохранить как PDF (.pdf)'
+              }}
+              <span
+                *ngIf="!libreOfficeAvailable"
+                class="eumk-pdf-fallback-hint"
+              >
+                ({{
+                  'complex.eumk.download.pdfNoLoHint'
+                    | translate
+                    : 'без LibreOffice — упрощённый PDF'
+                }})
+              </span>
             </button>
-          </ng-template>
+          </mat-menu>
         </span>
       </td>
     </tr>
