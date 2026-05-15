@@ -92,7 +92,7 @@
             >
             <mat-cell
               *matCellDef="let element; let index = index"
-              class="mat-header-cell-action"
+              class="mat-header-cell-action mat-header-test-name"
               (click)="
                 index !== studentResults.length - 1 &&
                   openAnswersDialog(
@@ -167,18 +167,22 @@
           group
       }}
     </div>
-    <canvas
-      class="result-test-table-chart-graph"
-      baseChart
-      [datasets]="barChartData"
-      [labels]="barChartLabels"
-      [options]="barChartOptions"
-      [colors]="barChartColors"
-      [plugins]="barChartPlugins"
-      [legend]="barChartLegend"
-      [chartType]="barChartType"
-    >
-    </canvas>
+    <div class="result-test-table-chart-scroll">
+      <div class="result-test-table-chart-canvas-host">
+        <canvas
+          class="result-test-table-chart-graph"
+          baseChart
+          [datasets]="barChartData"
+          [labels]="barChartLabels"
+          [options]="barChartOptions"
+          [colors]="barChartColors"
+          [plugins]="barChartPlugins"
+          [legend]="barChartLegend"
+          [chartType]="barChartType"
+        >
+        </canvas>
+      </div>
+    </div>
   </div>
 </ng-container>
 

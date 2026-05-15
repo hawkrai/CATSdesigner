@@ -52,3 +52,15 @@
 .mat-tab-label-content {
   opacity: 1;
 }
+
+@media only screen and (max-width: 768px) {
+  ::ng-deep {
+    .mat-tab-body-content {
+      overflow-x: visible !important;
+    }
+
+    .mat-tab-body.mat-tab-body-active {
+      overflow-x: visible !important;
+    }
+  }
+}
