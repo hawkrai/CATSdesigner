@@ -102,7 +102,7 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
 
         nodeEnter.append('circle')
           .attr('class', 'ghostCircle')
-          .attr('r', tm.nodeRadius * 2)
+          .attr('r', function (d: any) { return self.nodeRadiusOf(d) * 2 })
           .attr('opacity', 0.2)
           .style('fill', 'red')
           .attr('pointer-events', 'mouseover')
@@ -121,9 +121,12 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
           .attr('transform', function (d: any) { return 'translate(' + d.y + ',' + d.x + ')' })
 
         nodeUpdate.select('circle.node')
-          .attr('r', tm.nodeRadius)
+          .attr('r', function (d: any) { return self.nodeRadiusOf(d) })
           .style('fill', function (d: any) { return d._children ? 'lightsteelblue' : '#fff' })
           .attr('cursor', 'pointer')
+
+        nodeUpdate.select('circle.ghostCircle')
+          .attr('r', function (d: any) { return self.nodeRadiusOf(d) * 2 })
 
         const nodeExit = node.exit().transition()
           .duration(tm.duration)
@@ -163,7 +166,6 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
         treeModel.svg.selectAll('g.node text').each(function (d: any) {
           const el = d3.select(this)
           const g = d3.select((this as Element).parentNode as SVGGElement)
-          g.select('rect.node-label-bg').remove()
 
           const fullName: string = (d && d.data)
             ? (d.data.description || d.data.name || String(d.id))
@@ -171,7 +173,7 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
 
           const angle = (d && typeof d._angle === 'number') ? d._angle : 0
           const outwardRight = Math.cos(angle) >= 0
-          const labelOffset = MapPopoverLayout.NodeRadius + MapPopoverLayout.TextOffset
+          const labelOffset = self.nodeRadiusOf(d) + MapPopoverLayout.TextOffset
           const labelX = outwardRight ? labelOffset : -labelOffset
           el.attr('x', labelX)
           el.attr('y', 0)
@@ -215,20 +217,6 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
               .on('mouseleave.tooltip', null)
           }
 
-          try {
-            const textEl = el.node() as SVGTextElement
-            const bbox = textEl.getBBox()
-            g.insert('rect', 'text')
-              .attr('class', 'node-label-bg')
-              .attr('x', bbox.x - MapPopoverLayout.LabelBgPadX)
-              .attr('y', bbox.y - MapPopoverLayout.LabelBgPadY)
-              .attr('width', Math.max(0, bbox.width + 2 * MapPopoverLayout.LabelBgPadX))
-              .attr('height', Math.max(0, bbox.height + 2 * MapPopoverLayout.LabelBgPadY))
-              .attr('rx', 2)
-              .attr('ry', 2)
-              .attr('fill', '#ffffff')
-              .style('pointer-events', 'none')
-          } catch {}
         })
 
         self.applyLinkStyles()
@@ -267,6 +255,11 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
 
       self.customTreeService()
     })
+  }
+
+  private nodeRadiusOf(d: any): number {
+    const depth = (d && typeof d.depth === 'number') ? d.depth : 0
+    return Math.max(2.5, 7 * Math.pow(0.85, depth))
   }
 
   private applyRadialLayout() {
@@ -325,7 +318,7 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
       let s = startAngle
       let e = endAngle
       if (d > 0) {
-        const maxArc = Math.PI * 0.85
+        const maxArc = (2 * Math.PI) / 3
         const range = Math.min(e - s, maxArc)
         s = midAngle - range / 2
         e = midAngle + range / 2
