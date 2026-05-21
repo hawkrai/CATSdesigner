@@ -621,7 +621,7 @@ div.Section1
 								</p>
 							</td>
 							<td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
-								<p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
+								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
 									<span style='font-size:10.0pt'>
 										<xsl:value-of select='string(item[@name="PublishData"])' disable-output-escaping='no'/>
 									</span>
@@ -696,7 +696,7 @@ div.Section1
 								</p>
 							</td>
 							<td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
-								<p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
+								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
 									<span style='font-size:10.0pt'>
 										<xsl:value-of select='string(item[@name="PublishData"])' disable-output-escaping='no'/>
 									</span>
