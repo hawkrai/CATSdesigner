@@ -584,6 +584,8 @@
     <Compile Include="Services\Modules\Concept\ConceptPageTitleData.cs" />
     <Compile Include="Services\Modules\Concept\ConceptResult.cs" />
     <Compile Include="Services\Modules\Concept\ConceptViewData.cs" />
+    <Compile Include="Services\Modules\Concept\HiddenTestsResult.cs" />
+    <Compile Include="Services\Modules\Concept\LibreOfficeAvailabilityResult.cs" />
     <Compile Include="Services\Modules\CoreModels\GroupsResult.cs" />
     <Compile Include="Services\Modules\CoreModels\GroupsViewData.cs" />
     <Compile Include="Services\Modules\CoreModels\GroupViewData.cs" />

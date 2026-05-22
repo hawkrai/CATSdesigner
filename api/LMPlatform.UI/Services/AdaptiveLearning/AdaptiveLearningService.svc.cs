@@ -51,8 +51,9 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		public AdaptivityViewResult GetNextThema(int userId, int subjectId, int testId, int currentThemaId, int adaptivityType, int eumkRootConceptId)
 		{
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
-			
+
 			var allAvailableThemas = AdaptiveLearningManagementService.GetAllAvaiableThemas(subjectId, adaptivityType, userId);
+			allAvailableThemas = FilterThemasByEumk(allAvailableThemas, eumkRootConceptId);
 			if (allAvailableThemas is null || !allAvailableThemas.Any())
 			{
 				return new AdaptivityViewResult
@@ -62,7 +63,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					NeedToDoPredTest = true,
 					Code = "500"
 				};
-			}		
+			}
 
 			int themaResult = AdaptiveLearningManagementService.GeDynamicTestResult(testId, userId);
 			
@@ -99,9 +100,11 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		public AdaptivityViewResult ProcessPredTestResults(int userId, int testId, int adaptivityType, int eumkRootConceptId)
 		{
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
-			
+
+			var eumkConceptIds = GetEumkConceptIds(eumkRootConceptId);
 			var availableThemas = AdaptiveLearningManagementService
 				.GetPredTestResults(testId, userId)?
+				.Where(x => eumkConceptIds == null || eumkConceptIds.Contains(x.ThemaId))
 				.Select(x => new PredTestResults
 				{
 					ThemaId = x.ThemaId,
@@ -149,7 +152,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		public int GetDynamicTestIdForThema(int userId, int subjectId, int complexId, int monitoringRes, int adaptivityType)
 		{
 			if (adaptivityType == (int)AdaptivityType.SIMPLE)
-			{ 
+			{
 				return this.TestsManagementService
 					.GetTestsForSubject(subjectId)
 					.Where(x => x.ForEUMK)
@@ -160,7 +163,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			var allQuestions = QuestionsManagementService
 				.GetQuestionsByConceptId(complexId)
-				.Where(x => x.Test.ForEUMK)
+				.Where(x => x.Test != null && x.Test.ForEUMK)
 				.Where(x => x.Test.Title != AdaptiveConst.AdaptiveTestName)
 				.GroupBy(x => x.Title)
 				.Select(x => new { x.First().Id, x.First().ComlexityLevel });// This workaround is necessary because of wrong table behaviour
@@ -193,6 +196,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		public AdaptivityViewResult GetFirstThema(int userId, int subjectId, int adaptivityType, int eumkRootConceptId)
 		{
 			var allAvailableThemas = AdaptiveLearningManagementService.GetAllAvaiableThemas(subjectId, adaptivityType, userId);
+			allAvailableThemas = FilterThemasByEumk(allAvailableThemas, eumkRootConceptId);
 			if (allAvailableThemas is null || !allAvailableThemas.Any())
 			{
 				return new AdaptivityViewResult
@@ -249,6 +253,50 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		private bool CurrentUserIsLector()
 		{
 			return string.Equals(UserContext.Role, Constants.Roles.Lector, StringComparison.OrdinalIgnoreCase);
+		}
+
+		private HashSet<int> GetEumkConceptIds(int eumkRootConceptId)
+		{
+			if (eumkRootConceptId <= 0)
+			{
+				return null;
+			}
+
+			try
+			{
+				var root = ConceptManagementService.GetTreeConceptByElementId(eumkRootConceptId);
+				if (root == null)
+				{
+					return null;
+				}
+
+				var ids = new HashSet<int> { root.Id };
+				foreach (var child in root.GetAllChildren())
+				{
+					ids.Add(child.Id);
+				}
+				return ids;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		private IEnumerable<ConceptThema> FilterThemasByEumk(IEnumerable<ConceptThema> themas, int eumkRootConceptId)
+		{
+			if (themas == null)
+			{
+				return themas;
+			}
+
+			var eumkConceptIds = GetEumkConceptIds(eumkRootConceptId);
+			if (eumkConceptIds == null)
+			{
+				return themas;
+			}
+
+			return themas.Where(x => eumkConceptIds.Contains(x.ThemaId)).ToList();
 		}
 
 		private ConceptViewData FindConceptViewById(ConceptViewData root, int conceptId)

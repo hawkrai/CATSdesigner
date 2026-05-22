@@ -76,9 +76,73 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
         return drag
       }
 
-      const originalSetNodes = treeModel.setNodes.bind(treeModel)
       treeModel.setNodes = function (source: any, treeData: any) {
-        originalSetNodes(source, treeData)
+        const nodes = treeData.descendants()
+        const tm: any = treeModel
+
+        const node = tm.svg.selectAll('g.node')
+          .data(nodes, function (d: any) { return d.id })
+
+        const nodeEnter = node.enter().append('g')
+          .attr('class', 'node')
+          .attr('transform', function () {
+            return 'translate(' + source.y0 + ',' + source.x0 + ')'
+          })
+
+        nodeEnter.append('circle')
+          .attr('class', 'node')
+          .attr('r', 1e-6)
+          .style('fill', function (d: any) { return d._children ? 'lightsteelblue' : '#fff' })
+
+        nodeEnter.append('text')
+          .attr('dy', tm.nodeTextDistanceY)
+          .attr('x', 0)
+          .attr('text-anchor', 'start')
+          .text(function (d: any) { return d.data.name || d.data.description || d.id })
+
+        nodeEnter.append('circle')
+          .attr('class', 'ghostCircle')
+          .attr('r', function (d: any) { return self.nodeRadiusOf(d) * 2 })
+          .attr('opacity', 0.2)
+          .style('fill', 'red')
+          .attr('pointer-events', 'mouseover')
+          .on('mouseover', function (n: any) {
+            tm.overCircle(n)
+            ;(this as Element).classList.add('over')
+          })
+          .on('mouseout', function (n: any) {
+            tm.outCircle(n)
+            ;(this as Element).classList.remove('over')
+          })
+
+        const nodeUpdate = nodeEnter.merge(node as any)
+        nodeUpdate.transition()
+          .duration(tm.duration)
+          .attr('transform', function (d: any) { return 'translate(' + d.y + ',' + d.x + ')' })
+
+        nodeUpdate.select('circle.node')
+          .attr('r', function (d: any) { return self.nodeRadiusOf(d) })
+          .style('fill', function (d: any) { return d._children ? 'lightsteelblue' : '#fff' })
+          .attr('cursor', 'pointer')
+
+        nodeUpdate.select('circle.ghostCircle')
+          .attr('r', function (d: any) { return self.nodeRadiusOf(d) * 2 })
+
+        const nodeExit = node.exit().transition()
+          .duration(tm.duration)
+          .attr('transform', function () { return 'translate(' + source.y + ',' + source.x + ')' })
+          .remove()
+        nodeExit.select('circle').attr('r', 1e-6)
+        nodeExit.select('text').style('fill-opacity', 1e-6)
+
+        nodes.forEach(function (d: any) { d.x0 = d.x; d.y0 = d.y })
+
+        nodeEnter
+          .call(tm.dragBehaviour())
+          .on('click', function (d: any) {
+            tm.click(d, this)
+            tm.update(d)
+          })
 
         let tooltip = d3.select('#map-node-tooltip')
         if (tooltip.empty()) {
@@ -102,17 +166,19 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
         treeModel.svg.selectAll('g.node text').each(function (d: any) {
           const el = d3.select(this)
           const g = d3.select((this as Element).parentNode as SVGGElement)
-          g.select('rect.node-label-bg').remove()
 
           const fullName: string = (d && d.data)
             ? (d.data.description || d.data.name || String(d.id))
             : ''
 
-          const labelX = MapPopoverLayout.NodeRadius + MapPopoverLayout.TextOffset
+          const angle = (d && typeof d._angle === 'number') ? d._angle : 0
+          const outwardRight = Math.cos(angle) >= 0
+          const labelOffset = self.nodeRadiusOf(d) + MapPopoverLayout.TextOffset
+          const labelX = outwardRight ? labelOffset : -labelOffset
           el.attr('x', labelX)
           el.attr('y', 0)
           el.attr('dy', null)
-          el.attr('text-anchor', 'start')
+          el.attr('text-anchor', outwardRight ? 'start' : 'end')
           el.attr('dominant-baseline', 'middle')
           el.style('font-family', 'Inter, system-ui, -apple-system, sans-serif')
           el.style('font-size', '13px')
@@ -151,20 +217,6 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
               .on('mouseleave.tooltip', null)
           }
 
-          try {
-            const textEl = el.node() as SVGTextElement
-            const bbox = textEl.getBBox()
-            g.insert('rect', 'text')
-              .attr('class', 'node-label-bg')
-              .attr('x', bbox.x - MapPopoverLayout.LabelBgPadX)
-              .attr('y', bbox.y - MapPopoverLayout.LabelBgPadY)
-              .attr('width', Math.max(0, bbox.width + 2 * MapPopoverLayout.LabelBgPadX))
-              .attr('height', Math.max(0, bbox.height + 2 * MapPopoverLayout.LabelBgPadY))
-              .attr('rx', 2)
-              .attr('ry', 2)
-              .attr('fill', '#ffffff')
-              .style('pointer-events', 'none')
-          } catch {}
         })
 
         self.applyLinkStyles()
@@ -176,55 +228,25 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
         self.applyLinkStyles()
       }
 
-      treeModel.createLayout = function () {
-        const depthSpacing = self.computeDepthSpacing()
-        treeModel['_depthSpacing'] = depthSpacing
-        treeModel.treeLayout = d3.tree()
-          .size([treeModel.height, treeModel.width])
-          .nodeSize([
-            treeModel.nodeWidth + treeModel.horizontalSeparationBetweenNodes,
-            treeModel.nodeHeight + treeModel.verticalSeparationBetweenNodes
-          ])
-          .separation(function (a: any, b: any) { return a.parent === b.parent ? 28 : 36 })
+      treeModel.createLayout = function () { /* radial layout — no d3.tree() used */ }
+
+      treeModel.diagonalCurvedPath = function (s: any, d: any) {
+        return 'M ' + s.y + ' ' + s.x + ' L ' + d.y + ' ' + d.x
       }
 
       treeModel.update = function (source: any) {
-        const treeData = treeModel.treeLayout(treeModel.root)
-        const nodes = treeData.descendants()
-        const depthSpacing: number[] = treeModel['_depthSpacing'] || []
+        self.applyRadialLayout()
 
-        const cumulativeY: number[] = []
-        let acc = 0
-        const seenDepths: number[] = []
-        nodes.forEach(function (d: any) {
-          if (seenDepths.indexOf(d.depth) === -1) {
-            seenDepths.push(d.depth)
-            cumulativeY[d.depth] = acc
-            acc += (depthSpacing[d.depth] || 180)
-          }
-        })
+        const all: any[] = []
+        const walk = function (n: any) {
+          all.push(n)
+          const kids = n.children || []
+          for (let i = 0; i < kids.length; i++) { walk(kids[i]) }
+        }
+        walk(treeModel.root)
 
-        nodes.forEach(function (d: any) {
-          d.y = cumulativeY[d.depth] !== undefined ? cumulativeY[d.depth] : d.depth * 180
-        })
-
-        const desc = treeData.descendants()
-        if (desc.length > 0) {
-          let minX = Infinity
-          let maxX = -Infinity
-          desc.forEach(function (d: any) {
-            if (typeof d.x === 'number') {
-              if (d.x < minX) { minX = d.x }
-              if (d.x > maxX) { maxX = d.x }
-            }
-          })
-          if (minX !== Infinity && maxX !== -Infinity && treeModel.height > 0) {
-            const mid = (minX + maxX) / 2
-            const deltaX = treeModel.height / 2 - mid
-            desc.forEach(function (d: any) {
-              if (typeof d.x === 'number') { d.x += deltaX }
-            })
-          }
+        const treeData = {
+          descendants: function () { return all.slice() }
         }
 
         treeModel.setNodes(source, treeData)
@@ -235,48 +257,93 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
     })
   }
 
-  private computeDepthSpacing(): number[] {
-    const depthMap: { [id: number]: number } = {}
-    const rootNode = this.chartData.find((n: any) => n.parent === null || n.parent === undefined)
-    if (!rootNode) { return [] }
+  private nodeRadiusOf(d: any): number {
+    const depth = (d && typeof d.depth === 'number') ? d.depth : 0
+    return Math.max(2.5, 7 * Math.pow(0.85, depth))
+  }
 
-    depthMap[rootNode.id] = 0
-    let changed = true
-    while (changed) {
-      changed = false
-      this.chartData.forEach((n: any) => {
-        if (depthMap[n.id] === undefined && n.parent !== null && n.parent !== undefined) {
-          if (depthMap[n.parent] !== undefined) {
-            depthMap[n.id] = depthMap[n.parent] + 1
-            changed = true
-          }
-        }
-      })
+  private applyRadialLayout() {
+    const treeModel: any = this.treeService.treeModel
+    const root = treeModel.root
+    if (!root) { return }
+
+    const countLeaves = (n: any): number => {
+      const kids = n.children || []
+      if (!kids.length) { n._leaves = 1; return 1 }
+      let s = 0
+      for (let i = 0; i < kids.length; i++) { s += countLeaves(kids[i]) }
+      n._leaves = s
+      return s
     }
+    countLeaves(root)
 
-    const depthMaxWidth: { [depth: number]: number } = {}
-    this.chartData.forEach((n: any) => {
-      const depth = depthMap[n.id]
-      if (depth === undefined) { return }
-      const name: string = n.description || n.name || ''
-      const labelLen = Math.min(name.length, MapPopoverLayout.MaxLabelChars)
-      const labelPx =
-        labelLen * MapPopoverLayout.CharWidthPx +
-        MapPopoverLayout.NodeRadius +
-        MapPopoverLayout.TextOffset +
-        MapPopoverLayout.ColumnGap
-      if (!depthMaxWidth[depth] || labelPx > depthMaxWidth[depth]) {
-        depthMaxWidth[depth] = labelPx
+    const maxDepthOf = (n: any): number => {
+      const kids = n.children || []
+      if (!kids.length) { return 0 }
+      let m = 0
+      for (let i = 0; i < kids.length; i++) { m = Math.max(m, maxDepthOf(kids[i])) }
+      return 1 + m
+    }
+    const depth = maxDepthOf(root)
+
+    const w = treeModel.width || 0
+    const h = treeModel.height || 0
+    const cx = w / 2
+    const cy = h / 2
+
+    const labelReserve = MapPopoverLayout.MaxLabelChars * MapPopoverLayout.CharWidthPx + 40
+    const usable = Math.max(120, Math.min(w, h) / 2 - labelReserve)
+    const levelRadius = depth > 0 ? usable / depth : 180
+    const lr = Math.max(110, Math.min(220, levelRadius))
+
+    const place = (n: any, startAngle: number, endAngle: number, d: number) => {
+      const midAngle = (startAngle + endAngle) / 2
+      if (d === 0) {
+        n.y = cx
+        n.x = cy
+        n._angle = 0
+      } else {
+        const r = d * lr
+        n.y = cx + r * Math.cos(midAngle)
+        n.x = cy + r * Math.sin(midAngle)
+        n._angle = midAngle
       }
-    })
 
-    const depths = Object.keys(depthMap).map((k) => depthMap[+k])
-    const maxDepth = depths.length > 0 ? Math.max.apply(null, depths) : 0
-    const result: number[] = []
-    for (let i = 0; i <= maxDepth; i++) {
-      result[i] = depthMaxWidth[i] || 180
+      const kids = n.children || []
+      if (!kids.length) { return }
+
+      let total = 0
+      for (let i = 0; i < kids.length; i++) { total += (kids[i]._leaves || 1) }
+
+      let s = startAngle
+      let e = endAngle
+      if (d > 0) {
+        const maxArc = (2 * Math.PI) / 3
+        const range = Math.min(e - s, maxArc)
+        s = midAngle - range / 2
+        e = midAngle + range / 2
+      }
+
+      let cur = s
+      for (let i = 0; i < kids.length; i++) {
+        const child = kids[i]
+        const share = (child._leaves || 1) / total
+        const span = (e - s) * share
+        place(child, cur, cur + span, d + 1)
+        cur += span
+      }
     }
-    return result
+
+    const rootKids = root.children || []
+    let startAngle = 0
+    let endAngle = 2 * Math.PI
+    if (rootKids.length > 0) {
+      const total = root._leaves || 1
+      const firstSpan = ((rootKids[0]._leaves || 1) / total) * 2 * Math.PI
+      startAngle = -Math.PI / 2 - firstSpan / 2
+      endAngle = startAngle + 2 * Math.PI
+    }
+    place(root, startAngle, endAngle, 0)
   }
 
   ngOnDestroy() {
@@ -296,18 +363,15 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
     // 1) оригинал createChart @url https://github.com/jgpATs2w/angular-d3-tree/blob/374aa9948f39138f7341d72777e8954d5b5e9194/projects/angular-d3-tree-lib/src/lib/angular-d3-tree-lib.service.ts#L12
     // 2) оригинал createTreeData (внутри createChart) @url https://github.com/jgpATs2w/angular-d3-tree/blob/374aa9948f39138f7341d72777e8954d5b5e9194/projects/angular-d3-tree-lib/src/lib/tree.dendo.model.ts#L70
     const tm: any = this.treeService.treeModel
-    tm.margin = { top: 40, bottom: 40, left: 72, right: 40 }
+    tm.margin = { top: 40, bottom: 40, left: 40, right: 40 }
 
     this.treeService.treeModel.createTreeData = () => {
       this.treeService.treeModel.root = d3
         .stratify<any>()
         .id(function (d) { return d.id })
         .parentId(function (d) { return d.parent })(this.chartData)
-      this.treeService.treeModel.root.x0 = this.treeService.treeModel.height / 2
-      this.treeService.treeModel.root.y0 = 0
-      if (tm.root && tm.root.children && tm.root.children.length) {
-        tm.root.children.forEach((child: any) => tm.collapse(child))
-      }
+      this.treeService.treeModel.root.x0 = (this.treeService.treeModel.height || 0) / 2
+      this.treeService.treeModel.root.y0 = (this.treeService.treeModel.width || 0) / 2
     }
 
     const host = document.getElementById('chartContainer')
@@ -338,8 +402,8 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
         const className = ((this as SVGPathElement).getAttribute('class') || '').toLowerCase()
         return className.indexOf('link') !== -1
       })
-      .style('stroke', '#2b2b2b')
-      .style('stroke-width', '1px')
+      .style('stroke', '#c8c8c8')
+      .style('stroke-width', '0.8px')
       .style('fill', 'none')
       .style('shape-rendering', 'geometricPrecision')
       .style('vector-effect', 'non-scaling-stroke')

@@ -657,6 +657,7 @@ namespace LMPlatform.UI.Services.Concept
                 return new ResultViewData { Message = "Access denied", Code = "403" };
             try
             {
+                bool verified;
                 using (var context = new LMPlatform.Data.Infrastructure.LmPlatformModelsContext())
                 {
                     var existing = context.HiddenTests
@@ -681,6 +682,18 @@ namespace LMPlatform.UI.Services.Concept
                     }
 
                     context.SaveChanges();
+
+                    verified = context.HiddenTests
+                        .Any(ht => ht.ConceptId == conceptId && ht.ComplexId == complexId);
+                }
+
+                if (!verified)
+                {
+                    return new ResultViewData
+                    {
+                        Message = $"HideTest verification failed: запись не найдена после сохранения. conceptId={conceptId}, testId={testId}, complexId={complexId}",
+                        Code = ServerErrorCode
+                    };
                 }
 
                 return new ResultViewData
@@ -703,33 +716,40 @@ namespace LMPlatform.UI.Services.Concept
 
         public HiddenTestsResult GetHiddenTests(int complexId)
         {
+            var conceptIds = new List<int>();
+            var testIds = new List<int>();
+            string errorMessage = null;
+
             try
             {
-                using (var repositoriesContainer = new LMPlatform.Data.Repositories.LmPlatformRepositoriesContainer())
+                using (var context = new LMPlatform.Data.Infrastructure.LmPlatformModelsContext())
                 {
-                    var hiddenTests = repositoriesContainer.HiddenTestRepository
-                        .GetAll(new Application.Core.Data.Query<HiddenTest>(ht => ht.ComplexId == complexId))
+                    var hiddenTests = context.HiddenTests
+                        .Where(ht => ht.ComplexId == complexId)
+                        .Select(ht => new { ht.ConceptId, ht.TestId })
                         .ToList();
 
-                    return new HiddenTestsResult
-                    {
-                        ConceptIds = hiddenTests.Select(ht => ht.ConceptId).Distinct().ToList(),
-                        TestIds = hiddenTests.Where(ht => ht.TestId.HasValue).Select(ht => ht.TestId.Value).Distinct().ToList(),
-                        Message = SuccessMessage,
-                        Code = SuccessCode
-                    };
+                    conceptIds = hiddenTests.Select(ht => ht.ConceptId).Distinct().ToList();
+                    testIds = hiddenTests
+                        .Where(ht => ht.TestId.HasValue)
+                        .Select(ht => ht.TestId.Value)
+                        .Distinct()
+                        .ToList();
                 }
             }
             catch (Exception ex)
             {
-                return new HiddenTestsResult
-                {
-                    ConceptIds = new List<int>(),
-                    TestIds = new List<int>(),
-                    Message = "Ошибка при получении скрытых тестов: " + ex.Message,
-                    Code = ServerErrorCode
-                };
+                var innerException = ex.InnerException != null ? ex.InnerException.Message : string.Empty;
+                errorMessage = $"GetHiddenTests Error: complexId={complexId}, error={ex.Message}, inner={innerException}";
             }
+
+            return new HiddenTestsResult
+            {
+                ConceptIds = conceptIds ?? new List<int>(),
+                TestIds = testIds ?? new List<int>(),
+                Message = errorMessage ?? SuccessMessage,
+                Code = errorMessage != null ? ServerErrorCode : SuccessCode
+            };
         }
 
         public LibreOfficeAvailabilityResult CheckLibreOfficeAvailability()
@@ -767,66 +787,88 @@ namespace LMPlatform.UI.Services.Concept
             var fmt = (format ?? "docx").Trim().ToLowerInvariant();
             if (fmt != "docx" && fmt != "pdf")
             {
-                throw new WebFaultException(HttpStatusCode.BadRequest);
+                throw new WebFaultException<string>("Unsupported format: " + format, HttpStatusCode.BadRequest);
             }
 
-            var hiddenTestIds = GetHiddenTestIdSet(complexId);
-            var root = ConceptManagementService.GetTreeConceptByElementId(complexId);
-            if (root == null)
-            {
-                throw new WebFaultException(HttpStatusCode.NotFound);
-            }
-
-            var docTitle = string.IsNullOrWhiteSpace(title) ? root.Name : title;
-            var tqh = string.IsNullOrWhiteSpace(testQuestionsHeading)
-                ? "Вопросы теста (без вариантов ответов)"
-                : testQuestionsHeading;
-            var amh = string.IsNullOrWhiteSpace(attachedMaterialsHeading)
-                ? "Прикреплённые материалы"
-                : attachedMaterialsHeading;
-
-            var generator = new EumkExportDocumentGenerator(FilesManagementService, TestsManagementService);
-            var docxBytes = generator.BuildDocx(root, docTitle, tqh, amh, hiddenTestIds);
-
-            var safeBase = SanitizeFileName(docTitle);
-            if (fmt == "docx")
-            {
-                SetEumkDownloadHeaders(safeBase + ".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-                return new MemoryStream(docxBytes, writable: false);
-            }
-
-            if (!IsLibreOfficeInstalled())
-            {
-                var pdfBytesFallback = generator.BuildPdfFallback(root, docTitle, tqh, amh, hiddenTestIds);
-                SetEumkDownloadHeaders(safeBase + ".pdf", "application/pdf");
-                return new MemoryStream(pdfBytesFallback, writable: false);
-            }
-
-            var tempRoot = ConfigurationManager.AppSettings["FileUploadPathTemp"];
-            if (string.IsNullOrWhiteSpace(tempRoot))
-            {
-                throw new WebFaultException(HttpStatusCode.InternalServerError);
-            }
-
-            tempRoot = Path.GetFullPath(tempRoot.Replace("//", "\\").TrimEnd('/', '\\'));
-            var baseName = "eumk_" + Guid.NewGuid().ToString("N");
-            var docxPath = Path.Combine(tempRoot, baseName + ".docx");
-            File.WriteAllBytes(docxPath, docxBytes);
             try
             {
-                var convertor = new WordToPdfConvertor();
-                var pdfFileName = convertor.Convert(docxPath);
-                var pdfPath = Path.Combine(tempRoot, pdfFileName);
-                var pdfBytes = File.ReadAllBytes(pdfPath);
-                TryDelete(docxPath);
-                TryDelete(pdfPath);
-                SetEumkDownloadHeaders(safeBase + ".pdf", "application/pdf");
-                return new MemoryStream(pdfBytes, writable: false);
+                var hiddenTestIds = GetHiddenTestIdSet(complexId);
+                var root = ConceptManagementService.GetTreeConceptByElementId(complexId);
+                if (root == null)
+                {
+                    throw new WebFaultException<string>("Complex not found: complexId=" + complexId, HttpStatusCode.NotFound);
+                }
+
+                var docTitle = string.IsNullOrWhiteSpace(title) ? root.Name : title;
+                var tqh = string.IsNullOrWhiteSpace(testQuestionsHeading)
+                    ? "Вопросы теста (без вариантов ответов)"
+                    : testQuestionsHeading;
+                var amh = string.IsNullOrWhiteSpace(attachedMaterialsHeading)
+                    ? "Прикреплённые материалы"
+                    : attachedMaterialsHeading;
+
+                var generator = new EumkExportDocumentGenerator(FilesManagementService, TestsManagementService);
+                var safeBase = SanitizeFileName(docTitle);
+
+                if (fmt == "docx")
+                {
+                    var docxBytes = generator.BuildDocx(root, docTitle, tqh, amh, hiddenTestIds);
+                    SetEumkDownloadHeaders(safeBase + ".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+                    return new MemoryStream(docxBytes, writable: false);
+                }
+
+                if (!IsLibreOfficeInstalled())
+                {
+                    var pdfBytesFallback = generator.BuildPdfFallback(root, docTitle, tqh, amh, hiddenTestIds);
+                    SetEumkDownloadHeaders(safeBase + ".pdf", "application/pdf");
+                    return new MemoryStream(pdfBytesFallback, writable: false);
+                }
+
+                var tempRoot = ConfigurationManager.AppSettings["FileUploadPathTemp"];
+                if (string.IsNullOrWhiteSpace(tempRoot))
+                {
+                    throw new WebFaultException<string>("FileUploadPathTemp is not configured", HttpStatusCode.InternalServerError);
+                }
+
+                tempRoot = Path.GetFullPath(tempRoot.Replace("//", "\\").TrimEnd('/', '\\'));
+                if (!Directory.Exists(tempRoot))
+                {
+                    Directory.CreateDirectory(tempRoot);
+                }
+
+                var baseName = "eumk_" + Guid.NewGuid().ToString("N");
+                var docxPath = Path.Combine(tempRoot, baseName + ".docx");
+                var docxBytesForPdf = generator.BuildDocx(root, docTitle, tqh, amh, hiddenTestIds);
+                File.WriteAllBytes(docxPath, docxBytesForPdf);
+                try
+                {
+                    var convertor = new WordToPdfConvertor();
+                    var pdfFileName = convertor.Convert(docxPath);
+                    var pdfPath = Path.Combine(tempRoot, pdfFileName);
+                    var pdfBytes = File.ReadAllBytes(pdfPath);
+                    TryDelete(docxPath);
+                    TryDelete(pdfPath);
+                    SetEumkDownloadHeaders(safeBase + ".pdf", "application/pdf");
+                    return new MemoryStream(pdfBytes, writable: false);
+                }
+                catch
+                {
+                    TryDelete(docxPath);
+                    var pdfBytesFallback = generator.BuildPdfFallback(root, docTitle, tqh, amh, hiddenTestIds);
+                    SetEumkDownloadHeaders(safeBase + ".pdf", "application/pdf");
+                    return new MemoryStream(pdfBytesFallback, writable: false);
+                }
             }
-            catch
+            catch (WebFaultException)
             {
-                TryDelete(docxPath);
                 throw;
+            }
+            catch (Exception ex)
+            {
+                var innerMsg = ex.InnerException != null ? " | inner: " + ex.InnerException.Message : string.Empty;
+                throw new WebFaultException<string>(
+                    "ExportEumk failed: " + ex.Message + innerMsg,
+                    HttpStatusCode.InternalServerError);
             }
         }
 
@@ -887,23 +929,6 @@ namespace LMPlatform.UI.Services.Concept
             var utf8Star = Uri.EscapeDataString(fileName);
             response.Headers["Content-Disposition"] =
                 $"attachment; filename=\"{ascii}\"; filename*=UTF-8''{utf8Star}";
-        }
-
-        private class EumkExportDocumentGenerator
-        {
-            private IFilesManagementService filesManagementService;
-            private ITestsManagementService testsManagementService;
-
-            public EumkExportDocumentGenerator(IFilesManagementService filesManagementService, ITestsManagementService testsManagementService)
-            {
-                this.filesManagementService = filesManagementService;
-                this.testsManagementService = testsManagementService;
-            }
-
-            internal byte[] BuildDocx(Models.Concept root, string docTitle, string tqh, string amh, HashSet<int> hiddenTestIds)
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }

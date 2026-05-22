@@ -261,6 +261,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             {
                 var query = new Query<Question>();
                 query.AddFilterClause(question => question.ConceptId == conceptId);
+                query.Include(question => question.Test);
 
                 searchResults = repositoriesContainer.QuestionsRepository.GetAll(query).ToList();
             }
