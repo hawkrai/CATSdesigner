@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Application.Core.Data;
 
@@ -73,6 +73,12 @@ namespace LMPlatform.Models.KnowledgeTesting
         }
 
         public bool ForNN
+        {
+            get;
+            set;
+        }
+
+        public int? EumkRootConceptId
         {
             get;
             set;

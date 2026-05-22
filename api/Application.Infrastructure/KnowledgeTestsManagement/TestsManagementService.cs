@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Application.Core.Data;
+using Application.Infrastructure.ConceptManagement;
 using Application.Infrastructure.CPManagement;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
@@ -117,6 +118,25 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 			if (!string.IsNullOrEmpty(test.Description) && test.Description.Trim() == string.Empty)
 			{
 				throw new InvalidDataException("Описание теста не должно состоять только из пробелов");
+			}
+
+			if (test.BeforeEUMK || test.ForEUMK)
+			{
+				if (!test.EumkRootConceptId.HasValue || test.EumkRootConceptId.Value <= 0)
+				{
+					throw new InvalidDataException("Выберите ЭУМК для теста");
+				}
+
+				var conceptService = new ConceptManagementService();
+				var roots = conceptService.GetRootElementsBySubject(test.SubjectId).Select(r => r.Id).ToList();
+				if (!roots.Contains(test.EumkRootConceptId.Value))
+				{
+					throw new InvalidDataException("Выбранный ЭУМК не принадлежит текущему учебному предмету");
+				}
+			}
+			else
+			{
+				test.EumkRootConceptId = null;
 			}
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())

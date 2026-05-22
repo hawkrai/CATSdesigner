@@ -10,8 +10,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Answer } from '../../../models/question/answer.model'
 import { AutoUnsubscribe } from '../../../decorator/auto-unsubscribe'
 import { AutoUnsubscribeBase } from '../../../core/auto-unsubscribe-base'
-import { combineLatest, of, Subject } from 'rxjs'
-import { takeUntil, tap } from 'rxjs/operators'
+import { of, Subject } from 'rxjs'
+import { catchError, takeUntil, tap } from 'rxjs/operators'
 import { Base64UploaderPlugin } from '../../../core/Base64Upload'
 import { FormUtils } from '../../../utils/form.utils'
 import { NavItem } from '../../../models/nav-item'
@@ -105,6 +105,9 @@ export class QuestionPopupComponent
   private unsubscribeStream$: Subject<void> = new Subject<void>()
   public conceptId: any
   public showDescription: boolean
+  public eumkNavItems: NavItem[] = []
+  public isLoading = false
+  public sectionsLoading = false
 
   constructor(
     public dialogRef: MatDialogRef<QuestionPopupComponent>,
@@ -129,82 +132,102 @@ export class QuestionPopupComponent
 
     this.initForm()
     if (this.data.event) {
-      combineLatest([
-        this.testService.getQuestion(this.data.event.event),
-        this.data.isEUMKTest
-          ? this.testService.getConcepts(subject.id)
-          : of(null),
-      ])
+      this.isLoading = true
+      this.testService
+        .getQuestion(this.data.event.event)
         .pipe(takeUntil(this.unsubscribeStream$))
-        .subscribe(([question, concept]) => {
-          this.question = question
-          this.navItems = concept
-          if (this.data.isEUMKTest) {
-            this.conceptId = question.ConceptId
-            this.getConceptName()
-          }
-          this.newCase = false
-          this.formGroup = new FormGroup({
-            Title: new FormControl(
-              this.question.Title,
-              Validators.compose([
-                Validators.maxLength(255),
-                Validators.required,
-                whitespace,
-              ])
-            ),
-            Description: new FormControl(
-              this.question.Description
-              /*Validators.compose([Validators.maxLength(1000)])*/
-            ),
-            ComplexityLevel: new FormControl(
-              this.question.ComplexityLevel,
-              Validators.compose([
-                Validators.max(10),
-                Validators.min(1),
-                Validators.required,
-              ])
-            ),
-          })
-          this.chosenQuestionType = question.QuestionType
-          this.initExisting(this.question.Answers)
+        .subscribe((question) => {
+          this.applyQuestionData(question)
+          this.isLoading = false
+          this.loadEumkSections(subject.id)
         })
     } else {
       this.newCase = true
-      if (this.data.isEUMKTest) {
-        this.testService
-          .getConcepts(subject.id)
-          .pipe(
-            tap((concept) => (this.navItems = concept)),
-            takeUntil(this.unsubscribeStream$)
-          )
-          .subscribe()
-      }
-      this.question.ComlexityLevel = 1
-      this.question.ComplexityLevel = 1
-      this.formGroup = new FormGroup({
-        Title: new FormControl(
-          '',
-          Validators.compose([
-            Validators.maxLength(255),
-            Validators.required,
-            whitespace,
-          ])
-        ),
+      this.setupNewQuestionForm()
+      this.loadEumkSections(subject.id)
+    }
+  }
+
+  private applyQuestionData(question: Question): void {
+    this.question = question
+    this.newCase = false
+    if (this.data.isEUMKTest) {
+      this.conceptId = question.ConceptId
+    }
+    this.formGroup = new FormGroup({
+      Title: new FormControl(
+        this.question.Title,
+        Validators.compose([
+          Validators.maxLength(255),
+          Validators.required,
+          whitespace,
+        ])
+      ),
+      Description: new FormControl(this.question.Description),
+      ComplexityLevel: new FormControl(
+        this.question.ComplexityLevel,
+        Validators.compose([
+          Validators.max(10),
+          Validators.min(1),
+          Validators.required,
+        ])
+      ),
+    })
+    this.chosenQuestionType = question.QuestionType
+    this.initExisting(this.question.Answers)
+  }
+
+  private setupNewQuestionForm(): void {
+    this.question.ComlexityLevel = 1
+    this.question.ComplexityLevel = 1
+    this.formGroup = new FormGroup({
+      Title: new FormControl(
+        '',
+        Validators.compose([
+          Validators.maxLength(255),
+          Validators.required,
+          whitespace,
+        ])
+      ),
         Description: new FormControl(
           ''
           /*Validators.compose([Validators.maxLength(1000)])*/
         ),
-        ComplexityLevel: new FormControl(
-          1,
-          Validators.compose([
-            Validators.max(10),
-            Validators.min(1),
-            Validators.required,
-          ])
-        ),
-      })
+      ComplexityLevel: new FormControl(
+        1,
+        Validators.compose([
+          Validators.max(10),
+          Validators.min(1),
+          Validators.required,
+        ])
+      ),
+    })
+  }
+
+  private loadEumkSections(subjectId: string): void {
+    if (!this.data.isEUMKTest) {
+      return
     }
+
+    this.sectionsLoading = true
+    const rootId = this.data.eumkRootConceptId
+    const sections$ = rootId
+      ? this.testService.getEumkConceptTree(rootId)
+      : this.testService.getConcepts(subjectId)
+
+    sections$
+      .pipe(
+        catchError(() => of([])),
+        takeUntil(this.unsubscribeStream$)
+      )
+      .subscribe((concept) => {
+        this.navItems = concept || []
+        this.applyEumkNavItems()
+        if (this.conceptId) {
+          this.getConceptName()
+        }
+        this.sectionsLoading = false
+      })
   }
 
   onNoClick(): void {
@@ -393,6 +416,23 @@ export class QuestionPopupComponent
     this.getConceptName()
   }
 
+  private applyEumkNavItems(): void {
+    const rootId = this.data?.eumkRootConceptId
+    if (!this.navItems?.length || !rootId) {
+      this.eumkNavItems = this.navItems || []
+      return
+    }
+    this.eumkNavItems = this.navItems.filter((item) => item.Id === rootId)
+  }
+
+  public isTopicDisabled(item: NavItem): boolean {
+    return (
+      !!this.conceptId &&
+      this.conceptId !== item.Id &&
+      !this.hasChild(item, this.conceptId)
+    )
+  }
+
   hasChild(item: any, conceptId: number): boolean {
     if (!item.Children) return false
 
@@ -475,7 +515,7 @@ export class QuestionPopupComponent
 
   private getConceptName() {
     const questionConcept = this.getChildById(
-      this.navItems,
+      this.eumkNavItems.length ? this.eumkNavItems : this.navItems,
       this.question.ConceptId
     )
     this.selectedConcept = questionConcept?.Name

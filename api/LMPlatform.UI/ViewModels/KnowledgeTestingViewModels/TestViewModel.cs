@@ -1,4 +1,4 @@
-﻿using LMPlatform.Models.KnowledgeTesting;
+using LMPlatform.Models.KnowledgeTesting;
 
 namespace LMPlatform.UI.ViewModels.KnowledgeTestingViewModels
 {
@@ -76,6 +76,12 @@ namespace LMPlatform.UI.ViewModels.KnowledgeTestingViewModels
 		    set;
 	    }
 
+        public int? EumkRootConceptId
+        {
+            get;
+            set;
+        }
+
         public int? TestNumber
         {
             get;
@@ -97,6 +103,7 @@ namespace LMPlatform.UI.ViewModels.KnowledgeTestingViewModels
                 ForEUMK = ForEUMK,
                 BeforeEUMK = BeforeEUMK,
 				ForNN = ForNN,
+                EumkRootConceptId = EumkRootConceptId,
                 IsNecessary = IsNecessary,
                 TestNumber = TestNumber
             };
@@ -116,6 +123,7 @@ namespace LMPlatform.UI.ViewModels.KnowledgeTestingViewModels
                 ForEUMK = test.ForEUMK,
                 BeforeEUMK = test.BeforeEUMK,
 				ForNN = test.ForNN,
+                EumkRootConceptId = test.EumkRootConceptId,
                 CountOfQuestions = test.CountOfQuestions,
                 IsNecessary = test.IsNecessary,
                 TestNumber = test.TestNumber

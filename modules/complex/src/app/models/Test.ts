@@ -1,6 +1,7 @@
 export class Test {
   public BeforeEUMK: boolean
   public ForEUMK: boolean
+  public EumkRootConceptId: number
   public ForNN: boolean
   public ForSelfStudy: boolean
   public IsNecessary: boolean
