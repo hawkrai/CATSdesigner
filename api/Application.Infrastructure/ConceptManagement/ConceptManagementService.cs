@@ -1124,6 +1124,38 @@ namespace Application.Infrastructure.ConceptManagement
             return string.Compare(TestSectionName, moduleName, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
+        public int? GetRootConceptId(int conceptId)
+        {
+            if (conceptId <= 0)
+            {
+                return null;
+            }
+
+            var concept = GetById(conceptId);
+            while (concept != null && concept.ParentId.HasValue)
+            {
+                concept = GetById(concept.ParentId.Value);
+            }
+
+            return concept?.Id;
+        }
+
+        public bool IsConceptUnderRoot(int conceptId, int rootConceptId)
+        {
+            if (conceptId <= 0 || rootConceptId <= 0)
+            {
+                return false;
+            }
+
+            if (conceptId == rootConceptId)
+            {
+                return true;
+            }
+
+            var rootId = GetRootConceptId(conceptId);
+            return rootId.HasValue && rootId.Value == rootConceptId;
+        }
+
         public void Remove(int id, bool removeChildren)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())

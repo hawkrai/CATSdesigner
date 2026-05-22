@@ -62,6 +62,11 @@ export class EditTestPopupComponent
 
   public newTest: boolean = true
   public formGroup: FormGroup
+  public eumkRoots: { Id: number; Name: string }[] = []
+  public eumkRootsLoading = false
+  public hasQuestions = false
+  private subjectId: number
+  private eumkRootsLoaded = false
   private unsubscribeStream$: Subject<void> = new Subject<void>()
   isLoading: boolean
   constructor(
@@ -85,51 +90,122 @@ export class EditTestPopupComponent
 
   ngOnInit() {
     this.isLoading = true
-    const subjectId = JSON.parse(localStorage.getItem('currentSubject')).id
-    this.subjectService.getSubjectModules(subjectId).subscribe((modules) => {
-      this.formGroup = this.formBuilder.group({
-        Title: new FormControl(
-          '',
-          Validators.compose([
-            Validators.maxLength(255),
+    this.subjectId = JSON.parse(localStorage.getItem('currentSubject')).id
+    this.subjectService
+      .getSubjectModules(this.subjectId)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((modules) => {
+        this.formGroup = this.formBuilder.group({
+          Title: new FormControl(
+            '',
+            Validators.compose([
+              Validators.maxLength(255),
+              Validators.required,
+              whitespace,
+            ])
+          ),
+          Description: new FormControl(
+            '',
+            Validators.compose([Validators.maxLength(1000), whitespace])
+          ),
+          CountOfQuestions: new FormControl(
+            10,
+            Validators.compose([
+              Validators.max(200),
+              Validators.min(1),
+              Validators.required,
+            ])
+          ),
+          TimeForCompleting: new FormControl(
+            10,
+            Validators.compose([
+              Validators.max(150),
+              Validators.min(0),
+              Validators.required,
+            ])
+          ),
+          SetTimeForAllTest: new FormControl(false),
+          Type: new FormControl(null, [
             Validators.required,
-            whitespace,
-          ])
-        ),
-        Description: new FormControl(
-          '',
-          Validators.compose([Validators.maxLength(1000), whitespace])
-        ),
-        CountOfQuestions: new FormControl(
-          10,
-          Validators.compose([
-            Validators.max(200),
-            Validators.min(1),
-            Validators.required,
-          ])
-        ),
-        TimeForCompleting: new FormControl(
-          10,
-          Validators.compose([
-            Validators.max(150),
-            Validators.min(0),
-            Validators.required,
-          ])
-        ),
-        SetTimeForAllTest: new FormControl(false),
-        Type: new FormControl(null, [
-          Validators.required,
-          this.testTypeValidator(modules),
-        ]),
-        SubjectId: new FormControl(subjectId),
+            this.testTypeValidator(modules),
+          ]),
+          EumkRootConceptId: new FormControl(null),
+          SubjectId: new FormControl(this.subjectId),
+        })
+        this.formGroup
+          .get('Type')
+          .valueChanges.pipe(takeUntil(this.unsubscribeStream$))
+          .subscribe((type) => this.onTestTypeChanged(type))
+        if (this.data.event) {
+          this.newTest = false
+          this.loadTests()
+        } else {
+          this.isLoading = false
+        }
       })
-      if (this.data.event) {
-        this.newTest = false
-        this.loadTests()
-      } else {
-        this.isLoading = false
-      }
-    })
+  }
+
+  public get isEumkTestType(): boolean {
+    const type = this.formGroup?.get('Type')?.value
+    if (type == null) {
+      return false
+    }
+    const n = +type
+    return n === TestType.BeforeEUMK || n === TestType.ForEUMK
+  }
+
+  public get isEumkLocked(): boolean {
+    const eumkId = this.formGroup?.get('EumkRootConceptId')?.value
+    return this.hasQuestions && !!eumkId
+  }
+
+  private onTestTypeChanged(type: number | null): void {
+    if (type == null) {
+      return
+    }
+    const testType = +type
+    this.updateEumkRootValidators(testType)
+    if (testType === TestType.BeforeEUMK || testType === TestType.ForEUMK) {
+      this.ensureEumkRootsLoaded()
+    }
+  }
+
+  private ensureEumkRootsLoaded(): void {
+    if (this.eumkRootsLoaded || this.eumkRootsLoading) {
+      return
+    }
+    this.eumkRootsLoading = true
+    this.testService
+      .getEumkRoots(String(this.subjectId))
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(
+        (roots) => {
+          this.eumkRoots = roots
+          this.eumkRootsLoaded = true
+          this.eumkRootsLoading = false
+          const control = this.formGroup.get('EumkRootConceptId')
+          if (control && !control.value && this.eumkRoots.length === 1) {
+            control.setValue(this.eumkRoots[0].Id)
+          }
+        },
+        () => {
+          this.eumkRootsLoading = false
+        }
+      )
+  }
+
+  private updateEumkRootValidators(testType: number): void {
+    const control = this.formGroup.get('EumkRootConceptId')
+    if (!control) {
+      return
+    }
+    if (testType === TestType.BeforeEUMK || testType === TestType.ForEUMK) {
+      control.setValidators([Validators.required])
+    } else {
+      control.clearValidators()
+      control.setValue(null)
+    }
+    control.updateValueAndValidity()
   }
 
   testTypeValidator(modules: Module[]): ValidatorFn {
@@ -157,24 +233,53 @@ export class EditTestPopupComponent
       .getTestById(this.data.event.Id)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((test) => {
-        this.newTest = false
+        this.hasQuestions = !!this.data.event?.HasQuestions
+        const testType = test.ForNN
+          ? TestType.ForNN
+          : test.ForEUMK
+            ? TestType.ForEUMK
+            : test.BeforeEUMK
+              ? TestType.BeforeEUMK
+              : test.ForSelfStudy
+                ? TestType.ForSelfStudy
+                : TestType.Control
         this.formGroup.patchValue({
           Title: test.Title,
           Description: test.Description,
           CountOfQuestions: test.CountOfQuestions,
           TimeForCompleting: test.TimeForCompleting,
           SetTimeForAllTest: !test.SetTimeForAllTest,
-          Type: test.ForNN
-            ? TestType.ForNN
-            : test.ForEUMK
-              ? TestType.ForEUMK
-              : test.BeforeEUMK
-                ? TestType.BeforeEUMK
-                : test.ForSelfStudy
-                  ? TestType.ForSelfStudy
-                  : TestType.Control,
+          Type: testType,
+          EumkRootConceptId: test.EumkRootConceptId || null,
         })
+        this.updateEumkRootValidators(testType)
+        if (testType === TestType.BeforeEUMK || testType === TestType.ForEUMK) {
+          this.ensureEumkRootsLoaded()
+          if (!test.EumkRootConceptId && this.data.event?.Id) {
+            this.inferEumkRootFromQuestions(this.data.event.Id)
+          }
+        }
         this.isLoading = false
+      })
+  }
+
+  private inferEumkRootFromQuestions(testId: number): void {
+    this.testService
+      .getQuestionsByTest(String(testId))
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((questions) => {
+        const conceptId = questions?.find((q) => q.ConceptId)?.ConceptId
+        if (!conceptId) {
+          return
+        }
+        this.testService
+          .getConceptRootId(conceptId)
+          .pipe(takeUntil(this.unsubscribeStream$))
+          .subscribe((rootId) => {
+            if (rootId) {
+              this.formGroup.patchValue({ EumkRootConceptId: rootId })
+            }
+          })
       })
   }
 
@@ -215,6 +320,9 @@ export class EditTestPopupComponent
       }
     }
     delete test.Type
+    if (!test.BeforeEUMK && !test.ForEUMK) {
+      test.EumkRootConceptId = null
+    }
     let saveTestDto = {
       ...test,
       SetTimeForAllTest: !test.SetTimeForAllTest,

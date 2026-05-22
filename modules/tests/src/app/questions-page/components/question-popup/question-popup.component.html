@@ -13,7 +13,11 @@
     <div class="question-popup-container-text-small">{{ data.title }}</div>
   </ng-container>
   <ng-container body>
-    <form *ngIf="formGroup" [formGroup]="formGroup">
+    <div *ngIf="isLoading" class="question-popup-loader">
+      <mat-progress-spinner [diameter]="40" [mode]="'indeterminate'">
+      </mat-progress-spinner>
+    </div>
+    <form *ngIf="formGroup && !isLoading" [formGroup]="formGroup">
       <mat-form-field class="question-popup-full">
         <textarea
           formControlName="Title"
@@ -63,23 +67,23 @@
           </mat-expansion-panel>
         </mat-accordion>
       </div>
-      <div class="basic-container" *ngIf="navItems?.length">
+      <div class="basic-container" *ngIf="data.isEUMKTest">
         <p class="basic-container__title">
           {{ 'text.question.topic' | translate: 'Раздел' }}
         </p>
-        <div class="basic-container__selection">
-          <span *ngFor="let item of navItems">
+        <div *ngIf="sectionsLoading" class="question-popup-loader">
+          <mat-progress-spinner [diameter]="28" [mode]="'indeterminate'">
+          </mat-progress-spinner>
+        </div>
+        <div class="basic-container__selection" *ngIf="!sectionsLoading && eumkNavItems?.length">
+          <span *ngFor="let item of eumkNavItems">
             <span *ngIf="item.Children && item.Children.length > 0">
               <button
                 mat-stroked-button
                 color="primary"
                 [matMenuTriggerFor]="menu.childMenu"
                 (click)="selectConcept(item.Id)"
-                [disabled]="
-                  conceptId &&
-                  conceptId !== item.Id &&
-                  !hasChild(item, conceptId)
-                "
+                [disabled]="isTopicDisabled(item)"
               >
                 {{ item.Name }}
                 <mat-icon>expand_more</mat-icon>
@@ -97,7 +101,7 @@
                 color="primary"
                 [routerLink]="item.route"
                 (click)="selectConcept(item.Id)"
-                [disabled]="conceptId && conceptId !== item.Id"
+                [disabled]="isTopicDisabled(item)"
               >
                 {{ item.Name }}
               </button>
@@ -262,7 +266,7 @@
       </div>
     </ng-container>
   </ng-container>
-  <ng-container actions *ngIf="formGroup">
+  <ng-container actions *ngIf="formGroup && !isLoading">
     <button mat-raised-button (click)="onNoClick()">
       {{ 'button.cancel' | translate: 'Отменить' }}
     </button>

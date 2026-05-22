@@ -1,4 +1,4 @@
-﻿using LMPlatform.Models;
+using LMPlatform.Models;
 using System.Collections.Generic;
 
 namespace Application.Infrastructure.ConceptManagement
@@ -26,5 +26,7 @@ namespace Application.Infrastructure.ConceptManagement
         void AttachFolderToLectSection(string folderName, int userId, int subjectId);
         void AttachFolderToPracticalSection(string folderName, int userId, int subjectId);
         bool IsTestModule(string moduleName);
+        int? GetRootConceptId(int conceptId);
+        bool IsConceptUnderRoot(int conceptId, int rootConceptId);
     }
 }

@@ -167,6 +167,53 @@
             </mat-error>
           </mat-radio-group>
         </div>
+        <mat-expansion-panel
+          class="eumk-picker-panel"
+          *ngIf="isEumkTestType"
+          [expanded]="true"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{
+                'text.test.choose.eumk' | translate: 'Выбор ЭУМК для теста'
+              }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div *ngIf="eumkRootsLoading" class="eumk-picker-loading">
+            <mat-progress-spinner
+              [diameter]="32"
+              [mode]="'indeterminate'"
+            ></mat-progress-spinner>
+          </div>
+          <mat-form-field class="eumk-picker-field" *ngIf="!eumkRootsLoading">
+            <mat-label>{{
+              'text.test.eumk' | translate: 'ЭУМК'
+            }}</mat-label>
+            <mat-select
+              formControlName="EumkRootConceptId"
+              [disabled]="isEumkLocked"
+            >
+              <mat-option *ngFor="let eumk of eumkRoots" [value]="eumk.Id">
+                {{ eumk.Name }}
+              </mat-option>
+            </mat-select>
+            <mat-hint *ngIf="isEumkLocked">
+              {{
+                'text.test.eumk.locked.hint'
+                  | translate
+                    : 'ЭУМК нельзя изменить после добавления вопросов'
+              }}
+            </mat-hint>
+            <mat-error
+              *ngIf="formGroup.controls.EumkRootConceptId.hasError('required')"
+            >
+              {{
+                'text.test.eumk.required'
+                  | translate: 'Выберите ЭУМК для теста'
+              }}
+            </mat-error>
+          </mat-form-field>
+        </mat-expansion-panel>
       </div>
     </form>
   </ng-container>

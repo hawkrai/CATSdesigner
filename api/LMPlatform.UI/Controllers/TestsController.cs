@@ -280,6 +280,11 @@ namespace LMPlatform.UI.Controllers
                     {
                         return Json(new { ErrorMessage = "Для создания этого типа теста необходимо добавить модуль ЭУМК к текущему учебному предмету" });
                     }
+
+                    if (!testViewModel.EumkRootConceptId.HasValue || testViewModel.EumkRootConceptId.Value <= 0)
+                    {
+                        return Json(new { ErrorMessage = "Выберите ЭУМК для теста" });
+                    }
                 }
 
                 var savedTest = this.TestsManagementService.SaveTest(testViewModel.ToTest());
@@ -458,6 +463,44 @@ namespace LMPlatform.UI.Controllers
             return this.Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        [System.Web.Http.HttpGet]
+        public JsonResult GetEumkRoots(int subjectId)
+        {
+            var concepts = this.ConceptManagementService.GetRootElementsBySubject(subjectId);
+            return this.Json(
+                concepts.Select(c => new { Id = c.Id, Name = c.Name }),
+                JsonRequestBehavior.AllowGet);
+        }
+
+        [System.Web.Http.HttpGet]
+        public JsonResult GetEumkConceptTree(int rootConceptId)
+        {
+            if (rootConceptId <= 0)
+            {
+                return this.Json(Enumerable.Empty<object>(), JsonRequestBehavior.AllowGet);
+            }
+
+            var root = this.ConceptManagementService.GetTreeConceptByElementId(rootConceptId);
+            var result = new[]
+            {
+                new ConceptViewData(
+                    root,
+                    true,
+                    concept => concept.IsGroup && !this.ConceptManagementService.IsTestModule(concept.Name),
+                    true,
+                    UserContext.Role == Constants.Roles.Lector)
+            };
+            return this.Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        [System.Web.Http.HttpGet]
+        public JsonResult GetConceptRootId(int conceptId)
+        {
+            return this.Json(
+                this.ConceptManagementService.GetRootConceptId(conceptId),
+                JsonRequestBehavior.AllowGet);
+        }
+
         [System.Web.Http.HttpDelete]
         public JsonResult DeleteQuestion(int id)
         {
@@ -471,22 +514,23 @@ namespace LMPlatform.UI.Controllers
             try
             {
                 var test = this.TestsManagementService.GetTest(questionViewModel.TestId, true);
-                if (test.ForEUMK)
+                if (test.BeforeEUMK || test.ForEUMK)
                 {
-                    if (questionViewModel.ConceptId == null)
+                    if (!test.EumkRootConceptId.HasValue || test.EumkRootConceptId.Value <= 0)
                     {
-                        var questions = this.QuestionsManagementService.GetQuestionsForTest(questionViewModel.TestId)
-                            .ToArray();
-                        if (questions.Length > 0) questionViewModel.ConceptId = questions.First().ConceptId;
+                        return Json(new { ErrorMessage = "Для теста не выбран ЭУМК. Укажите ЭУМК в настройках теста." });
                     }
-                    else
+
+                    if (!questionViewModel.ConceptId.HasValue)
                     {
-                        foreach (var questionId in test.Questions.Select(x => x.Id))
-                        {
-                            var question = this.QuestionsManagementService.GetQuestion(questionId);
-                            question.ConceptId = questionViewModel.ConceptId;
-                            this.QuestionsManagementService.SaveQuestion(question);
-                        }
+                        return Json(new { ErrorMessage = "Выберите тему ЭУМК для вопроса" });
+                    }
+
+                    if (!this.ConceptManagementService.IsConceptUnderRoot(
+                            questionViewModel.ConceptId.Value,
+                            test.EumkRootConceptId.Value))
+                    {
+                        return Json(new { ErrorMessage = "Тема вопроса должна относиться к ЭУМК, выбранному для этого теста" });
                     }
                 }
 

@@ -50,6 +50,7 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
   public nnDatasource: NNItem[] = []
   public isFromEUMK: boolean = false
   public showGoToAdaptiveLearning = false
+  private testMeta: Test | null = null
   private unsubscribeStream$: Subject<void> = new Subject<void>()
 
   constructor(
@@ -92,6 +93,7 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
         })
       )
       .subscribe(({ result, testMeta }) => {
+        this.testMeta = testMeta
         const isPredTestMeta =
           !!testMeta &&
           !!(testMeta.BeforeEUMK || (testMeta as any).beforeEUMK)
@@ -161,10 +163,13 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
     const adaptivityType = Number(
       sessionStorage.getItem(StorageKeys.AdaptiveLearningAlgorithm) || 2
     )
+    const fromTest = this.testMeta?.EumkRootConceptId
     const rawEumk =
-      localStorage.getItem(StorageKeys.SelectedComplex) ||
-      sessionStorage.getItem(StorageKeys.ComplexId) ||
-      '0'
+      fromTest && fromTest > 0
+        ? String(fromTest)
+        : localStorage.getItem(StorageKeys.SelectedComplex) ||
+          sessionStorage.getItem(StorageKeys.ComplexId) ||
+          '0'
     const eumkParsed = parseInt(rawEumk, 10)
     const eumkRootConceptId =
       isNaN(eumkParsed) || eumkParsed <= 0 ? 0 : eumkParsed

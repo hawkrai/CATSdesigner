@@ -141,6 +141,19 @@ export class QuestionsPageComponent
   }
 
   public addNewQuestion(event): void {
+    if (
+      this.isEUMKTest &&
+      (this.test?.BeforeEUMK || this.test?.ForEUMK) &&
+      !this.test?.EumkRootConceptId
+    ) {
+      this.toastr.addErrorFlashMessage(
+        this.translatePipe.transform(
+          'text.test.eumk.required',
+          'Выберите ЭУМК для теста'
+        )
+      )
+      return
+    }
     const dialogRef = this.dialog.open(QuestionPopupComponent, {
       data: {
         event,
@@ -148,6 +161,7 @@ export class QuestionsPageComponent
         test: this.testId,
         questionLength: this.questions.length,
         isEUMKTest: this.isEUMKTest,
+        eumkRootConceptId: this.test?.EumkRootConceptId,
       },
     })
 

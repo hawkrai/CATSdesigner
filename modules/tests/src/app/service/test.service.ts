@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 import { Group } from '../models/group.model'
 import { SubGroup } from '../models/sub-group.model'
 import { TestAvailabilityRequest } from '../models/testAvailabilityRequest.model'
@@ -19,6 +20,28 @@ export class TestService {
 
   getConcepts(subjectId: string): Observable<any> {
     return this.http.get<any>('/Tests/GetConcepts?subjectId=' + subjectId)
+  }
+
+  getEumkRoots(
+    subjectId: string
+  ): Observable<{ Id: number; Name: string }[]> {
+    return this.http
+      .get<{ Id: number; Name: string }[]>(
+        '/Tests/GetEumkRoots?subjectId=' + subjectId
+      )
+      .pipe(map((res) => res || []))
+  }
+
+  getEumkConceptTree(rootConceptId: number): Observable<any[]> {
+    return this.http
+      .get<any[]>('/Tests/GetEumkConceptTree?rootConceptId=' + rootConceptId)
+      .pipe(map((res) => res || []))
+  }
+
+  getConceptRootId(conceptId: number): Observable<number | null> {
+    return this.http.get<number | null>(
+      '/Tests/GetConceptRootId?conceptId=' + conceptId
+    )
   }
 
   getQuestionsByTest(testId: string): Observable<Question[]> {
