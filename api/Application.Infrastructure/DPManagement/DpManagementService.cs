@@ -18,7 +18,7 @@ using System.Web;
 using System.Net.Http;
 using System.Net;
 using Application.Core.Exceptions;
- 
+
 namespace Application.Infrastructure.DPManagement
 {
     public class DpManagementService : IDpManagementService
@@ -151,24 +151,24 @@ namespace Application.Infrastructure.DPManagement
                 }
 
             }
-            
-             var buf = from dp in query
-                                     let adp = dp.AssignedDiplomProjects.FirstOrDefault()
-                                     select new DiplomProjectData
-                                     {
-                                         Id = dp.DiplomProjectId,
-                                         Theme = dp.Theme,
-                                     } ;
+
+            var buf = from dp in query
+                      let adp = dp.AssignedDiplomProjects.FirstOrDefault()
+                      select new DiplomProjectData
+                      {
+                          Id = dp.DiplomProjectId,
+                          Theme = dp.Theme,
+                      } ;
 
             List<DiplomProjectData> diplomProjects = null;
 
-            try { 
+            try {
                 diplomProjects = buf.ToList<DiplomProjectData>();
             }
             catch { }
-            
+
             return diplomProjects;
-    
+
         }
         public DiplomProjectData GetProject(int id)
         {
@@ -177,11 +177,11 @@ namespace Application.Infrastructure.DPManagement
                 .Include(x => x.DiplomProjectGroups)
                 .Single(x => x.DiplomProjectId == id);
             return new DiplomProjectData
-                {
-                    Id = dp.DiplomProjectId,
-                    Theme = dp.Theme,
-                    SelectedGroupsIds = dp.DiplomProjectGroups.Select(x => x.GroupId)
-                };
+            {
+                Id = dp.DiplomProjectId,
+                Theme = dp.Theme,
+                SelectedGroupsIds = dp.DiplomProjectGroups.Select(x => x.GroupId)
+            };
         }
 
         public void SaveProject(DiplomProjectData projectData)
@@ -600,7 +600,7 @@ namespace Application.Infrastructure.DPManagement
                             : null,
                         Group = s.Group.Name,
                         GroupId = s.GroupId,
-                        Comment = dp != null ? dp.Comment : null,
+                        Comment = (dp != null && dp.ShowForStudent == true) ? dp.Comment : null,
                         ShowForStudent = dp != null ? dp.ShowForStudent : (bool?)null,
                         LecturerName = dp != null ? dp.LecturerName : null,
                         MarkDate = dp != null ? dp.MarkDate : (DateTime?)null,
@@ -813,7 +813,7 @@ namespace Application.Infrastructure.DPManagement
                     list.Add(n);
                 }
             }
-           
+
             return list;
         }
 

@@ -25,40 +25,40 @@ namespace LMPlatform.UI.Services.Labs
     [JwtAuth]
     public class LabsService : ILabsService
     {
-		private readonly LazyDependency<ITestPassingService> testPassingService = new LazyDependency<ITestPassingService>();
+        private readonly LazyDependency<ITestPassingService> testPassingService = new LazyDependency<ITestPassingService>();
 
-		public ITestPassingService TestPassingService => testPassingService.Value;
+        public ITestPassingService TestPassingService => testPassingService.Value;
 
-		private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
+        private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
 
-		public IGroupManagementService GroupManagementService => groupManagementService.Value;
+        public IGroupManagementService GroupManagementService => groupManagementService.Value;
 
-		private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
+        private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
 
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
 
         private readonly LazyDependency<IFilesManagementService> filesManagementService = new LazyDependency<IFilesManagementService>();
 
-		public IFilesManagementService FilesManagementService => filesManagementService.Value;
+        public IFilesManagementService FilesManagementService => filesManagementService.Value;
 
-		private readonly LazyDependency<ITestsManagementService> testsManagementService = new LazyDependency<ITestsManagementService>();
+        private readonly LazyDependency<ITestsManagementService> testsManagementService = new LazyDependency<ITestsManagementService>();
 
         public ITestsManagementService TestsManagementService => testsManagementService.Value;
 
         private readonly LazyDependency<ILabsManagementService> labsManagementService = new LazyDependency<ILabsManagementService>();
 
-		public ILabsManagementService LabsManagementService => labsManagementService.Value;
+        public ILabsManagementService LabsManagementService => labsManagementService.Value;
 
-		public LabsResult GetLabs(string subjectId)
+        public LabsResult GetLabs(string subjectId)
         {
             try
             {
                 var subId = int.Parse(subjectId);
-				var query = new Query<Subject>(s => s.Id == subId)
-					.Include(s => s.Labs);
+                var query = new Query<Subject>(s => s.Id == subId)
+                    .Include(s => s.Labs);
                 var model = SubjectManagementService.GetSubject(query).Labs
-	                .OrderBy(e => e.Order)
-	                .Select(e => new LabsViewData(e)).ToList();
+                    .OrderBy(e => e.Order)
+                    .Select(e => new LabsViewData(e)).ToList();
                 return new LabsResult
                 {
                     Labs = model,
@@ -76,82 +76,82 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-		public StudentsMarksResult GetMarks(int subjectId, int groupId)
-	    {
-			try
-			{
-				var group = this.GroupManagementService.GetGroups(
-					new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId && x.GroupId == groupId))
-						.Include(e => e.Students.Select(x => x.StudentLabMarks))
-						.Include(e => e.Students.Select(x => x.User))).ToList()[0];
+        public StudentsMarksResult GetMarks(int subjectId, int groupId)
+        {
+            try
+            {
+                var group = this.GroupManagementService.GetGroups(
+                    new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId && x.GroupId == groupId))
+                        .Include(e => e.Students.Select(x => x.StudentLabMarks))
+                        .Include(e => e.Students.Select(x => x.User))).ToList()[0];
 
-				var labsData = this.SubjectManagementService.GetSubject(subjectId).Labs.OrderBy(e => e.Order).ToList();
-				
-				var students = new List<StudentsViewData>();
+                var labsData = this.SubjectManagementService.GetSubject(subjectId).Labs.OrderBy(e => e.Order).ToList();
+
+                var students = new List<StudentsViewData>();
 
                 var controlTests = TestsManagementService.GetTestsForSubject(subjectId, lite: true).Where(x => !x.ForSelfStudy);
 
                 foreach (var student in group.Students)
-				{
-					students.Add(new StudentsViewData(this.TestPassingService.GetStidentResults(subjectId, student.Id).Where(x => controlTests.Any(y => y.Id == x.TestId)).ToList(), student, labs: labsData));
-				}
-
-				return new StudentsMarksResult
-				{
-					Students = students.Select(e => new StudentMark
-					{
-						FullName = e.FullName,
-						StudentId = e.StudentId,
-						LabsMarkTotal = e.LabsMarkTotal,
-						TestMark = e.TestMark,
-						LabsMarks = e.StudentLabMarks
-					}).ToList(),
-					Message = "",
-					Code = "200"
-				};
-			}
-			catch
-			{
-				return new StudentsMarksResult
-				{
-					Message = "text.results.get.response.failure.unknown",
-					Code = "500"
-				};
-			}
-	    }
-
-	    public ResultViewData Save(int subjectId, int id, string theme, int duration, int order, string shortName, string pathFile, string attachments)
-        {
-			try
-			{
-				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
-				if (!isUserAssigned)
-				{
-					return new ResultViewData
-					{
-						Code = "500",
-						Message = "text.lab.save.response.failure.unattachedStudent"
-					};
-				}
-				var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
-				var normalizedTheme = theme?.Trim();
-
-				if (string.IsNullOrWhiteSpace(normalizedTheme) || normalizedTheme.Length > 256)
-				{
-					return new ResultViewData
-					{
-						Code = "500",
-						Message = "text.lab.save.response.failure.validation"
-					};
-				}
-				else if (duration < 1 || duration > 36)
                 {
-					return new ResultViewData
-					{
-						Code = "500",
-						Message = "text.lab.save.response.failure.validation"
-					};
-				}
+                    students.Add(new StudentsViewData(this.TestPassingService.GetStidentResults(subjectId, student.Id).Where(x => controlTests.Any(y => y.Id == x.TestId)).ToList(), student, labs: labsData));
+                }
+
+                return new StudentsMarksResult
+                {
+                    Students = students.Select(e => new StudentMark
+                    {
+                        FullName = e.FullName,
+                        StudentId = e.StudentId,
+                        LabsMarkTotal = e.LabsMarkTotal,
+                        TestMark = e.TestMark,
+                        LabsMarks = e.StudentLabMarks
+                    }).ToList(),
+                    Message = "",
+                    Code = "200"
+                };
+            }
+            catch
+            {
+                return new StudentsMarksResult
+                {
+                    Message = "text.results.get.response.failure.unknown",
+                    Code = "500"
+                };
+            }
+        }
+
+        public ResultViewData Save(int subjectId, int id, string theme, int duration, int order, string shortName, string pathFile, string attachments)
+        {
+            try
+            {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "text.lab.save.response.failure.unattachedStudent"
+                    };
+                }
+                var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
+                var normalizedTheme = theme?.Trim();
+
+                if (string.IsNullOrWhiteSpace(normalizedTheme) || normalizedTheme.Length > 256)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "text.lab.save.response.failure.validation"
+                    };
+                }
+                else if (duration < 1 || duration > 36)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "text.lab.save.response.failure.validation"
+                    };
+                }
                 SubjectManagementService.SaveLabs(new Models.Labs
                 {
                     SubjectId = subjectId,
@@ -162,7 +162,7 @@ namespace LMPlatform.UI.Services.Labs
                     Attachments = pathFile,
                     Id = id
                 }, attachmentsModel, UserContext.CurrentUserId);
-                
+
                 return new ResultViewData
                 {
                     Message = "text.lab.save.response.success",
@@ -179,57 +179,57 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-		public ResultViewData Delete(int id, int subjectId)
-		{
-			try
-			{
-				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
-				if (!isUserAssigned)
-				{
-					return new ResultViewData
-					{
-						Code = "500",
-						Message = "text.lab.save.response.failure.unattachedStudent"
-					};
-				}
-				SubjectManagementService.DeleteLabs(id);
-				return new ResultViewData
-				{
-					Message = "text.lab.delete.response.success",
-					Code = "200"
-				};
-			}
-			catch (Exception e)
-			{
-				return new ResultViewData
-				{
-					Message = "text.lab.delete.response.failure.unknown" + e.Message,
-					Code = "500"
-				};
-			}
-		}
+        public ResultViewData Delete(int id, int subjectId)
+        {
+            try
+            {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "text.lab.save.response.failure.unattachedStudent"
+                    };
+                }
+                SubjectManagementService.DeleteLabs(id);
+                return new ResultViewData
+                {
+                    Message = "text.lab.delete.response.success",
+                    Code = "200"
+                };
+            }
+            catch (Exception e)
+            {
+                return new ResultViewData
+                {
+                    Message = "text.lab.delete.response.failure.unknown" + e.Message,
+                    Code = "500"
+                };
+            }
+        }
 
-		public ResultViewData SaveLabsVisitingDataSingle(int dateId, string mark, string comment, int studentsId, int id, bool showForStudent)
-		{
-			try
-			{
-				SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(id, studentsId, comment, mark, dateId, showForStudent));
+        public ResultViewData SaveLabsVisitingDataSingle(int dateId, string mark, string comment, int studentsId, int id, bool showForStudent)
+        {
+            try
+            {
+                SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(id, studentsId, comment, mark, dateId, showForStudent));
 
-				return new ResultViewData
-				{
-					Message = "text.data.add.response.success",
-					Code = "200"
-				};
-			}
-			catch
-			{
-				return new ResultViewData
-				{
-					Message = "text.data.add.response.failure.unknown",
-					Code = "500"
-				};
-			}
-		}
+                return new ResultViewData
+                {
+                    Message = "text.data.add.response.success",
+                    Code = "200"
+                };
+            }
+            catch
+            {
+                return new ResultViewData
+                {
+                    Message = "text.data.add.response.failure.unknown",
+                    Code = "500"
+                };
+            }
+        }
 
         public ResultViewData SaveLabsVisitingData(int dateId, List<string> marks, List<string> comments, List<int> studentsId, List<int> Id, List<StudentsViewData> students, List<bool> showForStudents)
         {
@@ -243,13 +243,13 @@ namespace LMPlatform.UI.Services.Labs
                     var currentComment = comments[i];
                     var currentStudentId = studentsId[i];
                     var currentId = Id[i];
-					var showForStudent = showForStudents[i];
-					var student = students.FirstOrDefault(x => x.StudentId == currentStudentId);
-					if (student != null && student.LabVisitingMark.Any(x => x.ScheduleProtectionLabId == dateId))
+                    var showForStudent = showForStudents[i];
+                    var student = students.FirstOrDefault(x => x.StudentId == currentStudentId);
+                    if (student != null && student.LabVisitingMark.Any(x => x.ScheduleProtectionLabId == dateId))
                     {
-						SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
+                        SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
 
-					}
+                    }
                 }
 
                 return new ResultViewData
@@ -269,11 +269,11 @@ namespace LMPlatform.UI.Services.Labs
         }
 
 
-		public ResultViewData SaveStudentLabsMark(int studentId, int labId, string mark, string comment, string date, int id, bool showForStudent)
+        public ResultViewData SaveStudentLabsMark(int studentId, int labId, string mark, string comment, string date, int id, bool showForStudent)
         {
             try
             {
-				SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
+                SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
                 return new ResultViewData
                 {
                     Message = "text.data.add.response.success",
@@ -290,29 +290,37 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-		public ResultViewData RemoveStudentLabsMark(int id)
+        public ResultViewData RemoveStudentLabsMark(int id)
         {
-			try
+            try
             {
-				SubjectManagementService.RemoveStudentLabsMark(id);
-				return new ResultViewData
-				{
-					Message = "text.data.delete.response.success",
-					Code = "200"
-				};
+                SubjectManagementService.RemoveStudentLabsMark(id);
+                return new ResultViewData
+                {
+                    Message = "text.data.delete.response.success",
+                    Code = "200"
+                };
             } catch
             {
-				return new ResultViewData
-				{
-					Message = "text.data.delete.response.failure.unknown",
-					Code = "500"
-				};
+                return new ResultViewData
+                {
+                    Message = "text.data.delete.response.failure.unknown",
+                    Code = "500"
+                };
             }
         }
         public UserLabFilesResult GetUserLabFiles(int userId, int subjectId)
         {
             try
             {
+                var currentUserId = UserContext.CurrentUserId;
+                var isStudent = UserContext.Role == "student";
+
+                if (isStudent)
+                {
+                    userId = currentUserId;
+                }
+
                 var labFiles = LabsManagementService.GetUserLabFiles(userId, subjectId);
                 var model = labFiles
                     .GroupBy(x => x.Lab?.Order)
@@ -322,7 +330,6 @@ namespace LMPlatform.UI.Services.Labs
                         var attachments = FilesManagementService.GetAttachments(e.Attachments).ToList();
                         var firstAttachment = attachments.FirstOrDefault();
                         long? fileSizeBytes = firstAttachment != null ? FilesManagementService.GetFileSize(firstAttachment) : null;
-
                         double? fileSizeKb = fileSizeBytes.HasValue ? Math.Round(fileSizeBytes.Value / 1024.0, 2) : (double?)null;
 
                         return new UserLabFileViewData
@@ -363,9 +370,9 @@ namespace LMPlatform.UI.Services.Labs
 
 
         public StudentsMarksResult GetMarksV2(int subjectId, int groupId)
-		{
-			try
-			{
+        {
+            try
+            {
                 var group = this.GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId && x.GroupId == groupId))
                     .Include(e => e.Students.Select(x => x.StudentLabMarks))
                     .Include(e => e.Students.Select(x => x.ScheduleProtectionLabMarks))
@@ -373,143 +380,169 @@ namespace LMPlatform.UI.Services.Labs
 
                 IList<SubGroup> subGroups = this.SubjectManagementService.GetSubGroupsV2(subjectId, group.Id);
 
-				IList<SubGroup> subGroupsWithSchedule = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, group.Id).ToList();
+                IList<SubGroup> subGroupsWithSchedule = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, group.Id).ToList();
 
-				var labsData = this.SubjectManagementService.GetSubject(subjectId).Labs.OrderBy(e => e.Order).ToList();
+                var labsData = this.SubjectManagementService.GetSubject(subjectId).Labs.OrderBy(e => e.Order).ToList();
 
-				var students = new List<StudentsViewData>();
+                var students = new List<StudentsViewData>();
 
                 var controlTests = TestsManagementService.GetTestsForSubject(subjectId).Where(x => !x.ForSelfStudy && !x.BeforeEUMK && !x.ForEUMK && !x.ForNN);
 
 
                 foreach (var student in group.Students.Where(e => e.Confirmed.HasValue && e.Confirmed.Value).OrderBy(e => e.LastName))
-				{
-					var scheduleProtectionLabs = subGroups.Any()
-													 ? subGroups.FirstOrDefault(x => x.Name == "first").SubjectStudents.Any(x => x.StudentId == student.Id)
-														   ? subGroupsWithSchedule.FirstOrDefault(x => x.Name == "first").ScheduleProtectionLabs.OrderBy(
-								                               x => x.Date).ToList()
-														   : subGroups.FirstOrDefault(x => x.Name == "second").SubjectStudents.Any(x => x.StudentId == student.Id)
-																 ? subGroupsWithSchedule.FirstOrDefault(x => x.Name == "second").ScheduleProtectionLabs.OrderBy(
-									                                 x => x.Date).ToList()
-																 : subGroups.FirstOrDefault(x => x.Name == "third").SubjectStudents.Any(x => x.StudentId == student.Id)
-																	? subGroupsWithSchedule.FirstOrDefault(x => x.Name == "third").ScheduleProtectionLabs.OrderBy(
-																		x => x.Date).ToList()
-																		: new List<ScheduleProtectionLabs>()
-						                             : new List<ScheduleProtectionLabs>();
-					students.Add(new StudentsViewData(this.TestPassingService.GetStidentResults(subjectId, student.Id).Where(x => controlTests.Any(y => y.Id == x.TestId)).ToList(), student, scheduleProtectionLabs: scheduleProtectionLabs, labs: labsData));
-				}
+                {
+                    var scheduleProtectionLabs = subGroups.Any()
+                                                     ? subGroups.FirstOrDefault(x => x.Name == "first").SubjectStudents.Any(x => x.StudentId == student.Id)
+                                                           ? subGroupsWithSchedule.FirstOrDefault(x => x.Name == "first").ScheduleProtectionLabs.OrderBy(
+                                                               x => x.Date).ToList()
+                                                           : subGroups.FirstOrDefault(x => x.Name == "second").SubjectStudents.Any(x => x.StudentId == student.Id)
+                                                                 ? subGroupsWithSchedule.FirstOrDefault(x => x.Name == "second").ScheduleProtectionLabs.OrderBy(
+                                                                     x => x.Date).ToList()
+                                                                 : subGroups.FirstOrDefault(x => x.Name == "third").SubjectStudents.Any(x => x.StudentId == student.Id)
+                                                                    ? subGroupsWithSchedule.FirstOrDefault(x => x.Name == "third").ScheduleProtectionLabs.OrderBy(
+                                                                        x => x.Date).ToList()
+                                                                        : new List<ScheduleProtectionLabs>()
+                                                     : new List<ScheduleProtectionLabs>();
+                    students.Add(new StudentsViewData(this.TestPassingService.GetStidentResults(subjectId, student.Id).Where(x => controlTests.Any(y => y.Id == x.TestId)).ToList(), student, scheduleProtectionLabs: scheduleProtectionLabs, labs: labsData));
+                }
 
-				return new StudentsMarksResult
-				{
-					Students = students.Select(e => new StudentMark
-					{
-						FullName = e.FullName,
-						Login = e.Login,
-						SubGroup = subGroups
-							.FirstOrDefault(x => x.Name == "first").SubjectStudents
-							.Any(x => x.StudentId == e.StudentId) ? 1 : subGroups
-							.FirstOrDefault(x => x.Name == "second").SubjectStudents
-							.Any(x => x.StudentId == e.StudentId) ? 2 : subGroups
-							.FirstOrDefault(x => x.Name == "third").SubjectStudents
-							.Any(x => x.StudentId == e.StudentId) ? 3 : 4,
-						StudentId = e.StudentId,
-						LabsMarkTotal = e.LabsMarkTotal,
-						TestMark = e.TestMark,
-						LabVisitingMark = e.LabVisitingMark,
-						LabsMarks = e.StudentLabMarks,
-					}).ToList(),
-					Message = "",
-					Code = "200"
-				};
-			}
-			catch(Exception ex)
-			{
-				return new StudentsMarksResult
-				{
-					Message = $"Произошла ошибка при получении результатов студентов - {ex.Message} - {ex.InnerException}",
-					Code = "500"
-				};
-			}
-		}
+                return new StudentsMarksResult
+                {
+                    Students = students.Select(e => new StudentMark
+                    {
+                        FullName = e.FullName,
+                        Login = e.Login,
+                        SubGroup = subGroups
+                            .FirstOrDefault(x => x.Name == "first").SubjectStudents
+                            .Any(x => x.StudentId == e.StudentId) ? 1 : subGroups
+                            .FirstOrDefault(x => x.Name == "second").SubjectStudents
+                            .Any(x => x.StudentId == e.StudentId) ? 2 : subGroups
+                            .FirstOrDefault(x => x.Name == "third").SubjectStudents
+                            .Any(x => x.StudentId == e.StudentId) ? 3 : 4,
+                        StudentId = e.StudentId,
+                        LabsMarkTotal = e.LabsMarkTotal,
+                        TestMark = e.TestMark,
+                        LabVisitingMark = e.LabVisitingMark,
+                        LabsMarks = e.StudentLabMarks,
+                    }).ToList(),
+                    Message = "",
+                    Code = "200"
+                };
+            }
+            catch(Exception ex)
+            {
+                return new StudentsMarksResult
+                {
+                    Message = $"Произошла ошибка при получении результатов студентов - {ex.Message} - {ex.InnerException}",
+                    Code = "500"
+                };
+            }
+        }
 
-		public StudentsMarksResult GetMarksV3(int subjectId, int groupId)
+        public StudentsMarksResult GetMarksV3(int subjectId, int groupId)
+        {
+            var subject = SubjectManagementService.GetSubject(
+                new Query<Subject>(x => x.Id == subjectId)
+                .Include(x => x.Labs)
+                .Include(x => x.SubjectGroups.Select(g => g.SubGroups.Select(sg => sg.ScheduleProtectionLabs)))
+                .Include(x => x.SubjectGroups.Select(g => g.SubGroups.Select(sg => sg.SubjectStudents)))
+                .Include(x => x.SubjectGroups.Select(g => g.SubjectStudents.Select(s => s.Student.ScheduleProtectionLabMarks)))
+                .Include(x => x.SubjectGroups.Select(g => g.SubjectStudents.Select(s => s.Student.StudentLabMarks))));
+
+            var marks = new List<StudentMark>();
+
+            var group = subject.SubjectGroups.First(x => x.GroupId == groupId);
+
+            var students = group.SubjectStudents.Select(x => x.Student).Where(e => e.Confirmed.HasValue && e.Confirmed.Value && e.IsActive != false && e.GroupId == groupId).OrderBy(x => x.LastName);
+
+            var testsResults = TestPassingService.GetSubjectControlTestsResult(subjectId, students.Select(x => x.Id));
+
+            foreach (var student in students)
+            {
+                var subGroup = group.SubGroups.FirstOrDefault(x => x.SubjectStudents.Any(x => x.StudentId == student.Id));
+                var studenTestsPassResults = testsResults.Results.ContainsKey(student.Id) ? testsResults.Results[student.Id] : new List<Models.KnowledgeTesting.TestPassResult>();
+                var studentViewData = new StudentsViewData(studenTestsPassResults, student, scheduleProtectionLabs: subGroup.ScheduleProtectionLabs, labs: subject.Labs);
+
+                marks.Add(new StudentMark
+                {
+                    FullName = student.FullName,
+                    SubGroup = subGroup.Name == "first" ? 1 : subGroup.Name == "second" ? 2 : subGroup.Name == "third" ? 3 : 4,
+                    StudentId = student.Id,
+                    LabsMarkTotal = studentViewData.LabsMarkTotal,
+                    TestMark = studentViewData.TestMark,
+                    LabVisitingMark = studentViewData.LabVisitingMark,
+                    LabsMarks = studentViewData.StudentLabMarks,
+                    AllTestsPassed = studenTestsPassResults.Count == testsResults.Tests.Count,
+                    TestsPassed = studenTestsPassResults.Count
+                });
+            }
+
+            var currentUserId = UserContext.CurrentUserId;
+            var isStudent = UserContext.Role == "student";
+
+            if (isStudent)
+            {
+                foreach (var mark in marks)
+                {
+                    var isCurrentStudent = mark.StudentId == currentUserId;
+
+                    foreach (var vm in mark.LabVisitingMark)
+                    {
+                        if (!isCurrentStudent || vm.ShowForStudent != true)
+                        {
+                            vm.Comment = string.Empty;
+                        }
+                    }
+
+                    foreach (var lm in mark.LabsMarks)
+                    {
+                        if (!isCurrentStudent || lm.ShowForStudent != true)
+                        {
+                            lm.Comment = string.Empty;
+                        }
+                    }
+                }
+            }
+
+            return new StudentsMarksResult
+            {
+                Students = marks,
+                TestsCount = testsResults.Tests.Count,
+                Message = "",
+                Code = "200"
+            };
+        }
+
+        public LabsResult GetLabsV2(int subjectId, int groupId)
         {
 
-			var subject = SubjectManagementService.GetSubject(
-				new Query<Subject>(x => x.Id == subjectId)
-				.Include(x => x.Labs)
-				.Include(x => x.SubjectGroups.Select(g => g.SubGroups.Select(sg => sg.ScheduleProtectionLabs)))
-				.Include(x => x.SubjectGroups.Select(g => g.SubGroups.Select(sg => sg.SubjectStudents)))
-				.Include(x => x.SubjectGroups.Select(g => g.SubjectStudents.Select(s => s.Student.ScheduleProtectionLabMarks)))
-				.Include(x => x.SubjectGroups.Select(g => g.SubjectStudents.Select(s => s.Student.StudentLabMarks))));
-
-			var marks = new List<StudentMark>();
-
-			var group = subject.SubjectGroups.First(x => x.GroupId == groupId);
-
-			var students = group.SubjectStudents.Select(x => x.Student).Where(e => e.Confirmed.HasValue && e.Confirmed.Value && e.IsActive != false && e.GroupId == groupId).OrderBy(x => x.LastName);
-            
-			var testsResults = TestPassingService.GetSubjectControlTestsResult(subjectId, students.Select(x => x.Id));
-	
-			foreach (var student in students)
-			{
-				var subGroup = group.SubGroups.FirstOrDefault(x => x.SubjectStudents.Any(x => x.StudentId == student.Id));
-				var studenTestsPassResults = testsResults.Results.ContainsKey(student.Id) ? testsResults.Results[student.Id] : new List<Models.KnowledgeTesting.TestPassResult>();
-				var studentViewData = new StudentsViewData(studenTestsPassResults, student, scheduleProtectionLabs: subGroup.ScheduleProtectionLabs, labs: subject.Labs);
-
-				marks.Add(new StudentMark
-				{
-					FullName = student.FullName,
-					SubGroup = subGroup.Name == "first" ? 1 : subGroup.Name == "second" ? 2 : subGroup.Name == "third" ? 3 : 4,
-					StudentId = student.Id,
-					LabsMarkTotal = studentViewData.LabsMarkTotal,
-					TestMark = studentViewData.TestMark,
-					LabVisitingMark = studentViewData.LabVisitingMark,
-					LabsMarks = studentViewData.StudentLabMarks,
-					AllTestsPassed = studenTestsPassResults.Count == testsResults.Tests.Count,
-					TestsPassed = studenTestsPassResults.Count
-				}) ;
-			}
-
-			return new StudentsMarksResult
-			{
-				Students = marks,
-				TestsCount = testsResults.Tests.Count,
-				Message = "",
-				Code = "200"
-			};
-		}
-
-		public LabsResult GetLabsV2(int subjectId, int groupId)
-		{
-	
             try
             {
-				var labs = this.SubjectManagementService.GetLabsV2(subjectId).OrderBy(e => e.Order);
-				var subjectOwner = SubjectManagementService.GetSubjectOwner(subjectId);
-				var subGroups = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, groupId);
-				var labsSubGroups = new List<LabsViewData>();
-				var scheduleProtectionLabs = new List<ScheduleProtectionLabsViewData>();
-				foreach (var subGroup in subGroups)
-				{
-					var subGroupValue = subGroup.Name == "first" ? 1 : subGroup.Name == "second" ? 2 : 3;
-					var labsSubGroup = labs.Select(e => new LabsViewData
-					{
-						Theme = e.Theme,
-						Order = e.Order,
-						Duration = e.Duration,
-						ShortName = e.ShortName.Substring(0),
-						LabId = e.Id,
-						SubjectId = e.SubjectId,
-						SubGroup = subGroupValue,
-						ScheduleProtectionLabsRecommended = subGroup.ScheduleProtectionLabs
-							.OrderBy(x => x.Date)
-							.Select(x => new ScheduleProtectionLesson
-							{
-								ScheduleProtectionId = x.Id,
-								Mark = String.Empty
-							}).ToList()
-					}).ToList();
+                var labs = this.SubjectManagementService.GetLabsV2(subjectId).OrderBy(e => e.Order);
+                var subjectOwner = SubjectManagementService.GetSubjectOwner(subjectId);
+                var subGroups = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, groupId);
+                var labsSubGroups = new List<LabsViewData>();
+                var scheduleProtectionLabs = new List<ScheduleProtectionLabsViewData>();
+                foreach (var subGroup in subGroups)
+                {
+                    var subGroupValue = subGroup.Name == "first" ? 1 : subGroup.Name == "second" ? 2 : 3;
+                    var labsSubGroup = labs.Select(e => new LabsViewData
+                    {
+                        Theme = e.Theme,
+                        Order = e.Order,
+                        Duration = e.Duration,
+                        ShortName = e.ShortName.Substring(0),
+                        LabId = e.Id,
+                        SubjectId = e.SubjectId,
+                        SubGroup = subGroupValue,
+                        ScheduleProtectionLabsRecommended = subGroup.ScheduleProtectionLabs
+                            .OrderBy(x => x.Date)
+                            .Select(x => new ScheduleProtectionLesson
+                            {
+                                ScheduleProtectionId = x.Id,
+                                Mark = String.Empty
+                            }).ToList()
+                    }).ToList();
 
                     var durationCount = 0;
                     foreach (var lab in labsSubGroup)
@@ -535,30 +568,30 @@ namespace LMPlatform.UI.Services.Labs
 
                     labsSubGroups.AddRange(labsSubGroup);
 
-					var scheduleProtactionLabsSubGroup = subGroup.ScheduleProtectionLabs
-						.OrderBy(e => e.Date)
-						.Select(
-					e =>
+                    var scheduleProtactionLabsSubGroup = subGroup.ScheduleProtectionLabs
+                        .OrderBy(e => e.Date)
+                        .Select(
+                    e =>
                     {
-						if (e.Lecturer == null)
+                        if (e.Lecturer == null)
                         {
-							e.Lecturer = subjectOwner;
+                            e.Lecturer = subjectOwner;
                         }
-						return new ScheduleProtectionLabsViewData(e);
-					}).ToList();
-					scheduleProtactionLabsSubGroup.ForEach(e => e.SubGroup = subGroupValue);
-					scheduleProtectionLabs.AddRange(scheduleProtactionLabsSubGroup);
-				}
+                        return new ScheduleProtectionLabsViewData(e);
+                    }).ToList();
+                    scheduleProtactionLabsSubGroup.ForEach(e => e.SubGroup = subGroupValue);
+                    scheduleProtectionLabs.AddRange(scheduleProtactionLabsSubGroup);
+                }
 
-				return new LabsResult
-				{
-					Labs = labsSubGroups,
-					ScheduleProtectionLabs = scheduleProtectionLabs,
-					Message = "text.labs.get.response.success",
-					Code = "200",
-					SubGroups = subGroups.Select(x => new SubGroupViewData(x)).ToList()
-				};
-			}
+                return new LabsResult
+                {
+                    Labs = labsSubGroups,
+                    ScheduleProtectionLabs = scheduleProtectionLabs,
+                    Message = "text.labs.get.response.success",
+                    Code = "200",
+                    SubGroups = subGroups.Select(x => new SubGroupViewData(x)).ToList()
+                };
+            }
             catch
             {
                 return new LabsResult
@@ -572,68 +605,68 @@ namespace LMPlatform.UI.Services.Labs
         {
             try
             {
-				SubjectManagementService.UpdateLabsOrder(subjectId, prevIndex, curIndex);
-				return new ResultViewData
-				{
-					Code = "200",
-					Message = "text.labs.save.response.success"
-				};
+                SubjectManagementService.UpdateLabsOrder(subjectId, prevIndex, curIndex);
+                return new ResultViewData
+                {
+                    Code = "200",
+                    Message = "text.labs.save.response.success"
+                };
             }
-			catch (Exception ex)
+            catch (Exception ex)
             {
-				return new ResultViewData
-				{
-					Code = "500",
-					Message = ex.Message
-				};
+                return new ResultViewData
+                {
+                    Code = "500",
+                    Message = ex.Message
+                };
             }
         }
 
         public HasGroupsJobProtectionViewData HasSubjectLabsJobProtection(int subjectId, bool isActive)
         {
-			var groups = SubjectManagementService.GetSubjectGroups(new Query<SubjectGroup>(x => x.SubjectId == subjectId && x.IsActiveOnCurrentGroup == isActive));
-			return new HasGroupsJobProtectionViewData
-			{
-				HasGroupsJobProtection = groups.Select(x => new HasGroupJobProtectionViewData
-				{
-					GroupId = x.GroupId,
-					HasJobProtection = LabsManagementService.HasSubjectProtection(x.GroupId, subjectId)
-				})
+            var groups = SubjectManagementService.GetSubjectGroups(new Query<SubjectGroup>(x => x.SubjectId == subjectId && x.IsActiveOnCurrentGroup == isActive));
+            return new HasGroupsJobProtectionViewData
+            {
+                HasGroupsJobProtection = groups.Select(x => new HasGroupJobProtectionViewData
+                {
+                    GroupId = x.GroupId,
+                    HasJobProtection = LabsManagementService.HasSubjectProtection(x.GroupId, subjectId)
+                })
             };
         }
 
 
 
-		private int GetSubGroupNumber(SubGroup subGroup)
+        private int GetSubGroupNumber(SubGroup subGroup)
         {
-			return subGroup.Name == "first" ? 1 : subGroup.Name == "second" ? 2 : subGroup.Name == "third" ? 3 : 0;
+            return subGroup.Name == "first" ? 1 : subGroup.Name == "second" ? 2 : subGroup.Name == "third" ? 3 : 0;
         }
 
         public GroupJobProtectionViewData GetGroupJobProtection(int subjectId, int groupId)
         {
-			var group = SubjectManagementService.GetSubjectGroup(new Query<SubjectGroup>(x => x.GroupId == groupId && x.SubjectId == subjectId)
-					.Include(x => x.SubjectStudents.Select(x => x.Student))
-					.Include(x => x.SubjectStudents.Select(x => x.SubGroup)));
+            var group = SubjectManagementService.GetSubjectGroup(new Query<SubjectGroup>(x => x.GroupId == groupId && x.SubjectId == subjectId)
+                    .Include(x => x.SubjectStudents.Select(x => x.Student))
+                    .Include(x => x.SubjectStudents.Select(x => x.SubGroup)));
 
-			var studentJobProtection = new List<StudentJobProtectionViewData>();
-			var studentsLabFiles = LabsManagementService.GetGroupLabFiles(subjectId, groupId);
+            var studentJobProtection = new List<StudentJobProtectionViewData>();
+            var studentsLabFiles = LabsManagementService.GetGroupLabFiles(subjectId, groupId);
 
-			foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed.HasValue && e.Student.Confirmed.Value && e.Student.IsActive != false).OrderBy(e => e.Student.FullName))
+            foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed.HasValue && e.Student.Confirmed.Value && e.Student.IsActive != false).OrderBy(e => e.Student.FullName))
             {
-				studentJobProtection.Add(new StudentJobProtectionViewData
-				{
-					StudentId = subjectStudent.StudentId,
-					StudentName = subjectStudent.Student.FullName,
-					SubGroup = GetSubGroupNumber(subjectStudent.SubGroup),
-					GroupId = groupId,
-					HasProtection = studentsLabFiles.Any(x => x.UserId == subjectStudent.StudentId && !x.IsReceived && !x.IsReturned && !x.IsCoursProject)
-				});
+                studentJobProtection.Add(new StudentJobProtectionViewData
+                {
+                    StudentId = subjectStudent.StudentId,
+                    StudentName = subjectStudent.Student.FullName,
+                    SubGroup = GetSubGroupNumber(subjectStudent.SubGroup),
+                    GroupId = groupId,
+                    HasProtection = studentsLabFiles.Any(x => x.UserId == subjectStudent.StudentId && !x.IsReceived && !x.IsReturned && !x.IsCoursProject)
+                });
             }
-			return new GroupJobProtectionViewData
-			{
-				StudentsJobProtections = studentJobProtection
-			};
-		}
+            return new GroupJobProtectionViewData
+            {
+                StudentsJobProtections = studentJobProtection
+            };
+        }
 
         public StudentJobProtectionViewData GetStudentJobProtection(int subjectId, int groupId, int studentId)
         {
@@ -664,10 +697,10 @@ namespace LMPlatform.UI.Services.Labs
             };
         }
 
-		public List<SubGroupViewData> GetSubGroups(int subjectId, int groupId)
+        public List<SubGroupViewData> GetSubGroups(int subjectId, int groupId)
         {
-			var subGroups = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, groupId);
-			return subGroups.Select(x => new SubGroupViewData(x)).ToList();
-		}
-	}
+            var subGroups = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, groupId);
+            return subGroups.Select(x => new SubGroupViewData(x)).ToList();
+        }
+    }
 }

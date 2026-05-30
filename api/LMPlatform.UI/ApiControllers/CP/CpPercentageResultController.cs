@@ -27,23 +27,52 @@ namespace LMPlatform.UI.ApiControllers.CP
         public CourseProjectPercentageResult Get([System.Web.Http.ModelBinding.ModelBinder]GetPagedListParams parms)
         {
             var subjectId = 0;
-
             if (parms.Filters.ContainsKey("subjectId"))
             {
                 subjectId = int.Parse(parms.Filters["subjectId"]);
             }
-
             var groupId = 0;
-
             if (parms.Filters.ContainsKey("groupId"))
             {
                 groupId = int.Parse(parms.Filters["groupId"]);
             }
 
+            var currentUserId = UserContext.CurrentUserId;
+            var isStudent = UserContext.Role == "student";
+
+            var students = CpManagementService.GetGraduateStudentsForGroup(currentUserId, groupId, subjectId, parms, false);
+
+            if (isStudent)
+            {
+                foreach (var student in students.Items)
+                {
+                    if (student.ShowForStudent != true)
+                    {
+                        student.Comment = null;
+                    }
+
+                    foreach (var pr in student.PercentageResults)
+                    {
+                        if (pr.ShowForStudent != true)
+                        {
+                            pr.Comment = null;
+                        }
+                    }
+
+                    foreach (var cm in student.CourseProjectConsultationMarks)
+                    {
+                        if (cm.ShowForStudent != true)
+                        {
+                            cm.Comment = null;
+                        }
+                    }
+                }
+            }
+
             return new CourseProjectPercentageResult
             {
-                Students = CpManagementService.GetGraduateStudentsForGroup(UserContext.CurrentUserId, groupId, subjectId, parms, false),
-                PercentageGraphs = PercentageService.GetPercentageGraphsForLecturerAll(UserContext.CurrentUserId, parms)
+                Students = students,
+                PercentageGraphs = PercentageService.GetPercentageGraphsForLecturerAll(currentUserId, parms)
             };
         }
 
@@ -51,7 +80,7 @@ namespace LMPlatform.UI.ApiControllers.CP
         {
             return SavePercentageResult(percentage);
         }
-        
+
         public HttpResponseMessage Put([FromBody]PercentageResultData percentage)
         {
             return SavePercentageResult(percentage);
