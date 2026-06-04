@@ -567,7 +567,9 @@ div.Section1
 							<td width="auto" valign="bottom" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
 									<i>
-										<xsl:value-of select='string(item[@name="PublishData"])' disable-output-escaping='no'/>
+										<xsl:if test="string(item[@name='Student']) != ''">
+											<xsl:value-of select='string(item[@name="PublishData"])' disable-output-escaping='no'/>
+										</xsl:if>
 									</i>
 								</p>
 							</td>
@@ -623,7 +625,9 @@ div.Section1
 							<td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
 									<span style='font-size:10.0pt'>
-										<xsl:value-of select='string(item[@name="PublishData"])' disable-output-escaping='no'/>
+										<xsl:if test="string(item[@name='Student']) != ''">
+											<xsl:value-of select='string(item[@name="PublishData"])' disable-output-escaping='no'/>
+										</xsl:if>
 									</span>
 								</p>
 							</td>
@@ -698,7 +702,9 @@ div.Section1
 							<td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
 									<span style='font-size:10.0pt'>
-										<xsl:value-of select='string(item[@name="PublishData"])' disable-output-escaping='no'/>
+										<xsl:if test="string(item[@name='Student']) != ''">
+											<xsl:value-of select='string(item[@name="PublishData"])' disable-output-escaping='no'/>
+										</xsl:if>
 									</span>
 								</p>
 							</td>

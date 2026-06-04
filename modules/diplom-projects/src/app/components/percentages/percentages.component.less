@@ -1,29 +1,22 @@
 .percentages-component {
   &__header {
+    display: flex;
+    align-items: center;
     overflow: auto;
-    position: relative;
+    gap: 30px;
   }
 
   &__group-select {
     width: 180px;
   }
-
-  &__header {
-  overflow: auto;
-  position: relative;
-  padding-bottom: 15px;
-}
 }
 
 .actions {
-  margin-top: 0px;
-  margin-right: 10px;
+  margin-bottom: 16px;
 }
 
 .mselect {
-  margin-top: 5px;
-  margin-right: 10px;
-  margin-left: 30px;
+  margin: 0 10px;
   font-weight: 300;
   background-color: #ffffff00;
   border: 0px;
@@ -34,4 +27,8 @@
     sans-serif;
   font-size: 14px;
   width: 165px;
+
+  &--with-button {
+    margin-top: -12px;
+  }
 }
