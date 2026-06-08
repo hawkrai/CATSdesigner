@@ -196,6 +196,8 @@
   "text.test.date.time.passing": "Date and time of passage",
   "text.test.status.not.passed": "The test has not been passed yet",
   "text.test.loading.time.data": "Loading...",
-  "text.test.no.additional.information": "No additional information"
+  "text.test.no.additional.information": "No additional information",
+  "text.test.excel.start.datetime": "Test start date and time",
+  "text.test.excel.end.datetime": "Test end date and time"
 }
 
