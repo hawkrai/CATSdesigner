@@ -172,5 +172,7 @@
   "text.test.date.time.passing": "Дата и время прохождения",
   "text.test.status.not.passed": "Статус: тест не пройден",
   "text.test.loading.time.data": "Загрузка...",
-  "text.test.no.additional.information": "Нет дополнительной информации"
+  "text.test.no.additional.information": "Нет дополнительной информации",
+  "text.test.excel.start.datetime": "Дата и время начала теста",
+  "text.test.excel.end.datetime": "Дата и время окончания теста"
 }

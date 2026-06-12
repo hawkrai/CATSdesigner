@@ -22,6 +22,7 @@ using Bootstrap;
 using LMPlatform.Models;
 using LMPlatform.Models.KnowledgeTesting;
 using LMPlatform.UI.Attributes;
+using LMPlatform.UI.Helpers;
 using LMPlatform.UI.ViewModels.KnowledgeTestingViewModels;
 using Nest;
 using Newtonsoft.Json;
@@ -363,8 +364,9 @@ namespace LMPlatform.UI.Controllers
 
         [JwtAuth]
         [HttpGet]
-        public void GetResultsExcel(int groupId, int subjectId, bool forSelfStudy, string studentLogins = null, string testIds = null)
+        public void GetResultsExcel(int groupId, int subjectId, bool forSelfStudy, string studentLogins = null, string testIds = null, string lang = null)
         {
+            var excelLang = TestResultsExcelLocalization.NormalizeLang(lang);
             var tests = this.TestsManagementService.GetTestsForSubject(subjectId)
                 .Where(x => x.ForSelfStudy == forSelfStudy)
                 .ToList();
@@ -406,7 +408,7 @@ namespace LMPlatform.UI.Controllers
 
             if (results.Length == 0 || results[0].TestPassResults.Length == 0)
             {
-                data.Headers.Add("Нет данных для выбранных фильтров");
+                data.Headers.Add(TestResultsExcelLocalization.Get("NoData", excelLang));
                 this.WriteResultsExcelResponse(data);
                 return;
             }
@@ -445,7 +447,7 @@ namespace LMPlatform.UI.Controllers
             var index = 0;
             var total = new List<string>
             {
-                "Средняя оценка (процент) за тест"
+                TestResultsExcelLocalization.Get("AverageRow", excelLang)
             };
 
             foreach (var _ in results[0].TestPassResults)
@@ -486,8 +488,10 @@ namespace LMPlatform.UI.Controllers
             total.Add(string.Empty);
 
             var testCount = results[0].TestPassResults.Length;
-            data.SparseHeaderRows = BuildTestResultsSparseHeaders(results[0].TestPassResults);
+            data.SparseHeaderRows = BuildTestResultsSparseHeaders(results[0].TestPassResults, excelLang);
             data.HeaderMergeReferences = BuildTestResultsHeaderMerges(testCount);
+            TestResultsExcelLayout.Apply(data, testCount);
+            data.ApplyWrapTextToDataRows = true;
             var avgColIdx = 1 + (3 * testCount);
             var avgLetter = ToExcelColumnName(avgColIdx);
             data.HeaderCellStylesByReference = new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
@@ -497,6 +501,13 @@ namespace LMPlatform.UI.Controllers
                 { $"{avgLetter}1", 3U },
                 { $"{avgLetter}2", 4U },
             };
+            var totalRowIndex = 2U + (uint)rowsData.Count + 1U;
+            var totalColumnCount = 2 + (3 * testCount);
+            data.DataCellStylesByReference = new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase);
+            for (var col = 0; col < totalColumnCount; col++)
+            {
+                data.DataCellStylesByReference[$"{ToExcelColumnName(col)}{totalRowIndex}"] = 6U;
+            }
             data.DataRows.AddRange(rowsData);
             data.DataRows.Add(total);
 
@@ -521,23 +532,27 @@ namespace LMPlatform.UI.Controllers
         }
 
         private static List<Dictionary<int, string>> BuildTestResultsSparseHeaders(
-            TestResultItemListViewModel.TestPassResultViewModel[] tests)
+            TestResultItemListViewModel.TestPassResultViewModel[] tests,
+            string lang)
         {
             var n = tests.Length;
             var avgCol = 1 + (3 * n);
-            var row1 = new Dictionary<int, string> { [0] = "Студент" };
+            var row1 = new Dictionary<int, string>
+            {
+                [0] = TestResultsExcelLocalization.Get("Student", lang)
+            };
             for (var i = 0; i < n; i++)
             {
                 var title = tests[i].TestName;
                 if (string.IsNullOrWhiteSpace(title))
                 {
-                    title = "Тест " + (i + 1);
+                    title = TestResultsExcelLocalization.Get("TestFallback", lang) + " " + (i + 1);
                 }
 
-                row1[1 + (3 * i)] = title;
+                row1[1 + (3 * i)] = SplitTestTitleForExcel(title);
             }
 
-            row1[avgCol] = "Средняя оценка за тесты";
+            row1[avgCol] = TestResultsExcelLocalization.Get("AverageTests", lang);
 
             var row2 = new Dictionary<int, string>
             {
@@ -546,12 +561,68 @@ namespace LMPlatform.UI.Controllers
             };
             for (var i = 0; i < n; i++)
             {
-                row2[1 + (3 * i)] = "Дата начала";
-                row2[2 + (3 * i)] = "Дата окончания";
-                row2[3 + (3 * i)] = "Оценка";
+                row2[1 + (3 * i)] = TestResultsExcelLocalization.Get("StartDateTime", lang);
+                row2[2 + (3 * i)] = TestResultsExcelLocalization.Get("EndDateTime", lang);
+                row2[3 + (3 * i)] = TestResultsExcelLocalization.Get("Mark", lang);
             }
 
             return new List<Dictionary<int, string>> { row1, row2 };
+        }
+
+        private static string SplitTestTitleForExcel(string text)
+        {
+            const int maxLineLength = 30;
+            const int maxLines = 3;
+
+            if (string.IsNullOrWhiteSpace(text) || text.Contains("\n"))
+            {
+                return text;
+            }
+
+            if (text.Length <= maxLineLength)
+            {
+                return text;
+            }
+
+            var words = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = new List<string>();
+            var currentLine = string.Empty;
+            var wordIndex = 0;
+
+            while (wordIndex < words.Length && lines.Count < maxLines)
+            {
+                while (wordIndex < words.Length)
+                {
+                    var word = words[wordIndex];
+                    var candidate = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
+                    if (candidate.Length > maxLineLength && !string.IsNullOrEmpty(currentLine))
+                    {
+                        break;
+                    }
+
+                    currentLine = candidate;
+                    wordIndex++;
+                }
+
+                if (!string.IsNullOrEmpty(currentLine))
+                {
+                    lines.Add(currentLine);
+                    currentLine = string.Empty;
+                }
+                else if (wordIndex < words.Length)
+                {
+                    lines.Add(words[wordIndex]);
+                    wordIndex++;
+                }
+            }
+
+            if (wordIndex < words.Length && lines.Count > 0)
+            {
+                var remainder = string.Join(" ", words.Skip(wordIndex));
+                lines[lines.Count - 1] = lines[lines.Count - 1] + " " + remainder;
+            }
+
+            return string.Join("\n", lines);
         }
 
         private static string ToExcelColumnName(int columnIndex)
@@ -653,7 +724,7 @@ namespace LMPlatform.UI.Controllers
                 return string.Empty;
             }
 
-            return e.StartTime.ToString("dd.MM.yyyy HH:mm");
+            return e.StartTime.ToString("dd.MM.yyyy") + "\n" + e.StartTime.ToString("HH:mm");
         }
 
         private static string FormatTestPassEndForExcel(TestResultItemListViewModel.TestPassResultViewModel e)
@@ -663,7 +734,7 @@ namespace LMPlatform.UI.Controllers
                 return string.Empty;
             }
 
-            return e.EndTime.Value.ToString("dd.MM.yyyy HH:mm");
+            return e.EndTime.Value.ToString("dd.MM.yyyy") + "\n" + e.EndTime.Value.ToString("HH:mm");
         }
 
         private JsonResult GetCloseTestResult(int testId, int mark, int percent, UserAnswersCallback answersCallback, bool fillTestPassResult = false)

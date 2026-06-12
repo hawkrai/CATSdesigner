@@ -26,6 +26,22 @@ namespace Application.Core.SLExcel
 				thirdLetter).Trim();
 		}
 
+		private static void ApplyRowHeight(Row row, UInt32 rowIndex, SLExcelData data)
+		{
+			if (data.RowHeightsByIndex != null && data.RowHeightsByIndex.TryGetValue(rowIndex, out var rowHeight))
+			{
+				row.Height = rowHeight;
+				row.CustomHeight = true;
+				return;
+			}
+
+			if (data.DefaultDataRowHeight.HasValue && rowIndex > 2)
+			{
+				row.Height = data.DefaultDataRowHeight.Value;
+				row.CustomHeight = true;
+			}
+		}
+
 		private Cell CreateTextCell(string header, UInt32 index, string text, uint? styleIndex = null)
 		{
 			var cell = new Cell
@@ -39,8 +55,14 @@ namespace Application.Core.SLExcel
 			}
 
 			var istring = new InlineString();
-			var t = new Text { Text = text };
+			var t = new Text { Text = text ?? string.Empty };
+			if (!string.IsNullOrEmpty(text) && text.Contains("\n"))
+			{
+				t.Space = SpaceProcessingModeValues.Preserve;
+			}
+
 			istring.AppendChild(t);
+
 			cell.AppendChild(istring);
 			return cell;
 		}
@@ -178,9 +200,38 @@ namespace Application.Core.SLExcel
 						Horizontal = HorizontalAlignmentValues.Center,
 						Vertical = VerticalAlignmentValues.Center
 					}
+				},
+				new CellFormat
+				{
+					NumberFormatId = 0U,
+					FontId = 0U,
+					FillId = 0U,
+					BorderId = 0U,
+					FormatId = 0U,
+					ApplyAlignment = true,
+					Alignment = new Alignment
+					{
+						WrapText = true,
+						Vertical = VerticalAlignmentValues.Top
+					}
+				},
+				new CellFormat
+				{
+					NumberFormatId = 0U,
+					FontId = 1U,
+					FillId = 0U,
+					BorderId = 0U,
+					FormatId = 0U,
+					ApplyFont = true,
+					ApplyAlignment = true,
+					Alignment = new Alignment
+					{
+						WrapText = true,
+						Vertical = VerticalAlignmentValues.Top
+					}
 				})
 			{
-				Count = 5U
+				Count = 7U
 			};
 
 			return new Stylesheet(fonts, fills, borders, cellStyleFormats, cellFormats);
@@ -204,8 +255,13 @@ namespace Application.Core.SLExcel
 
 			var worksheetPart = workbookpart.AddNewPart<WorksheetPart>();
 			var sheetData = new SheetData();
-
-			worksheetPart.Worksheet = new Worksheet(sheetData);
+			var sheetFormatProperties = new SheetFormatProperties
+			{
+				DefaultColumnWidth = 9D,
+				DefaultRowHeight = 15D
+			};
+			var worksheet = new Worksheet(sheetFormatProperties, sheetData);
+			worksheetPart.Worksheet = worksheet;
 
 			var sheets = document.WorkbookPart.Workbook.
 				AppendChild<Sheets>(new Sheets());
@@ -229,6 +285,7 @@ namespace Application.Core.SLExcel
 				{
 					rowIdex++;
 					var row = new Row { RowIndex = rowIdex };
+					ApplyRowHeight(row, rowIdex, data);
 					foreach (var kv in sparseRow.OrderBy(k => k.Key))
 					{
 						var cellRef = ColumnLetter(kv.Key) + rowIdex;
@@ -253,6 +310,7 @@ namespace Application.Core.SLExcel
 			{
 				rowIdex++;
 				var row = new Row { RowIndex = rowIdex };
+				ApplyRowHeight(row, rowIdex, data);
 				var cellIdex = 0;
 				foreach (var header in data.Headers)
 				{
@@ -263,32 +321,32 @@ namespace Application.Core.SLExcel
 				sheetData.AppendChild(row);
 			}
 
-			if ((data.SparseHeaderRows != null && data.SparseHeaderRows.Count > 0) || data.Headers.Count > 0)
+			if (data.ColumnConfigurations != null)
 			{
-				// Add the column configuration if available
-				if (data.ColumnConfigurations != null)
-				{
-					var ws = worksheetPart.Worksheet;
-					var sfp = ws.SheetFormatProperties;
-					if (sfp != null)
-					{
-						var columns = (Columns)data.ColumnConfigurations.Clone();
-						ws.InsertAfter(columns, sfp);
-					}
-				}
+				worksheet.InsertAfter((Columns)data.ColumnConfigurations.Clone(), sheetFormatProperties);
 			}
 
 			var bodyStyle = data.ApplyThinBorders && !data.ApplyHeaderRowBorderOnly ? (uint?)1U : null;
+			var wrapBodyStyle = data.ApplyWrapTextToDataRows ? (uint?)5U : null;
 			foreach (var rowData in data.DataRows)
 			{
 				var cellIdex = 0;
 				rowIdex++;
 				var row = new Row { RowIndex = rowIdex };
+				ApplyRowHeight(row, rowIdex, data);
 				sheetData.AppendChild(row);
 				foreach (var callData in rowData)
 				{
+					var cellRef = ColumnLetter(cellIdex) + rowIdex;
+					uint? cellBodyStyle = bodyStyle ?? wrapBodyStyle;
+					if (data.DataCellStylesByReference != null
+						&& data.DataCellStylesByReference.TryGetValue(cellRef, out var styleOverride))
+					{
+						cellBodyStyle = styleOverride;
+					}
+
 					var cell = CreateTextCell(ColumnLetter(cellIdex++),
-						rowIdex, callData ?? string.Empty, bodyStyle);
+						rowIdex, callData ?? string.Empty, cellBodyStyle);
 					row.AppendChild(cell);
 				}
 			}

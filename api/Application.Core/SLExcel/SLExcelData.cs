@@ -35,6 +35,14 @@ namespace Application.Core.SLExcel
 
 		public Dictionary<string, uint> HeaderCellStylesByReference { get; set; }
 
+		public Dictionary<string, uint> DataCellStylesByReference { get; set; }
+
+		public bool ApplyWrapTextToDataRows { get; set; }
+
+		public Dictionary<uint, double> RowHeightsByIndex { get; set; }
+
+		public double? DefaultDataRowHeight { get; set; }
+
 		public SLExcelData()
 		{
 			Status = new SLExcelStatus();
