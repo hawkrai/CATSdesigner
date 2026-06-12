@@ -291,10 +291,9 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
     const cx = w / 2
     const cy = h / 2
 
-    const labelReserve = MapPopoverLayout.MaxLabelChars * MapPopoverLayout.CharWidthPx + 40
-    const usable = Math.max(120, Math.min(w, h) / 2 - labelReserve)
-    const levelRadius = depth > 0 ? usable / depth : 180
-    const lr = Math.max(110, Math.min(220, levelRadius))
+    const totalLeaves = root._leaves || 1
+    const neededLr = depth > 0 ? (MapPopoverLayout.MinLeafGapPx * totalLeaves) / (2 * Math.PI * depth) : 180
+    const lr = Math.max(120, neededLr)
 
     const place = (n: any, startAngle: number, endAngle: number, d: number) => {
       const midAngle = (startAngle + endAngle) / 2
@@ -315,20 +314,11 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
       let total = 0
       for (let i = 0; i < kids.length; i++) { total += (kids[i]._leaves || 1) }
 
-      let s = startAngle
-      let e = endAngle
-      if (d > 0) {
-        const maxArc = (2 * Math.PI) / 3
-        const range = Math.min(e - s, maxArc)
-        s = midAngle - range / 2
-        e = midAngle + range / 2
-      }
-
-      let cur = s
+      let cur = startAngle
       for (let i = 0; i < kids.length; i++) {
         const child = kids[i]
         const share = (child._leaves || 1) / total
-        const span = (e - s) * share
+        const span = (endAngle - startAngle) * share
         place(child, cur, cur + span, d + 1)
         cur += span
       }

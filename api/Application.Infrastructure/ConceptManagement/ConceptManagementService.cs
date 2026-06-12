@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Configuration;
+using System.Diagnostics;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Core.Helpers;
 using System.Linq.Dynamic;
@@ -833,7 +834,14 @@ namespace Application.Infrastructure.ConceptManagement
 
             foreach (var action in fileInitActions)
             {
-                action();
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Concept file init failed: {ex.Message}");
+                }
             }
         }
 
@@ -913,7 +921,14 @@ namespace Application.Infrastructure.ConceptManagement
             repositoriesContainer.ConceptRepository.Save(conceptsToSave, e => true);
             foreach (var action in fileInitActions)
             {
-                action();
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Concept file init failed: {ex.Message}");
+                }
             }
         }
 
@@ -950,7 +965,10 @@ namespace Application.Infrastructure.ConceptManagement
                              where pact.Id == practId
                              select at;
 
-            AddConceptAttachements(practFiles, parent, repositoriesContainer);
+            if (practFiles.Any())
+            {
+                AddConceptAttachements(practFiles, parent, repositoriesContainer);
+            }
 
             var itemsToUpdate = repositoriesContainer.ConceptRepository
                 .GetAll(new Query<Concept>(x => x.ParentId == parent.Id))
