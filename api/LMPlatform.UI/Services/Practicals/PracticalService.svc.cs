@@ -10,6 +10,7 @@ using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Infrastructure.PracticalManagement;
 using Application.Infrastructure.SubjectManagement;
+using LMPlatform.Data.Infrastructure;
 using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules;
@@ -19,7 +20,7 @@ using LMPlatform.UI.Services.Modules.Practicals;
 using LMPlatform.UI.Services.Modules.Schedule;
 using Newtonsoft.Json;
 using WebMatrix.WebData;
-
+using Application.Infrastructure.CPManagement;
 namespace LMPlatform.UI.Services.Practicals
 {
     [JwtAuth]
@@ -58,10 +59,10 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
-	            var id = int.Parse(subjectId);
-	            var query = new Query<Subject>(s => s.Id == id)
-	                .Include(s => s.SubjectModules)
-	                .Include(s => s.Practicals);
+                var id = int.Parse(subjectId);
+                var query = new Query<Subject>(s => s.Id == id)
+                    .Include(s => s.SubjectModules)
+                    .Include(s => s.Practicals);
                 var sub = SubjectManagementService.GetSubject(query);
                 var model = new List<PracticalsViewData>();
                 if (sub.SubjectModules.Any(e => e.ModuleId == PracticalModuleId))
@@ -209,6 +210,33 @@ namespace LMPlatform.UI.Services.Practicals
                 });
             }
 
+            var currentUserId = UserContext.CurrentUserId;
+            var isStudent = AuthorizationHelper.IsStudent(CpContext, currentUserId);
+
+            if (isStudent)
+            {
+                foreach (var mark in marks)
+                {
+                    var isCurrentStudent = mark.StudentId == currentUserId;
+
+                    foreach (var vm in mark.PracticalVisitingMark)
+                    {
+                        if (!isCurrentStudent || vm.ShowForStudent != true)
+                        {
+                            vm.Comment = string.Empty;
+                        }
+                    }
+
+                    foreach (var pm in mark.PracticalsMarks)
+                    {
+                        if (!isCurrentStudent || pm.ShowForStudent != true)
+                        {
+                            pm.Comment = string.Empty;
+                        }
+                    }
+                }
+            }
+
             return new StudentsMarksResult
             {
                 Students = marks,
@@ -217,6 +245,9 @@ namespace LMPlatform.UI.Services.Practicals
                 Code = "200"
             };
         }
+
+        private readonly LazyDependency<ICpContext> cpContext = new LazyDependency<ICpContext>();
+        private ICpContext CpContext => cpContext.Value;
 
         public ResultViewData SavePracticalsVisitingData(int dateId, List<string> marks, List<string> comments, List<int> studentsId, List<int> Id, List<StudentsViewData> students, List<bool> showForStudents, int subjectId)
         {
@@ -264,7 +295,7 @@ namespace LMPlatform.UI.Services.Practicals
                 };
             }
         }
-        
+
         public ResultViewData SaveStudentPracticalsMark(int studentId, int practicalId, string mark, string comment, string date, int id, int subjectId)
         {
             try
@@ -360,7 +391,7 @@ namespace LMPlatform.UI.Services.Practicals
                 {
                     var mark = 10;
                     var maxMarkDays = practical.Duration / 2 + practical.Duration % 2;
-                    if (durationCount % 2 > practical.Duration % 2) maxMarkDays++; 
+                    if (durationCount % 2 > practical.Duration % 2) maxMarkDays++;
 
                     for (int i = 0; i < practical.ScheduleProtectionPracticalsRecommended.Count; i++)
                     {

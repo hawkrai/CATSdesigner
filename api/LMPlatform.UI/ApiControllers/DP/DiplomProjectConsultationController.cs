@@ -6,6 +6,7 @@ using Application.Core.Data;
 using Application.Core.Helpers;
 using Application.Infrastructure.DPManagement;
 using Application.Infrastructure.DTO;
+using LMPlatform.Data.Infrastructure;
 using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 
@@ -17,8 +18,9 @@ namespace LMPlatform.UI.ApiControllers.DP
         public object Get([System.Web.Http.ModelBinding.ModelBinder] GetPagedListParams parms)
         {
             var currentUserId = UserContext.CurrentUserId;
-            var lecturerId = currentUserId;
+            var isStudent = AuthorizationHelper.IsStudent(Context, currentUserId);
 
+            var lecturerId = currentUserId;
             if (parms.Filters.ContainsKey("lecturerId"))
             {
                 var parsedId = int.Parse(parms.Filters["lecturerId"]);
@@ -28,9 +30,30 @@ namespace LMPlatform.UI.ApiControllers.DP
                 }
             }
 
+            var students = DpManagementService.GetGraduateStudentsForUser(currentUserId, parms, false);
+
+            if (isStudent)
+            {
+                foreach (var student in students.Items)
+                {
+                    if (student.ShowForStudent != true)
+                    {
+                        student.Comment = null;
+                    }
+
+                    foreach (var pr in student.PercentageResults)
+                    {
+                        if (pr.ShowForStudent != true)
+                        {
+                            pr.Comment = null;
+                        }
+                    }
+                }
+            }
+
             return new
             {
-                Students = DpManagementService.GetGraduateStudentsForUser(currentUserId, parms, false),
+                Students = students,
                 DiplomProjectConsultationDates = PercentageService.GetConsultationDatesForUser(lecturerId)
             };
         }
@@ -41,9 +64,13 @@ namespace LMPlatform.UI.ApiControllers.DP
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
             }
-
             PercentageService.SaveConsultationMark(UserContext.CurrentUserId, consultationMark);
             return new HttpResponseMessage(HttpStatusCode.OK);
+        }
+
+        private IDpContext Context
+        {
+            get { return _context.Value; }
         }
 
         private IDpManagementService DpManagementService
@@ -56,8 +83,8 @@ namespace LMPlatform.UI.ApiControllers.DP
             get { return _percentageService.Value; }
         }
 
+        private readonly LazyDependency<IDpContext> _context = new LazyDependency<IDpContext>();
         private readonly LazyDependency<IDpManagementService> _diplomProjectManagementService = new LazyDependency<IDpManagementService>();
-
         private readonly LazyDependency<IDpPercentageGraphService> _percentageService = new LazyDependency<IDpPercentageGraphService>();
     }
 }

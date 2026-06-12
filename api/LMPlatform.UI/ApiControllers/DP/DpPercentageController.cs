@@ -8,6 +8,7 @@ using Application.Core.Helpers;
 using Application.Infrastructure.DPManagement;
 using Application.Infrastructure.DTO;
 using LMPlatform.UI.Attributes;
+using System.Linq;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ApiControllers.DP
@@ -24,7 +25,9 @@ namespace LMPlatform.UI.ApiControllers.DP
 
         public PagedList<PercentageGraphData> Get([ModelBinder]GetPagedListParams parms)
         {
-            return PercentageService.GetPercentageGraphs(UserContext.CurrentUserId, parms);
+            var result = PercentageService.GetPercentageGraphs(UserContext.CurrentUserId, parms);
+            var filtered = result.Items.Where(x => x.SelectedGroupsIds != null && x.SelectedGroupsIds.Any()).ToList();
+            return new PagedList<PercentageGraphData> { Items = filtered, Total = filtered.Count };
         }
 
         public PercentageGraphData Get(int id)
@@ -53,7 +56,7 @@ namespace LMPlatform.UI.ApiControllers.DP
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
             }
-            
+
             PercentageService.SavePercentage(UserContext.CurrentUserId, percentage);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
