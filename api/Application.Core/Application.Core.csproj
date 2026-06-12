@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -180,6 +180,7 @@
     <Compile Include="SLExcel\SLExcelData.cs" />
     <Compile Include="SLExcel\SLExcelReader.cs" />
     <Compile Include="SLExcel\SLExcelWriter.cs" />
+    <Compile Include="SLExcel\TestResultsExcelLayout.cs" />
     <Compile Include="UnityContainerWrapper.cs" />
     <Compile Include="UnityWrapper.cs" />
   </ItemGroup>
