@@ -6,4 +6,5 @@ export enum MapPopoverLayout {
   ColumnGap = 20,
   LabelBgPadX = 5,
   LabelBgPadY = 3,
+  MinLeafGapPx = 22,
 }

@@ -142,6 +142,10 @@ export class ComplexGridComponent implements OnInit {
       )
 
       dialogRef.afterClosed().subscribe((result) => {
+        if (!result) {
+          return
+        }
+
         const {
           name,
           isPublished,
@@ -166,10 +170,11 @@ export class ComplexGridComponent implements OnInit {
           if (result['Code'] === '500') {
             this.showLoader = false
             this.router.navigateByUrl('/main')
+            const backendMessage = result['Message']
             this.catsService.showMessage({
-              Message: `${this.translatePipe.transform(
+              Message: `${backendMessage || this.translatePipe.transform(
                 'common.error.operation',
-                'Эумк с таким именем уже существует'
+                'Не удалось создать ЭУМК'
               )}.`,
               Type: CodeType.error,
             })
