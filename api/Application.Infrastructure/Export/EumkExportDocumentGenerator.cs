@@ -12,11 +12,22 @@ using LMPlatform.Models;
 using LMPlatform.Models.KnowledgeTesting;
 using Font = iTextSharp.text.Font;
 using PdfDocument = iTextSharp.text.Document;
+using A = DocumentFormat.OpenXml.Drawing;
+using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
+using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
 
 namespace Application.Infrastructure.Export
 {
     public sealed class EumkExportDocumentGenerator
     {
+        private static readonly string[] CyrillicOptionLetters =
+        {
+            "а", "б", "в", "г", "д", "е", "ж", "з", "и", "к",
+            "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф"
+        };
+
+        private static readonly string[] ImageExtensions = { ".png", ".jpg", ".jpeg", ".gif", ".bmp" };
+
         private readonly IFilesManagementService _filesManagementService;
         private readonly ITestsManagementService _testsManagementService;
 
@@ -57,272 +68,46 @@ namespace Application.Infrastructure.Export
 
                     if (root.Children != null && root.Children.Any())
                     {
-                        var topLevel = SortChildren(root.Children);
-                        AppendPageBreak(body);
-                        var i = 0;
-                        foreach (var child in topLevel)
+                        foreach (var child in SortChildren(root.Children))
                         {
-                            if (i++ > 0)
-                            {
-                                AppendPageBreak(body);
-                            }
-
-                            AppendConcept(body, child, depth: 1, hiddenTestIds, testQuestionsHeading, attachedMaterialsHeading);
+                            AppendConcept(body, mainPart, child, depth: 1, hiddenTestIds, testQuestionsHeading);
                         }
                     }
+
+                    EnsureUniqueDrawingIds(body);
                 }
 
                 return ms.ToArray();
             }
-        }
-
-        public byte[] BuildPdfFallback(
-            Concept root,
-            string documentTitle,
-            string testQuestionsHeading,
-            string attachedMaterialsHeading,
-            ISet<int> hiddenTestIds)
-        {
-            if (root == null)
-            {
-                throw new ArgumentNullException(nameof(root));
-            }
-
-            using (var ms = new MemoryStream())
-            {
-                var doc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 50, 50, 50, 50);
-                PdfWriter.GetInstance(doc, ms);
-                doc.Open();
-
-                var baseFont = TryCreateUnicodeFont();
-                var fontTitle = new Font(baseFont, 18f, Font.BOLD);
-                var fontSubtitle = new Font(baseFont, 12f, Font.ITALIC);
-                var fontHeading = new Font(baseFont, 14f, Font.BOLD);
-                var fontBody = new Font(baseFont, 11f, Font.NORMAL);
-
-                var title = string.IsNullOrWhiteSpace(documentTitle) ? root.Name : documentTitle;
-                doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(title), fontTitle) { Alignment = iTextSharp.text.Element.ALIGN_CENTER });
-                if (root.Subject != null && !string.IsNullOrWhiteSpace(root.Subject.Name))
-                {
-                    doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(root.Subject.Name), fontSubtitle) { Alignment = iTextSharp.text.Element.ALIGN_CENTER, SpacingAfter = 12f });
-                }
-
-                if (root.Children != null && root.Children.Any())
-                {
-                    var topLevel = SortChildren(root.Children);
-                    var i = 0;
-                    foreach (var child in topLevel)
-                    {
-                        if (i++ > 0)
-                        {
-                            doc.NewPage();
-                        }
-
-                        AppendConceptPdf(doc, child, 1, hiddenTestIds, testQuestionsHeading, attachedMaterialsHeading, baseFont, fontHeading, fontBody);
-                    }
-                }
-
-                doc.Close();
-                return ms.ToArray();
-            }
-        }
-
-        private static BaseFont TryCreateUnicodeFont()
-        {
-            try
-            {
-                var windir = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
-                if (!string.IsNullOrEmpty(windir))
-                {
-                    foreach (var rel in new[] { @"Fonts\arial.ttf", @"Fonts\arialuni.ttf", @"Fonts\calibri.ttf" })
-                    {
-                        var p = Path.Combine(windir, rel);
-                        if (File.Exists(p))
-                        {
-                            return BaseFont.CreateFont(p, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-                        }
-                    }
-                }
-            }
-            catch
-            {
-            }
-
-            return BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-        }
-
-        private void AppendConceptPdf(
-            PdfDocument doc,
-            Concept node,
-            int depth,
-            ISet<int> hiddenTestIds,
-            string testQuestionsHeading,
-            string attachedMaterialsHeading,
-            BaseFont baseFont,
-            Font fontHeading,
-            Font fontBody)
-        {
-            if (node == null)
-            {
-                return;
-            }
-
-            if (node.Test != null)
-            {
-                if (hiddenTestIds != null && hiddenTestIds.Contains(node.Test.Id))
-                {
-                    return;
-                }
-
-                doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(node.Name), fontHeading)
-                {
-                    Alignment = depth == 1 ? iTextSharp.text.Element.ALIGN_CENTER : iTextSharp.text.Element.ALIGN_JUSTIFIED,
-                    SpacingBefore = 8f,
-                    SpacingAfter = 4f,
-                });
-                var test = _testsManagementService.GetTest(node.Test.Id, true);
-                if (test == null)
-                {
-                    doc.Add(new iTextSharp.text.Paragraph("—", new Font(baseFont, 11f, Font.ITALIC)) { Alignment = iTextSharp.text.Element.ALIGN_JUSTIFIED });
-                    return;
-                }
-
-                doc.Add(new iTextSharp.text.Paragraph(testQuestionsHeading, new Font(baseFont, 12f, Font.BOLD)) { Alignment = iTextSharp.text.Element.ALIGN_JUSTIFIED, SpacingAfter = 4f });
-                var questions = (test.Questions ?? Enumerable.Empty<Question>())
-                    .OrderBy(q => q.QuestionNumber ?? q.Id)
-                    .ToList();
-                if (questions.Count == 0)
-                {
-                    doc.Add(new iTextSharp.text.Paragraph("—", new Font(baseFont, 11f, Font.ITALIC)) { Alignment = iTextSharp.text.Element.ALIGN_JUSTIFIED });
-                }
-                else
-                {
-                    var n = 1;
-                    foreach (var q in questions)
-                    {
-                        AppendQuestionBlockPdf(doc, n++, q, baseFont);
-                    }
-                }
-
-                return;
-            }
-
-            doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(node.Name), fontHeading)
-            {
-                Alignment = depth == 1 ? iTextSharp.text.Element.ALIGN_CENTER : iTextSharp.text.Element.ALIGN_JUSTIFIED,
-                SpacingBefore = depth <= 1 ? 6f : 4f,
-                SpacingAfter = 4f,
-            });
-
-            if (!node.IsGroup && !string.IsNullOrEmpty(node.Container))
-            {
-                var attachments = _filesManagementService.GetAttachments(node.Container)?.ToList() ?? new List<Attachment>();
-                if (attachments.Count > 0)
-                {
-                    doc.Add(new iTextSharp.text.Paragraph(attachedMaterialsHeading, new Font(baseFont, 12f, Font.BOLD)) { Alignment = iTextSharp.text.Element.ALIGN_JUSTIFIED, SpacingAfter = 4f });
-                    foreach (var a in attachments)
-                    {
-                        var label = !string.IsNullOrWhiteSpace(a.Name) ? a.Name : a.FileName;
-                        doc.Add(new iTextSharp.text.Paragraph("• " + SanitizeForWord(label), fontBody) { Alignment = iTextSharp.text.Element.ALIGN_JUSTIFIED });
-                        foreach (var line in GetAttachmentContentLines(a))
-                        {
-                            doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(line), new Font(baseFont, 10.5f, Font.NORMAL)) { SpacingAfter = 2f });
-                        }
-                    }
-                }
-            }
-
-            if (node.Children != null && node.Children.Any())
-            {
-                foreach (var child in SortChildren(node.Children))
-                {
-                    AppendConceptPdf(doc, child, depth + 1, hiddenTestIds, testQuestionsHeading, attachedMaterialsHeading, baseFont, fontHeading, fontBody);
-                }
-            }
-        }
-
-        private static void AppendQuestionBlockPdf(PdfDocument doc, int index, Question q, BaseFont baseFont)
-        {
-            var title = SanitizeForWord(string.IsNullOrWhiteSpace(q.Title) ? $"Вопрос {index}" : $"{index}. {q.Title}");
-            doc.Add(new iTextSharp.text.Paragraph(title, new Font(baseFont, 12f, Font.BOLD)) { Alignment = iTextSharp.text.Element.ALIGN_JUSTIFIED, SpacingAfter = 2f });
-            if (!string.IsNullOrWhiteSpace(q.Description))
-            {
-                foreach (var line in SplitLines(q.Description))
-                {
-                    doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(line), new Font(baseFont, 11f, Font.NORMAL)) { Alignment = iTextSharp.text.Element.ALIGN_JUSTIFIED, SpacingAfter = 2f });
-                }
-            }
-        }
-
-        private IEnumerable<string> GetAttachmentContentLines(Attachment a)
-        {
-            var path = _filesManagementService.GetFullPath(a);
-            return EumkAttachmentTextExtractor.ExtractParagraphLines(path);
-        }
-
-        private void AppendAttachmentExtractedContent(Body body, Attachment a)
-        {
-            var path = _filesManagementService.GetFullPath(a);
-            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
-            {
-                return;
-            }
-
-            var ext = (Path.GetExtension(path) ?? string.Empty).ToLowerInvariant();
-            if (ext == ".docx")
-            {
-                try
-                {
-                    EumkAttachmentTextExtractor.AppendDocxBodyElements(body, path);
-                    return;
-                }
-                catch
-                {
-                }
-            }
-
-            var lines = EumkAttachmentTextExtractor.ExtractParagraphLines(path).ToList();
-            if (lines.Count == 0)
-            {
-                return;
-            }
-
-            AppendParagraph(body, "Содержимое:", bold: true, fontHalfPoints: 20, justification: null);
-            foreach (var line in lines)
-            {
-                AppendParagraph(body, line, fontHalfPoints: 20, justification: null);
-            }
-        }
-
-        private static void AppendPageBreak(Body body)
-        {
-            body.AppendChild(
-                new Paragraph(
-                    new Run(new Break { Type = BreakValues.Page })));
         }
 
         private void AppendConcept(
             Body body,
+            MainDocumentPart mainPart,
             Concept node,
             int depth,
             ISet<int> hiddenTestIds,
-            string testQuestionsHeading,
-            string attachedMaterialsHeading)
+            string testQuestionsHeading)
         {
             if (node == null)
             {
                 return;
             }
 
+            if (node.Test != null && hiddenTestIds != null && hiddenTestIds.Contains(node.Test.Id))
+            {
+                return;
+            }
+
+            if (depth <= 2)
+            {
+                AppendPageBreak(body);
+            }
+
             if (node.Test != null)
             {
-                if (hiddenTestIds != null && hiddenTestIds.Contains(node.Test.Id))
-                {
-                    return;
-                }
-
                 AppendSectionHeading(body, node.Name, depth);
-                var test = _testsManagementService.GetTest(node.Test.Id, true);
+                var test = _testsManagementService.GetTestWithAnswers(node.Test.Id);
                 if (test == null)
                 {
                     AppendParagraph(body, "—", italic: true);
@@ -354,15 +139,9 @@ namespace Application.Infrastructure.Export
             if (!node.IsGroup && !string.IsNullOrEmpty(node.Container))
             {
                 var attachments = _filesManagementService.GetAttachments(node.Container)?.ToList() ?? new List<Attachment>();
-                if (attachments.Count > 0)
+                foreach (var a in attachments)
                 {
-                    AppendParagraph(body, attachedMaterialsHeading, bold: true, fontHalfPoints: 22);
-                    foreach (var a in attachments)
-                    {
-                        var label = !string.IsNullOrWhiteSpace(a.Name) ? a.Name : a.FileName;
-                        AppendBullet(body, label);
-                        AppendAttachmentExtractedContent(body, a);
-                    }
+                    AppendAttachmentContent(body, mainPart, a);
                 }
             }
 
@@ -370,8 +149,60 @@ namespace Application.Infrastructure.Export
             {
                 foreach (var child in SortChildren(node.Children))
                 {
-                    AppendConcept(body, child, depth + 1, hiddenTestIds, testQuestionsHeading, attachedMaterialsHeading);
+                    AppendConcept(body, mainPart, child, depth + 1, hiddenTestIds, testQuestionsHeading);
                 }
+            }
+        }
+
+        private void AppendAttachmentContent(Body body, MainDocumentPart mainPart, Attachment a)
+        {
+            var path = _filesManagementService.GetFullPath(a);
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            {
+                return;
+            }
+
+            var ext = (Path.GetExtension(path) ?? string.Empty).ToLowerInvariant();
+
+            var sourceDocx = FindRetainedSourceDocx(path);
+            if (sourceDocx != null)
+            {
+                try
+                {
+                    EumkAttachmentTextExtractor.AppendDocxBodyElements(body, mainPart, sourceDocx);
+                    return;
+                }
+                catch
+                {
+                }
+            }
+
+            if (ext == ".docx")
+            {
+                try
+                {
+                    EumkAttachmentTextExtractor.AppendDocxBodyElements(body, mainPart, path);
+                    return;
+                }
+                catch
+                {
+                }
+            }
+
+            if (IsImageExtension(ext))
+            {
+                try
+                {
+                    AppendImage(body, mainPart, path);
+                    return;
+                }
+                catch
+                {
+                }
+            }
+            foreach (var line in EumkAttachmentTextExtractor.ExtractParagraphLines(path))
+            {
+                AppendParagraph(body, line, fontHalfPoints: 20, justification: null);
             }
         }
 
@@ -386,6 +217,424 @@ namespace Application.Infrastructure.Export
                     AppendParagraph(body, SanitizeForWord(line), fontHalfPoints: 22);
                 }
             }
+
+            var options = GetAnswerOptions(q);
+            var i = 0;
+            foreach (var option in options)
+            {
+                AppendParagraph(
+                    body,
+                    OptionLabel(i++) + ") " + SanitizeForWord(option),
+                    fontHalfPoints: 22,
+                    justification: JustificationValues.Both,
+                    indentLeftTwips: 360);
+            }
+        }
+        public byte[] BuildPdf(
+            Concept root,
+            string documentTitle,
+            string testQuestionsHeading,
+            ISet<int> hiddenTestIds)
+        {
+            if (root == null)
+            {
+                throw new ArgumentNullException(nameof(root));
+            }
+
+            var baseFont = TryCreateUnicodeFont();
+            var chunks = new List<byte[]>();
+            var title = string.IsNullOrWhiteSpace(documentTitle) ? root.Name : documentTitle;
+            chunks.Add(BuildCoverChunkPdf(title, root, baseFont));
+
+            if (root.Children != null && root.Children.Any())
+            {
+                foreach (var child in SortChildren(root.Children))
+                {
+                    CollectPdfChunks(chunks, child, 1, hiddenTestIds, testQuestionsHeading, baseFont);
+                }
+            }
+
+            return MergePdfChunks(chunks);
+        }
+
+        private void CollectPdfChunks(
+            List<byte[]> chunks,
+            Concept node,
+            int depth,
+            ISet<int> hiddenTestIds,
+            string testQuestionsHeading,
+            BaseFont baseFont)
+        {
+            if (node == null)
+            {
+                return;
+            }
+
+            if (node.Test != null)
+            {
+                if (hiddenTestIds != null && hiddenTestIds.Contains(node.Test.Id))
+                {
+                    return;
+                }
+
+                chunks.Add(BuildTestChunkPdf(node, depth, testQuestionsHeading, baseFont));
+                return;
+            }
+
+            var pdfPaths = new List<string>();
+            var imagePaths = new List<string>();
+            var textOnly = new List<Attachment>();
+
+            if (!node.IsGroup && !string.IsNullOrEmpty(node.Container))
+            {
+                var attachments = _filesManagementService.GetAttachments(node.Container)?.ToList() ?? new List<Attachment>();
+                foreach (var a in attachments)
+                {
+                    var path = _filesManagementService.GetFullPath(a);
+                    if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+                    {
+                        continue;
+                    }
+
+                    var ext = (Path.GetExtension(path) ?? string.Empty).ToLowerInvariant();
+                    if (ext == ".pdf")
+                    {
+                        pdfPaths.Add(path);
+                    }
+                    else if (IsImageExtension(ext))
+                    {
+                        imagePaths.Add(path);
+                    }
+                    else
+                    {
+                        textOnly.Add(a);
+                    }
+                }
+            }
+
+            chunks.Add(BuildHeadingChunkPdf(node.Name, depth, imagePaths, textOnly, baseFont));
+            foreach (var pdfPath in pdfPaths)
+            {
+                var bytes = SafeReadAllBytes(pdfPath);
+                if (bytes != null && bytes.Length > 0)
+                {
+                    chunks.Add(bytes);
+                }
+            }
+
+            if (node.Children != null && node.Children.Any())
+            {
+                foreach (var child in SortChildren(node.Children))
+                {
+                    CollectPdfChunks(chunks, child, depth + 1, hiddenTestIds, testQuestionsHeading, baseFont);
+                }
+            }
+        }
+
+        private static byte[] BuildCoverChunkPdf(string title, Concept root, BaseFont baseFont)
+        {
+            return RenderPdfChunk(doc =>
+            {
+                var fontTitle = new Font(baseFont, 22f, Font.BOLD);
+                var fontSubtitle = new Font(baseFont, 13f, Font.ITALIC);
+
+                doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(title), fontTitle)
+                {
+                    Alignment = iTextSharp.text.Element.ALIGN_CENTER,
+                    SpacingBefore = 140f,
+                });
+
+                if (root.Subject != null && !string.IsNullOrWhiteSpace(root.Subject.Name))
+                {
+                    doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(root.Subject.Name), fontSubtitle)
+                    {
+                        Alignment = iTextSharp.text.Element.ALIGN_CENTER,
+                        SpacingBefore = 20f,
+                    });
+                }
+            });
+        }
+
+        private byte[] BuildHeadingChunkPdf(
+            string name,
+            int depth,
+            List<string> imagePaths,
+            List<Attachment> textOnly,
+            BaseFont baseFont)
+        {
+            return RenderPdfChunk(doc =>
+            {
+                var fontHeading = new Font(baseFont, Math.Max(12f, 18f - depth * 1.5f), Font.BOLD);
+                doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(name), fontHeading)
+                {
+                    Alignment = depth == 1 ? iTextSharp.text.Element.ALIGN_CENTER : iTextSharp.text.Element.ALIGN_LEFT,
+                    SpacingAfter = 10f,
+                });
+
+                foreach (var imagePath in imagePaths)
+                {
+                    try
+                    {
+                        var img = iTextSharp.text.Image.GetInstance(imagePath);
+                        img.Alignment = iTextSharp.text.Element.ALIGN_CENTER;
+                        img.ScaleToFit(doc.PageSize.Width - 100f, doc.PageSize.Height - 120f);
+                        doc.Add(img);
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                foreach (var a in textOnly)
+                {
+                    var fontBody = new Font(baseFont, 11f, Font.NORMAL);
+                    foreach (var line in GetAttachmentContentLines(a))
+                    {
+                        doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(line), fontBody)
+                        {
+                            Alignment = iTextSharp.text.Element.ALIGN_JUSTIFIED,
+                            SpacingAfter = 2f,
+                        });
+                    }
+                }
+            });
+        }
+
+        private byte[] BuildTestChunkPdf(Concept node, int depth, string testQuestionsHeading, BaseFont baseFont)
+        {
+            return RenderPdfChunk(doc =>
+            {
+                var fontHeading = new Font(baseFont, Math.Max(12f, 16f - depth), Font.BOLD);
+                doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(node.Name), fontHeading)
+                {
+                    Alignment = depth == 1 ? iTextSharp.text.Element.ALIGN_CENTER : iTextSharp.text.Element.ALIGN_LEFT,
+                    SpacingAfter = 6f,
+                });
+
+                var test = _testsManagementService.GetTestWithAnswers(node.Test.Id);
+                if (test == null)
+                {
+                    doc.Add(new iTextSharp.text.Paragraph("—", new Font(baseFont, 11f, Font.ITALIC)));
+                    return;
+                }
+
+                doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(testQuestionsHeading), new Font(baseFont, 12f, Font.BOLD))
+                {
+                    SpacingAfter = 4f,
+                });
+
+                var questions = (test.Questions ?? Enumerable.Empty<Question>())
+                    .OrderBy(q => q.QuestionNumber ?? q.Id)
+                    .ToList();
+                if (questions.Count == 0)
+                {
+                    doc.Add(new iTextSharp.text.Paragraph("—", new Font(baseFont, 11f, Font.ITALIC)));
+                    return;
+                }
+
+                var n = 1;
+                foreach (var q in questions)
+                {
+                    var title = SanitizeForWord(string.IsNullOrWhiteSpace(q.Title) ? $"Вопрос {n}" : $"{n}. {q.Title}");
+                    doc.Add(new iTextSharp.text.Paragraph(title, new Font(baseFont, 12f, Font.BOLD))
+                    {
+                        SpacingBefore = 6f,
+                        SpacingAfter = 2f,
+                    });
+
+                    if (!string.IsNullOrWhiteSpace(q.Description))
+                    {
+                        foreach (var line in SplitLines(q.Description))
+                        {
+                            doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(line), new Font(baseFont, 11f, Font.NORMAL))
+                            {
+                                Alignment = iTextSharp.text.Element.ALIGN_JUSTIFIED,
+                                SpacingAfter = 2f,
+                            });
+                        }
+                    }
+
+                    var options = GetAnswerOptions(q);
+                    var i = 0;
+                    foreach (var option in options)
+                    {
+                        doc.Add(new iTextSharp.text.Paragraph(OptionLabel(i++) + ") " + SanitizeForWord(option), new Font(baseFont, 11f, Font.NORMAL))
+                        {
+                            IndentationLeft = 18f,
+                            SpacingAfter = 1f,
+                        });
+                    }
+
+                    n++;
+                }
+            });
+        }
+
+        private static byte[] RenderPdfChunk(Action<PdfDocument> fill)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var doc = new PdfDocument(iTextSharp.text.PageSize.A4, 50, 50, 50, 50);
+                PdfWriter.GetInstance(doc, ms);
+                doc.Open();
+                fill(doc);
+                doc.Close();
+                return ms.ToArray();
+            }
+        }
+
+        private static byte[] MergePdfChunks(List<byte[]> chunks)
+        {
+            PdfReader.unethicalreading = true;
+            using (var ms = new MemoryStream())
+            {
+                var doc = new PdfDocument();
+                using (var copy = new PdfSmartCopy(doc, ms))
+                {
+                    doc.Open();
+                    foreach (var chunk in chunks)
+                    {
+                        if (chunk == null || chunk.Length == 0)
+                        {
+                            continue;
+                        }
+
+                        PdfReader reader = null;
+                        try
+                        {
+                            reader = new PdfReader(chunk);
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+
+                        try
+                        {
+                            var pageCount = reader.NumberOfPages;
+                            for (var page = 1; page <= pageCount; page++)
+                            {
+                                copy.AddPage(copy.GetImportedPage(reader, page));
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        finally
+                        {
+                            reader.Close();
+                        }
+                    }
+
+                    doc.Close();
+                }
+
+                return ms.ToArray();
+            }
+        }
+
+        private static byte[] SafeReadAllBytes(string path)
+        {
+            try
+            {
+                return File.ReadAllBytes(path);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static BaseFont TryCreateUnicodeFont()
+        {
+            try
+            {
+                var windir = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+                if (!string.IsNullOrEmpty(windir))
+                {
+                    foreach (var rel in new[] { @"Fonts\arial.ttf", @"Fonts\arialuni.ttf", @"Fonts\calibri.ttf" })
+                    {
+                        var p = Path.Combine(windir, rel);
+                        if (File.Exists(p))
+                        {
+                            return BaseFont.CreateFont(p, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+        }
+
+
+        private static List<string> GetAnswerOptions(Question q)
+        {
+            if (q.Answers == null || q.QuestionType == QuestionType.TextAnswer)
+            {
+                return new List<string>();
+            }
+
+            return q.Answers
+                .OrderBy(a => a.Id)
+                .Select(a => a.Content ?? string.Empty)
+                .Where(c => !string.IsNullOrWhiteSpace(c))
+                .ToList();
+        }
+
+        private static string OptionLabel(int index)
+        {
+            if (index >= 0 && index < CyrillicOptionLetters.Length)
+            {
+                return CyrillicOptionLetters[index];
+            }
+
+            return (index + 1).ToString();
+        }
+
+        private static bool IsImageExtension(string ext)
+        {
+            return !string.IsNullOrEmpty(ext) && ImageExtensions.Contains(ext);
+        }
+
+        private static string FindRetainedSourceDocx(string attachmentPath)
+        {
+            try
+            {
+                var ext = (Path.GetExtension(attachmentPath) ?? string.Empty).ToLowerInvariant();
+                if (ext != ".pdf")
+                {
+                    return null;
+                }
+
+                var dir = Path.GetDirectoryName(attachmentPath);
+                if (string.IsNullOrEmpty(dir))
+                {
+                    return null;
+                }
+
+                var candidate = Path.Combine(dir, Path.GetFileNameWithoutExtension(attachmentPath) + ".docx");
+                return File.Exists(candidate) ? candidate : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private IEnumerable<string> GetAttachmentContentLines(Attachment a)
+        {
+            var path = _filesManagementService.GetFullPath(a);
+            return EumkAttachmentTextExtractor.ExtractParagraphLines(path);
+        }
+
+        private static void AppendPageBreak(Body body)
+        {
+            body.AppendChild(
+                new Paragraph(
+                    new Run(new Break { Type = BreakValues.Page })));
         }
 
         private static IEnumerable<string> SplitLines(string text)
@@ -473,7 +722,8 @@ namespace Application.Infrastructure.Export
             bool italic = false,
             bool isSubtitle = false,
             ushort fontHalfPoints = 24,
-            JustificationValues? justification = JustificationValues.Both)
+            JustificationValues? justification = JustificationValues.Both,
+            int indentLeftTwips = 0)
         {
             var rp = new RunProperties();
             if (isSubtitle)
@@ -497,6 +747,11 @@ namespace Application.Infrastructure.Export
             }
 
             var pp = new ParagraphProperties(new SpacingBetweenLines { After = "80" });
+            if (indentLeftTwips > 0)
+            {
+                pp.AppendChild(new Indentation { Left = indentLeftTwips.ToString() });
+            }
+
             if (justification.HasValue)
             {
                 pp.AppendChild(new Justification { Val = justification.Value });
@@ -508,16 +763,108 @@ namespace Application.Infrastructure.Export
             body.AppendChild(p);
         }
 
-        private static void AppendBullet(Body body, string text)
+        private void AppendImage(Body body, MainDocumentPart mainPart, string imagePath)
         {
-            var p = new Paragraph(
-                new ParagraphProperties(
-                    new Justification { Val = JustificationValues.Both },
-                    new SpacingBetweenLines { After = "40" }),
-                new Run(
-                    new RunProperties(new FontSize { Val = "22" }),
-                    new Text("• " + SanitizeForWord(text)) { Space = SpaceProcessingModeValues.Preserve }));
-            body.AppendChild(p);
+            var ext = (Path.GetExtension(imagePath) ?? string.Empty).ToLowerInvariant();
+            var imagePart = mainPart.AddImagePart(ImagePartTypeFromExtension(ext));
+            using (var stream = File.OpenRead(imagePath))
+            {
+                imagePart.FeedData(stream);
+            }
+
+            var relId = mainPart.GetIdOfPart(imagePart);
+            GetImageEmu(imagePath, out var widthEmu, out var heightEmu);
+
+            body.AppendChild(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Center }),
+                new Run(BuildImageDrawing(relId, widthEmu, heightEmu))));
+        }
+
+        private static ImagePartType ImagePartTypeFromExtension(string ext)
+        {
+            switch (ext)
+            {
+                case ".png":
+                    return ImagePartType.Png;
+                case ".gif":
+                    return ImagePartType.Gif;
+                case ".bmp":
+                    return ImagePartType.Bmp;
+                default:
+                    return ImagePartType.Jpeg;
+            }
+        }
+
+        private static void GetImageEmu(string path, out long widthEmu, out long heightEmu)
+        {
+            const long maxWidthEmu = 5486400L;
+            double widthPx = 600;
+            double heightPx = 400;
+
+            try
+            {
+                var img = iTextSharp.text.Image.GetInstance(path);
+                if (img.Width > 0 && img.Height > 0)
+                {
+                    widthPx = img.Width;
+                    heightPx = img.Height;
+                }
+            }
+            catch
+            {
+            }
+
+            var w = widthPx / 96.0 * 914400.0;
+            var h = heightPx / 96.0 * 914400.0;
+            if (w > maxWidthEmu)
+            {
+                var scale = maxWidthEmu / w;
+                w *= scale;
+                h *= scale;
+            }
+
+            widthEmu = (long)w;
+            heightEmu = (long)h;
+        }
+
+        private static DocumentFormat.OpenXml.Wordprocessing.Drawing BuildImageDrawing(string relationshipId, long widthEmu, long heightEmu)
+        {
+            return new DocumentFormat.OpenXml.Wordprocessing.Drawing(
+                new DW.Inline(
+                    new DW.Extent { Cx = widthEmu, Cy = heightEmu },
+                    new DW.EffectExtent { LeftEdge = 0L, TopEdge = 0L, RightEdge = 0L, BottomEdge = 0L },
+                    new DW.DocProperties { Id = 1U, Name = "Picture" },
+                    new DW.NonVisualGraphicFrameDrawingProperties(new A.GraphicFrameLocks { NoChangeAspect = true }),
+                    new A.Graphic(
+                        new A.GraphicData(
+                            new PIC.Picture(
+                                new PIC.NonVisualPictureProperties(
+                                    new PIC.NonVisualDrawingProperties { Id = 0U, Name = "Image" },
+                                    new PIC.NonVisualPictureDrawingProperties()),
+                                new PIC.BlipFill(
+                                    new A.Blip { Embed = relationshipId, CompressionState = A.BlipCompressionValues.Print },
+                                    new A.Stretch(new A.FillRectangle())),
+                                new PIC.ShapeProperties(
+                                    new A.Transform2D(
+                                        new A.Offset { X = 0L, Y = 0L },
+                                        new A.Extents { Cx = widthEmu, Cy = heightEmu }),
+                                    new A.PresetGeometry(new A.AdjustValueList()) { Preset = A.ShapeTypeValues.Rectangle })))
+                        { Uri = "http://schemas.openxmlformats.org/drawingml/2006/picture" }))
+                {
+                    DistanceFromTop = 0U,
+                    DistanceFromBottom = 0U,
+                    DistanceFromLeft = 0U,
+                    DistanceFromRight = 0U,
+                });
+        }
+
+        private static void EnsureUniqueDrawingIds(Body body)
+        {
+            uint id = 1;
+            foreach (var docProps in body.Descendants<DW.DocProperties>())
+            {
+                docProps.Id = id++;
+            }
         }
 
         private static string SanitizeForWord(string s)

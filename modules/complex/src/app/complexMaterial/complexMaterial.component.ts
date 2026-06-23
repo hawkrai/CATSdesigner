@@ -323,7 +323,7 @@ export class ComplexMaterialComponent implements OnInit {
     const labels = {
       testQuestionsHeading: this.translatePipe.transform(
         'complex.eumk.export.testQuestions',
-        'Вопросы теста (без вариантов ответов)'
+        'Вопросы теста'
       ),
       attachedMaterials: this.translatePipe.transform(
         'complex.eumk.export.attachments',

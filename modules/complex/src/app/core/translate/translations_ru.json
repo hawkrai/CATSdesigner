@@ -116,6 +116,6 @@
   "complex.eumk.export.working": "Идёт формирование файла…",
   "complex.eumk.export.done": "Файл сохранён",
   "complex.eumk.export.error": "Не удалось сформировать файл",
-  "complex.eumk.export.testQuestions": "Вопросы теста (без вариантов ответов)",
+  "complex.eumk.export.testQuestions": "Вопросы теста",
   "complex.eumk.export.attachments": "Прикреплённые материалы"
 }

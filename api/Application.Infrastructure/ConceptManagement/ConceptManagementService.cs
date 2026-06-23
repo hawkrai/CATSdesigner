@@ -490,6 +490,27 @@ namespace Application.Infrastructure.ConceptManagement
                     repositoriesContainer.ApplyChanges();
                 }
 
+                try
+                {
+                    var originalExt = (Path.GetExtension(attach.FileName) ?? string.Empty).ToLowerInvariant();
+                    if (originalExt == ".docx" && File.Exists(sourceFilePath))
+                    {
+                        var newContainerDir = Path.Combine(_storageRoot.TrimEnd('/', '\\'), newPathName);
+                        if (!Directory.Exists(newContainerDir))
+                        {
+                            Directory.CreateDirectory(newContainerDir);
+                        }
+
+                        var retainedSourcePath = Path.Combine(
+                            newContainerDir,
+                            Path.GetFileNameWithoutExtension(convertedFileName) + ".docx");
+                        File.Copy(sourceFilePath, retainedSourcePath, true);
+                    }
+                }
+                catch
+                {
+                }
+
                 FilesManagementService.DeleteFileAttachment(attach);
 
                 using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
