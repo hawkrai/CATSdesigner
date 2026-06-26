@@ -633,7 +633,7 @@ namespace LMPlatform.UI.Services.Concept
             return new AttachViewData(neighbor.Id, neighbor.Name, att);
         }
         private bool CurrentUserIsLector()
-        {.
+        {
 	        var userId = GetRequestUserId();
 	        if (userId > 0)
 	        {

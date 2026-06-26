@@ -627,7 +627,10 @@ namespace Application.Infrastructure.ConceptManagement
                         }
                     }
                 }
-                concept.Published = true;
+                if (!concept.ReadOnly)
+                {
+                    concept.Published = true;
+                }
 
                 Concept source = null;
                 if (concept.Id != 0)
@@ -666,11 +669,14 @@ namespace Application.Infrastructure.ConceptManagement
             if (parentId.HasValue)
             {
                 var parent = repoContainer.ConceptRepository.GetBy(new Query<Concept>(c => c.Id == parentId.Value));
-                if (parent != null && !parent.Published)
+                if (parent != null)
                 {
-                    parent.Published = true;
-                    repoContainer.ConceptRepository.Save(parent);
-                    repoContainer.ApplyChanges();
+                    if (!parent.Published && parent.ReadOnly != true)
+                    {
+                        parent.Published = true;
+                        repoContainer.ConceptRepository.Save(parent);
+                        repoContainer.ApplyChanges();
+                    }
                     TryPublishParent(parent.ParentId, repoContainer);
                 }
             }
@@ -740,15 +746,11 @@ namespace Application.Infrastructure.ConceptManagement
             var lectures = sections.FirstOrDefault(x => x.Name == LectSectionName);
             var practical = sections.FirstOrDefault(x => x.Name == PracticalSectionName);
             var tests = sections.FirstOrDefault(x => x.Name == TestSectionName);
-
-            // Титульный экран и Программа курса всегда включены
             if (titlePage != null) orderedSections.Add(titlePage);
             if (program != null) orderedSections.Add(program);
-            
-            // Остальные разделы добавляем только если опубликованы
-            if (lectures != null && lectures.Published) orderedSections.Add(lectures);
-            if (practical != null && practical.Published) orderedSections.Add(practical);
-            if (tests != null && tests.Published) orderedSections.Add(tests);
+            if (lectures != null) orderedSections.Add(lectures);
+            if (practical != null) orderedSections.Add(practical);
+            if (tests != null) orderedSections.Add(tests);
 
             // Сбрасываем все связи
             foreach (var section in sections)
