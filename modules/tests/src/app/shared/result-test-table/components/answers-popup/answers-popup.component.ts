@@ -26,6 +26,7 @@ export class AnswersPopupComponent
   public percent: any
   public startTime: string
   public startDate: string
+  public endTime: string
 
   constructor(
     public dialogRef: MatDialogRef<AnswersPopupComponent>,
@@ -70,6 +71,9 @@ export class AnswersPopupComponent
         this.startTime = ''
         this.startDate = ''
       }
+
+      const endTimeRaw = testInfo?.EndTime || testInfo?.CompletionTime
+      this.endTime = endTimeRaw ? moment(endTimeRaw).format('HH:mm:ss') : ''
 
       return
     }
@@ -121,9 +125,15 @@ export class AnswersPopupComponent
               this.startTime = ''
               this.startDate = ''
             }
+
+            const endTimeRaw = testInfo?.EndTime || testInfo?.CompletionTime
+            this.endTime = endTimeRaw
+              ? moment(endTimeRaw).format('HH:mm:ss')
+              : ''
           } catch {
             this.startTime = ''
             this.startDate = ''
+            this.endTime = ''
           }
         }),
         takeUntil(this.unsubscribeStream$),
