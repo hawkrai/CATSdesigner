@@ -2,11 +2,7 @@
   <ng-container *ngFor="let studentResults of scareThing; let iq = index">
     <div
       class="result-test-table-container"
-      *ngIf="
-        studentResults &&
-        studentResults[0] &&
-        studentResults[0][1].test.length != 0
-      "
+      *ngIf="studentResults && studentResults.length"
     >
       <div class="result-test-table-subgroup">
         <span>
@@ -107,12 +103,16 @@
             >
               {{
                 index === studentResults.length - 1
-                  ? averageMarkForTest[iq][element[1].test[i].testId]?.toFixed(1) +
-                    ' (' +
-                    averagePercentForTest[iq][
-                      element[1].test[i].testId
-                    ].toFixed(0) +
-                    '%)'
+                  ? averageMarkForTest[iq][element[1].test[i].testId] != null
+                    ? averageMarkForTest[iq][element[1].test[i].testId].toFixed(
+                        1
+                      ) +
+                      ' (' +
+                      averagePercentForTest[iq][
+                        element[1].test[i].testId
+                      ]?.toFixed(0) +
+                      '%)'
+                    : null
                   : (element[1].test[i].points | isInteger)
                     ? element[1].test[i].points +
                       ' (' +
@@ -144,7 +144,9 @@
             >
               {{
                 index === studentResults.length - 1
-                  ? averageMarkForTest[iq].average?.toFixed(1)
+                  ? averageMarkForTest[iq].average != null
+                    ? averageMarkForTest[iq].average.toFixed(1)
+                    : null
                   : element[2].slice() === '0'
                     ? null
                     : element[2].slice()

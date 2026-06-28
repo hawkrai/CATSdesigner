@@ -20,6 +20,7 @@ using Application.Infrastructure.TestQuestionPassingManagement;
 using Application.Infrastructure.UserManagement;
 using Bootstrap;
 using LMPlatform.Models;
+using LMPlatform.Models.AdaptivityLearning;
 using LMPlatform.Models.KnowledgeTesting;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Helpers;
@@ -251,7 +252,8 @@ namespace LMPlatform.UI.Controllers
         [HttpGet]
         public JsonResult GetResults(int groupId, int subjectId)
         {
-            var tests = this.TestsManagementService.GetTestsForSubject(subjectId);
+            var tests = this.TestsManagementService.GetTestsForSubject(subjectId)
+                .Where(x => x.Title != AdaptiveConst.AdaptiveTestName);
 
             var subGroups = this.SubjectManagementService.GetSubGroupsV2(subjectId, groupId);
 
@@ -266,7 +268,8 @@ namespace LMPlatform.UI.Controllers
         [HttpPost]
         public JsonResult GetResults(int[] groupsIds, int subjectId)
         {
-            var tests = this.TestsManagementService.GetTestsForSubject(subjectId);
+            var tests = this.TestsManagementService.GetTestsForSubject(subjectId)
+                .Where(x => x.Title != AdaptiveConst.AdaptiveTestName);
 
             var groupsWithSubGroups = groupsIds.AsParallel().Select(groupId1 => new
             {

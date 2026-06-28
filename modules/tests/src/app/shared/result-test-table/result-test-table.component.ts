@@ -322,26 +322,8 @@ export class ResultTestTableComponent
       this.barChartData[0].data.push(entire[1])
     }
     this.showChart =
-      this.hasAnyGradedTestResults() &&
       Array.isArray(this.barChartData[0]?.data) &&
       this.barChartData[0].data.length > 0
-  }
-
-  private hasAnyGradedTestResults(): boolean {
-    for (const subGroup of this.scareThing) {
-      if (!subGroup?.length) {
-        continue
-      }
-      for (const pupil of subGroup) {
-        if (!pupil?.[1]?.test?.length) {
-          continue
-        }
-        if (pupil[1].test.some((t) => Number.isInteger(t.points))) {
-          return true
-        }
-      }
-    }
-    return false
   }
 
   public getTestHeaderTooltip(studentResults: any[], index: number): string {
@@ -404,8 +386,10 @@ export class ResultTestTableComponent
           }
         }
 
-        sumOfMarks['average'] = sumOfAverageMarks / amountOfTests
-        sumOfMarks['averagePercent'] = sumOfAveragePercents / amountOfTests
+        sumOfMarks['average'] =
+          amountOfTests > 0 ? sumOfAverageMarks / amountOfTests : null
+        sumOfMarks['averagePercent'] =
+          amountOfTests > 0 ? sumOfAveragePercents / amountOfTests : null
 
         result.push(sumOfMarks)
         resultPercent.push(sumOfPercents)
