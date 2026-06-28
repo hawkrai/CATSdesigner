@@ -158,34 +158,32 @@
           <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
         </mat-table>
       </div>
-    </div>
-  </ng-container>
-  <div class="result-test-table-chart" *ngIf="showChart">
-    <div class="result-test-table-chart-name">
-      {{
-        testName +
-          ', ' +
-          ('text.test.res.group' | translate: 'группа ' | lowercase) +
-          group
-      }}
-    </div>
-    <div class="result-test-table-chart-scroll">
-      <div class="result-test-table-chart-canvas-host">
-        <canvas
-          class="result-test-table-chart-graph"
-          baseChart
-          [datasets]="barChartData"
-          [labels]="barChartLabels"
-          [options]="barChartOptions"
-          [colors]="barChartColors"
-          [plugins]="barChartPlugins"
-          [legend]="barChartLegend"
-          [chartType]="barChartType"
-        >
-        </canvas>
+      <div
+        class="result-test-table-chart"
+        *ngIf="subgroupCharts[iq]?.showChart"
+      >
+        <div class="result-test-table-chart-name">
+          {{ getChartTitle(iq) }}
+        </div>
+        <div class="result-test-table-chart-scroll">
+          <div class="result-test-table-chart-canvas-host">
+            <canvas
+              class="result-test-table-chart-graph"
+              baseChart
+              [datasets]="subgroupCharts[iq].data"
+              [labels]="subgroupCharts[iq].labels"
+              [options]="barChartOptions"
+              [colors]="barChartColors"
+              [plugins]="barChartPlugins"
+              [legend]="barChartLegend"
+              [chartType]="barChartType"
+            >
+            </canvas>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </ng-container>
 </ng-container>
 
 <ng-container *ngIf="loading">

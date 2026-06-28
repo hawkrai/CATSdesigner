@@ -69,12 +69,14 @@ export class ResultTestTableComponent
       },
     },
   }
-  public barChartLabels: Label[] = []
   public barChartType: ChartType = 'bar'
   public barChartLegend = true
   public barChartPlugins = [pluginDataLabels]
-  public barChartData: ChartDataSets[]
-  public showChart: boolean = false
+  public subgroupCharts: {
+    labels: Label[]
+    data: ChartDataSets[]
+    showChart: boolean
+  }[] = []
   public testColumnIndices: number[] = []
   @Input()
   public tests: any
@@ -126,15 +128,6 @@ export class ResultTestTableComponent
   }
 
   ngOnInit() {
-    this.barChartData = [
-      {
-        data: [],
-        label: this.translatePipe.transform(
-          'text.test.average_mark',
-          ' Средняя оценка'
-        ),
-      },
-    ]
     for (let i = 0; i < 3; i++) {
       this.scareThing.push(Array.from(this.tests[i].entries()))
     }
@@ -287,9 +280,26 @@ export class ResultTestTableComponent
   }
 
   private getAverageMark(): void {
-    const mass = []
+    const chartSeriesLabel = this.translatePipe.transform(
+      'text.test.average_mark',
+      ' Средняя оценка'
+    )
+    this.subgroupCharts = []
+
     for (const subGroup of this.scareThing) {
-      if (subGroup.length != 0) {
+      const chart = {
+        labels: [] as Label[],
+        data: [
+          {
+            data: [],
+            label: chartSeriesLabel,
+          },
+        ] as ChartDataSets[],
+        showChart: false,
+      }
+
+      if (subGroup.length !== 0) {
+        const mass = []
         for (const pupil of subGroup) {
           let sumOfMarks: number = 0
           for (const test of pupil[1].test) {
@@ -312,18 +322,40 @@ export class ResultTestTableComponent
             )
           }
         }
+
+        const sortedDescPoints = mass.sort((a, b) => {
+          return b[1] - a[1]
+        })
+        for (const entire of sortedDescPoints) {
+          chart.labels.push(entire[0])
+          chart.data[0].data.push(entire[1])
+        }
+        chart.showChart =
+          Array.isArray(chart.data[0]?.data) && chart.data[0].data.length > 0
       }
+
+      this.subgroupCharts.push(chart)
     }
-    const sortedDescPoints = mass.sort((a, b) => {
-      return b[1] - a[1]
-    })
-    for (const entire of sortedDescPoints) {
-      this.barChartLabels.push(entire[0])
-      this.barChartData[0].data.push(entire[1])
+  }
+
+  public getChartTitle(subGroupIndex: number): string {
+    let title =
+      this.testName +
+      ', ' +
+      this.translatePipe
+        .transform('text.test.res.group', 'группа ')
+        .toLowerCase() +
+      this.group
+
+    if (this.showAsSubGroup) {
+      title +=
+        this.translatePipe.transform(
+          'text.test.res.subgroup',
+          ', Подгруппа '
+        ) + (subGroupIndex + 1)
     }
-    this.showChart =
-      Array.isArray(this.barChartData[0]?.data) &&
-      this.barChartData[0].data.length > 0
+
+    return title
   }
 
   public getTestHeaderTooltip(studentResults: any[], index: number): string {
