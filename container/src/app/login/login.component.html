@@ -81,9 +81,9 @@
                 maxlength="30"
               />
               <a mat-icon-button matSuffix (click)="hide = !hide">
-                <mat-icon>
-                  {{ hide ? 'visibility_off' : 'visibility' }}</mat-icon
-                >
+                <mat-icon>{{
+                  hide ? 'visibility_off' : 'visibility'
+                }}</mat-icon>
               </a>
             </mat-form-field>
           </div>
@@ -151,7 +151,7 @@
 
           <div class="flex-center">
             <a
-              href="https://play.google.com/store/apps/details?id=by.bntu.educats"
+              href="https://github.com/ilyalehchylin/educats-xamarin/releases/download/2.2.8.1178/by.bntu.educats_2.2.8.1178.apk"
               title="{{
                 'text.start.helpGoogle'
                   | translate
@@ -177,6 +177,34 @@
               </p>
             </a>
           </div>
+          <a
+            class="telegram-block"
+            href="{{ telegramBotLink }}"
+            target="_blank"
+            title="{{
+              'text.start.helpTelegram'
+                | translate: 'Перейдите, чтобы открыть Telegram-бота'
+            }}"
+          >
+            <img
+              class="telegram-icon"
+              src="./../../assets/images/telegram-icon.png"
+            />
+            <div class="telegram-text">
+              <p class="telegram-title">
+                {{
+                  'text.start.telegramTitle' | translate: 'Умный бот EduCats'
+                }}
+              </p>
+              <p class="telegram-subtitle">
+                {{
+                  'text.start.telegramSubtitle'
+                    | translate
+                      : 'Успеваемость, рейтинг, новости и другая информация в Telegram'
+                }}
+              </p>
+            </div>
+          </a>
         </form>
       </td>
     </table>

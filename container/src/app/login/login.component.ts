@@ -37,6 +37,7 @@ export class LoginComponent implements OnInit {
     { name: 'En', value: 'en' },
   ]
   public locale: Locale
+  public telegramBotLink: string = this.resolveTelegramBotLink()
 
   constructor(
     private formBuilder: FormBuilder,
@@ -149,5 +150,13 @@ export class LoginComponent implements OnInit {
     function removeTailAnimation() {
       catsTail.classList.remove('mascot-tail-animation')
     }
+  }
+
+  private resolveTelegramBotLink(): string {
+    const hostname = window.location.hostname
+    if (hostname.includes('bntu.by')) {
+      return 'https://t.me/CatsBNTU_Bot'
+    }
+    return 'https://t.me/EducatsAIBot'
   }
 }
