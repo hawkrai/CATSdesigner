@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { AutocompleteModel } from '../../models/autocomplete.model'
 
@@ -7,7 +15,7 @@ import { AutocompleteModel } from '../../models/autocomplete.model'
   templateUrl: './autocomplete-form.component.html',
   styleUrls: ['./autocomplete-form.component.less'],
 })
-export class AutocompleteFormComponent implements OnInit {
+export class AutocompleteFormComponent implements OnInit, OnDestroy {
   @Input()
   public options: AutocompleteModel[]
   @Input()
@@ -16,13 +24,18 @@ export class AutocompleteFormComponent implements OnInit {
   public preselected: boolean
   @Input()
   public preselectedAll: boolean
+  @Input()
+  public enableOptionTooltips = false
   profileForm = new FormGroup({
     selected: new FormControl(),
   })
   @Output()
   public onSelectionChange: EventEmitter<string[]> = new EventEmitter()
 
-  constructor() {}
+  private panelObserver: MutationObserver | undefined
+  private readonly onHostClick = (): void => this.scheduleOptionTooltipPatch()
+
+  constructor(private host: ElementRef<HTMLElement>) {}
 
   public ngOnInit(): void {
     if (this.preselected) {
@@ -36,7 +49,73 @@ export class AutocompleteFormComponent implements OnInit {
       this.profileForm.controls.selected.setValue(value)
       this.onSelectionChange.emit(this.profileForm.controls.selected.value)
     }
-    console.log(this.profileForm)
+
+    if (this.enableOptionTooltips) {
+      this.host.nativeElement.addEventListener('click', this.onHostClick)
+      this.host.nativeElement.addEventListener('keydown', this.onHostClick)
+    }
+  }
+
+  public ngOnDestroy(): void {
+    this.panelObserver?.disconnect()
+    if (this.enableOptionTooltips) {
+      this.host.nativeElement.removeEventListener('click', this.onHostClick)
+      this.host.nativeElement.removeEventListener('keydown', this.onHostClick)
+    }
+  }
+
+  private scheduleOptionTooltipPatch(): void {
+    setTimeout(() => this.patchOptionTooltips(), 0)
+    setTimeout(() => this.patchOptionTooltips(), 100)
+  }
+
+  private patchOptionTooltips(): void {
+    const panel = this.findOptionPanel()
+    if (!panel) {
+      return
+    }
+
+    panel.querySelectorAll('mat-option').forEach((option) => {
+      const text = option.textContent?.trim()
+      if (text) {
+        option.setAttribute('title', text)
+      }
+    })
+
+    if (!this.panelObserver) {
+      this.panelObserver = new MutationObserver(() => this.patchOptionTooltips())
+      this.panelObserver.observe(panel, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+      })
+    }
+  }
+
+  private findOptionPanel(): HTMLElement | null {
+    const panels = Array.from(
+      document.querySelectorAll('.mat-select-panel')
+    ) as HTMLElement[]
+    const optionDisplays = new Set(
+      (this.options || []).map((option) => option.display)
+    )
+
+    for (let i = panels.length - 1; i >= 0; i--) {
+      const panel = panels[i]
+      const optionElements = Array.from(panel.querySelectorAll('mat-option'))
+      if (!optionElements.length) {
+        continue
+      }
+
+      const matchesCurrentOptions = optionElements.some((option) =>
+        optionDisplays.has(option.textContent?.trim() || '')
+      )
+      if (matchesCurrentOptions) {
+        return panel
+      }
+    }
+
+    return null
   }
 
   public onSubmit() {

@@ -2,6 +2,7 @@ using Application.Core.Data;
 using Application.Infrastructure.Models;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
+using LMPlatform.Models.AdaptivityLearning;
 using LMPlatform.Models.KnowledgeTesting;
 using System;
 using System.Collections.Generic;
@@ -289,7 +290,6 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
         public IEnumerable<Student> GetPassTestResults(int groupId, int subjectId)
         {
             IEnumerable<Student> students;
-            List<int> subjectTestIds;
 
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
@@ -302,18 +302,13 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                     .Include(student => student.User.TestPassResults)
                 ).ToList()
                 .Where(student => !student.IsDeleted);
-
-                subjectTestIds =
-                    repositoriesContainer.SubjectRepository.GetBy(
-                        new Core.Data.Query<Subject>(s => s.Id == subjectId).Include(s => s.SubjectTests))
-                        .SubjectTests.Select(st => st.Id)
-                        .ToList();
             }
 
-            int[] testIds =
-                students.SelectMany(student => student.User.TestPassResults.Where(pr => subjectTestIds.Contains(pr.TestId)).Select(testResult => testResult.TestId))
-                    .Distinct()
-                    .ToArray();
+            int[] testIds = GetTestsForSubject(subjectId)
+                .Where(test => test.Title != AdaptiveConst.AdaptiveTestName)
+                .OrderBy(test => test.TestNumber)
+                .Select(test => test.Id)
+                .ToArray();
 
             var studentResults = students.Select(rawStudent => new Student
             {

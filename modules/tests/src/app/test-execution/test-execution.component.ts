@@ -279,10 +279,14 @@ export class TestExecutionComponent
       (value) => value !== questionNumber
     )
 
-    if (isTrue) {
-      this.trueAnswersArray.push(questionNumber)
+    if (this.showColorAnswerFeedback()) {
+      if (isTrue) {
+        this.trueAnswersArray.push(questionNumber)
+      } else {
+        this.falseAnswersArray.push(questionNumber)
+      }
     } else {
-      this.falseAnswersArray.push(questionNumber)
+      this.trueAnswersArray.push(questionNumber)
     }
   }
 }

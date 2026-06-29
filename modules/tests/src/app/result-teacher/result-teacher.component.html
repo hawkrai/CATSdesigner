@@ -30,6 +30,7 @@
       class="result-teacher-autocomplete-item"
       *ngIf="studentList && studentList.length"
       [options]="studentList"
+      [enableOptionTooltips]="true"
       [placeholder]="
         'text.test.choose.student' | translate: 'Выберите студентов'
       "

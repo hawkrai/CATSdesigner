@@ -2,6 +2,18 @@
   display: block;
 }
 
+::ng-deep {
+  .autocomplete-form .mat-select-panel mat-option {
+    max-width: 100%;
+  }
+
+  .autocomplete-form .mat-select-panel mat-option .mat-option-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 @media only screen and (max-width: 768px) {
   :host {
     width: 100%;
@@ -20,6 +32,16 @@
     mat-form-field {
       width: 100%;
       max-width: 100%;
+    }
+
+    .mat-select-panel mat-option {
+      max-width: 100%;
+    }
+
+    .mat-select-panel mat-option .mat-option-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 }
