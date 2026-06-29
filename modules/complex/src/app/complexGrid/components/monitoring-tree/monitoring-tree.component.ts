@@ -65,6 +65,13 @@ export class MonitoringTreeComponent implements OnInit {
       .getStudentComplexMonitoringInfo(this.complexId, this.studentId)
       .subscribe(
         (res: ComplexStudentMonitoring) => {
+          if (!res) {
+            this.showLoader = false
+            this.dataSource.data = []
+            this.treeControl.dataNodes = []
+            return
+          }
+
           this.studentName = res.StudentName
           this.studentGroup = res.StudentGroup
           this.complexName = res.ComplexName

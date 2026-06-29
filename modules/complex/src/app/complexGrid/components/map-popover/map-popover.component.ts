@@ -20,7 +20,6 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
   isLector: boolean
 
   private hiddenConceptIds: number[] = []
-  private chartDataSnapshot: any[] = null
   private resizeTimer: any = null
 
   constructor(
@@ -76,73 +75,31 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
         return drag
       }
 
+      const originalOverCircle = treeModel.overCircle.bind(treeModel)
+      treeModel.overCircle = function (d: any) {
+        if (self.isInvalidDropTarget(treeModel.draggingNode, d)) {
+          treeModel.selectedNodeByDrag = null
+          return
+        }
+        originalOverCircle(d)
+      }
+
+      const originalSetNodes = treeModel.setNodes.bind(treeModel)
       treeModel.setNodes = function (source: any, treeData: any) {
-        const nodes = treeData.descendants()
-        const tm: any = treeModel
+        originalSetNodes(source, treeData)
 
-        const node = tm.svg.selectAll('g.node')
-          .data(nodes, function (d: any) { return d.id })
-
-        const nodeEnter = node.enter().append('g')
-          .attr('class', 'node')
-          .attr('transform', function () {
-            return 'translate(' + source.y0 + ',' + source.x0 + ')'
-          })
-
-        nodeEnter.append('circle')
-          .attr('class', 'node')
-          .attr('r', 1e-6)
-          .style('fill', function (d: any) { return d._children ? 'lightsteelblue' : '#fff' })
-
-        nodeEnter.append('text')
-          .attr('dy', tm.nodeTextDistanceY)
-          .attr('x', 0)
-          .attr('text-anchor', 'start')
-          .text(function (d: any) { return d.data.name || d.data.description || d.id })
-
-        nodeEnter.append('circle')
-          .attr('class', 'ghostCircle')
-          .attr('r', function (d: any) { return self.nodeRadiusOf(d) * 2 })
-          .attr('opacity', 0.2)
-          .style('fill', 'red')
-          .attr('pointer-events', 'mouseover')
-          .on('mouseover', function (n: any) {
-            tm.overCircle(n)
-            ;(this as Element).classList.add('over')
-          })
-          .on('mouseout', function (n: any) {
-            tm.outCircle(n)
-            ;(this as Element).classList.remove('over')
-          })
-
-        const nodeUpdate = nodeEnter.merge(node as any)
-        nodeUpdate.transition()
-          .duration(tm.duration)
+        treeData.descendants().forEach(function (d: any) {
+          d.y = d.depth * MapPopoverLayout.LevelSpacingPx
+        })
+        treeModel.svg.selectAll('g.node')
+          .interrupt()
           .attr('transform', function (d: any) { return 'translate(' + d.y + ',' + d.x + ')' })
 
-        nodeUpdate.select('circle.node')
-          .attr('r', function (d: any) { return self.nodeRadiusOf(d) })
-          .style('fill', function (d: any) { return d._children ? 'lightsteelblue' : '#fff' })
-          .attr('cursor', 'pointer')
-
-        nodeUpdate.select('circle.ghostCircle')
-          .attr('r', function (d: any) { return self.nodeRadiusOf(d) * 2 })
-
-        const nodeExit = node.exit().transition()
-          .duration(tm.duration)
-          .attr('transform', function () { return 'translate(' + source.y + ',' + source.x + ')' })
-          .remove()
-        nodeExit.select('circle').attr('r', 1e-6)
-        nodeExit.select('text').style('fill-opacity', 1e-6)
-
-        nodes.forEach(function (d: any) { d.x0 = d.x; d.y0 = d.y })
-
-        nodeEnter
-          .call(tm.dragBehaviour())
-          .on('click', function (d: any) {
-            tm.click(d, this)
-            tm.update(d)
-          })
+        treeModel.svg.selectAll('g.node').select('circle.node')
+          .style('fill', function (d: any) { return d._children ? '#1f1f1f' : '#ffffff' })
+          .style('stroke', '#1f1f1f')
+          .style('stroke-width', '1px')
+        treeModel.svg.selectAll('g.node circle.ghostCircle').style('opacity', 0)
 
         let tooltip = d3.select('#map-node-tooltip')
         if (tooltip.empty()) {
@@ -166,19 +123,17 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
         treeModel.svg.selectAll('g.node text').each(function (d: any) {
           const el = d3.select(this)
           const g = d3.select((this as Element).parentNode as SVGGElement)
+          g.select('rect.node-label-bg').remove()
 
           const fullName: string = (d && d.data)
             ? (d.data.description || d.data.name || String(d.id))
             : ''
 
-          const angle = (d && typeof d._angle === 'number') ? d._angle : 0
-          const outwardRight = Math.cos(angle) >= 0
-          const labelOffset = self.nodeRadiusOf(d) + MapPopoverLayout.TextOffset
-          const labelX = outwardRight ? labelOffset : -labelOffset
+          const labelX = MapPopoverLayout.NodeRadius + MapPopoverLayout.TextOffset
           el.attr('x', labelX)
           el.attr('y', 0)
           el.attr('dy', null)
-          el.attr('text-anchor', outwardRight ? 'start' : 'end')
+          el.attr('text-anchor', 'start')
           el.attr('dominant-baseline', 'middle')
           el.style('font-family', 'Inter, system-ui, -apple-system, sans-serif')
           el.style('font-size', '13px')
@@ -190,7 +145,7 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
           el.style('-webkit-font-smoothing', 'antialiased')
 
           if (fullName.length > MapPopoverLayout.MaxLabelChars) {
-            el.text(fullName.substring(0, MapPopoverLayout.MaxLabelChars) + '\u2026')
+            el.text(fullName.substring(0, MapPopoverLayout.MaxLabelChars) + '…')
 
             g.select('title').remove()
 
@@ -217,6 +172,20 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
               .on('mouseleave.tooltip', null)
           }
 
+          try {
+            const textEl = el.node() as SVGTextElement
+            const bbox = textEl.getBBox()
+            g.insert('rect', 'text')
+              .attr('class', 'node-label-bg')
+              .attr('x', bbox.x - MapPopoverLayout.LabelBgPadX)
+              .attr('y', bbox.y - MapPopoverLayout.LabelBgPadY)
+              .attr('width', Math.max(0, bbox.width + 2 * MapPopoverLayout.LabelBgPadX))
+              .attr('height', Math.max(0, bbox.height + 2 * MapPopoverLayout.LabelBgPadY))
+              .attr('rx', 2)
+              .attr('ry', 2)
+              .attr('fill', '#ffffff')
+              .style('pointer-events', 'none')
+          } catch {}
         })
 
         self.applyLinkStyles()
@@ -228,112 +197,64 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
         self.applyLinkStyles()
       }
 
-      treeModel.createLayout = function () { /* radial layout — no d3.tree() used */ }
-
-      treeModel.diagonalCurvedPath = function (s: any, d: any) {
-        return 'M ' + s.y + ' ' + s.x + ' L ' + d.y + ' ' + d.x
+      treeModel.createLayout = function () {
+        treeModel.treeLayout = d3.tree()
+          .nodeSize([
+            treeModel.nodeWidth + treeModel.horizontalSeparationBetweenNodes,
+            treeModel.nodeHeight + treeModel.verticalSeparationBetweenNodes
+          ])
+          .separation(function (a: any, b: any) { return a.parent === b.parent ? 28 : 36 })
       }
 
       treeModel.update = function (source: any) {
-        self.applyRadialLayout()
+        const treeData = treeModel.treeLayout(treeModel.root)
+        const nodes = treeData.descendants()
 
-        const all: any[] = []
-        const walk = function (n: any) {
-          all.push(n)
-          const kids = n.children || []
-          for (let i = 0; i < kids.length; i++) { walk(kids[i]) }
-        }
-        walk(treeModel.root)
-
-        const treeData = {
-          descendants: function () { return all.slice() }
+        let minX = Infinity
+        let maxX = -Infinity
+        let maxDepth = 0
+        nodes.forEach(function (d: any) {
+          if (typeof d.x === 'number') {
+            if (d.x < minX) { minX = d.x }
+            if (d.x > maxX) { maxX = d.x }
+          }
+          if (d.depth > maxDepth) { maxDepth = d.depth }
+        })
+        if (minX !== Infinity) {
+          nodes.forEach(function (d: any) {
+            if (typeof d.x === 'number') { d.x -= minX }
+          })
+          maxX -= minX
         }
 
         treeModel.setNodes(source, treeData)
         treeModel.setLinks(source, treeData)
+
+        const margin = treeModel.margin || { top: 40, bottom: 40, left: 72, right: 40 }
+        const contentWidth =
+          maxDepth * MapPopoverLayout.LevelSpacingPx + margin.left + margin.right + 200
+        const contentHeight = (maxX > 0 ? maxX : 0) + margin.top + margin.bottom + 40
+        self.resizeSvgToContent(contentWidth, contentHeight)
       }
 
       self.customTreeService()
     })
   }
 
-  private nodeRadiusOf(d: any): number {
-    const depth = (d && typeof d.depth === 'number') ? d.depth : 0
-    return Math.max(2.5, 7 * Math.pow(0.85, depth))
-  }
+  private resizeSvgToContent(contentWidth: number, contentHeight: number): void {
+    const host = document.getElementById('chartContainer')
+    if (!host) { return }
+    const svgEl = d3.select(host).select('svg')
+    if (svgEl.empty()) { return }
 
-  private applyRadialLayout() {
-    const treeModel: any = this.treeService.treeModel
-    const root = treeModel.root
-    if (!root) { return }
+    const width = Math.max(host.clientWidth, Math.ceil(contentWidth))
+    const height = Math.max(host.clientHeight, Math.ceil(contentHeight))
 
-    const countLeaves = (n: any): number => {
-      const kids = n.children || []
-      if (!kids.length) { n._leaves = 1; return 1 }
-      let s = 0
-      for (let i = 0; i < kids.length; i++) { s += countLeaves(kids[i]) }
-      n._leaves = s
-      return s
-    }
-    countLeaves(root)
-
-    const maxDepthOf = (n: any): number => {
-      const kids = n.children || []
-      if (!kids.length) { return 0 }
-      let m = 0
-      for (let i = 0; i < kids.length; i++) { m = Math.max(m, maxDepthOf(kids[i])) }
-      return 1 + m
-    }
-    const depth = maxDepthOf(root)
-
-    const w = treeModel.width || 0
-    const h = treeModel.height || 0
-    const cx = w / 2
-    const cy = h / 2
-
-    const totalLeaves = root._leaves || 1
-    const neededLr = depth > 0 ? (MapPopoverLayout.MinLeafGapPx * totalLeaves) / (2 * Math.PI * depth) : 180
-    const lr = Math.max(120, neededLr)
-
-    const place = (n: any, startAngle: number, endAngle: number, d: number) => {
-      const midAngle = (startAngle + endAngle) / 2
-      if (d === 0) {
-        n.y = cx
-        n.x = cy
-        n._angle = 0
-      } else {
-        const r = d * lr
-        n.y = cx + r * Math.cos(midAngle)
-        n.x = cy + r * Math.sin(midAngle)
-        n._angle = midAngle
-      }
-
-      const kids = n.children || []
-      if (!kids.length) { return }
-
-      let total = 0
-      for (let i = 0; i < kids.length; i++) { total += (kids[i]._leaves || 1) }
-
-      let cur = startAngle
-      for (let i = 0; i < kids.length; i++) {
-        const child = kids[i]
-        const share = (child._leaves || 1) / total
-        const span = (endAngle - startAngle) * share
-        place(child, cur, cur + span, d + 1)
-        cur += span
-      }
-    }
-
-    const rootKids = root.children || []
-    let startAngle = 0
-    let endAngle = 2 * Math.PI
-    if (rootKids.length > 0) {
-      const total = root._leaves || 1
-      const firstSpan = ((rootKids[0]._leaves || 1) / total) * 2 * Math.PI
-      startAngle = -Math.PI / 2 - firstSpan / 2
-      endAngle = startAngle + 2 * Math.PI
-    }
-    place(root, startAngle, endAngle, 0)
+    svgEl
+      .attr('width', width)
+      .attr('height', height)
+      .style('width', width + 'px')
+      .style('height', height + 'px')
   }
 
   ngOnDestroy() {
@@ -353,15 +274,15 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
     // 1) оригинал createChart @url https://github.com/jgpATs2w/angular-d3-tree/blob/374aa9948f39138f7341d72777e8954d5b5e9194/projects/angular-d3-tree-lib/src/lib/angular-d3-tree-lib.service.ts#L12
     // 2) оригинал createTreeData (внутри createChart) @url https://github.com/jgpATs2w/angular-d3-tree/blob/374aa9948f39138f7341d72777e8954d5b5e9194/projects/angular-d3-tree-lib/src/lib/tree.dendo.model.ts#L70
     const tm: any = this.treeService.treeModel
-    tm.margin = { top: 40, bottom: 40, left: 40, right: 40 }
+    tm.margin = { top: 40, bottom: 40, left: 72, right: 40 }
 
     this.treeService.treeModel.createTreeData = () => {
       this.treeService.treeModel.root = d3
         .stratify<any>()
         .id(function (d) { return d.id })
         .parentId(function (d) { return d.parent })(this.chartData)
-      this.treeService.treeModel.root.x0 = (this.treeService.treeModel.height || 0) / 2
-      this.treeService.treeModel.root.y0 = (this.treeService.treeModel.width || 0) / 2
+      this.treeService.treeModel.root.x0 = this.treeService.treeModel.height / 2
+      this.treeService.treeModel.root.y0 = 0
     }
 
     const host = document.getElementById('chartContainer')
@@ -371,6 +292,8 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
         return
       }
       this.treeService.createChart({ nativeElement: host } as any, this.chartData)
+      const svgEl = d3.select(host).select('svg')
+      svgEl.on('.zoom', null)
       const svc: any = this.treeService
       if (typeof svc.update === 'function') {
         svc.update()
@@ -392,8 +315,8 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
         const className = ((this as SVGPathElement).getAttribute('class') || '').toLowerCase()
         return className.indexOf('link') !== -1
       })
-      .style('stroke', '#c8c8c8')
-      .style('stroke-width', '0.8px')
+      .style('stroke', '#bdbdbd')
+      .style('stroke-width', '1px')
       .style('fill', 'none')
       .style('shape-rendering', 'geometricPrecision')
       .style('vector-effect', 'non-scaling-stroke')
@@ -410,52 +333,66 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
     })
   }
 
+  private isInvalidDropTarget(dragging: any, target: any): boolean {
+    if (!dragging || !target) { return true }
+    if (target.data && target.data.testId) { return true }
+    let p = target
+    while (p) {
+      if (p.id === dragging.id) { return true }
+      p = p.parent
+    }
+    return false
+  }
+
   private onNodeMoved(movedNode: any) {
-    if (!movedNode || !movedNode.data) { return }
+    if (!movedNode || !movedNode.data) { this.reloadMap(); return }
 
     if (movedNode.data.testId) {
       this.catsService.showMessage({ Message: 'Перемещение тестов недоступно', Type: CodeType.error })
-      this.customTreeService()
+      this.reloadMap()
       return
     }
 
     const conceptId: number = parseInt(movedNode.data.id, 10)
     const newParentId: number = movedNode.parent ? parseInt(movedNode.parent.data.id, 10) : null
 
-    if (!conceptId || !newParentId) { return }
+    if (!conceptId || !newParentId) { this.reloadMap(); return }
 
     const siblings: any[] = movedNode.parent.children || []
     const idx = siblings.findIndex((s: any) => s.data.id === movedNode.data.id)
     const prevConceptId = idx > 0 ? parseInt(siblings[idx - 1].data.id, 10) : 0
     const nextConceptId = idx < siblings.length - 1 ? parseInt(siblings[idx + 1].data.id, 10) : 0
 
-    this.chartDataSnapshot = this.chartData.map((n: any) => Object.assign({}, n))
-    const node = this.chartData.find((n: any) => n.id === conceptId)
-    if (node) { node.parent = newParentId }
-
     this.complexService.moveConceptNode(conceptId, newParentId, prevConceptId, nextConceptId)
       .subscribe({
         next: (res: any) => {
-          if (res && res['Code'] === ApiResponseCode.Success) {
-            this.chartDataSnapshot = null
-          } else {
-            this.rollbackChartData()
+          if (!res || res['Code'] !== ApiResponseCode.Success) {
             this.catsService.showMessage({ Message: 'Ошибка при перемещении узла', Type: CodeType.error })
           }
+          this.reloadMap()
         },
         error: () => {
-          this.rollbackChartData()
           this.catsService.showMessage({ Message: 'Ошибка при перемещении узла', Type: CodeType.error })
+          this.reloadMap()
         }
       })
   }
 
-  private rollbackChartData() {
-    if (this.chartDataSnapshot) {
-      this.chartData = this.chartDataSnapshot
-      this.chartDataSnapshot = null
-      this.customTreeService()
-    }
+  private reloadMap() {
+    const complexId = parseInt(this.data.id, 10)
+    const self = this
+    forkJoin([
+      this.complexService.getConceptTree(this.data.id),
+      this.complexService.getHiddenTests(complexId),
+    ]).subscribe((results: any[]) => {
+      const tree = results[0]
+      const hidden = results[1]
+      self.hiddenConceptIds = hidden && hidden.ConceptIds ? hidden.ConceptIds : []
+      self.chartData = tree.result.filter(
+        (node: any) => self.hiddenConceptIds.indexOf(node.id) === -1
+      )
+      self.customTreeService()
+    })
   }
 
   onNoClick(): void { this.dialogRef.close() }

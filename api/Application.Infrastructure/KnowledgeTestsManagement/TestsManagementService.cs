@@ -68,6 +68,18 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 			}
 		}
 
+		public Test GetTestWithAnswers(int id)
+		{
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				var query = new Query<Test>(test => test.Id == id)
+					.Include(t => t.Questions)
+					.Include(t => t.Questions.Select(q => q.Answers));
+
+				return repositoriesContainer.TestsRepository.GetBy(query);
+			}
+		}
+
 		public Test SaveTest(Test test, bool withountValidation = false)
 		{
 			if (!withountValidation)

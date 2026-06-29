@@ -11,6 +11,8 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
 		Test GetTest(int id, bool includeQuestions = false, bool includeConcept = false);
 
+		Test GetTestWithAnswers(int id);
+
 		Test SaveTest(Test test, bool withountValidation = false);
 
         void DeleteTest(int id);

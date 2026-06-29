@@ -24,6 +24,8 @@ using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.ComplexMaterialsViewModel;
 using Newtonsoft.Json;
+using JWT.Algorithms;
+using JWT.Builder;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using Org.BouncyCastle.Asn1.X509;
 using LMPlatform.Data.Repositories;
@@ -632,9 +634,80 @@ namespace LMPlatform.UI.Services.Concept
         }
         private bool CurrentUserIsLector()
         {
+	        var userId = GetRequestUserId();
+	        if (userId > 0)
+	        {
+		        try
+		        {
+			        var user = UsersManagementService.GetUser(userId);
+			        if (user?.Membership?.Roles != null)
+			        {
+				        return user.Membership.Roles.Any(r => r.RoleName.Equals("lector"));
+			        }
+		        }
+		        catch
+		        {
+		        }
+	        }
+
 	        return UsersManagementService.CurrentUser.Membership.Roles.Any(r => r.RoleName.Equals("lector"));
         }
-		#endregion 
+
+        private static int GetRequestUserId()
+        {
+	        try
+	        {
+		        var context = WebOperationContext.Current;
+		        if (context == null)
+		        {
+			        return 0;
+		        }
+
+		        var headers = context.IncomingRequest.Headers;
+		        string token = null;
+
+		        var authHeader = headers["Authorization"];
+		        if (!string.IsNullOrEmpty(authHeader))
+		        {
+			        token = authHeader.Replace("Bearer", string.Empty).Trim();
+		        }
+		        else
+		        {
+			        var cookieHeader = headers[HttpRequestHeader.Cookie];
+			        if (!string.IsNullOrEmpty(cookieHeader))
+			        {
+				        foreach (var part in cookieHeader.Split(';'))
+				        {
+					        var pair = part.Trim().Split(new[] { '=' }, 2);
+					        if (pair.Length == 2 && pair[0].Trim() == "Authorization")
+					        {
+						        token = pair[1].Trim();
+						        break;
+					        }
+				        }
+			        }
+		        }
+
+		        if (string.IsNullOrEmpty(token))
+		        {
+			        return 0;
+		        }
+
+		        var tokenSecret = ConfigurationManager.AppSettings["jwt:secret"];
+		        var json = new JwtBuilder()
+			        .WithSecret(tokenSecret)
+			        .WithAlgorithm(new HMACSHA256Algorithm())
+			        .MustVerifySignature()
+			        .Decode<IDictionary<string, string>>(token);
+
+		        return int.TryParse(json["id"], out var id) ? id : 0;
+	        }
+	        catch
+	        {
+		        return 0;
+	        }
+        }
+		#endregion
 
         public ConceptAvailableModules GetAvailableModules(int subjectId) 
         {
@@ -801,7 +874,7 @@ namespace LMPlatform.UI.Services.Concept
 
                 var docTitle = string.IsNullOrWhiteSpace(title) ? root.Name : title;
                 var tqh = string.IsNullOrWhiteSpace(testQuestionsHeading)
-                    ? "Вопросы теста (без вариантов ответов)"
+                    ? "Вопросы теста"
                     : testQuestionsHeading;
                 var amh = string.IsNullOrWhiteSpace(attachedMaterialsHeading)
                     ? "Прикреплённые материалы"
@@ -817,47 +890,9 @@ namespace LMPlatform.UI.Services.Concept
                     return new MemoryStream(docxBytes, writable: false);
                 }
 
-                if (!IsLibreOfficeInstalled())
-                {
-                    var pdfBytesFallback = generator.BuildPdfFallback(root, docTitle, tqh, amh, hiddenTestIds);
-                    SetEumkDownloadHeaders(safeBase + ".pdf", "application/pdf");
-                    return new MemoryStream(pdfBytesFallback, writable: false);
-                }
-
-                var tempRoot = ConfigurationManager.AppSettings["FileUploadPathTemp"];
-                if (string.IsNullOrWhiteSpace(tempRoot))
-                {
-                    throw new WebFaultException<string>("FileUploadPathTemp is not configured", HttpStatusCode.InternalServerError);
-                }
-
-                tempRoot = Path.GetFullPath(tempRoot.Replace("//", "\\").TrimEnd('/', '\\'));
-                if (!Directory.Exists(tempRoot))
-                {
-                    Directory.CreateDirectory(tempRoot);
-                }
-
-                var baseName = "eumk_" + Guid.NewGuid().ToString("N");
-                var docxPath = Path.Combine(tempRoot, baseName + ".docx");
-                var docxBytesForPdf = generator.BuildDocx(root, docTitle, tqh, amh, hiddenTestIds);
-                File.WriteAllBytes(docxPath, docxBytesForPdf);
-                try
-                {
-                    var convertor = new WordToPdfConvertor();
-                    var pdfFileName = convertor.Convert(docxPath);
-                    var pdfPath = Path.Combine(tempRoot, pdfFileName);
-                    var pdfBytes = File.ReadAllBytes(pdfPath);
-                    TryDelete(docxPath);
-                    TryDelete(pdfPath);
-                    SetEumkDownloadHeaders(safeBase + ".pdf", "application/pdf");
-                    return new MemoryStream(pdfBytes, writable: false);
-                }
-                catch
-                {
-                    TryDelete(docxPath);
-                    var pdfBytesFallback = generator.BuildPdfFallback(root, docTitle, tqh, amh, hiddenTestIds);
-                    SetEumkDownloadHeaders(safeBase + ".pdf", "application/pdf");
-                    return new MemoryStream(pdfBytesFallback, writable: false);
-                }
+                var pdfBytes = generator.BuildPdf(root, docTitle, tqh, hiddenTestIds);
+                SetEumkDownloadHeaders(safeBase + ".pdf", "application/pdf");
+                return new MemoryStream(pdfBytes, writable: false);
             }
             catch (WebFaultException)
             {

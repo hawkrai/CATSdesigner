@@ -45,7 +45,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
             }
 
             if (!buildTree) return;
-            if (!concept.Published && !(isRoot && isLector)) return;
+            if (!concept.Published && !(isRoot && isLector) && !concept.ReadOnly) return;
 
             Children = new List<ConceptViewData>();
             InitTree(concept.Children, isLector);
@@ -60,7 +60,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
             }
 
             if (!buildTree) return;
-            if (!concept.Published && !(isRoot && isLector)) return;
+            if (!concept.Published && !(isRoot && isLector) && !concept.ReadOnly) return;
 
             Children = new List<ConceptViewData>();
             Attachments = string.IsNullOrEmpty(concept.Container) ? new List<Attachment>() : filesManagementService.GetAttachments(concept.Container);
@@ -76,7 +76,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
             }
 
             if (!buildTree) return;
-            if (!concept.Published && !(isRoot && isLector)) return;
+            if (!concept.Published && !(isRoot && isLector) && !concept.ReadOnly) return;
 
             Children = new List<ConceptViewData>();
             if (filterFirstLevelChildren == null)
@@ -93,7 +93,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
         {
 	        if (ch != null && ch.Any())
 	        {
-                Children = ch.Where(c => c.Published || isLector)
+                Children = ch.Where(c => IsVisibleChild(c, isLector))
                              .Select(c => new ConceptViewData(c, true, false, isLector)).ToList();
 	        }
         }
@@ -102,9 +102,35 @@ namespace LMPlatform.UI.Services.Modules.Concept
         {
             if (ch != null && ch.Any())
             {
-                Children = ch.Where(c => c.Published || isLector)
+                Children = ch.Where(c => IsVisibleChild(c, isLector))
                              .Select(c => new ConceptViewData(c, true, filesManagementService, false, isLector)).ToList();
             }
+        }
+
+        private bool IsVisibleChild(Models.Concept c, bool isLector)
+        {
+            if (c.ReadOnly)
+            {
+                return true;
+            }
+
+            var insideUnpublishedSection = this.ReadOnly && !this.Published;
+            if (insideUnpublishedSection && IsAutoImportedContent(c))
+            {
+                return false;
+            }
+
+            if (c.Published)
+            {
+                return true;
+            }
+
+            return isLector && !IsAutoImportedContent(c);
+        }
+
+        private static bool IsAutoImportedContent(Models.Concept c)
+        {
+            return c.LectureId.HasValue || c.LabId.HasValue || c.PracticalId.HasValue || c.Test != null;
         }
 
         private void InitStateOfModulesPublish(Models.Concept concept)

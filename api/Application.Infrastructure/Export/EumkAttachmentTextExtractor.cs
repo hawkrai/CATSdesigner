@@ -149,32 +149,169 @@ namespace Application.Infrastructure.Export
             var noTags = Regex.Replace(noStyle, "<[^>]+>", " ");
             return Regex.Replace(noTags, "\\s+", " ").Trim();
         }
-        public static void AppendDocxBodyElements(Body targetBody, string sourcePath)
+        public static void AppendDocxBodyElements(Body targetBody, MainDocumentPart targetMainPart, string sourcePath)
         {
-            if (targetBody == null || string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
+            if (targetBody == null || targetMainPart == null || string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
             {
                 return;
             }
 
             using (var src = WordprocessingDocument.Open(sourcePath, false))
             {
-                var srcBody = src.MainDocumentPart?.Document?.Body;
+                var srcMainPart = src.MainDocumentPart;
+                var srcBody = srcMainPart?.Document?.Body;
                 if (srcBody == null)
                 {
                     return;
                 }
 
+                var numIdMap = ImportNumbering(srcMainPart, targetMainPart);
+
                 foreach (var element in srcBody.Elements())
                 {
-                    if (element is Paragraph p)
+                    if (element is Paragraph || element is Table)
                     {
-                        targetBody.AppendChild((Paragraph)p.CloneNode(true));
-                    }
-                    else if (element is Table t)
-                    {
-                        targetBody.AppendChild((Table)t.CloneNode(true));
+                        var clone = element.CloneNode(true);
+                        ImportImages(clone, srcMainPart, targetMainPart);
+                        RemapNumbering(clone, numIdMap);
+                        targetBody.AppendChild(clone);
                     }
                 }
+            }
+        }
+        private static Dictionary<int, int> ImportNumbering(MainDocumentPart srcMainPart, MainDocumentPart targetMainPart)
+        {
+            var numIdMap = new Dictionary<int, int>();
+            try
+            {
+                var srcNumPart = srcMainPart.NumberingDefinitionsPart;
+                if (srcNumPart?.Numbering == null)
+                {
+                    return numIdMap;
+                }
+
+                var targetNumPart = targetMainPart.NumberingDefinitionsPart;
+                if (targetNumPart == null)
+                {
+                    targetNumPart = targetMainPart.AddNewPart<NumberingDefinitionsPart>();
+                    targetNumPart.Numbering = new Numbering();
+                }
+
+                var targetNumbering = targetNumPart.Numbering;
+                var maxAbstract = targetNumbering.Elements<AbstractNum>()
+                    .Select(a => (int)a.AbstractNumberId.Value).DefaultIfEmpty(0).Max();
+                var maxNum = targetNumbering.Elements<NumberingInstance>()
+                    .Select(n => (int)n.NumberID.Value).DefaultIfEmpty(0).Max();
+
+                var abstractMap = new Dictionary<int, int>();
+                foreach (var absNum in srcNumPart.Numbering.Elements<AbstractNum>())
+                {
+                    var oldAbs = (int)absNum.AbstractNumberId.Value;
+                    var newAbs = ++maxAbstract;
+                    var cloneAbs = (AbstractNum)absNum.CloneNode(true);
+                    cloneAbs.AbstractNumberId = newAbs;
+
+                    var firstNum = targetNumbering.Elements<NumberingInstance>().FirstOrDefault();
+                    if (firstNum != null)
+                    {
+                        targetNumbering.InsertBefore(cloneAbs, firstNum);
+                    }
+                    else
+                    {
+                        targetNumbering.AppendChild(cloneAbs);
+                    }
+
+                    abstractMap[oldAbs] = newAbs;
+                }
+
+                foreach (var numInst in srcNumPart.Numbering.Elements<NumberingInstance>())
+                {
+                    var oldNum = (int)numInst.NumberID.Value;
+                    var newNum = ++maxNum;
+                    var cloneNum = (NumberingInstance)numInst.CloneNode(true);
+                    cloneNum.NumberID = newNum;
+
+                    var absId = cloneNum.GetFirstChild<AbstractNumId>();
+                    if (absId?.Val != null && abstractMap.TryGetValue((int)absId.Val.Value, out var mappedAbs))
+                    {
+                        absId.Val = mappedAbs;
+                    }
+
+                    targetNumbering.AppendChild(cloneNum);
+                    numIdMap[oldNum] = newNum;
+                }
+            }
+            catch
+            {
+            }
+
+            return numIdMap;
+        }
+
+        private static void RemapNumbering(OpenXmlElement clone, Dictionary<int, int> numIdMap)
+        {
+            if (numIdMap.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var numId in clone.Descendants<NumberingId>())
+            {
+                if (numId.Val != null && numIdMap.TryGetValue((int)numId.Val.Value, out var newId))
+                {
+                    numId.Val = newId;
+                }
+            }
+        }
+
+        private static void ImportImages(OpenXmlElement clone, MainDocumentPart srcMainPart, MainDocumentPart targetMainPart)
+        {
+            foreach (var blip in clone.Descendants<DocumentFormat.OpenXml.Drawing.Blip>())
+            {
+                var embed = blip.Embed?.Value;
+                var newId = CopyImagePart(embed, srcMainPart, targetMainPart);
+                if (newId != null)
+                {
+                    blip.Embed = newId;
+                }
+            }
+
+            foreach (var imageData in clone.Descendants<DocumentFormat.OpenXml.Vml.ImageData>())
+            {
+                var rid = imageData.RelationshipId?.Value;
+                var newId = CopyImagePart(rid, srcMainPart, targetMainPart);
+                if (newId != null)
+                {
+                    imageData.RelationshipId = newId;
+                }
+            }
+        }
+
+        private static string CopyImagePart(string sourceRelationshipId, MainDocumentPart srcMainPart, MainDocumentPart targetMainPart)
+        {
+            if (string.IsNullOrEmpty(sourceRelationshipId))
+            {
+                return null;
+            }
+
+            try
+            {
+                if (!(srcMainPart.GetPartById(sourceRelationshipId) is ImagePart srcImagePart))
+                {
+                    return null;
+                }
+
+                var newPart = targetMainPart.AddImagePart(srcImagePart.ContentType);
+                using (var stream = srcImagePart.GetStream())
+                {
+                    newPart.FeedData(stream);
+                }
+
+                return targetMainPart.GetIdOfPart(newPart);
+            }
+            catch
+            {
+                return null;
             }
         }
     }
