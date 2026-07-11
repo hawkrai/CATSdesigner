@@ -235,6 +235,109 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             return (closeRes.Item1, closeRes.Item2);
         }
 
+        public void CloseExpiredTests()
+        {
+            List<(int TestId, int UserId)> activeSessions;
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                activeSessions = repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>()
+                    .GetAll(new Core.Data.Query<AnswerOnTestQuestion>(answer => !answer.TestEnded))
+                    .Select(answer => new { answer.TestId, answer.UserId })
+                    .Distinct()
+                    .ToList()
+                    .Select(session => (session.TestId, session.UserId))
+                    .ToList();
+            }
+
+            foreach (var (testId, userId) in activeSessions)
+            {
+                try
+                {
+                    CloseExpiredTestIfNeeded(testId, userId);
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceError("CloseExpiredTest failed for testId={0}, userId={1}: {2}", testId, userId, ex);
+                }
+            }
+        }
+
+        private void CloseExpiredTestIfNeeded(int testId, int userId)
+        {
+            List<AnswerOnTestQuestion> testAnswers;
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                testAnswers = repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>()
+                    .GetAll(new Core.Data.Query<AnswerOnTestQuestion>(
+                        answer => answer.TestId == testId && answer.UserId == userId && !answer.TestEnded))
+                    .ToList();
+            }
+
+            if (!testAnswers.Any())
+            {
+                return;
+            }
+
+            var test = GetTest(testId);
+            if (test.TimeForCompleting <= 0)
+            {
+                return;
+            }
+
+            var testPassResult = GetTestPassResult(testId, userId);
+            if (testPassResult == null || !IsTestSessionExpired(test, testPassResult, testAnswers))
+            {
+                return;
+            }
+
+            foreach (var answer in testAnswers)
+            {
+                if (!answer.Time.HasValue)
+                {
+                    answer.Time = DateTime.UtcNow;
+                    answer.Points = 0;
+                }
+            }
+
+            CloseTest(testAnswers, userId);
+            ClearOngoingTest(userId, testId);
+        }
+
+        private static bool IsTestSessionExpired(Test test, TestPassResult testPassResult, List<AnswerOnTestQuestion> testAnswers)
+        {
+            TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Russian Standard Time");
+            DateTime dateTimeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneInfo);
+
+            if (test.SetTimeForAllTest)
+            {
+                return (dateTimeNow - testPassResult.StartTime).TotalSeconds > test.TimeForCompleting * 60;
+            }
+
+            if (!testAnswers.Any(answer => !answer.Time.HasValue))
+            {
+                return false;
+            }
+
+            return (dateTimeNow - testPassResult.StartTime).TotalSeconds > test.TimeForCompleting;
+        }
+
+        private static void ClearOngoingTest(int userId, int testId)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var user = repositoriesContainer.UsersRepository.GetBy(new Core.Data.Query<User>(u => u.Id == userId));
+                if (user == null || user.OngoingTest != testId)
+                {
+                    return;
+                }
+
+                user.OngoingTest = null;
+                user.OngoingTestDeviceId = null;
+                repositoriesContainer.UsersRepository.Save(user);
+                repositoriesContainer.ApplyChanges();
+            }
+        }
+
         private void CheckForTimeEndeed(int userId, int testId, Test test, TestPassResult testPassResult)
         {
             if (test.SetTimeForAllTest && (DateTime.UtcNow - testPassResult.StartTime).Seconds > (test.TimeForCompleting * 60))

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Application.Infrastructure.Models;
 using LMPlatform.Models;
@@ -36,6 +36,8 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
         int? GetPointsForQuestion(int userId, int questionId);
 
         (int, int) SimpleTestCloseById(int testId, int userId);
+
+        void CloseExpiredTests();
         /// <summary>
         /// Returns set of students and average marks for subject
         /// </summary>

@@ -1,4 +1,4 @@
-﻿using LMPlatform.UI.Helpers.TaskScheduler.Tasks;
+using LMPlatform.UI.Helpers.TaskScheduler.Tasks;
 using Quartz;
 using Quartz.Impl;
 
@@ -23,6 +23,17 @@ namespace LMPlatform.UI.Helpers.TaskScheduler
                 .Build();
 
             scheduler.ScheduleJob(task, trigger);
+
+            IJobDetail closeExpiredTestsTask = JobBuilder.Create<CloseExpiredTestsTask>().Build();
+
+            ITrigger closeExpiredTestsTrigger = TriggerBuilder.Create()
+                .WithSimpleSchedule(s =>
+                    s.WithIntervalInMinutes(5)
+                     .RepeatForever())
+                .StartNow()
+                .Build();
+
+            scheduler.ScheduleJob(closeExpiredTestsTask, closeExpiredTestsTrigger);
         }
     }
 }
