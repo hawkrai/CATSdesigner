@@ -1,5 +1,5 @@
 :host {
-  position: relative;
+  display: block;
 }
 
 .answers-popup {
@@ -10,12 +10,18 @@
     }
   }
   &-general {
+    padding-right: 48px;
+
     &-wrapper {
       margin-bottom: 20px;
     }
     &-test {
-      font-size: 20px;
-      font-weight: 500;
+      margin-bottom: 0;
+      font:
+        400 20px/32px Roboto,
+        'Helvetica Neue',
+        sans-serif;
+      overflow-wrap: break-word;
     }
     &-name {
       font-weight: 500;
@@ -41,6 +47,8 @@
 
 .close-button {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 20px;
+  right: 25px;
+  z-index: 1;
+  color: gray;
 }
