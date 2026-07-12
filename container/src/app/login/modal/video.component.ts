@@ -13,11 +13,11 @@ export class VideoComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<VideoComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: any
+    @Inject(MAT_DIALOG_DATA) private data: { locale?: string }
   ) {}
 
   ngOnInit() {
-    const locale = localStorage.getItem('locale')
+    const locale = this.data?.locale ?? 'ru'
 
     if (locale === 'ru') {
       this.videoUrl = 'assets/videos/fitr.mp4'
