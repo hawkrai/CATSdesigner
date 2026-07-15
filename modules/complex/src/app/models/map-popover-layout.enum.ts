@@ -5,4 +5,6 @@ export enum MapPopoverLayout {
   LabelBgPadX = 5,
   LabelBgPadY = 3,
   LevelSpacingPx = 270,
+  SiblingSeparation = 14,
+  GroupSeparation = 18,
 }
