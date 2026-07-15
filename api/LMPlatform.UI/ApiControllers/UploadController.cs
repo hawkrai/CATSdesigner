@@ -15,6 +15,10 @@ using Application.Core.Helpers;
 using Application.Core.UI;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.FilesManagement;
+using Application.Infrastructure.UserManagement;
+using JWT.Algorithms;
+using JWT.Builder;
+using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 using Newtonsoft.Json;
 
@@ -24,12 +28,21 @@ namespace LMPlatform.UI.ApiControllers
     public class UploadController : ApiController
     {
         private readonly LazyDependency<IFilesManagementService> _filesManagementService = new LazyDependency<IFilesManagementService>();
+        private readonly LazyDependency<IUsersManagementService> _usersManagementService = new LazyDependency<IUsersManagementService>();
 
         public IFilesManagementService FilesManagementService
         {
             get
             {
                 return _filesManagementService.Value;
+            }
+        }
+
+        public IUsersManagementService UsersManagementService
+        {
+            get
+            {
+                return _usersManagementService.Value;
             }
         }
 
@@ -54,18 +67,20 @@ namespace LMPlatform.UI.ApiControllers
         {
             if (!string.IsNullOrEmpty(fileName))
             {
-                var isStudent = UserContext.Role == "student";
+                var requester = GetRequestUser();
 
-                if (isStudent)
+                if (requester != null && requester.Role == "student")
                 {
-                    var currentUserId = UserContext.CurrentUserId;
                     var split = fileName.Split(new string[] { "//" }, StringSplitOptions.None);
-                    var pathName = split[0];
+                    if (split.Length < 2)
+                    {
+                        return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                    }
 
-                    var attachments = FilesManagementService.GetAttachments(pathName);
+                    var attachments = FilesManagementService.GetAttachments(split[0]);
                     var attachment = attachments.FirstOrDefault(a => a.FileName == split[1]);
 
-                    if (attachment == null || attachment.UserId != currentUserId)
+                    if (attachment == null || !StudentCanDownload(attachment, requester.Id))
                     {
                         return new HttpResponseMessage(HttpStatusCode.Forbidden);
                     }
@@ -75,6 +90,61 @@ namespace LMPlatform.UI.ApiControllers
             }
 
             return new HttpResponseMessage(HttpStatusCode.BadRequest);
+        }
+
+        private bool StudentCanDownload(Attachment attachment, int studentUserId)
+        {
+            if (!attachment.UserId.HasValue || attachment.UserId.Value == studentUserId)
+            {
+                return true;
+            }
+
+            var uploader = UsersManagementService.GetUser(attachment.UserId.Value);
+            var uploaderIsStudent = uploader?.Student != null && uploader.Lecturer == null;
+            return !uploaderIsStudent;
+        }
+
+        private class RequestUser
+        {
+            public int Id { get; set; }
+            public string Role { get; set; }
+        }
+
+        private static RequestUser GetRequestUser()
+        {
+            try
+            {
+                var request = HttpContext.Current?.Request;
+                if (request == null)
+                {
+                    return null;
+                }
+
+                var authCookie = request.Cookies["Authorization"];
+                var authHeader = request.Headers["Authorization"];
+                var token = authCookie != null ? authCookie.Value : authHeader?.Replace("Bearer", string.Empty).Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return null;
+                }
+
+                var tokenSecret = ConfigurationManager.AppSettings["jwt:secret"];
+                var json = new JwtBuilder()
+                    .WithSecret(tokenSecret)
+                    .WithAlgorithm(new HMACSHA256Algorithm())
+                    .MustVerifySignature()
+                    .Decode<IDictionary<string, string>>(token);
+
+                return new RequestUser
+                {
+                    Id = int.TryParse(json["id"], out var id) ? id : 0,
+                    Role = json[System.Security.Claims.ClaimsIdentity.DefaultRoleClaimType]
+                };
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         [System.Web.Http.HttpGet]

@@ -28,7 +28,7 @@ import { TestResultsLoaderService } from '../../../service/test-results-loader.s
 import { HiddenTestsService } from '../../../service/hidden-tests.service'
 import { ApiResponseCode } from '../../../models/api-response-code.enum'
 import { ChangeDetectorRef } from '@angular/core'
-import { TreeDragDropService } from '../../../service/tree-drag-drop.service'
+import { TreeDragDropService, DragOverResult } from '../../../service/tree-drag-drop.service'
 import { DropPlacement } from '../../../models/drop-placement.enum'
 import { DragCssClass } from '../../../models/drag-css-class.enum'
 import { LibreOfficeAvailabilityService } from '../../../service/libre-office-availability.service'
@@ -192,7 +192,8 @@ export class MaterialComponent implements OnInit, OnChanges {
         if (translations.hasOwnProperty(key)) {
           if (node.Name.includes(key)) {
             localizedName = this.translatePipe.transform(translations[key], key)
-            key.includes('раздел') || key.includes('блок') ? isSectionNode = true : isSectionNode = false
+            const lowerKey = key.toLowerCase()
+            isSectionNode = lowerKey.includes('раздел') || lowerKey.includes('блок')
             break
           }
         }
@@ -675,7 +676,16 @@ export class MaterialComponent implements OnInit, OnChanges {
 
   onDragOver(event: DragEvent, node: ComplexCascade): void {
     const target = (event.currentTarget as HTMLElement)
-    this.treeDragDropService.onDragOver(event, target, node, this.dataSource.data)
+    const result = this.treeDragDropService.onDragOver(event, target, node, this.dataSource.data)
+    if (result === DragOverResult.Pass) {
+      return
+    }
+    event.stopPropagation()
+    if (result === DragOverResult.Blocked) {
+      this.dropIndicatorNodeId = null
+      this.dropInsideNodeId = null
+      return
+    }
     const pos = this.treeDragDropService.dropPosition
     if (pos) {
       if (pos.placement === DropPlacement.Inside) {
@@ -703,22 +713,25 @@ export class MaterialComponent implements OnInit, OnChanges {
   }
 
   onDrop(event: DragEvent, node: ComplexCascade): void {
-    event.stopPropagation()
     const target = event.currentTarget as HTMLElement
-    const position = this.treeDragDropService.onDrop(event, target, node, this.dataSource.data)
+    const result = this.treeDragDropService.onDrop(event, target, node, this.dataSource.data)
+    if (!result.handled) {
+      return
+    }
+    event.stopPropagation()
     this.dropIndicatorNodeId = null
     this.dropInsideNodeId = null
 
-    if (!position) return
+    if (!result.position) return
 
-    const { targetNode, placement } = position
+    const { targetNode, placement } = result.position
     let newParentId: number
     let prevConceptId: number
     let nextConceptId: number
 
     if (placement === DropPlacement.Inside) {
       newParentId = Number(targetNode.Id)
-      const children = targetNode.children || []
+      const children = (targetNode.children || []).filter(n => !n.TestId)
       prevConceptId = children.length > 0 ? Number(children[children.length - 1].Id) : 0
       nextConceptId = 0
     } else {

@@ -7,6 +7,17 @@ export interface DropPosition {
   placement: DropPlacement
 }
 
+export enum DragOverResult {
+  PositionSet = 'position-set',
+  Blocked = 'blocked',
+  Pass = 'pass',
+}
+
+export interface DropResult {
+  position: DropPosition | null
+  handled: boolean
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -24,33 +35,45 @@ export class TreeDragDropService {
     this.dropPosition = null
   }
 
-  onDragOver(event: DragEvent, targetElement: HTMLElement, targetNode: ComplexCascade, treeData: ComplexCascade[] = []): void {
-    if (!this.dragNode) return
-    if (!this.isDropAllowed(this.dragNode, targetNode, treeData)) return
+  onDragOver(event: DragEvent, targetElement: HTMLElement, targetNode: ComplexCascade, treeData: ComplexCascade[] = []): DragOverResult {
+    if (!this.dragNode) return DragOverResult.Pass
+    if (this.isSelfOrDescendant(this.dragNode, targetNode)) return DragOverResult.Blocked
+    if (!this.isDropAllowed(this.dragNode, targetNode)) return DragOverResult.Pass
     event.preventDefault()
     this.dropPosition = this.computeDropPosition(event, targetElement, targetNode)
+    return DragOverResult.PositionSet
   }
 
-  onDrop(event: DragEvent, targetElement: HTMLElement, targetNode: ComplexCascade, treeData: ComplexCascade[]): DropPosition | null {
-    event.preventDefault()
-    if (!this.dragNode) return null
-    if (!this.isDropAllowed(this.dragNode, targetNode, treeData)) {
+  onDrop(event: DragEvent, targetElement: HTMLElement, targetNode: ComplexCascade, treeData: ComplexCascade[]): DropResult {
+    if (!this.dragNode) return { position: null, handled: false }
+    if (this.isSelfOrDescendant(this.dragNode, targetNode)) {
+      event.preventDefault()
       this.onDragEnd()
-      return null
+      return { position: null, handled: true }
     }
+    if (!this.isDropAllowed(this.dragNode, targetNode)) {
+      return { position: null, handled: false }
+    }
+    event.preventDefault()
     const position = this.computeDropPosition(event, targetElement, targetNode)
     if (this.isSamePosition(this.dragNode, position, treeData)) {
       this.onDragEnd()
-      return null
+      return { position: null, handled: true }
     }
     this.dropPosition = position
-    return position
+    return { position, handled: true }
   }
 
   computeDropPosition(event: DragEvent, targetElement: HTMLElement, targetNode: ComplexCascade): DropPosition {
-    const rect = targetElement.getBoundingClientRect()
+    const rowElement = (targetElement.querySelector('.mat-tree-node') as HTMLElement) || targetElement
+    const rect = rowElement.getBoundingClientRect()
     const relativeY = event.clientY - rect.top
     const ratio = relativeY / rect.height
+
+    if (this.isMandatorySectionFolder(targetNode)) {
+      return { targetNode, placement: DropPlacement.Inside }
+    }
+
     const isFolder = targetNode.IsGroup || (targetNode.children && targetNode.children.length > 0)
 
     let placement: DropPlacement
@@ -79,7 +102,7 @@ export class TreeDragDropService {
     const { targetNode, placement } = position
 
     if (placement === DropPlacement.Inside) {
-      const children = targetNode.children || []
+      const children = (targetNode.children || []).filter(n => !n.TestId)
       return children.length > 0 && children[children.length - 1].Id === dragNode.Id
     }
 
@@ -94,10 +117,14 @@ export class TreeDragDropService {
     return dragIndex === targetIndex + 1
   }
 
-  isDropAllowed(dragNode: ComplexCascade, targetNode: ComplexCascade, treeData: ComplexCascade[]): boolean {
-    if (dragNode.Id === targetNode.Id) return false
-    if (this.isDescendant(dragNode, targetNode)) return false
-    if (this.isMandatorySection(targetNode)) return false
+  isSelfOrDescendant(dragNode: ComplexCascade, targetNode: ComplexCascade): boolean {
+    return dragNode.Id === targetNode.Id || this.isDescendant(dragNode, targetNode)
+  }
+
+  isDropAllowed(dragNode: ComplexCascade, targetNode: ComplexCascade): boolean {
+    if (dragNode.TestId) return false
+    if (targetNode.TestId) return false
+    if (this.isMandatoryNode(targetNode) && !this.isMandatorySectionFolder(targetNode)) return false
     return true
   }
 
@@ -119,7 +146,11 @@ export class TreeDragDropService {
     return null
   }
 
-  private isMandatorySection(node: ComplexCascade): boolean {
+  isMandatorySectionFolder(node: ComplexCascade): boolean {
+    return this.isMandatoryNode(node) && !!node.IsGroup
+  }
+
+  private isMandatoryNode(node: ComplexCascade): boolean {
     return !!(node as any).ReadOnly || !!node.isSectionNode
   }
 }

@@ -5,7 +5,7 @@
 >
   <!-- Leaf node template -->
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle
-    [draggable]="isLecturer && !isMandatoryNode(node)"
+    [draggable]="isLecturer && !isMandatoryNode(node) && !node.TestId"
     (dragstart)="onDragStart($event, node)"
     (dragover)="onDragOver($event, node)"
     (dragleave)="onDragLeave($event)"
@@ -90,7 +90,7 @@
 
   <!-- Expandable node template -->
   <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild"
-    [draggable]="isLecturer && !isMandatoryNode(node)"
+    [draggable]="isLecturer && !isMandatoryNode(node) && !node.TestId"
     (dragstart)="onDragStart($event, node)"
     (dragover)="onDragOver($event, node)"
     (dragleave)="onDragLeave($event)"
