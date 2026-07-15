@@ -59,6 +59,9 @@
   "common.save.successful": "Изменения успешно сохранены!",
   "complex.regulations": "Положение об ЭУМК",
   "complex.map": "Карта ЭУМК",
+  "complex.map.zoomIn": "Увеличить",
+  "complex.map.zoomOut": "Уменьшить",
+  "complex.map.zoomReset": "Сбросить масштаб",
   "complex.monitor": "Мониторинг прочтения тем",
   "complex.time.actual": "фактическое время",
   "complex.time.expected": "Ожидаемое время",
@@ -117,5 +120,7 @@
   "complex.eumk.export.done": "Файл сохранён",
   "complex.eumk.export.error": "Не удалось сформировать файл",
   "complex.eumk.export.testQuestions": "Вопросы теста",
-  "complex.eumk.export.attachments": "Прикреплённые материалы"
+  "complex.eumk.export.attachments": "Прикреплённые материалы",
+  "complex.placement.title": "Размещение вне разделов",
+  "complex.placement.confirm": "Раздел не выбран. Элемент будет размещён вне основных разделов ЭУМК. Продолжить?"
 }

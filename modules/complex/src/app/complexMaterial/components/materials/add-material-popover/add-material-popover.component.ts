@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, Input } from '@angular/core'
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog'
 import { Store } from '@ngrx/store'
 import { DialogData } from '../../../../models/DialogData'
 import { ComplexService } from '../../../../service/complex.service'
@@ -10,6 +10,8 @@ import { TranslatePipe } from 'educats-translate'
 import { CatsService, CodeType } from 'src/app/service/cats.service'
 import { Help } from '../../../../models/help.model'
 import { MaterialFormType } from '../../../../models/material-form-type.enum'
+import { AttachedFile } from '../../../../models/AttachedFile'
+import { PlacementConfirmationPopupComponent } from '../placement-confirmation-popup/placement-confirmation-popup.component'
 import { take } from 'rxjs/operators'
 import * as filesActions from '../../../../store/actions/files.actions'
 
@@ -44,7 +46,8 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     public store: Store<IAppState>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public translatePipe: TranslatePipe,
-    public catsService: CatsService
+    public catsService: CatsService,
+    private confirmationDialog: MatDialog
   ) {
     super(dialogRef, store, data, translatePipe, catsService)
     this.isFile = false
@@ -423,6 +426,33 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     }
 
     return true
+  }
+
+  get isPlacedOutsideSections(): boolean {
+    const rootId = localStorage.getItem('selectedComplex')
+    return (
+      !!rootId &&
+      (!this.data.parentId || String(this.data.parentId) === String(rootId))
+    )
+  }
+
+  onSaveClick(files: AttachedFile[]): void {
+    if (this.addMode && this.isPlacedOutsideSections) {
+      const confirmRef = this.confirmationDialog.open(
+        PlacementConfirmationPopupComponent,
+        {
+          width: '500px',
+          panelClass: 'test-modal-container',
+        }
+      )
+      confirmRef.afterClosed().subscribe((confirmed) => {
+        if (confirmed) {
+          this.onClose(files, true)
+        }
+      })
+      return
+    }
+    this.onClose(files, true)
   }
 
   uploadFile(file: File) {

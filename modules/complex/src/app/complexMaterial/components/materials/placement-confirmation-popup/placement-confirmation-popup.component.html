@@ -1,0 +1,27 @@
+<app-popover-dialog clacc="app">
+  <ng-container title>
+    {{ 'complex.placement.title' | translate: 'Размещение вне разделов' }}
+  </ng-container>
+  <ng-container body>
+    <div class="confirmation-text">
+      {{
+        'complex.placement.confirm'
+          | translate
+            : 'Раздел не выбран. Элемент будет размещён вне основных разделов ЭУМК. Продолжить?'
+      }}
+    </div>
+  </ng-container>
+  <ng-container actions>
+    <button mat-raised-button (click)="onNoClick()">
+      {{ 'common.cancel' | translate: 'Отмена' }}
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      [mat-dialog-close]="true"
+      cdkFocusInitial
+    >
+      {{ 'common.complex.yes' | translate: 'Да' }}
+    </button>
+  </ng-container>
+</app-popover-dialog>

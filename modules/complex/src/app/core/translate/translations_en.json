@@ -52,6 +52,9 @@
   "common.save.successful": "The changes were saved successfully!",
   "complex.regulations": "Regulations on Educational Complex",
   "complex.map": "Educational Complex Map",
+  "complex.map.zoomIn": "Zoom in",
+  "complex.map.zoomOut": "Zoom out",
+  "complex.map.zoomReset": "Reset zoom",
   "complex.monitor": "Educational Complex Monitoring",
   "complex.time.actual": "actual time",
   "complex.time.expected": "Expected time",
@@ -117,5 +120,7 @@
   "complex.eumk.export.done": "File saved",
   "complex.eumk.export.error": "Could not generate the file",
   "complex.eumk.export.testQuestions": "Test questions",
-  "complex.eumk.export.attachments": "Attached materials"
+  "complex.eumk.export.attachments": "Attached materials",
+  "complex.placement.title": "Placement outside sections",
+  "complex.placement.confirm": "No section is selected. The component will be placed outside the main sections of the Educational Complex. Continue?"
 }
