@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -165,27 +166,24 @@ namespace Application.Infrastructure.Export
             var ext = (Path.GetExtension(path) ?? string.Empty).ToLowerInvariant();
 
             var sourceDocx = FindRetainedSourceDocx(path);
-            if (sourceDocx != null)
+            var docxToEmbed = sourceDocx ?? (ext == ".docx" ? path : null);
+            if (docxToEmbed != null)
             {
                 try
                 {
-                    EumkAttachmentTextExtractor.AppendDocxBodyElements(body, mainPart, sourceDocx);
+                    EumkAttachmentTextExtractor.AppendDocxAsAltChunk(body, mainPart, docxToEmbed);
                     return;
                 }
                 catch
                 {
-                }
-            }
-
-            if (ext == ".docx")
-            {
-                try
-                {
-                    EumkAttachmentTextExtractor.AppendDocxBodyElements(body, mainPart, path);
-                    return;
-                }
-                catch
-                {
+                    try
+                    {
+                        EumkAttachmentTextExtractor.AppendDocxBodyElements(body, mainPart, docxToEmbed);
+                        return;
+                    }
+                    catch
+                    {
+                    }
                 }
             }
 
@@ -208,14 +206,11 @@ namespace Application.Infrastructure.Export
 
         private static void AppendQuestionBlock(Body body, int index, Question q)
         {
-            var title = SanitizeForWord(string.IsNullOrWhiteSpace(q.Title) ? $"Вопрос {index}" : $"{index}. {q.Title}");
+            var title = QuestionTitle(index, q.Title);
             AppendParagraph(body, title, bold: true, fontHalfPoints: 22);
-            if (!string.IsNullOrWhiteSpace(q.Description))
+            foreach (var line in DescriptionLines(q.Description))
             {
-                foreach (var line in SplitLines(q.Description))
-                {
-                    AppendParagraph(body, SanitizeForWord(line), fontHalfPoints: 22);
-                }
+                AppendParagraph(body, line, fontHalfPoints: 22);
             }
 
             var options = GetAnswerOptions(q);
@@ -435,23 +430,20 @@ namespace Application.Infrastructure.Export
                 var n = 1;
                 foreach (var q in questions)
                 {
-                    var title = SanitizeForWord(string.IsNullOrWhiteSpace(q.Title) ? $"Вопрос {n}" : $"{n}. {q.Title}");
+                    var title = QuestionTitle(n, q.Title);
                     doc.Add(new iTextSharp.text.Paragraph(title, new Font(baseFont, 12f, Font.BOLD))
                     {
                         SpacingBefore = 6f,
                         SpacingAfter = 2f,
                     });
 
-                    if (!string.IsNullOrWhiteSpace(q.Description))
+                    foreach (var line in DescriptionLines(q.Description))
                     {
-                        foreach (var line in SplitLines(q.Description))
+                        doc.Add(new iTextSharp.text.Paragraph(line, new Font(baseFont, 11f, Font.NORMAL))
                         {
-                            doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(line), new Font(baseFont, 11f, Font.NORMAL))
-                            {
-                                Alignment = iTextSharp.text.Element.ALIGN_JUSTIFIED,
-                                SpacingAfter = 2f,
-                            });
-                        }
+                            Alignment = iTextSharp.text.Element.ALIGN_JUSTIFIED,
+                            SpacingAfter = 2f,
+                        });
                     }
 
                     var options = GetAnswerOptions(q);
@@ -579,9 +571,53 @@ namespace Application.Infrastructure.Export
 
             return q.Answers
                 .OrderBy(a => a.Id)
-                .Select(a => a.Content ?? string.Empty)
+                .Select(a => HtmlToPlainText(a.Content ?? string.Empty))
                 .Where(c => !string.IsNullOrWhiteSpace(c))
                 .ToList();
+        }
+
+        private static string QuestionTitle(int index, string rawTitle)
+        {
+            var text = SanitizeForWord(HtmlToPlainText(rawTitle));
+            return string.IsNullOrWhiteSpace(text) ? $"Вопрос {index}" : $"{index}. {text}";
+        }
+
+        private static IEnumerable<string> DescriptionLines(string description)
+        {
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                yield break;
+            }
+
+            foreach (var line in SplitLines(HtmlToPlainText(description)))
+            {
+                var clean = SanitizeForWord(line);
+                if (!string.IsNullOrWhiteSpace(clean))
+                {
+                    yield return clean;
+                }
+            }
+        }
+
+        private static string HtmlToPlainText(string html)
+        {
+            if (string.IsNullOrEmpty(html))
+            {
+                return string.Empty;
+            }
+
+            var text = html;
+            text = Regex.Replace(text, "<(script|style)[^>]*>.*?</\\1>", " ",
+                RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            text = Regex.Replace(text, "<br\\s*/?>", "\n", RegexOptions.IgnoreCase);
+            text = Regex.Replace(text, "</(p|div|li|h[1-6]|tr|td|th|blockquote)\\s*>", "\n", RegexOptions.IgnoreCase);
+            text = Regex.Replace(text, "<(p|div|li|h[1-6]|tr|blockquote)[^>]*>", "\n", RegexOptions.IgnoreCase);
+            text = Regex.Replace(text, "<[^>]+>", string.Empty);
+            text = System.Net.WebUtility.HtmlDecode(text);
+            text = text.Replace(' ', ' ');
+            text = Regex.Replace(text, "[ \\t\\f\\v]+", " ");
+            text = Regex.Replace(text, "\\n{3,}", "\n\n");
+            return text.Trim();
         }
 
         private static string OptionLabel(int index)
