@@ -312,7 +312,7 @@ export class ScheduleMainComponent implements OnInit {
     '|' +
     teacher +
     '|' +
-    '363636' +
+    '#3F51B5' +
     '|' +
     subjectName +
     '|' +
@@ -349,7 +349,7 @@ export class ScheduleMainComponent implements OnInit {
       this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
       '|' +
       '|' +
-      '363636' +
+      '#3F51B5' +
       '|' +
       '|' +
       '|' +

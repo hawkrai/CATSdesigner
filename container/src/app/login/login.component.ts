@@ -138,7 +138,9 @@ export class LoginComponent implements OnInit {
   }
 
   public open() {
-    const dialogRef = this.dialog.open(VideoComponent)
+    const dialogRef = this.dialog.open(VideoComponent, {
+    data: { locale: this.locale.value },
+    })
   }
 
   mascotTailAnimation(): void {
