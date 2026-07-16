@@ -19,8 +19,15 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
   chartData: any[]
   isLector: boolean
 
+  zoomScale = 1
+  readonly minZoom = 0.4
+  readonly maxZoom = 2.5
+  private readonly zoomStep = 0.2
+
   private hiddenConceptIds: number[] = []
   private resizeTimer: any = null
+  private lastContentWidth = 0
+  private lastContentHeight = 0
 
   constructor(
     public dialogRef: MatDialogRef<MapPopoverComponent>,
@@ -203,7 +210,11 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
             treeModel.nodeWidth + treeModel.horizontalSeparationBetweenNodes,
             treeModel.nodeHeight + treeModel.verticalSeparationBetweenNodes
           ])
-          .separation(function (a: any, b: any) { return a.parent === b.parent ? 28 : 36 })
+          .separation(function (a: any, b: any) {
+            return a.parent === b.parent
+              ? MapPopoverLayout.SiblingSeparation
+              : MapPopoverLayout.GroupSeparation
+          })
       }
 
       treeModel.update = function (source: any) {
@@ -242,19 +253,44 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
   }
 
   private resizeSvgToContent(contentWidth: number, contentHeight: number): void {
+    this.lastContentWidth = contentWidth
+    this.lastContentHeight = contentHeight
+
     const host = document.getElementById('chartContainer')
     if (!host) { return }
     const svgEl = d3.select(host).select('svg')
     if (svgEl.empty()) { return }
 
-    const width = Math.max(host.clientWidth, Math.ceil(contentWidth))
-    const height = Math.max(host.clientHeight, Math.ceil(contentHeight))
+    const baseWidth = Math.ceil(contentWidth)
+    const baseHeight = Math.ceil(contentHeight)
+    const width = Math.ceil(baseWidth * this.zoomScale)
+    const height = Math.ceil(baseHeight * this.zoomScale)
 
     svgEl
+      .attr('viewBox', '0 0 ' + baseWidth + ' ' + baseHeight)
+      .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('width', width)
       .attr('height', height)
       .style('width', width + 'px')
       .style('height', height + 'px')
+  }
+
+  get zoomPercent(): number {
+    return Math.round(this.zoomScale * 100)
+  }
+
+  zoomIn(): void { this.setZoom(this.zoomScale + this.zoomStep) }
+
+  zoomOut(): void { this.setZoom(this.zoomScale - this.zoomStep) }
+
+  resetZoom(): void { this.setZoom(1) }
+
+  private setZoom(value: number): void {
+    const clamped = Math.min(this.maxZoom, Math.max(this.minZoom, value))
+    this.zoomScale = Math.round(clamped * 100) / 100
+    if (this.lastContentWidth && this.lastContentHeight) {
+      this.resizeSvgToContent(this.lastContentWidth, this.lastContentHeight)
+    }
   }
 
   ngOnDestroy() {

@@ -149,6 +149,24 @@ namespace Application.Infrastructure.Export
             var noTags = Regex.Replace(noStyle, "<[^>]+>", " ");
             return Regex.Replace(noTags, "\\s+", " ").Trim();
         }
+        public static void AppendDocxAsAltChunk(Body targetBody, MainDocumentPart targetMainPart, string sourcePath)
+        {
+            if (targetBody == null || targetMainPart == null || string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
+            {
+                return;
+            }
+
+            var altChunkId = "eumkAlt" + Guid.NewGuid().ToString("N");
+            var chunkPart = targetMainPart.AddAlternativeFormatImportPart(
+                AlternativeFormatImportPartType.WordprocessingML, altChunkId);
+            using (var fileStream = File.Open(sourcePath, FileMode.Open, FileAccess.Read))
+            {
+                chunkPart.FeedData(fileStream);
+            }
+
+            targetBody.AppendChild(new AltChunk { Id = altChunkId });
+        }
+
         public static void AppendDocxBodyElements(Body targetBody, MainDocumentPart targetMainPart, string sourcePath)
         {
             if (targetBody == null || targetMainPart == null || string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))

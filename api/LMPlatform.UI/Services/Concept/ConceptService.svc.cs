@@ -428,13 +428,15 @@ namespace LMPlatform.UI.Services.Concept
 
         public ConceptStudentMonitoringData GetStudentMonitoringInfo(int complexId, int studentId)
         {
-            if (!CurrentUserIsLector())
+            if (!CurrentUserIsLector() && GetRequestUserId() != studentId)
                 return null;
             try
             {
                 var student = StudentManagementService.GetStudent(studentId);
                 var rootConcept = ConceptManagementService.GetTreeConceptByElementId(complexId);
 
+                if (!CurrentUserIsLector() && !rootConcept.Published)
+                    return null;
 
                 return new ConceptStudentMonitoringData()
                 {

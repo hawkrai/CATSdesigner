@@ -78,6 +78,7 @@ text {
   width: 100%;
   min-height: 0;
   box-sizing: border-box;
+  position: relative;
 
   text {
     font-family: Inter, system-ui, -apple-system, sans-serif;
@@ -200,4 +201,68 @@ svg {
   display: block;
   overflow: auto;
   min-height: 0;
+}
+
+.map-zoom-controls {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.16),
+    0 2px 8px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  user-select: none;
+
+  .zoom-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 0, 0, 0.7);
+    transition: background 0.15s ease;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+    }
+
+    &:hover:not(:disabled) {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    &:disabled {
+      color: rgba(0, 0, 0, 0.26);
+      cursor: default;
+    }
+  }
+
+  .zoom-level {
+    cursor: pointer;
+    text-align: center;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.7);
+    padding: 4px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+  }
 }

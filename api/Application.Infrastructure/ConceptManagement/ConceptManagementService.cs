@@ -671,7 +671,7 @@ namespace Application.Infrastructure.ConceptManagement
                 var parent = repoContainer.ConceptRepository.GetBy(new Query<Concept>(c => c.Id == parentId.Value));
                 if (parent != null)
                 {
-                    if (!parent.Published && parent.ReadOnly != true)
+                    if (!parent.Published && parent.ReadOnly != true && parent.ParentId.HasValue)
                     {
                         parent.Published = true;
                         repoContainer.ConceptRepository.Save(parent);

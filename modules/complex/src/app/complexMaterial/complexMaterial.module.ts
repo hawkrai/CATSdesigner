@@ -23,6 +23,7 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
 import { NotificationPopoverComponent } from './components/materials/notification-popover/notification-popover.component'
 import { HelpComponent } from '../help/help.component'
 import { DeleteConfirmationPopupComponent } from './components/materials/delete-confirmation-popup/delete-confirmation-popup.component'
+import { PlacementConfirmationPopupComponent } from './components/materials/placement-confirmation-popup/placement-confirmation-popup.component'
 import { PopoverDialogComponent } from './components/materials/popover-dialog/popover-dialog.component'
 import { FileComponent } from './components/materials/add-material-popover/components/file/file.component'
 import { FileViewerComponent } from './components/materials/add-material-popover/components/file-viewer/file-viewer.component'
@@ -48,6 +49,7 @@ import { SafeUrlPipe } from '../pipes/safe-url.pipe'
     NotificationPopoverComponent,
     HelpComponent,
     DeleteConfirmationPopupComponent,
+    PlacementConfirmationPopupComponent,
     PopoverDialogComponent,
   ],
   imports: [
@@ -75,6 +77,7 @@ import { SafeUrlPipe } from '../pipes/safe-url.pipe'
     AddMaterialPopoverComponent,
     AdaptivePopupComponent,
     DeleteConfirmationPopupComponent,
+    PlacementConfirmationPopupComponent,
     NotificationPopoverComponent,
   ],
 })

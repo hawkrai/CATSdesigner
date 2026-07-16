@@ -13,4 +13,28 @@
       (nodeUpdated)="nodeUpdated($event)"
     ></s2w-angular-d3-tree-lib>
   </div>
+  <div class="map-zoom-controls">
+    <button
+      class="zoom-btn"
+      (click)="zoomIn()"
+      [disabled]="zoomScale >= maxZoom"
+      [title]="'complex.map.zoomIn' | translate: 'Увеличить'"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+    <span
+      class="zoom-level"
+      (click)="resetZoom()"
+      [title]="'complex.map.zoomReset' | translate: 'Сбросить масштаб'"
+      >{{ zoomPercent }}%</span
+    >
+    <button
+      class="zoom-btn"
+      (click)="zoomOut()"
+      [disabled]="zoomScale <= minZoom"
+      [title]="'complex.map.zoomOut' | translate: 'Уменьшить'"
+    >
+      <mat-icon>remove</mat-icon>
+    </button>
+  </div>
 </div>
