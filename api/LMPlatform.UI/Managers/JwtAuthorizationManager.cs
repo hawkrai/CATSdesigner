@@ -1,5 +1,4 @@
-﻿using Application.Core.Helpers;
-using JWT.Algorithms;
+﻿using JWT.Algorithms;
 using JWT.Builder;
 using JWT.Exceptions;
 using System;
@@ -10,8 +9,8 @@ using System.Net;
 using System.Reflection;
 using System.Security.Claims;
 using System.ServiceModel;
-using System.ServiceModel.Dispatcher;
 using System.ServiceModel.Web;
+using System.Threading;
 using System.Web;
 using System.Web.Http;
 
@@ -27,7 +26,7 @@ namespace LMPlatform.UI.Managers
             string action = GetActionName(operationContext);
             Type hostType = operationContext.Host.Description.ServiceType;
             MethodInfo method = hostType.GetMethod(action);
-            var annonymousAttribute =  method?.GetCustomAttribute<AllowAnonymousAttribute>();
+            var annonymousAttribute = method?.GetCustomAttribute<AllowAnonymousAttribute>();
             if (annonymousAttribute != null)
             {
                 return true;
@@ -65,9 +64,20 @@ namespace LMPlatform.UI.Managers
                         .MustVerifySignature()
                         .Decode<IDictionary<string, string>>(token);
 
-                    UserContext.Id = json["id"];
-                    UserContext.Name = json[ClaimsIdentity.DefaultNameClaimType];
-                    UserContext.Role = json[ClaimsIdentity.DefaultRoleClaimType];
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimsIdentity.DefaultNameClaimType, json[ClaimsIdentity.DefaultNameClaimType]),
+                        new Claim(ClaimsIdentity.DefaultRoleClaimType, json[ClaimsIdentity.DefaultRoleClaimType]),
+                        new Claim("id", json["id"])
+                    };
+
+                    var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "JWT"));
+
+                    Thread.CurrentPrincipal = principal;
+                    if (HttpContext.Current != null)
+                    {
+                        HttpContext.Current.User = principal;
+                    }
                 }
                 catch (TokenExpiredException)
                 {
