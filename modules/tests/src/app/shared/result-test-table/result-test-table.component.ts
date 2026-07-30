@@ -579,7 +579,7 @@ export class ResultTestTableComponent
         return '';
       }
 
-      const dateTime = moment(timestamp).utcOffset(180);
+      const dateTime = moment(timestamp);
 
       if (!dateTime.isValid()) {
         return '';

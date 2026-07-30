@@ -367,7 +367,7 @@ namespace LMPlatform.UI.Controllers
 
         [JwtAuth]
         [HttpGet]
-        public void GetResultsExcel(int groupId, int subjectId, bool forSelfStudy, string studentLogins = null, string testIds = null, string lang = null)
+        public void GetResultsExcel(int groupId, int subjectId, bool forSelfStudy, string studentLogins = null, string testIds = null, string lang = null, int? timezoneOffset = null)
         {
             var excelLang = TestResultsExcelLocalization.NormalizeLang(lang);
             var tests = this.TestsManagementService.GetTestsForSubject(subjectId)
@@ -423,8 +423,8 @@ namespace LMPlatform.UI.Controllers
                 var datas = new List<string> { result.StudentName };
                 foreach (var pass in result.TestPassResults)
                 {
-                    datas.Add(FormatTestPassStartForExcel(pass));
-                    datas.Add(FormatTestPassEndForExcel(pass));
+                    datas.Add(FormatTestPassStartForExcel(pass, timezoneOffset));
+                    datas.Add(FormatTestPassEndForExcel(pass, timezoneOffset));
                     datas.Add(FormatTestGradeForExcel(pass));
                 }
 
@@ -720,24 +720,39 @@ namespace LMPlatform.UI.Controllers
                 ? $"{e.Points} ({e.Percent}%)" : e.Points.ToString();
         }
 
-        private static string FormatTestPassStartForExcel(TestResultItemListViewModel.TestPassResultViewModel e)
+        private static string FormatTestPassStartForExcel(TestResultItemListViewModel.TestPassResultViewModel e, int? clientTimezoneOffsetMinutes)
         {
             if (e.StartTime == default(DateTime) || e.StartTime.Year <= 1)
             {
                 return string.Empty;
             }
 
-            return e.StartTime.ToString("dd.MM.yyyy") + "\n" + e.StartTime.ToString("HH:mm");
+            var localTime = ConvertToClientLocal(e.StartTime, clientTimezoneOffsetMinutes);
+            return localTime.ToString("dd.MM.yyyy") + "\n" + localTime.ToString("HH:mm");
         }
 
-        private static string FormatTestPassEndForExcel(TestResultItemListViewModel.TestPassResultViewModel e)
+        private static string FormatTestPassEndForExcel(TestResultItemListViewModel.TestPassResultViewModel e, int? clientTimezoneOffsetMinutes)
         {
             if (!e.EndTime.HasValue || e.EndTime.Value.Year <= 1)
             {
                 return string.Empty;
             }
 
-            return e.EndTime.Value.ToString("dd.MM.yyyy") + "\n" + e.EndTime.Value.ToString("HH:mm");
+            var localTime = ConvertToClientLocal(e.EndTime.Value, clientTimezoneOffsetMinutes);
+            return localTime.ToString("dd.MM.yyyy") + "\n" + localTime.ToString("HH:mm");
+        }
+
+        private static DateTime ConvertToClientLocal(DateTime defTime, int? clientTimezoneOffsetMinutes)
+        {
+            if (!clientTimezoneOffsetMinutes.HasValue)
+            {
+                return defTime;
+            }
+
+            var defZone = TimeZoneInfo.FindSystemTimeZoneById("Russian Standard Time");
+            var unspecified = DateTime.SpecifyKind(defTime, DateTimeKind.Unspecified);
+            var utc = TimeZoneInfo.ConvertTimeToUtc(unspecified, defZone);
+            return utc.AddMinutes(-clientTimezoneOffsetMinutes.Value);
         }
 
         private JsonResult GetCloseTestResult(int testId, int mark, int percent, UserAnswersCallback answersCallback, bool fillTestPassResult = false)

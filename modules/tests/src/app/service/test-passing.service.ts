@@ -42,13 +42,15 @@ export class TestPassingService {
     forSelfStudy,
     studentLogins?: string[],
     testIds?: number[],
-    lang?: string
+    lang?: string,
+    timezoneOffset?: number
   ): Observable<Response> {
     let params = new HttpParams()
       .set('groupId', String(groupId))
       .set('subjectId', String(subjectId))
       .set('forSelfStudy', String(forSelfStudy))
       .set('lang', lang || localStorage.getItem('locale') || 'ru')
+      .set('timezoneOffset', String(timezoneOffset ?? new Date().getTimezoneOffset()))
     if (studentLogins?.length) {
       params = params.set('studentLogins', studentLogins.join(','))
     }
