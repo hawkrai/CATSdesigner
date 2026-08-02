@@ -29,6 +29,12 @@ namespace Application.Infrastructure.Export
 
         private static readonly string[] ImageExtensions = { ".png", ".jpg", ".jpeg", ".gif", ".bmp" };
 
+        private const string DocumentFontName = "Arial";
+        private const ushort BodyHalfPoints = 22;
+        private const uint PageWidthTwips = 11906;
+        private const uint PageHeightTwips = 16838;
+        private const uint PageMarginTwips = 1000;
+
         private readonly IFilesManagementService _filesManagementService;
         private readonly ITestsManagementService _testsManagementService;
 
@@ -76,6 +82,7 @@ namespace Application.Infrastructure.Export
                     }
 
                     EnsureUniqueDrawingIds(body);
+                    AppendSectionProperties(body);
                 }
 
                 return ms.ToArray();
@@ -100,14 +107,11 @@ namespace Application.Infrastructure.Export
                 return;
             }
 
-            if (depth <= 2)
-            {
-                AppendPageBreak(body);
-            }
+            const bool startsNewPage = true;
 
             if (node.Test != null)
             {
-                AppendSectionHeading(body, node.Name, depth);
+                AppendSectionHeading(body, node.Name, depth, startsNewPage, TestHeadingHalfPoints(depth));
                 var test = _testsManagementService.GetTestWithAnswers(node.Test.Id);
                 if (test == null)
                 {
@@ -115,7 +119,7 @@ namespace Application.Infrastructure.Export
                     return;
                 }
 
-                AppendParagraph(body, testQuestionsHeading, bold: true, fontHalfPoints: (ushort)(22 + Math.Min(depth, 3) * 2));
+                AppendParagraph(body, testQuestionsHeading, bold: true, fontHalfPoints: 24);
                 var questions = (test.Questions ?? Enumerable.Empty<Question>())
                     .OrderBy(q => q.QuestionNumber ?? q.Id)
                     .ToList();
@@ -135,7 +139,7 @@ namespace Application.Infrastructure.Export
                 return;
             }
 
-            AppendSectionHeading(body, node.Name, depth);
+            AppendSectionHeading(body, node.Name, depth, startsNewPage, SectionHeadingHalfPoints(depth));
 
             if (!node.IsGroup && !string.IsNullOrEmpty(node.Container))
             {
@@ -200,14 +204,14 @@ namespace Application.Infrastructure.Export
             }
             foreach (var line in EumkAttachmentTextExtractor.ExtractParagraphLines(path))
             {
-                AppendParagraph(body, line, fontHalfPoints: 20, justification: null);
+                AppendParagraph(body, line, fontHalfPoints: BodyHalfPoints, justification: JustificationValues.Both);
             }
         }
 
         private static void AppendQuestionBlock(Body body, int index, Question q)
         {
             var title = QuestionTitle(index, q.Title);
-            AppendParagraph(body, title, bold: true, fontHalfPoints: 22);
+            AppendParagraph(body, title, bold: true, fontHalfPoints: 24);
             foreach (var line in DescriptionLines(q.Description))
             {
                 AppendParagraph(body, line, fontHalfPoints: 22);
@@ -666,13 +670,6 @@ namespace Application.Infrastructure.Export
             return EumkAttachmentTextExtractor.ExtractParagraphLines(path);
         }
 
-        private static void AppendPageBreak(Body body)
-        {
-            body.AppendChild(
-                new Paragraph(
-                    new Run(new Break { Type = BreakValues.Page })));
-        }
-
         private static IEnumerable<string> SplitLines(string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -727,28 +724,92 @@ namespace Application.Infrastructure.Export
         {
             var p = new Paragraph(
                 new ParagraphProperties(
-                    new Justification { Val = JustificationValues.Center },
-                    new SpacingBetweenLines { After = "200" }),
+                    new SpacingBetweenLines { Before = "2800", After = "200" },
+                    new Justification { Val = JustificationValues.Center }),
                 new Run(
-                    new RunProperties(
-                        new Bold(),
-                        new FontSize { Val = "56" }),
+                    BuildRunProperties(bold: true, italic: false, fontHalfPoints: 44),
                     new Text(SanitizeForWord(text)) { Space = SpaceProcessingModeValues.Preserve }));
             body.AppendChild(p);
         }
 
-        private static void AppendSectionHeading(Body body, string text, int depth)
+        private static ushort SectionHeadingHalfPoints(int depth)
         {
-            var size = (ushort)Math.Max(28, 40 - depth * 4);
-            var jc = depth == 1 ? JustificationValues.Center : JustificationValues.Both;
+            return (ushort)Math.Max(24, 36 - depth * 3);
+        }
+
+        private static ushort TestHeadingHalfPoints(int depth)
+        {
+            return (ushort)Math.Max(24, 32 - depth * 2);
+        }
+
+        private static void AppendSectionHeading(
+            Body body,
+            string text,
+            int depth,
+            bool pageBreakBefore,
+            ushort fontHalfPoints)
+        {
+            var jc = depth == 1 ? JustificationValues.Center : JustificationValues.Left;
+
+            var pp = new ParagraphProperties();
+
+            pp.AppendChild(new KeepNext());
+            if (pageBreakBefore)
+            {
+                pp.AppendChild(new PageBreakBefore());
+            }
+
+            pp.AppendChild(new SpacingBetweenLines { Before = depth <= 1 ? "360" : "240", After = "200" });
+            pp.AppendChild(new Justification { Val = jc });
+            pp.AppendChild(new OutlineLevel { Val = Math.Min(depth - 1, 8) });
+
             var p = new Paragraph(
-                new ParagraphProperties(
-                    new Justification { Val = jc },
-                    new SpacingBetweenLines { Before = depth <= 1 ? "360" : "240", After = "120" }),
+                pp,
                 new Run(
-                    new RunProperties(new Bold(), new FontSize { Val = size.ToString() }),
+                    BuildRunProperties(bold: true, italic: false, fontHalfPoints: fontHalfPoints),
                     new Text(SanitizeForWord(text)) { Space = SpaceProcessingModeValues.Preserve }));
             body.AppendChild(p);
+        }
+
+        private static RunProperties BuildRunProperties(bool bold, bool italic, ushort fontHalfPoints)
+        {
+            var rp = new RunProperties(
+                new RunFonts
+                {
+                    Ascii = DocumentFontName,
+                    HighAnsi = DocumentFontName,
+                    ComplexScript = DocumentFontName,
+                });
+
+            if (bold)
+            {
+                rp.AppendChild(new Bold());
+            }
+
+            if (italic)
+            {
+                rp.AppendChild(new Italic());
+            }
+
+            rp.AppendChild(new FontSize { Val = fontHalfPoints.ToString() });
+            rp.AppendChild(new FontSizeComplexScript { Val = fontHalfPoints.ToString() });
+            return rp;
+        }
+
+        private static void AppendSectionProperties(Body body)
+        {
+            body.AppendChild(new SectionProperties(
+                new PageSize { Width = PageWidthTwips, Height = PageHeightTwips },
+                new PageMargin
+                {
+                    Top = (int)PageMarginTwips,
+                    Right = PageMarginTwips,
+                    Bottom = (int)PageMarginTwips,
+                    Left = PageMarginTwips,
+                    Header = 0U,
+                    Footer = 0U,
+                    Gutter = 0U,
+                }));
         }
 
         private static void AppendParagraph(
@@ -761,26 +822,10 @@ namespace Application.Infrastructure.Export
             JustificationValues? justification = JustificationValues.Both,
             int indentLeftTwips = 0)
         {
-            var rp = new RunProperties();
-            if (isSubtitle)
-            {
-                rp.AppendChild(new Italic());
-                rp.AppendChild(new FontSize { Val = "28" });
-            }
-            else
-            {
-                rp.AppendChild(new FontSize { Val = fontHalfPoints.ToString() });
-            }
-
-            if (bold)
-            {
-                rp.AppendChild(new Bold());
-            }
-
-            if (italic && !isSubtitle)
-            {
-                rp.AppendChild(new Italic());
-            }
+            var rp = BuildRunProperties(
+                bold,
+                italic || isSubtitle,
+                isSubtitle ? (ushort)26 : fontHalfPoints);
 
             var pp = new ParagraphProperties(new SpacingBetweenLines { After = "80" });
             if (indentLeftTwips > 0)
