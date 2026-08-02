@@ -28,6 +28,11 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
   private resizeTimer: any = null
   private lastContentWidth = 0
   private lastContentHeight = 0
+  private baseContentWidth = 0
+  private maxLabelRight = 0
+
+  private static readonly LabelX = MapPopoverLayout.NodeRadius + MapPopoverLayout.TextOffset
+  private static readonly DefaultMargin = { top: 40, bottom: 40, left: 72, right: 40 }
 
   constructor(
     public dialogRef: MatDialogRef<MapPopoverComponent>,
@@ -98,6 +103,8 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
         treeData.descendants().forEach(function (d: any) {
           d.y = d.depth * MapPopoverLayout.LevelSpacingPx
         })
+        self.removeStaleElements(treeModel.svg, 'g.node', treeData)
+
         treeModel.svg.selectAll('g.node')
           .interrupt()
           .attr('transform', function (d: any) { return 'translate(' + d.y + ',' + d.x + ')' })
@@ -108,99 +115,14 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
           .style('stroke-width', '1px')
         treeModel.svg.selectAll('g.node circle.ghostCircle').style('opacity', 0)
 
-        let tooltip = d3.select('#map-node-tooltip')
-        if (tooltip.empty()) {
-          tooltip = d3.select('body').append('div')
-            .attr('id', 'map-node-tooltip')
-            .style('position', 'fixed')
-            .style('background', 'rgba(97,97,97,0.9)')
-            .style('color', '#fff')
-            .style('padding', '6px 12px')
-            .style('border-radius', '4px')
-            .style('font-size', '13px')
-            .style('font-family', 'Inter, system-ui, sans-serif')
-            .style('font-weight', '400')
-            .style('pointer-events', 'none')
-            .style('white-space', 'nowrap')
-            .style('z-index', '9999')
-            .style('display', 'none')
-            .style('box-shadow', '0 2px 8px rgba(0,0,0,0.3)')
-        }
-
-        treeModel.svg.selectAll('g.node text').each(function (d: any) {
-          const el = d3.select(this)
-          const g = d3.select((this as Element).parentNode as SVGGElement)
-          g.select('rect.node-label-bg').remove()
-
-          const fullName: string = (d && d.data)
-            ? (d.data.description || d.data.name || String(d.id))
-            : ''
-
-          const labelX = MapPopoverLayout.NodeRadius + MapPopoverLayout.TextOffset
-          el.attr('x', labelX)
-          el.attr('y', 0)
-          el.attr('dy', null)
-          el.attr('text-anchor', 'start')
-          el.attr('dominant-baseline', 'middle')
-          el.style('font-family', 'Inter, system-ui, -apple-system, sans-serif')
-          el.style('font-size', '13px')
-          el.style('font-weight', '600')
-          el.style('fill', '#1f1f1f')
-          el.style('stroke', 'none')
-          el.style('paint-order', 'normal')
-          el.style('text-rendering', 'geometricPrecision')
-          el.style('-webkit-font-smoothing', 'antialiased')
-
-          if (fullName.length > MapPopoverLayout.MaxLabelChars) {
-            el.text(fullName.substring(0, MapPopoverLayout.MaxLabelChars) + '…')
-
-            g.select('title').remove()
-
-            g
-              .on('mouseenter.tooltip', function () {
-                tooltip
-                  .style('display', 'block')
-                  .text(fullName)
-              })
-              .on('mousemove.tooltip', function () {
-                const e = d3.event as MouseEvent
-                tooltip
-                  .style('left', (e.clientX + 14) + 'px')
-                  .style('top', (e.clientY - 28) + 'px')
-              })
-              .on('mouseleave.tooltip', function () {
-                tooltip.style('display', 'none')
-              })
-          } else {
-            el.text(fullName)
-            g
-              .on('mouseenter.tooltip', null)
-              .on('mousemove.tooltip', null)
-              .on('mouseleave.tooltip', null)
-          }
-
-          try {
-            const textEl = el.node() as SVGTextElement
-            const bbox = textEl.getBBox()
-            g.insert('rect', 'text')
-              .attr('class', 'node-label-bg')
-              .attr('x', bbox.x - MapPopoverLayout.LabelBgPadX)
-              .attr('y', bbox.y - MapPopoverLayout.LabelBgPadY)
-              .attr('width', Math.max(0, bbox.width + 2 * MapPopoverLayout.LabelBgPadX))
-              .attr('height', Math.max(0, bbox.height + 2 * MapPopoverLayout.LabelBgPadY))
-              .attr('rx', 2)
-              .attr('ry', 2)
-              .attr('fill', '#ffffff')
-              .style('pointer-events', 'none')
-          } catch {}
-        })
-
+        self.renderNodeLabels()
         self.applyLinkStyles()
       }
 
       const originalSetLinks = treeModel.setLinks.bind(treeModel)
       treeModel.setLinks = function (source: any, treeData: any) {
         originalSetLinks(source, treeData)
+        self.removeStaleElements(treeModel.svg, 'path.link', treeData)
         self.applyLinkStyles()
       }
 
@@ -238,18 +160,216 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
           maxX -= minX
         }
 
+        const margin = treeModel.margin || MapPopoverComponent.DefaultMargin
+
+        self.baseContentWidth =
+          margin.left +
+          maxDepth * MapPopoverLayout.LevelSpacingPx +
+          MapPopoverComponent.LabelX +
+          MapPopoverLayout.MinLabelWidthPx +
+          margin.right
+
         treeModel.setNodes(source, treeData)
         treeModel.setLinks(source, treeData)
 
-        const margin = treeModel.margin || { top: 40, bottom: 40, left: 72, right: 40 }
-        const contentWidth =
-          maxDepth * MapPopoverLayout.LevelSpacingPx + margin.left + margin.right + 200
         const contentHeight = (maxX > 0 ? maxX : 0) + margin.top + margin.bottom + 40
-        self.resizeSvgToContent(contentWidth, contentHeight)
+        self.resizeSvgToContent(self.contentWidth(), contentHeight)
       }
 
       self.customTreeService()
     })
+  }
+
+  private removeStaleElements(svg: any, selector: string, treeData: any): void {
+    if (!svg) {
+      return
+    }
+
+    const live: { [id: string]: boolean } = {}
+    treeData.descendants().forEach((d: any) => {
+      live[d.id] = true
+    })
+
+    svg.selectAll(selector).each(function (d: any) {
+      if (!d || !live[d.id]) {
+        d3.select(this).interrupt().remove()
+      }
+    })
+  }
+
+  private get margin(): { top: number; bottom: number; left: number; right: number } {
+    const treeModel: any = this.treeService.treeModel
+    return (treeModel && treeModel.margin) || MapPopoverComponent.DefaultMargin
+  }
+
+  private ensureTooltip(): any {
+    let tooltip = d3.select('#map-node-tooltip')
+    if (tooltip.empty()) {
+      tooltip = d3.select('body').append('div')
+        .attr('id', 'map-node-tooltip')
+        .style('position', 'fixed')
+        .style('background', 'rgba(97,97,97,0.9)')
+        .style('color', '#fff')
+        .style('padding', '6px 12px')
+        .style('border-radius', '4px')
+        .style('font-size', '13px')
+        .style('font-family', 'Inter, system-ui, sans-serif')
+        .style('font-weight', '400')
+        .style('pointer-events', 'none')
+        .style('white-space', 'nowrap')
+        .style('z-index', '9999')
+        .style('display', 'none')
+        .style('box-shadow', '0 2px 8px rgba(0,0,0,0.3)')
+    }
+    return tooltip
+  }
+
+  private availableRightEdge(): number {
+    const host = document.getElementById('chartContainer')
+    const viewportUserWidth = host && this.zoomScale > 0 ? host.clientWidth / this.zoomScale : 0
+    return Math.max(this.baseContentWidth, viewportUserWidth) - this.margin.right
+  }
+
+  private labelBudget(d: any, rightEdge: number): number {
+    const labelX = MapPopoverComponent.LabelX
+
+    if (d && d.children && d.children.length) {
+      return (
+        MapPopoverLayout.LevelSpacingPx -
+        labelX -
+        MapPopoverLayout.NodeRadius -
+        MapPopoverLayout.LinkClearancePx
+      )
+    }
+
+    const labelStart = this.margin.left + (typeof d.y === 'number' ? d.y : 0) + labelX
+    return Math.max(
+      MapPopoverLayout.MinLabelWidthPx,
+      Math.min(MapPopoverLayout.MaxLabelWidthPx, rightEdge - labelStart)
+    )
+  }
+
+  private fitLabel(el: any, fullName: string, budget: number): boolean {
+    el.text(fullName)
+    const textEl = el.node() as SVGTextElement
+    if (!textEl || !fullName) {
+      return false
+    }
+
+    let width = 0
+    try {
+      width = textEl.getComputedTextLength()
+    } catch {
+      return false
+    }
+    if (width <= budget) {
+      return false
+    }
+
+    let lo = 0
+    let hi = fullName.length
+    while (lo < hi) {
+      const mid = Math.ceil((lo + hi) / 2)
+      el.text(this.ellipsize(fullName, mid))
+      if (textEl.getComputedTextLength() <= budget) {
+        lo = mid
+      } else {
+        hi = mid - 1
+      }
+    }
+    el.text(this.ellipsize(fullName, lo))
+    return true
+  }
+
+  private ellipsize(fullName: string, chars: number): string {
+    return fullName.substring(0, chars).replace(/\s+$/, '') + '…'
+  }
+
+  private renderNodeLabels(): void {
+    const treeModel: any = this.treeService.treeModel
+    if (!treeModel || !treeModel.svg) {
+      return
+    }
+
+    const tooltip = this.ensureTooltip()
+    const rightEdge = this.availableRightEdge()
+    const labelX = MapPopoverComponent.LabelX
+    const marginLeft = this.margin.left
+    const self = this
+    let maxRight = 0
+
+    treeModel.svg.selectAll('g.node text').each(function (d: any) {
+      const el = d3.select(this)
+      const g = d3.select((this as Element).parentNode as SVGGElement)
+      g.select('rect.node-label-bg').remove()
+
+      const fullName: string = (d && d.data)
+        ? (d.data.description || d.data.name || String(d.id))
+        : ''
+
+      el.attr('x', labelX)
+      el.attr('y', 0)
+      el.attr('dy', null)
+      el.attr('text-anchor', 'start')
+      el.attr('dominant-baseline', 'middle')
+      el.style('font-family', 'Inter, system-ui, -apple-system, sans-serif')
+      el.style('font-size', '13px')
+      el.style('font-weight', '600')
+      el.style('fill', '#1f1f1f')
+      el.style('stroke', 'none')
+      el.style('paint-order', 'normal')
+      el.style('text-rendering', 'geometricPrecision')
+      el.style('-webkit-font-smoothing', 'antialiased')
+
+      const truncated = self.fitLabel(el, fullName, self.labelBudget(d, rightEdge))
+
+      if (truncated) {
+        g.select('title').remove()
+        g
+          .on('mouseenter.tooltip', function () {
+            tooltip
+              .style('display', 'block')
+              .text(fullName)
+          })
+          .on('mousemove.tooltip', function () {
+            const e = d3.event as MouseEvent
+            tooltip
+              .style('left', (e.clientX + 14) + 'px')
+              .style('top', (e.clientY - 28) + 'px')
+          })
+          .on('mouseleave.tooltip', function () {
+            tooltip.style('display', 'none')
+          })
+      } else {
+        tooltip.style('display', 'none')
+        g
+          .on('mouseenter.tooltip', null)
+          .on('mousemove.tooltip', null)
+          .on('mouseleave.tooltip', null)
+      }
+
+      try {
+        const bbox = (el.node() as SVGTextElement).getBBox()
+        g.insert('rect', 'text')
+          .attr('class', 'node-label-bg')
+          .attr('x', bbox.x - MapPopoverLayout.LabelBgPadX)
+          .attr('y', bbox.y - MapPopoverLayout.LabelBgPadY)
+          .attr('width', Math.max(0, bbox.width + 2 * MapPopoverLayout.LabelBgPadX))
+          .attr('height', Math.max(0, bbox.height + 2 * MapPopoverLayout.LabelBgPadY))
+          .attr('rx', 2)
+          .attr('ry', 2)
+          .attr('fill', '#ffffff')
+          .style('pointer-events', 'none')
+
+        const nodeX = marginLeft + (typeof d.y === 'number' ? d.y : 0)
+        const right = nodeX + bbox.x + bbox.width + MapPopoverLayout.LabelBgPadX
+        if (right > maxRight) {
+          maxRight = right
+        }
+      } catch {}
+    })
+
+    this.maxLabelRight = maxRight
   }
 
   private resizeSvgToContent(contentWidth: number, contentHeight: number): void {
@@ -285,11 +405,16 @@ export class MapPopoverComponent implements OnInit, OnDestroy {
 
   resetZoom(): void { this.setZoom(1) }
 
+  private contentWidth(): number {
+    return Math.max(this.baseContentWidth, this.maxLabelRight + this.margin.right)
+  }
+
   private setZoom(value: number): void {
     const clamped = Math.min(this.maxZoom, Math.max(this.minZoom, value))
     this.zoomScale = Math.round(clamped * 100) / 100
     if (this.lastContentWidth && this.lastContentHeight) {
-      this.resizeSvgToContent(this.lastContentWidth, this.lastContentHeight)
+      this.renderNodeLabels()
+      this.resizeSvgToContent(this.contentWidth(), this.lastContentHeight)
     }
   }
 
