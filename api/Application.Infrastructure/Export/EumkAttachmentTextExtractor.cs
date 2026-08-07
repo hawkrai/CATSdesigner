@@ -159,12 +159,45 @@ namespace Application.Infrastructure.Export
             var altChunkId = "eumkAlt" + Guid.NewGuid().ToString("N");
             var chunkPart = targetMainPart.AddAlternativeFormatImportPart(
                 AlternativeFormatImportPartType.WordprocessingML, altChunkId);
-            using (var fileStream = File.Open(sourcePath, FileMode.Open, FileAccess.Read))
+            using (var content = new MemoryStream(ReadDocxWithoutSectionProperties(sourcePath)))
             {
-                chunkPart.FeedData(fileStream);
+                chunkPart.FeedData(content);
             }
 
             targetBody.AppendChild(new AltChunk { Id = altChunkId });
+        }
+
+        private static byte[] ReadDocxWithoutSectionProperties(string sourcePath)
+        {
+            var original = File.ReadAllBytes(sourcePath);
+            try
+            {
+                var buffer = new MemoryStream();
+                buffer.Write(original, 0, original.Length);
+                buffer.Position = 0;
+
+                using (var doc = WordprocessingDocument.Open(buffer, true))
+                {
+                    var body = doc.MainDocumentPart?.Document?.Body;
+                    if (body == null)
+                    {
+                        return original;
+                    }
+
+                    foreach (var sectionProperties in body.Descendants<SectionProperties>().ToList())
+                    {
+                        sectionProperties.Remove();
+                    }
+
+                    doc.MainDocumentPart.Document.Save();
+                }
+
+                return buffer.ToArray();
+            }
+            catch
+            {
+                return original;
+            }
         }
 
         public static void AppendDocxBodyElements(Body targetBody, MainDocumentPart targetMainPart, string sourcePath)
@@ -192,11 +225,20 @@ namespace Application.Infrastructure.Export
                         var clone = element.CloneNode(true);
                         ImportImages(clone, srcMainPart, targetMainPart);
                         RemapNumbering(clone, numIdMap);
+                        StripSectionProperties(clone);
                         targetBody.AppendChild(clone);
                     }
                 }
             }
         }
+        private static void StripSectionProperties(OpenXmlElement clone)
+        {
+            foreach (var sectionProperties in clone.Descendants<SectionProperties>().ToList())
+            {
+                sectionProperties.Remove();
+            }
+        }
+
         private static Dictionary<int, int> ImportNumbering(MainDocumentPart srcMainPart, MainDocumentPart targetMainPart)
         {
             var numIdMap = new Dictionary<int, int>();

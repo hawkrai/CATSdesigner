@@ -1,5 +1,4 @@
 export enum MapPopoverLayout {
-  MaxLabelChars = 20,
   NodeRadius = 5,
   TextOffset = 10,
   LabelBgPadX = 5,
@@ -7,4 +6,7 @@ export enum MapPopoverLayout {
   LevelSpacingPx = 270,
   SiblingSeparation = 14,
   GroupSeparation = 18,
+  LinkClearancePx = 64,
+  MinLabelWidthPx = 90,
+  MaxLabelWidthPx = 560,
 }
