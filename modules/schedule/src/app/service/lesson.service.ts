@@ -305,8 +305,7 @@ getLessonTypes(subjectId: number): Observable<string[][]> {
     startTime: string,
     endTime: string,
     audience: string,
-    building: string,
-    id?: string,
+    building: string
   ): Observable<any> {
     return this.http.post('/api/DiplomProjectConsultationDate', {
       Day: date,
@@ -314,7 +313,6 @@ getLessonTypes(subjectId: number): Observable<string[][]> {
       EndTime: endTime,
       Building: building,
       Audience: audience,
-      ...(id ? { Id: id } : {}),
     })
   }
 

@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 
+
 namespace LMPlatform.UI.Attributes
 {
     public class JwtAuthAttribute : AuthorizeAttribute
@@ -20,11 +21,14 @@ namespace LMPlatform.UI.Attributes
             {
                 return base.AuthorizeCore(httpContext);
             }
+
             var authCookie = httpContext.Request.Cookies["Authorization"];
+
             var autHeader = httpContext.Request.Headers["Authorization"];
+
             if (authCookie != null || autHeader != null)
             {
-                var token = authCookie != null ? authCookie.Value : autHeader.Replace("Bearer", "");
+                var token = authCookie != null ? authCookie.Value : autHeader.Replace("Bearer","");
                 try
                 {
                     var tokenSecret = ConfigurationManager.AppSettings["jwt:secret"];
@@ -33,12 +37,17 @@ namespace LMPlatform.UI.Attributes
                         .WithAlgorithm(new HMACSHA256Algorithm())
                         .MustVerifySignature()
                         .Decode<IDictionary<string, string>>(token);
+
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimsIdentity.DefaultNameClaimType, json[ClaimsIdentity.DefaultNameClaimType]),
                         new Claim(ClaimsIdentity.DefaultRoleClaimType, json[ClaimsIdentity.DefaultRoleClaimType]),
                         new Claim("id", json["id"])
                     };
+
+                    UserContext.Id = json["id"];
+                    UserContext.Name = json[ClaimsIdentity.DefaultNameClaimType];
+                    UserContext.Role = json[ClaimsIdentity.DefaultRoleClaimType];
 
                     httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims));
 

@@ -422,383 +422,309 @@ export class CreateLessonComponent implements OnInit {
   }
 
   addLesson() {
-  this.memo = this.formGroup.get('memo').value
+    this.memo = this.formGroup.get('memo').value
 
-  this.subject = this.subjects.find(
-    (subject) => subject.Id == this.lesson.SubjectId
-  )
+    this.subject = this.subjects.find(
+      (subject) => subject.Id == this.lesson.SubjectId
+    )
 
-  if (this.subject !== undefined) {
-    this.lesson.ShortName = this.subject.ShortName
-    this.lesson.Name = this.subject.Name
-    this.lesson.Color = this.subject.Color
-  }
-  this.lesson.Date = this.lessonservice.formatDate1(this.dayOfLesson)
-  this.lesson.Type = this.lessonTypes.find(
-    (type) => type[0] === this.formGroup.controls.type.value
-  )[1]
-  if (this.startTimeOfLesson > this.endTimeOfLesson) {
-    const temp = this.startTimeOfLesson
-    this.startTimeOfLesson = this.endTimeOfLesson
-    this.endTimeOfLesson = temp
-  }
-  this.lesson.Start = this.startTimeOfLesson
-  this.lesson.End = this.endTimeOfLesson
-  if (this.memo != undefined && !this.isStudentUpdateLesson) {
-    this.lesson.Notes = [{ Text: this.memo }]
-  } else {
-    this.lesson.Notes = []
-  }
-  this.lesson.GroupId = this.formGroup.controls.group.value
-  this.lesson.SubGroupId = this.formGroup.controls.subGroup.value
-  if (this.isStudentUpdateLesson) {
-    if (this.memo && this.memo.trim() !== '') {
-      const personalNote: Note = {
-        id: this.note.id,
-        start: new Date(this.lesson.Date + 'T' + this.lesson.Start),
-        end: new Date(this.lesson.Date + 'T' + this.lesson.End),
-        title: '',
-        note: this.memo,
-        lessonId: this.data.lesson.id,
-      }
-
-      if (this.data.notes && this.data.notes.global) {
-        this.lesson.Notes = [
-          {
-            Text: this.data.notes.global.text,
-            Id: this.data.notes.global.id,
-          },
-        ]
-      }
-
-      this.noteService
-        .savePersonalNote(
-          personalNote,
-          this.lessonservice.formatDate2(this.dayOfLesson),
-          this.startTimeOfLesson,
-          this.endTimeOfLesson,
-          this.note.id,
-          this.data.lesson.id
-        )
-        .subscribe({
-          next: (res) => {
-            const updatedLesson: Lesson = {
-              ...this.lesson,
-              personalNote: personalNote
-            }
-            this.dialogRef.close({
-              lesson: updatedLesson,
-              type: ScheduleEventType.Lesson,
-              code: res.Code,
-              message: this.translate.transform(res.Message, res.Message),
-            })
-          },
-          error: (err) => {
-            console.error('Ошибка при сохранении личной заметки', err)
-          },
-        })
-    } else {
-      this.dialogRef.close({
-        lesson: this.lesson,
-        type: ScheduleEventType.Lesson,
-      })
+    if (this.subject !== undefined) {
+      this.lesson.ShortName = this.subject.ShortName
+      this.lesson.Name = this.subject.Name
+      this.lesson.Color = this.subject.Color
     }
-  } else {
-    this.lessonservice
-      .getLessonModule(this.lesson.SubjectId)
-      .subscribe((types) => {
-        this.typeSubject = [false, false, false, false]
-        types.forEach((type) => {
-          if (type.ModuleId == 2) {
-            this.typeSubject[0] = true
-          }
-          if (type.ModuleId == 3) {
-            this.typeSubject[1] = true
-          }
-          if (type.ModuleId == 13) {
-            this.typeSubject[2] = true
-          }
-          if (type.ModuleId == 4) {
-            this.typeSubject[3] = true
-          }
-        })
-        if (
-          this.formGroup.controls.type.value === LessonType.Lecture &&
-          this.typeSubject[0]
-        ) {
-          this.lessonservice
-            .saveLecture(
-              this.lesson,
-              this.lessonservice.formatDate2(this.dayOfLesson)
-            )
-            .subscribe((l) => {
-              if (l.Code == OperationResultCode.Success) {
-                if (this.lesson.Notes.length != 0) {
-                  this.lessonservice
-                    .saveLessonNote({
-                      id: this.note.id,
-                      subjectId: l.Schedule.SubjectId,
-                      text: this.lesson.Notes[0].Text,
-                      lecturesScheduleId: l.Schedule.Id,
-                    })
-                    .subscribe((res) => {
-                    })
-                }
-                this.lesson.Id = l.Schedule.Id
-                if (l.Schedule.Teacher != undefined) {
-                  this.lesson.Teacher = {
-                    LectorId: l.Schedule.Teacher.LectorId,
-                    FullName: this.lessonservice.cutTeacherName(
-                      l.Schedule.Teacher.FullName
-                    ),
-                  }
-                }
+    this.lesson.Date = this.lessonservice.formatDate1(this.dayOfLesson)
+    this.lesson.Type = this.lessonTypes.find(
+      (type) => type[0] === this.formGroup.controls.type.value
+    )[1]
+    if (this.startTimeOfLesson > this.endTimeOfLesson) {
+      const temp = this.startTimeOfLesson
+      this.startTimeOfLesson = this.endTimeOfLesson
+      this.endTimeOfLesson = temp
+    }
+    this.lesson.Start = this.startTimeOfLesson
+    this.lesson.End = this.endTimeOfLesson
+    if (this.memo != undefined && !this.isStudentUpdateLesson) {
+      this.lesson.Notes = [{ Text: this.memo }]
+    } else {
+      this.lesson.Notes = []
+    }
+    this.lesson.GroupId = this.formGroup.controls.group.value
+    this.lesson.SubGroupId = this.formGroup.controls.subGroup.value
+    if (this.isStudentUpdateLesson) {
+      if (this.memo && this.memo.trim() !== '') {
+        const personalNote: Note = {
+          id: this.note.id,
+          start: new Date(this.lesson.Date + 'T' + this.lesson.Start),
+          end: new Date(this.lesson.Date + 'T' + this.lesson.End),
+          title: '',
+          note: this.memo,
+          lessonId: this.data.lesson.id,
+        }
 
-                this.lesson.GroupName = this.groups
-                  .slice(0, this.groups.length - 1)
-                  .map((g) => g.GroupName)
-                  .join('\n')
+        if (this.data.notes && this.data.notes.global) {
+          this.lesson.Notes = [
+            {
+              Text: this.data.notes.global.text,
+              Id: this.data.notes.global.id,
+            },
+          ]
+        }
 
-                this.dialogRef.close({
-                  lesson: this.lesson,
-                  type: ScheduleEventType.Lesson,
-                  code: l.Code,
-                  message: this.translate.transform(l.Message, l.Message),
-                })
-              } else {
-                this.dialogRef.close({
-                  code: l.Code,
-                  message: this.translate.transform(l.Message, l.Message),
-                })
+        this.noteService
+          .savePersonalNote(
+            personalNote,
+            this.lessonservice.formatDate2(this.dayOfLesson),
+            this.startTimeOfLesson,
+            this.endTimeOfLesson,
+            this.note.id,
+            this.data.lesson.id
+          )
+          .subscribe({
+            next: (res) => {
+              const updatedLesson: Lesson = {
+                ...this.lesson,
+                personalNote: personalNote
               }
-            })
-        } else if (
-          this.formGroup.controls.type.value === LessonType.Lab &&
-          this.typeSubject[1]
-        ) {
-          this.lessonservice
-            .saveLab(
-              this.lesson,
-              this.lessonservice.formatDate2(this.dayOfLesson)
-            )
-            .subscribe((l) => {
-              if (l.Code == OperationResultCode.Success) {
-                if (this.lesson.Notes.length != 0) {
-                  this.lessonservice
-                    .saveLessonNote({
-                      id: this.note.id,
-                      subjectId: l.Schedule.SubjectId,
-                      text: this.lesson.Notes[0].Text,
-                      labsScheduleId: l.Schedule.Id,
-                    })
-                    .subscribe((res) => {
-                    })
-                }
-                this.lesson.Id = l.Schedule.Id
-                this.lesson.GroupName = l.Schedule.GroupName
-                this.lesson.SubGroupName = l.Schedule.SubGroupName
-                if (l.Schedule.Teacher != undefined) {
-                  this.lesson.Teacher = {
-                    LectorId: l.Schedule.Teacher.LectorId,
-                    FullName: this.lessonservice.cutTeacherName(
-                      l.Schedule.Teacher.FullName
-                    ),
-                  }
-                }
-                this.dialogRef.close({
-                  lesson: this.lesson,
-                  type: ScheduleEventType.Lesson,
-                  code: l.Code,
-                  message: this.translate.transform(l.Message, l.Message),
-                })
-              } else {
-                this.dialogRef.close({
-                  code: l.Code,
-                  message: this.translate.transform(l.Message, l.Message),
-                })
-              }
-            })
-        } else if (
-          this.formGroup.controls.type.value === LessonType.Practical &&
-          this.typeSubject[2]
-        ) {
-          this.lessonservice
-            .savePractical(
-              this.lesson,
-              this.lessonservice.formatDate2(this.dayOfLesson)
-            )
-            .subscribe((l) => {
-              if (l.Code == '200') {
-                if (this.lesson.Notes.length != 0) {
-                  this.lessonservice
-                    .saveLessonNote({
-                      id: this.note.id,
-                      subjectId: l.Schedule.SubjectId,
-                      text: this.lesson.Notes[0].Text,
-                      practicalScheduleId: l.Schedule.Id,
-                    })
-                    .subscribe((res) => {
-                    })
-                }
-                this.lesson.Id = l.Schedule.Id
-                this.lesson.GroupName = l.Schedule.GroupName
-                this.lesson.SubGroupName = l.Schedule.SubGroupName
-                if (l.Schedule.Teacher != undefined) {
-                  this.lesson.Teacher = {
-                    LectorId: l.Schedule.Teacher.LectorId,
-                    FullName: this.lessonservice.cutTeacherName(
-                      l.Schedule.Teacher.FullName
-                    ),
-                  }
-                }
-                this.dialogRef.close({
-                  lesson: this.lesson,
-                  type: ScheduleEventType.Lesson,
-                  code: l.Code,
-                  message: this.translate.transform(l.Message, l.Message),
-                })
-              } else {
-                this.dialogRef.close({
-                  code: l.Code,
-                  message: this.translate.transform(l.Message, l.Message),
-                })
-              }
-            })
-        } else if (
-          this.formGroup.controls.type.value === LessonType.CourseProject &&
-          this.typeSubject[3]
-        ) {
-          this.lessonservice
-            .addCourseConsultation(
-              this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00',
-              this.lesson.SubjectId,
-              this.lesson.Start + ':00',
-              this.lesson.End + ':00',
-              this.lesson.Audience,
-              this.lesson.Building,
-              this.lesson.GroupId,
-              this.lesson.Id,
-              this.lesson.Teacher.LectorId,
-              this.memo
-            )
-            .subscribe({
-              next: (res) => {
-                const schedule = res.Schedule
-                if (this.memo && this.memo.trim() !== '') {
-                  this.lesson.Notes = [
-                    {
-                      Text: this.memo,
-                    },
-                  ]
-                } else {
-                  this.lesson.Notes = []
-                }
-                schedule.Teacher.FullName = this.lessonservice.cutTeacherName(
-                  this.lesson.Teacher.FullName
-                )
-                this.dialogRef.close({
-                  lesson: {
-                    ...this.lesson,
-                    Id: schedule.Id,
-                    StartTime: schedule.StartTime,
-                    EndTime: schedule.EndTime,
-                    Day: schedule.Day,
-                    Subject: schedule.Subject,
-                    Teacher: schedule.Teacher,
-                    Building: schedule.Building,
-                    Audience: schedule.Audience,
-                    GroupId: schedule.GroupId,
-                    GroupName: this.currentGroup
-                      ? this.currentGroup.GroupName
-                      : '',
-                  },
-                  type: ScheduleEventType.Course,
-                  code: res.Code,
-                  message: this.translate.transform(res.Message, res.Message),
-                })
-              },
-
-              error: (err) => {
-                this.dialogRef.close({
-                  lesson: null,
-                  type: ScheduleEventType.Course,
-                  code: OperationResultCode.Error,
-                  message: this.translate.transform(
-                    'text.date.response.failure.taken',
-                    'Время и место занято'
-                  ),
-                })
-              },
-            })
-        } else if (
-          this.formGroup.controls.type.value === LessonType.GraduationProject
-        ) {
-
-          const findRealId = (
-            date: string,
-            startTime: string,
-            endTime: string,
-            audience: string,
-            building: string
-          ) => {
-            this.lessonservice
-              .getConsultations({ count: 1000, page: 1 })
-              .subscribe({
-                next: (result) => {
-                  const dayOnly = date.split('T')[0]
-                  const found = (result.DiplomProjectConsultationDates || []).find(
-                    (c) =>
-                      c.Day.split('T')[0] === dayOnly &&
-                      c.StartTime === startTime &&
-                      c.EndTime === endTime &&
-                      c.Audience === audience &&
-                      c.Building === building
-                  )
-                  if (found) {
-                    this.lesson.Id = found.Id
-                  }
-                  this.dialogRef.close({
-                    lesson: this.lesson,
-                    type: ScheduleEventType.Diplom,
-                  })
-                },
-                error: (err) => {
-                  this.dialogRef.close({
-                    lesson: this.lesson,
-                    type: ScheduleEventType.Diplom,
-                  })
-                },
+              this.dialogRef.close({
+                lesson: updatedLesson,
+                type: ScheduleEventType.Lesson,
+                code: res.Code,
+                message: this.translate.transform(res.Message, res.Message),
               })
-          }
-
-          const createDiplom = () => {
-            const date =
-              this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00'
-            const startTime = this.lesson.Start + ':00'
-            const endTime = this.lesson.End + ':00'
+            },
+            error: (err) => {
+              console.error('Ошибка при сохранении личной заметки', err)
+            },
+          })
+      } else {
+        this.dialogRef.close({
+          lesson: this.lesson,
+          type: ScheduleEventType.Lesson,
+        })
+      }
+    } else {
+      this.lessonservice
+        .getLessonModule(this.lesson.SubjectId)
+        .subscribe((types) => {
+          this.typeSubject = [false, false, false, false]
+          types.forEach((type) => {
+            if (type.ModuleId == 2) {
+              this.typeSubject[0] = true
+            }
+            if (type.ModuleId == 3) {
+              this.typeSubject[1] = true
+            }
+            if (type.ModuleId == 13) {
+              this.typeSubject[2] = true
+            }
+            if (type.ModuleId == 4) {
+              this.typeSubject[3] = true
+            }
+          })
+          if (
+            this.formGroup.controls.type.value === LessonType.Lecture &&
+            this.typeSubject[0]
+          ) {
             this.lessonservice
-              .addDiplomConsultation(
-                date,
-                startTime,
-                endTime,
+              .saveLecture(
+                this.lesson,
+                this.lessonservice.formatDate2(this.dayOfLesson)
+              )
+              .subscribe((l) => {
+                if (l.Code == OperationResultCode.Success) {
+                  if (this.lesson.Notes.length != 0) {
+                    this.lessonservice
+                      .saveLessonNote({
+                        id: this.note.id,
+                        subjectId: l.Schedule.SubjectId,
+                        text: this.lesson.Notes[0].Text,
+                        lecturesScheduleId: l.Schedule.Id,
+                      })
+                      .subscribe((res) => {
+                        console.log(res)
+                      })
+                  }
+                  this.lesson.Id = l.Schedule.Id
+                  if (l.Schedule.Teacher != undefined) {
+                    this.lesson.Teacher = {
+                      LectorId: l.Schedule.Teacher.LectorId,
+                      FullName: this.lessonservice.cutTeacherName(
+                        l.Schedule.Teacher.FullName
+                      ),
+                    }
+                  }
+
+                  this.lesson.GroupName = this.groups
+                    .slice(0, this.groups.length - 1)
+                    .map((g) => g.GroupName)
+                    .join('\n')
+
+                  this.dialogRef.close({
+                    lesson: this.lesson,
+                    type: ScheduleEventType.Lesson,
+                    code: l.Code,
+                    message: this.translate.transform(l.Message, l.Message),
+                  })
+                } else {
+                  this.dialogRef.close({
+                    code: l.Code,
+                    message: this.translate.transform(l.Message, l.Message),
+                  })
+                }
+              })
+          } else if (
+            this.formGroup.controls.type.value === LessonType.Lab &&
+            this.typeSubject[1]
+          ) {
+            this.lessonservice
+              .saveLab(
+                this.lesson,
+                this.lessonservice.formatDate2(this.dayOfLesson)
+              )
+              .subscribe((l) => {
+                if (l.Code == OperationResultCode.Success) {
+                  if (this.lesson.Notes.length != 0) {
+                    this.lessonservice
+                      .saveLessonNote({
+                        id: this.note.id,
+                        subjectId: l.Schedule.SubjectId,
+                        text: this.lesson.Notes[0].Text,
+                        labsScheduleId: l.Schedule.Id,
+                      })
+                      .subscribe((res) => {
+                        console.log(res)
+                      })
+                  }
+                  this.lesson.Id = l.Schedule.Id
+                  this.lesson.GroupName = l.Schedule.GroupName
+                  this.lesson.SubGroupName = l.Schedule.SubGroupName
+                  if (l.Schedule.Teacher != undefined) {
+                    this.lesson.Teacher = {
+                      LectorId: l.Schedule.Teacher.LectorId,
+                      FullName: this.lessonservice.cutTeacherName(
+                        l.Schedule.Teacher.FullName
+                      ),
+                    }
+                  }
+                  this.dialogRef.close({
+                    lesson: this.lesson,
+                    type: ScheduleEventType.Lesson,
+                    code: l.Code,
+                    message: this.translate.transform(l.Message, l.Message),
+                  })
+                } else {
+                  this.dialogRef.close({
+                    code: l.Code,
+                    message: this.translate.transform(l.Message, l.Message),
+                  })
+                }
+              })
+          } else if (
+            this.formGroup.controls.type.value === LessonType.Practical &&
+            this.typeSubject[2]
+          ) {
+            this.lessonservice
+              .savePractical(
+                this.lesson,
+                this.lessonservice.formatDate2(this.dayOfLesson)
+              )
+              .subscribe((l) => {
+                if (l.Code == '200') {
+                  if (this.lesson.Notes.length != 0) {
+                    this.lessonservice
+                      .saveLessonNote({
+                        id: this.note.id,
+                        subjectId: l.Schedule.SubjectId,
+                        text: this.lesson.Notes[0].Text,
+                        practicalScheduleId: l.Schedule.Id,
+                      })
+                      .subscribe((res) => {
+                        console.log(res)
+                      })
+                  }
+                  this.lesson.Id = l.Schedule.Id
+                  this.lesson.GroupName = l.Schedule.GroupName
+                  this.lesson.SubGroupName = l.Schedule.SubGroupName
+                  if (l.Schedule.Teacher != undefined) {
+                    this.lesson.Teacher = {
+                      LectorId: l.Schedule.Teacher.LectorId,
+                      FullName: this.lessonservice.cutTeacherName(
+                        l.Schedule.Teacher.FullName
+                      ),
+                    }
+                  }
+                  this.dialogRef.close({
+                    lesson: this.lesson,
+                    type: ScheduleEventType.Lesson,
+                    code: l.Code,
+                    message: this.translate.transform(l.Message, l.Message),
+                  })
+                } else {
+                  this.dialogRef.close({
+                    code: l.Code,
+                    message: this.translate.transform(l.Message, l.Message),
+                  })
+                }
+              })
+          } else if (
+            this.formGroup.controls.type.value === LessonType.CourseProject &&
+            this.typeSubject[3]
+          ) {
+            this.lessonservice
+              .addCourseConsultation(
+                this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00',
+                this.lesson.SubjectId,
+                this.lesson.Start + ':00',
+                this.lesson.End + ':00',
                 this.lesson.Audience,
-                this.lesson.Building
+                this.lesson.Building,
+                this.lesson.GroupId,
+                this.lesson.Id,
+                this.lesson.Teacher.LectorId,
+                this.memo
               )
               .subscribe({
                 next: (res) => {
-                  findRealId(
-                    date,
-                    startTime,
-                    endTime,
-                    this.lesson.Audience,
-                    this.lesson.Building
+                  const schedule = res.Schedule
+                  if (this.memo && this.memo.trim() !== '') {
+                    this.lesson.Notes = [
+                      {
+                        Text: this.memo,
+                      },
+                    ]
+                  } else {
+                    this.lesson.Notes = []
+                  }
+                  schedule.Teacher.FullName = this.lessonservice.cutTeacherName(
+                    this.lesson.Teacher.FullName
                   )
+                  this.dialogRef.close({
+                    lesson: {
+                      ...this.lesson,
+                      Id: schedule.Id,
+                      StartTime: schedule.StartTime,
+                      EndTime: schedule.EndTime,
+                      Day: schedule.Day,
+                      Subject: schedule.Subject,
+                      Teacher: schedule.Teacher,
+                      Building: schedule.Building,
+                      Audience: schedule.Audience,
+                      GroupId: schedule.GroupId,
+                      GroupName: this.currentGroup
+                        ? this.currentGroup.GroupName
+                        : '',
+                    },
+                    type: ScheduleEventType.Course,
+                    code: res.Code,
+                    message: this.translate.transform(res.Message, res.Message),
+                  })
                 },
+
                 error: (err) => {
-                  console.error('[Diplom] CREATE error:', err)
                   this.dialogRef.close({
                     lesson: null,
-                    type: ScheduleEventType.Diplom,
+                    type: ScheduleEventType.Course,
                     code: OperationResultCode.Error,
                     message: this.translate.transform(
                       'text.date.response.failure.taken',
@@ -807,43 +733,37 @@ export class CreateLessonComponent implements OnInit {
                   })
                 },
               })
-          }
-
-          if (this.isEditMode && this.lesson.Id) {
+          } else if (
+            this.formGroup.controls.type.value === LessonType.GraduationProject
+          ) {
+            this.dialogRef.close({
+              lesson: this.lesson,
+              type: ScheduleEventType.Diplom,
+            })
             this.lessonservice
-              .deleteDiplomConsultation(this.lesson.Id)
-              .subscribe({
-                next: (res) => {
-                  createDiplom()
-                },
-                error: (err) => {
-                  this.dialogRef.close({
-                    lesson: null,
-                    type: ScheduleEventType.Diplom,
-                    code: OperationResultCode.Error,
-                    message: this.translate.transform(
-                      'text.date.response.failure.taken',
-                      'Время и место занято'
-                    ),
-                  })
-                },
+              .addDiplomConsultation(
+                this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00',
+                this.lesson.Start + ':00',
+                this.lesson.End + ':00',
+                this.lesson.Audience,
+                this.lesson.Building
+              )
+              .subscribe((r) => {
+                console.log(r)
               })
           } else {
-            createDiplom()
+            this.dialogRef.close({
+              lesson: null,
+              code: OperationResultCode.Error,
+              message: this.translate.transform(
+                'text.date.add.response.failure.unknown',
+                'text.date.add.response.failure.unknown'
+              ),
+            })
           }
-        } else {
-          this.dialogRef.close({
-            lesson: null,
-            code: OperationResultCode.Error,
-            message: this.translate.transform(
-              'text.date.add.response.failure.unknown',
-              'text.date.add.response.failure.unknown'
-            ),
-          })
-        }
-      })
+        })
+    }
   }
-}
 
   addNote() {
     const noteId = this.eventToChange ? this.eventToChange.id : 0
