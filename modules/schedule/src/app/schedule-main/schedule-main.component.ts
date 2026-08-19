@@ -331,62 +331,34 @@ export class ScheduleMainComponent implements OnInit {
 }
 
   getTitleDiplomConsultation(consultation: any) {
-  const memo = this.getLessonNoteText(consultation)
-
-  let teacher = ''
-  if (consultation.Teacher && consultation.Teacher.FullName) {
-    teacher = consultation.Teacher.FullName
-  } else if (consultation.LecturerFullName) {
-    teacher = consultation.LecturerFullName
+    return (
+      consultation.Start.split(':')[0] +
+      ':' +
+      consultation.Start.split(':')[1] +
+      '-' +
+      consultation.End.split(':')[0] +
+      ':' +
+      consultation.End.split(':')[1] +
+      '|' +
+      consultation.Audience +
+      '|' +
+      consultation.Building +
+      '|' +
+      this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
+      '|' +
+      this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
+      '|' +
+      '|' +
+      '#3F51B5' +
+      '|' +
+      '|' +
+      '|' +
+      '|' +
+      '|' +
+      '|' +
+      '|'
+    )
   }
-  teacher = this.formatLecturerName(teacher)
-
-  let subjectName = ''
-  let subjectId = ''
-  if (consultation.Subject) {
-    subjectName = consultation.Subject.Name
-    subjectId = consultation.Subject.Id
-  }
-
-  const groupId = consultation.GroupId != null ? consultation.GroupId : ''
-  const groupName = consultation.GroupName != null ? consultation.GroupName : ''
-
-  return (
-    consultation.Start.split(':')[0] +
-    ':' +
-    consultation.Start.split(':')[1] +
-    '-' +
-    consultation.End.split(':')[0] +
-    ':' +
-    consultation.End.split(':')[1] +
-    '|' +
-    consultation.Audience +
-    '|' +
-    consultation.Building +
-    '|' +
-    this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
-    '|' +
-    this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП') +
-    '|' +
-    teacher +
-    '|' +
-    '#3F51B5' +
-    '|' +
-    subjectName +
-    '|' +
-    subjectId +
-    '|' +
-    memo +
-    '|' +
-    groupId +
-    '|' +
-    '|' +
-    groupName +
-    '|' +
-    '|' +
-    ''
-  )
-}
 
   getToolTip(title: string): string {
     const group = this.lessonservice.getTitlePart(title, 12)
