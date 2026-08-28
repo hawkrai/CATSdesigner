@@ -222,7 +222,6 @@ export class ResultTestTableComponent
           }
 
           const dialogRef = this.dialog.open(AnswersPopupComponent, {
-            width: '800px',
             data: {
               event,
               id,

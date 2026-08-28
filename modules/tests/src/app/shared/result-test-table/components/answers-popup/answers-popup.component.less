@@ -1,34 +1,46 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
 }
 
 .answers-popup {
   &-content {
     margin-top: 10px;
+    color: #363636;
+    font:
+      400 16px/22px 'Roboto',
+      'Helvetica Neue',
+      sans-serif;
+
     &:first-child {
       margin-top: 0;
     }
   }
-  &-general {
-    padding-right: 48px;
 
+  &-general {
     &-wrapper {
       margin-bottom: 20px;
     }
-    &-test {
-      margin-bottom: 0;
-      font:
-        400 20px/32px Roboto,
-        'Helvetica Neue',
-        sans-serif;
-      overflow-wrap: break-word;
-    }
+
     &-name {
       font-weight: 500;
       margin-bottom: 20px;
+      color: #363636;
+      font:
+        400 16px/22px 'Roboto',
+        'Helvetica Neue',
+        sans-serif;
     }
+
     &-mark {
       margin-top: 5px;
+      color: #363636;
+      font:
+        400 16px/22px 'Roboto',
+        'Helvetica Neue',
+        sans-serif;
     }
   }
 
@@ -36,19 +48,5 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    &-margin {
-    }
   }
-}
-
-.mat-dialog-actions {
-  justify-content: flex-end;
-}
-
-.close-button {
-  position: absolute;
-  top: 20px;
-  right: 25px;
-  z-index: 1;
-  color: gray;
 }
