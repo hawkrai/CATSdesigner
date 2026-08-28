@@ -1,11 +1,11 @@
 <app-popover-dialog>
   <ng-container title>
     {{ data.testName }}
+    <div class="answers-popup-subtitle">{{ data.name }}</div>
   </ng-container>
   <ng-container body>
     <div *ngIf="answers?.length; else loading">
       <div class="answers-popup-general">
-        <div class="answers-popup-general-name">{{ data.name }}</div>
         <div class="answers-popup-general-mark">
           {{
             'text.test.result.mark'
