@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using Application.Core;
 using Application.Core.Data;
@@ -15,6 +18,9 @@ using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.ProjectManagement;
 using Application.Infrastructure.SubjectManagement;
 using Application.Infrastructure.UserManagement;
+using JWT.Algorithms;
+using JWT.Builder;
+using JWT.Exceptions;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
@@ -22,6 +28,7 @@ using LMPlatform.UI.Services.Modules.News;
 using LMPlatform.UI.Services.Modules.Subjects;
 using LMPlatform.UI.ViewModels.AdministrationViewModels;
 using LMPlatform.UI.ViewModels.LmsViewModels;
+using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
 {
@@ -385,6 +392,45 @@ namespace LMPlatform.UI.Controllers
                 model.GroupId = user.Student.Group.Id;
             }
 
+
+            var authCookie = Request.Cookies["Authorization"];
+
+            var autHeader = Request.Headers["Authorization"];
+            if (authCookie != null || autHeader != null)
+            {
+                var token = authCookie != null ? authCookie.Value : autHeader.Replace("Bearer", "");
+                try
+                {
+                    var tokenSecret = ConfigurationManager.AppSettings["jwt:secret"];
+                    var json = new JwtBuilder()
+                        .WithSecret(tokenSecret)
+                        .WithAlgorithm(new HMACSHA256Algorithm())
+                        .MustVerifySignature()
+                        .Decode<IDictionary<string, string>>(token);
+
+                }
+                catch (TokenExpiredException)
+                {
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
+                        new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Lecturer == null ? "lecturer" : "student"),
+                        new Claim("id", user.Id.ToString())
+                    };
+                    this.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims));
+
+                    var tokenLifeTime = int.Parse(ConfigurationManager.AppSettings["jwt:tokenLifeTimeInHours"]);
+                    var tokenSecret = ConfigurationManager.AppSettings["jwt:secret"];
+                    var newToken = new JwtBuilder()
+                        .WithAlgorithm(new HMACSHA256Algorithm())
+                        .WithSecret(tokenSecret)
+                        .AddClaim(ClaimName.ExpirationTime,
+                            DateTimeOffset.UtcNow.AddHours(tokenLifeTime).ToUnixTimeSeconds())
+                        .AddClaims(claims.Select(c => new KeyValuePair<string, object>(c.Type, c.Value)))
+                        .Encode();
+                    Response.Cookies.Add(new HttpCookie("Authorization", newToken));
+                }
+            }
 
             return this.Json(model);
         }
