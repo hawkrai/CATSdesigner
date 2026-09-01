@@ -32,7 +32,7 @@
     "@types/jquery": "3.5.5",
     "bootstrap": "4.6.0",
     "crypto": "1.0.1",
-    "dompurify": "2.3.0",
+    "dompurify": "3.2.4",
     "educats-common": "2.0.0",
     "educats-translate": "1.0.0",
     "jquery": "2.2.2",
