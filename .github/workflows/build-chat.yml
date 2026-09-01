@@ -1,0 +1,39 @@
+name: Build Chat Service and Push to Deploy Branch
+
+on:
+  push:
+    branches:
+      - develop
+
+    paths:
+      - 'ChatServer/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: develop
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish Chat Service
+        run: dotnet publish ChatServer/ChatServer.csproj --configuration Release --output ./publish_output
+
+      - name: Deploy to deploy-prod-chat branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./publish_output
+          publish_branch: deploy-prod-chat
+          force_orphan: true
+          exclude_assets: |
+            **/appsettings.json
+            **/appsettings.Development.json
+            **/web.config
