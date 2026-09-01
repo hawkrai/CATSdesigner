@@ -2,6 +2,7 @@
   "name": "lms-new",
   "version": "0.0.0",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "ng": "../../../lmsNew/node_modules/.bin/ng",
     "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
