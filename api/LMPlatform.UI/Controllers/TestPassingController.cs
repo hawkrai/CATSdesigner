@@ -749,9 +749,8 @@ namespace LMPlatform.UI.Controllers
                 return defTime;
             }
 
-            var defZone = TimeZoneInfo.FindSystemTimeZoneById("Russian Standard Time");
             var unspecified = DateTime.SpecifyKind(defTime, DateTimeKind.Unspecified);
-            var utc = TimeZoneInfo.ConvertTimeToUtc(unspecified, defZone);
+            var utc = TimeZoneInfo.ConvertTimeToUtc(unspecified, TimeZoneInfo.Local);
             return utc.AddMinutes(-clientTimezoneOffsetMinutes.Value);
         }
 
