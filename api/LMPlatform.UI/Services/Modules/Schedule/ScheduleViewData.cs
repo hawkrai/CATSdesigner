@@ -2,8 +2,10 @@
 using LMPlatform.UI.Services.Modules.Notes;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace LMPlatform.UI.Services.Modules.Schedule
@@ -22,7 +24,8 @@ namespace LMPlatform.UI.Services.Modules.Schedule
             Name = schedule.Name;
             ShortName = schedule.ShortName;
             Start = schedule.Start?.ToString(@"hh\:mm");
-            Date = schedule.Date.ToString("dd/MM/yyyy");
+            Date = Regex.Replace(
+            schedule.Date.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture), @"\D", @".");
             SubjectId = schedule.SubjectId;
             Teacher = schedule.Teacher == null ? null : new LectorViewData(schedule.Teacher);
             Type = schedule.Type;
