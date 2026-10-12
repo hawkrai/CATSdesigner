@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 import { Question } from '../models/question/Question'
+import { UserAnswer } from '../models/question/UserAnswer'
+import { DataValue } from '../models/data-value.model'
+import { TestResultDataKey } from '../models/test-result-data-key.enum'
 import { Test } from '../models/Test'
 import { TestQuestion } from '../models/question/TestQuestion'
 
@@ -10,13 +14,6 @@ import { TestQuestion } from '../models/question/TestQuestion'
 })
 export class TestService {
   constructor(private http: HttpClient) {}
-
-  getPredTest(): Observable<number> {
-    const subject = JSON.parse(localStorage.getItem('currentSubject'))
-    return this.http.get<number>(
-      '/Tests/GetEUMKPredTestIdForSubject?subjectId=' + subject.id
-    )
-  }
 
   getQuestionsByTest(testId: string): Observable<Question[]> {
     return this.http.get<Question[]>('/Tests/GetQuestions?testId=' + testId)
@@ -59,6 +56,39 @@ export class TestService {
       '/TestPassing/AnswerQuestionAndGetNextMobile',
       answer
     )
+  }
+
+  closeTestAndGetAnswers(testId: string): Observable<UserAnswer[]> {
+    return this.http
+      .get<{ Data: DataValue[] }>(
+        '/TestPassing/CloseTestAndGetResult?testId=' + testId
+      )
+      .pipe(
+        map((res) =>
+          this.getDataValue<UserAnswer[]>(
+            res && res.Data,
+            TestResultDataKey.Answers
+          )
+        )
+      )
+  }
+
+  getEndedTestAnswers(testId: string): Observable<UserAnswer[]> {
+    const user = JSON.parse(localStorage.getItem('currentUser'))
+    return this.http
+      .get<DataValue[]>(
+        '/TestPassing/GetUserAnswers?studentId=' + user.id + '&testId=' + testId
+      )
+      .pipe(
+        map((res) =>
+          this.getDataValue<UserAnswer[]>(res, TestResultDataKey.UserAnswers)
+        )
+      )
+  }
+
+  private getDataValue<T>(data: DataValue[], key: TestResultDataKey): T {
+    const item = Array.isArray(data) ? data.find((x) => x.Key === key) : null
+    return item ? (item.Value as T) : null
   }
 
   getTestResult(testId: number, studentId: number): Observable<any> {

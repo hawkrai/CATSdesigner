@@ -1,11 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators'
-import { Observable, Subject, timer } from 'rxjs'
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators'
+import { Observable, of, Subject, timer } from 'rxjs'
 import { Test } from '../../../../models/Test'
 import { TestService } from '../../../../service/test.service'
 import { TestQuestion } from '../../../../models/question/TestQuestion'
+import { UserAnswer } from '../../../../models/question/UserAnswer'
 import { UserRole } from '../../../../../../../../container/src/app/core/models/user-role.enum'
+import { TimerValue } from '../../../../models/timer-value.enum'
 
 @Component({
   selector: 'app-test-execution',
@@ -19,13 +21,15 @@ export class TestExecutionComponent implements OnInit {
   @Input()
   isPredTest = false
 
-  @Output()
-  monitoringPhaseCompleted = new EventEmitter<void>()
+  @Input()
+  testTitle: string
 
   @Output()
-  predTestFlowContinue = new EventEmitter<void>()
+  learningFlowContinue = new EventEmitter<void>()
 
   public isLector = false
+  public isResultLoading = false
+  private isTestFinished = false
   public question: TestQuestion
   public questionNumber: string
   public test: Test
@@ -33,7 +37,7 @@ export class TestExecutionComponent implements OnInit {
   public allAnswersArray: number[] = []
   public trueAnswersArray: number[] = []
   public falseAnswersArray: number[] = []
-  public outputArray: any[] = []
+  public outputArray: UserAnswer[] = []
   public result: any
   public counter$: Observable<string>
   public count = 60
@@ -65,29 +69,18 @@ export class TestExecutionComponent implements OnInit {
       .getTestById(this.testId)
       .pipe(
         tap((test) => {
-          this.test = test
+          this.test = this.testTitle ? { ...test, Title: this.testTitle } : test
           this.fillQuestionArray()
         }),
-        switchMap((test) =>
-          this.testService.getNextQuestion(
-            this.testId,
-            this.questionNumber,
-            this.shouldExcludeCorrectnessIndicator(test)
-          )
-        ),
+        switchMap((test) => this.getFirstQuestion(test)),
         tap((question: TestQuestion) => {
           this.question = question
           if (!this.question.Seconds && this.question.Seconds === 0) {
-            this.showTest = false
+            this.finishTest()
           }
           this.questionNumber = question && question.Number.toString()
           this.allAnswersArray = question && question.IncompleteQuestionsNumbers
-          const timezoneOffsetInSeconds = new Date().getTimezoneOffset() * 60
-          const adjustedSeconds =
-            this.question.Seconds + timezoneOffsetInSeconds
-          this.question.Seconds = adjustedSeconds > 0 ? adjustedSeconds : 0
           this.counter$ = timer(0, 1000).pipe(
-            take(this.question.Seconds),
             map(() => {
               if (this.question.Seconds && this.question.Seconds != 0) {
                 --this.question.Seconds
@@ -96,7 +89,7 @@ export class TestExecutionComponent implements OnInit {
                 const minute: number = Math.floor(restTime / 60)
                 restTime = restTime - 60 * minute
                 if (hour === 0 && minute === 0 && restTime === 0) {
-                  this.showTest = false
+                  this.finishTest()
                 }
                 return (
                   (hour >= 10 ? hour.toString() : '0' + hour.toString()) +
@@ -108,7 +101,7 @@ export class TestExecutionComponent implements OnInit {
                     : '0' + restTime.toString())
                 )
               } else {
-                this.showTest = false
+                return TimerValue.Expired
               }
             })
           )
@@ -124,24 +117,10 @@ export class TestExecutionComponent implements OnInit {
         return
       }
       if (answer.answered) {
-        const index = this.questionArray.indexOf(Number(this.questionNumber))
-        const index1 = this.allAnswersArray.indexOf(Number(this.questionNumber))
+        const currentQuestionNumber = Number(this.questionNumber)
+        const index = this.questionArray.indexOf(currentQuestionNumber)
         this.questionArray.splice(index, 1)
-        if (answer.isTrue) {
-          this.allAnswersArray.splice(index1, 1)
-          this.trueAnswersArray.push(Number(this.questionNumber))
-          this.outputArray.push({
-            Number: this.questionNumber,
-            Points: 1,
-          })
-        } else {
-          this.allAnswersArray.splice(index1, 1)
-          this.falseAnswersArray.push(Number(this.questionNumber))
-          this.outputArray.push({
-            Number: this.questionNumber,
-            Points: 0,
-          })
-        }
+        this.syncQuestionProgress(currentQuestionNumber, answer.isTrue)
       }
       if (this.questionArray.length !== 0) {
         if (questionNumber && this.questionArray.includes(questionNumber)) {
@@ -176,25 +155,74 @@ export class TestExecutionComponent implements OnInit {
             if (question && question.Question) {
               this.question = question
             } else {
-              this.onAdaptiveResultsShown()
+              this.finishTest(true)
             }
           })
       } else {
-        this.onAdaptiveResultsShown()
+        this.finishTest()
       }
     } else {
-      this.onAdaptiveResultsShown()
+      this.finishTest()
     }
   }
 
-  public onPredTestContinueClick(): void {
-    this.predTestFlowContinue.emit()
+  public onContinueLearningClick(): void {
+    this.learningFlowContinue.emit()
   }
 
-  private onAdaptiveResultsShown(): void {
+  private getFirstQuestion(test: Test): Observable<TestQuestion> {
+    const excludeCorrectness = this.shouldExcludeCorrectnessIndicator(test)
+    return this.testService
+      .getNextQuestion(this.testId, this.questionNumber, excludeCorrectness)
+      .pipe(
+        switchMap((question: TestQuestion) =>
+          question && question.Question
+            ? of(question)
+            : this.testService.getNextQuestion(
+                this.testId,
+                this.questionNumber,
+                excludeCorrectness
+              )
+        )
+      )
+  }
+
+  private finishTest(isClosedOnServer = false): void {
+    if (this.isTestFinished) {
+      return
+    }
+    this.isTestFinished = true
     this.showTest = false
-    if (!this.isPredTest) {
-      this.monitoringPhaseCompleted.emit()
+    this.isResultLoading = true
+    const answers$ = isClosedOnServer
+      ? this.testService.getEndedTestAnswers(this.testId)
+      : this.testService.closeTestAndGetAnswers(this.testId)
+    answers$.pipe(takeUntil(this.unsubscribeStream$)).subscribe(
+      (answers: UserAnswer[]) => {
+        this.outputArray = answers || []
+        this.isResultLoading = false
+      },
+      () => {
+        this.isResultLoading = false
+      }
+    )
+  }
+
+  private syncQuestionProgress(questionNumber: number, isTrue: boolean): void {
+    this.allAnswersArray = this.allAnswersArray.filter(
+      (value) => value !== questionNumber
+    )
+    this.trueAnswersArray = this.trueAnswersArray.filter(
+      (value) => value !== questionNumber
+    )
+    this.falseAnswersArray = this.falseAnswersArray.filter(
+      (value) => value !== questionNumber
+    )
+
+    if (this.showColorAnswerFeedback() && !isTrue) {
+      this.falseAnswersArray.push(questionNumber)
+    } else {
+      this.trueAnswersArray.push(questionNumber)
     }
   }
 

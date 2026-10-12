@@ -181,6 +181,12 @@ export class ComplexService {
     )
   }
 
+  public isDocxExportAvailable(complexId: string): Observable<boolean> {
+    return this.http
+      .get(this.path + 'GetEumkExportOptions?complexId=' + complexId)
+      .pipe(map((res) => !!res['IsDocxExportAvailable']))
+  }
+
   public convertPendingDocx(conceptId: number): Observable<any> {
     return this.http.get(this.path + 'ConvertPendingDocx?conceptId=' + conceptId)
   }

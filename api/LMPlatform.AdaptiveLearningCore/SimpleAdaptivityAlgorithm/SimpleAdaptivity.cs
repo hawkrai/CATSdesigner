@@ -17,15 +17,17 @@ namespace LMPlatform.AdaptiveLearningCore.SimpleAdaptivityAlgorithm
 		public ThemaResult GetResultByCurrentThema(int currentThemaId, int currentThemaTestResult, IEnumerable<ConceptThema> allAvailableThemes)
 		{
 			var res = testProcessor.GetTestResult(currentThemaTestResult);
-			var solution = res == ThemaResults.NOT_LEARNED ? ThemaSolutions.REPEAT_CURRENT : ThemaSolutions.GET_NEXT;
-			var nextStep = solution == ThemaSolutions.REPEAT_CURRENT ? currentThemaId 
-				: allAvailableThemes.FirstOrDefault(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN).ThemaId;
+			var solution = res == ThemaResults.NOT_LEARNED || res == ThemaResults.BAD_LEARNED
+				? ThemaSolutions.REPEAT_CURRENT
+				: ThemaSolutions.GET_NEXT;
+			var nextStep = solution == ThemaSolutions.REPEAT_CURRENT ? currentThemaId
+				: allAvailableThemes.FirstOrDefault(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN && x.ThemaId != currentThemaId)?.ThemaId;
 
 			return new ThemaResult
 			{
 				ThemaId = currentThemaId,
 				ResultByCurrentThema = res,
-				NextStepSolution = solution,
+				NextStepSolution = nextStep is null ? ThemaSolutions.END_PROCCESS : solution,
 				NextThemaId = nextStep
 			};
 		}		

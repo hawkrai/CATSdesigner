@@ -38,7 +38,8 @@
 }
 
 .answered {
-  background-color: #00a65a;
+  background-color: #3f51b5;
+  color: white;
 }
 
 .answered-show {
@@ -69,8 +70,23 @@
     display: flex;
     align-items: center;
     cursor: pointer;
-    margin-bottom: 16px;
-    color: #363636 !important;
+    margin-bottom: 20px;
+    color: #3f51b5;
+    font-family:
+      Roboto,
+      Helvetica Neue,
+      sans-serif;
+    font-size: 20px;
+    text-decoration: none;
+
+    &:hover {
+      color: #aaaaaa;
+    }
+  }
+
+  &__loading {
+    padding: 20px 0;
+    color: #363636;
     font-family:
       Roboto,
       Helvetica Neue,
@@ -139,18 +155,6 @@
         flex: 0 0 80%;
       }
     }
-  }
-
-  &__backlink {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    margin-bottom: 20px;
-    color: #363636 !important;
-    font-family:
-      Roboto,
-      Helvetica Neue,
-      sans-serif;
   }
 }
 
