@@ -1,6 +1,6 @@
-<div mat-dialog-actions *ngIf="!needToGetInitialTest && !isTest">
+<div mat-dialog-actions *ngIf="!needToGetInitialTest && !isTest && !isEndLearning && !isPredTestNotLinked">
   <button
-    *ngIf="zoomInButtonVisible && isLibreOfficeMode"
+    *ngIf="zoomInButtonVisible && isBuiltInViewerMode"
     mat-raised-button
     mat-button
     class="color-button"
@@ -10,7 +10,7 @@
     {{ 'common.zoomIn' | translate: 'Увеличить' }}
   </button>
   <button
-    *ngIf="zoomOutButtonVisible && isLibreOfficeMode"
+    *ngIf="zoomOutButtonVisible && isBuiltInViewerMode"
     mat-raised-button
     mat-button
     class="color-button"
@@ -54,27 +54,6 @@
       <mat-icon>clear</mat-icon>
     </button>
   </div>
-</div>
-
-<div
-  mat-dialog-actions
-  *ngIf="!needToGetInitialTest && isTest && endTestButtonVisible && !isPredTest"
-  class="adaptive-test-actions"
->
-  <button
-    id="continueButton"
-    mat-raised-button
-    mat-button
-    class="color-button"
-    [disabled]="!monitoringPhaseComplete"
-    (click)="processsTest()"
-  >
-    {{
-      isPredTest
-        ? ('complex.goToLearning' | translate: 'Перейти к обучению')
-        : ('common.finishTest' | translate: 'Завершить тест')
-    }}
-  </button>
 </div>
 
 <div mat-dialog-content class="lab-work-component__popover" #popoverContent>
@@ -123,7 +102,7 @@
   <!-- LibreOffice_Mode -->
   <pdf-viewer
     #pdfViewer
-    *ngIf="showMaterial && isLibreOfficeMode"
+    *ngIf="showMaterial && hasCurrentMaterial && isBuiltInViewerMode"
     (mousemove)="onDrag($event, pdfViewer)"
     (mousedown)="onDragStarted($event)"
     (mouseup)="onDragEnded($event, 'up')"
@@ -142,7 +121,7 @@
   ></pdf-viewer>
 
   <!-- GoogleDocs_Mode -->
-  <ng-container *ngIf="showMaterial && !isLibreOfficeMode">
+  <ng-container *ngIf="showMaterial && hasCurrentMaterial && !isBuiltInViewerMode">
     <div class="google-docs-wrapper">
       <div *ngIf="isGoogleDocsLoading" class="google-docs-loading">
         <span>{{ 'complex.loadingDocument' | translate: 'Загрузка документа...' }}</span>
@@ -156,18 +135,78 @@
   </ng-container>
 
   <div *ngIf="isTest">
+    <div class="adaptive-test-close">
+      <button mat-icon-button (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
     <app-test-execution
       [testId]="testId"
+      [testTitle]="testTitle"
       [isPredTest]="isPredTest"
-      (monitoringPhaseCompleted)="onMonitoringPhaseComplete()"
-      (predTestFlowContinue)="onAdaptiveFlowContinue()"
+      (learningFlowContinue)="onLearningFlowContinue()"
     ></app-test-execution>
   </div>
 
-  <div *ngIf="isEndLearning">
-    <p>
-      {{ 'complex.finishProcess' | translate: 'Процесс обучения завершён' }}
-    </p>
-    <p>{{ 'complex.exit' | translate: 'Для выхода нажмите Отмена' }}...</p>
+  <div *ngIf="isPredTestNotLinked" class="adaptive-info">
+    <div class="adaptive-info__title">
+      <p>
+        {{
+          'complex.predTestNotLinked.title'
+            | translate: 'Не удалось определить темы для обучения'
+        }}
+      </p>
+      <button mat-icon-button (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+    <div class="adaptive-info__text">
+      <p>
+        {{
+          'complex.predTestNotLinked.text'
+            | translate
+              : 'Вопросы предтеста не связаны с темами этого ЭУМК. Обратитесь к преподавателю.'
+        }}
+      </p>
+    </div>
+  </div>
+
+  <div *ngIf="isEndLearning && !isPredTestNotLinked" class="adaptive-info">
+    <div class="adaptive-info__title">
+      <p>
+        {{ 'complex.learningFinished.congratulations' | translate: 'Поздравляем!!!' }}
+      </p>
+      <button mat-icon-button (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+    <div class="adaptive-info__text">
+      <p>
+        {{
+          'complex.learningFinished.text'
+            | translate: 'Процесс адаптивного обучения завершен.'
+        }}
+      </p>
+      <p *ngIf="!isLector">
+        {{
+          'complex.learningFinished.repeatHint'
+            | translate
+              : 'Если захотите повторить процесс обучения, обратитесь к преподавателю.'
+        }}
+      </p>
+    </div>
+    <div class="adaptive-info__actions" *ngIf="isLector">
+      <button
+        mat-raised-button
+        mat-button
+        class="pred-raised-button"
+        (click)="restartLearning()"
+      >
+        {{
+          'complex.learningFinished.restart'
+            | translate: 'Пройти обучение заново'
+        }}
+      </button>
+    </div>
   </div>
 </div>

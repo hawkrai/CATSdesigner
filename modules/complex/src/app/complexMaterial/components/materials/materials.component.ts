@@ -32,6 +32,13 @@ import { TreeDragDropService, DragOverResult } from '../../../service/tree-drag-
 import { DropPlacement } from '../../../models/drop-placement.enum'
 import { DragCssClass } from '../../../models/drag-css-class.enum'
 import { LibreOfficeAvailabilityService } from '../../../service/libre-office-availability.service'
+import { FileExtension } from '../../../models/file/file-extension.enum'
+
+const VIEWABLE_MATERIAL_EXTENSIONS: FileExtension[] = [
+  FileExtension.Pdf,
+  FileExtension.Doc,
+  FileExtension.DocX,
+]
 
 @Component({
   selector: 'app-material-tree',
@@ -256,18 +263,29 @@ export class MaterialComponent implements OnInit, OnChanges {
   }
 
   private _openPDFDialog(nodeId: number, filename: string): void {
-    const path = '/api/Upload?fileName=' + filename
-    const siblingMaterials = this.collectSiblingMaterials(this.dataSource.data, nodeId)
-    const currentIndex = siblingMaterials.findIndex((mat) => mat === filename)
-    
+    const siblingNodes = this.collectSiblingMaterialNodes(this.dataSource.data, nodeId)
+    const documents: string[] = []
+    let currentIndex = 0
+    siblingNodes.forEach((sibling) => {
+      const nodeMaterials = this.getNodeMaterialPaths(sibling)
+      if (String(sibling.Id) === String(nodeId)) {
+        currentIndex = documents.length + Math.max(0, nodeMaterials.indexOf(filename))
+      }
+      documents.push(...nodeMaterials)
+    })
+
+    const siblingMaterials = documents.length ? documents : [filename]
+    const startIndex = currentIndex < siblingMaterials.length ? currentIndex : 0
+    const path = '/api/Upload?fileName=' + siblingMaterials[startIndex]
+
     const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
       width: '1000px',
       height: '100%',
-      data: { 
-        name: 'name', 
+      data: {
+        name: 'name',
         url: path,
         documents: siblingMaterials,
-        currentIndex: currentIndex >= 0 ? currentIndex : 0
+        currentIndex: startIndex
       },
     })
 
@@ -276,28 +294,33 @@ export class MaterialComponent implements OnInit, OnChanges {
     })
   }
 
-  private collectSiblingMaterials(nodes: ComplexCascade[], nodeId: number): string[] {
+  private collectSiblingMaterialNodes(nodes: ComplexCascade[], nodeId: number): ComplexCascade[] {
     const targetNode = this.findNodeById(nodes, nodeId)
-    
+
     if (!targetNode) {
       return []
     }
 
     const parentNode = this.findParentNode(nodes, nodeId)
-    
-    if (parentNode && parentNode.children) {
-      return parentNode.children
-        .filter((child) => child.FilePath && (
-          !this.libreOfficeAvailability.isAvailable || !child.FilePath.toLowerCase().endsWith('.docx')
-        ))
-        .map((child) => child.FilePath)
-    }
-    
-    return nodes
-      .filter((node) => node.FilePath && (
-        !this.libreOfficeAvailability.isAvailable || !node.FilePath.toLowerCase().endsWith('.docx')
-      ))
-      .map((node) => node.FilePath)
+    const siblings = parentNode && parentNode.children ? parentNode.children : nodes
+
+    return siblings.filter((node) => !!node.FilePath)
+  }
+
+  private getNodeMaterialPaths(node: ComplexCascade): string[] {
+    const attachmentPaths = (node.Attachments || [])
+      .filter((attachment) => this.isViewableMaterial(attachment.FileName))
+      .map((attachment) => `${attachment.PathName}//${attachment.FileName}`)
+    const paths = attachmentPaths.length ? attachmentPaths : [node.FilePath]
+
+    return paths.filter((path) =>
+      !this.libreOfficeAvailability.isAvailable || !path.toLowerCase().endsWith(`.${FileExtension.DocX}`)
+    )
+  }
+
+  private isViewableMaterial(fileName: string): boolean {
+    const extension = (fileName || '').split('.').pop().toLowerCase()
+    return VIEWABLE_MATERIAL_EXTENSIONS.includes(extension as FileExtension)
   }
 
   private findNodeById(nodes: ComplexCascade[], nodeId: number): ComplexCascade | null {

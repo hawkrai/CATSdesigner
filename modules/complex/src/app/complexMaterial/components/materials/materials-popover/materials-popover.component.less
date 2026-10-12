@@ -58,10 +58,6 @@
   }
 }
 
-.adaptive-test-actions {
-  justify-content: flex-start;
-}
-
 ::ng-deep .cdk-global-overlay-wrapper {
   display: flex;
 }
@@ -103,6 +99,44 @@
   padding: 5px 15px;
   color: #ffffff;
   background-color: #3f51b5;
+}
+
+.adaptive-test-close {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.adaptive-info {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  color: #363636;
+
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 26px;
+    border-bottom: 1px solid #dddddd;
+
+    p {
+      margin: 0 0 10px 0;
+    }
+  }
+
+  &__text {
+    font-size: 18px;
+    line-height: 1.4;
+    padding-top: 10px;
+
+    p {
+      margin: 0 0 8px 0;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+  }
 }
 
 .google-docs-wrapper {
