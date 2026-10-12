@@ -16,16 +16,21 @@ import { Constants } from '../models/constanst/DataConstants'
 import * as neuralNetworkV2 from '../core/neuron/neuron1.js'
 import { CatsService } from '../service/cats.service'
 import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
+import { MenuService } from '../../../../../container/src/app/core/services/menu.service'
+import { ModuleType } from '../../../../../container/src/app/core/models/module.model'
 
 interface Theme {
   name: string
   id: number
+  container?: string
+  filePath?: string
 }
 
 interface NNItem {
   theme: string
   status: boolean
   score: number
+  id: number
 }
 
 @AutoUnsubscribe
@@ -59,7 +64,8 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
     private http: HttpClient,
     private router: Router,
     private route: ActivatedRoute,
-    private catsService: CatsService
+    private catsService: CatsService,
+    private menuService: MenuService
   ) {
     super()
   }
@@ -142,11 +148,13 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
             const status = !(parseFloat(value) > 0.7)
             const score = value
             const theme = this.themes[index]?.name || ''
+            const themeId = this.themes[index]?.id
 
             this.nnDatasource.push({
               status,
               score,
               theme,
+              id: themeId,
             })
           }
         }
@@ -194,6 +202,49 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
         },
         () => this.navigate()
       )
+  }
+
+  public openEumkTopic(item: NNItem): void {
+    if (!item || !item.id) {
+      return
+    }
+
+    const subjectRaw = localStorage.getItem(StorageKeys.CurrentSubject)
+    const subject = subjectRaw ? JSON.parse(subjectRaw) : null
+
+    if (!subject || !subject.id) {
+      return
+    }
+
+    const openEumk = (rootConceptId: number) => {
+      if (rootConceptId && rootConceptId > 0) {
+        localStorage.setItem(StorageKeys.SelectedComplex, String(rootConceptId))
+      }
+
+      // запоминаем, в какой теме дерева ЭУМК нужно оказаться после загрузки
+      sessionStorage.setItem(StorageKeys.ComplexTargetConcept, String(item.id))
+
+      const { item: eumkItem } = this.menuService.getSubjectInfo(
+        ModuleType.ComplexMaterial
+      )
+
+      this.catsService.sendMessage({
+        Type: 'Route',
+        Value: `web/viewer/subject/${subject.id}#${eumkItem}`,
+      })
+    }
+
+    const rootConceptId = this.testMeta?.EumkRootConceptId
+
+    if (rootConceptId && rootConceptId > 0) {
+      openEumk(rootConceptId)
+      return
+    }
+
+    this.testService
+      .getConceptRootId(item.id)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((rootId) => openEumk(rootId || 0))
   }
 
   private getDataValue<T>(

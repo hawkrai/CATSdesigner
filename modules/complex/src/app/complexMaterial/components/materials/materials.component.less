@@ -156,3 +156,20 @@ mat-nested-tree-node.drop-inside > li > .mat-tree-node {
   outline: 2px solid #ff3366;
   border-radius: 4px;
 }
+
+.topic-highlight {
+  background-color: rgba(63, 81, 181, 0.12);
+  outline: 2px solid #3f51b5;
+  border-radius: 4px;
+  animation: topic-highlight-in 1.2s ease-out;
+}
+
+@keyframes topic-highlight-in {
+  0% {
+    background-color: rgba(63, 81, 181, 0.45);
+  }
+
+  100% {
+    background-color: rgba(63, 81, 181, 0.12);
+  }
+}
