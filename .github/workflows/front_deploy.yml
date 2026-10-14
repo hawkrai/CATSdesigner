@@ -1,0 +1,31 @@
+name: Front deploy
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Build project
+        run: scripts/build_modules.sh
+
+      - name: Upload to FTP
+        uses: sebastianpopp/ftp-action@v1.1.0
+        with:
+          host: ${{ secrets.FTP_HOST }}
+          user: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          localDir: .temp
+          remoteDir: /remote/path
