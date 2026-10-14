@@ -1,0 +1,37 @@
+name: Build Monolith and Push to Deploy Branch
+
+on:
+  push:
+    branches:
+      - develop
+    
+    paths:
+      - 'api/**'
+
+jobs:
+  build-and-push:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: develop
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Restore NuGet packages
+        run: nuget restore api/LMPlatform.sln
+
+      - name: Build and publish Monolith
+        run: msbuild api/LMPlatform.sln /p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:publishUrl=./publish_output
+
+      - name: Deploy to deploy-prod-monolith branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./publish_output
+          publish_branch: deploy-prod-monolith
+          force_orphan: true
+          exclude_assets: '**/Web.config'
