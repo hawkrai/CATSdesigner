@@ -30,7 +30,7 @@
     "@ngx-translate/core": "13.0.0",
     "@ngx-translate/http-loader": "6.0.0",
     "@types/jquery": "3.5.5",
-    "bootstrap": "4.6.0",
+    "bootstrap": "5.0.0",
     "crypto": "1.0.1",
     "dompurify": "2.3.0",
     "educats-common": "2.0.0",
