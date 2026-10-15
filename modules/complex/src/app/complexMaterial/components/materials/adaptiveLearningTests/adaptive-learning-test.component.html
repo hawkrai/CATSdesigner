@@ -44,11 +44,13 @@
       </div>
     </div>
   </div>
-  <div class="test-execution-block-question" *ngIf="!showTest">
+  <div class="test-result__loading" *ngIf="!showTest && isResultLoading">
+    {{ 'complex.loadingResults' | translate: 'Загрузка результатов...' }}
+  </div>
+  <div class="test-execution-block-question" *ngIf="!showTest && !isResultLoading">
     <div
       class="test-result__backlink main-anchor"
-      *ngIf="isPredTest"
-      (click)="onPredTestContinueClick()"
+      (click)="onContinueLearningClick()"
     >
       {{
         'complex.goToLearning' | translate: 'Перейти к обучению'
@@ -81,8 +83,8 @@
         </div>
         <div
           class="test-result__results-line-color"
-          [class.right]="question.Points !== 0"
-          [class.fail]="question.Points === 0"
+          [class.right]="question.Points > 0"
+          [class.fail]="!(question.Points > 0)"
           matTooltipClass="example-tooltip-blue"
           [matTooltip]="question.QuestionTitle"
         ></div>

@@ -2,7 +2,6 @@ import { Component, Inject } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { DialogData } from '../../../../models/DialogData'
 import { AdaptivityService } from '../../../../service/adaptivity.service'
-import { TestService } from '../../../../service/test.service'
 import { Adaptivity } from '../../../../models/Adaptivity'
 import { StorageKeys } from '../../../../../../../../container/src/app/core/models/storage-keys.enum'
 
@@ -34,8 +33,8 @@ export class NotificationPopoverComponent {
 
   isTest: boolean
   testId: string
+  testTitle: string
   isPredTest: boolean
-  monitoringPhaseComplete: boolean = false
 
   nextButtonVisible: boolean
   prevButtonVisible: boolean
@@ -45,7 +44,6 @@ export class NotificationPopoverComponent {
   constructor(
     public dialogRef: MatDialogRef<NotificationPopoverComponent>,
     private adaptivityService: AdaptivityService,
-    private testService: TestService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {
     this.path = data.url
@@ -68,7 +66,6 @@ export class NotificationPopoverComponent {
   }
 
   initFieldsByAdaptivity(adaptivity: Adaptivity) {
-    this.monitoringPhaseComplete = false
     this.themaId = adaptivity.nextThemaId
     this.currentPathIndex = 0
     this.materialPathes = adaptivity.nextMaterialPaths
@@ -99,11 +96,7 @@ export class NotificationPopoverComponent {
     }
   }
 
-  onMonitoringPhaseComplete(): void {
-    this.monitoringPhaseComplete = true
-  }
-
-  onAdaptiveFlowContinue(): void {
+  onLearningFlowContinue(): void {
     this.processsTest()
   }
 
@@ -147,12 +140,12 @@ export class NotificationPopoverComponent {
 
   goToTests() {
     this.adaptivityService
-      .getTestId(this.themaId, this.studentSeconds, this.adaptivityType)
+      .getThemaTest(this.themaId, this.studentSeconds, this.adaptivityType)
       .subscribe((res) => {
-        this.testId = `${res}`
+        this.testId = `${res.testId}`
+        this.testTitle = res.title
         this.isTest = true
         this.isPredTest = false
-        this.monitoringPhaseComplete = false
 
         this.showMaterial = false
         this.toTestButtonVisible = false
@@ -164,15 +157,15 @@ export class NotificationPopoverComponent {
   }
 
   goToPredTest() {
-    this.testService.getPredTest().subscribe((res) => {
+    this.adaptivityService.getPredTestId().subscribe((res) => {
       sessionStorage.setItem(
         StorageKeys.AdaptiveLearningAlgorithm,
         String(this.adaptivityType)
       )
       this.testId = `${res}`
+      this.testTitle = null
       this.isTest = true
       this.isPredTest = true
-      this.monitoringPhaseComplete = false
 
       this.showMaterial = false
       this.toTestButtonVisible = false

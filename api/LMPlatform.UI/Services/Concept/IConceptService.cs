@@ -119,5 +119,9 @@ namespace LMPlatform.UI.Services.Concept
         [WebGet(UriTemplate = "/ExportEumk?complexId={complexId}&format={format}&title={title}&testQuestionsHeading={testQuestionsHeading}&attachedMaterialsHeading={attachedMaterialsHeading}")]
         Stream ExportEumk(int complexId, string format, string title, string testQuestionsHeading, string attachedMaterialsHeading);
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetEumkExportOptions?complexId={complexId}")]
+        EumkExportOptionsResult GetEumkExportOptions(int complexId);
+
     }
 }

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { ConverterService } from './converter.service'
 import { Adaptivity } from '../models/Adaptivity'
+import { AdaptiveTest } from '../models/AdaptiveTest'
 import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
 
 @Injectable({
@@ -65,20 +66,41 @@ export class AdaptivityService {
       .pipe(map((res) => this.converterService.nextThemaResConverter(res)))
   }
 
-  public getTestId(
+  public getThemaTest(
     themaId: string,
     monitoringRes: number,
     adaptivity: number
-  ): Observable<number> {
+  ): Observable<AdaptiveTest> {
     const user = JSON.parse(localStorage.getItem('currentUser'))
     const subject = JSON.parse(localStorage.getItem('currentSubject'))
 
-    return this.http.post<number>(this.path + 'GetDynamicTestIdForThema', {
-      userId: user.id,
+    return this.http
+      .post(this.path + 'GetTestForThema', {
+        userId: user.id,
+        subjectId: subject.id,
+        complexId: themaId,
+        monitoringRes: monitoringRes,
+        adaptivityType: adaptivity,
+        eumkRootConceptId: this.readEumkRootConceptId(),
+      })
+      .pipe(map((res) => this.converterService.adaptiveTestConverter(res)))
+  }
+
+  public getPredTestId(): Observable<number> {
+    const subject = JSON.parse(localStorage.getItem('currentSubject'))
+
+    return this.http.get<number>(
+      this.path +
+        `GetPredTestIdForEumk?subjectId=${subject.id}&eumkRootConceptId=${this.readEumkRootConceptId()}`
+    )
+  }
+
+  public restartLearning(): Observable<any> {
+    const subject = JSON.parse(localStorage.getItem('currentSubject'))
+
+    return this.http.post(this.path + 'RestartLearning', {
       subjectId: subject.id,
-      complexId: themaId,
-      monitoringRes: monitoringRes,
-      adaptivityType: adaptivity,
+      eumkRootConceptId: this.readEumkRootConceptId(),
     })
   }
 

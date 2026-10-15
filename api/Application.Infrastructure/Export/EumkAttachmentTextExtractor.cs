@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Xml.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml;
@@ -23,37 +25,38 @@ namespace Application.Infrastructure.Export
             }
 
             var ext = System.IO.Path.GetExtension(fullPath) ?? string.Empty;
-            IEnumerable<string> raw = null;
+            List<string> raw = null;
             var readFailed = false;
             try
             {
                 if (ext.Equals(".docx", StringComparison.OrdinalIgnoreCase))
                 {
-                    raw = ExtractFromDocx(fullPath);
+                    raw = ExtractFromDocxSafe(fullPath);
                 }
                 else if (ext.Equals(".pdf", StringComparison.OrdinalIgnoreCase))
                 {
-                    raw = ExtractFromPdf(fullPath);
+                    raw = ExtractFromPdf(fullPath).ToList();
                 }
                 else if (ext.Equals(".txt", StringComparison.OrdinalIgnoreCase)
                          || ext.Equals(".csv", StringComparison.OrdinalIgnoreCase)
                          || ext.Equals(".md", StringComparison.OrdinalIgnoreCase))
                 {
-                    raw = SplitLines(File.ReadAllText(fullPath, Encoding.UTF8));
+                    raw = SplitLines(File.ReadAllText(fullPath, Encoding.UTF8)).ToList();
                 }
                 else if (ext.Equals(".htm", StringComparison.OrdinalIgnoreCase)
                          || ext.Equals(".html", StringComparison.OrdinalIgnoreCase))
                 {
-                    raw = SplitLines(StripHtml(File.ReadAllText(fullPath, Encoding.UTF8)));
-                }
-                else
-                {
-                    yield break;
+                    raw = SplitLines(StripHtml(File.ReadAllText(fullPath, Encoding.UTF8))).ToList();
                 }
             }
             catch
             {
                 readFailed = true;
+            }
+
+            if (!readFailed && raw == null)
+            {
+                yield break;
             }
 
             if (readFailed)
@@ -79,6 +82,51 @@ namespace Application.Infrastructure.Export
 
                 total += t.Length;
                 yield return t;
+            }
+        }
+
+        private static List<string> ExtractFromDocxSafe(string path)
+        {
+            List<string> lines;
+            try
+            {
+                lines = ExtractFromDocx(path).ToList();
+            }
+            catch
+            {
+                lines = new List<string>();
+            }
+
+            return lines.Any() ? lines : ExtractFromDocxXml(path).ToList();
+        }
+
+        private static IEnumerable<string> ExtractFromDocxXml(string path)
+        {
+            using (var archive = new ZipArchive(File.OpenRead(path), ZipArchiveMode.Read))
+            {
+                var entry = archive.Entries.FirstOrDefault(e =>
+                    string.Equals(e.FullName, "word/document.xml", StringComparison.OrdinalIgnoreCase));
+                if (entry == null)
+                {
+                    yield break;
+                }
+
+                XDocument xml;
+                using (var stream = entry.Open())
+                {
+                    xml = XDocument.Load(stream);
+                }
+
+                foreach (var paragraph in xml.Descendants().Where(e => e.Name.LocalName == "p"))
+                {
+                    var line = string.Concat(paragraph.Descendants()
+                        .Where(e => e.Name.LocalName == "t")
+                        .Select(e => e.Value));
+                    if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        yield return line.Trim();
+                    }
+                }
             }
         }
 

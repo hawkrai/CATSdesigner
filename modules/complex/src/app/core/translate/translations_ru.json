@@ -122,5 +122,14 @@
   "complex.eumk.export.testQuestions": "Вопросы теста",
   "complex.eumk.export.attachments": "Прикреплённые материалы",
   "complex.placement.title": "Размещение вне разделов",
-  "complex.placement.confirm": "Раздел не выбран. Элемент будет размещён вне основных разделов ЭУМК. Продолжить?"
+  "complex.placement.confirm": "Раздел не выбран. Элемент будет размещён вне основных разделов ЭУМК. Продолжить?",
+  "complex.eumk.download.docxOnlyWordHint": "доступно, только если все материалы ЭУМК в формате Word",
+  "complex.goToLearning": "Перейти к обучению",
+  "complex.loadingResults": "Загрузка результатов...",
+  "complex.learningFinished.congratulations": "Поздравляем!!!",
+  "complex.learningFinished.text": "Процесс адаптивного обучения завершен.",
+  "complex.learningFinished.repeatHint": "Если захотите повторить процесс обучения, обратитесь к преподавателю.",
+  "complex.learningFinished.restart": "Пройти обучение заново",
+  "complex.predTestNotLinked.title": "Не удалось определить темы для обучения",
+  "complex.predTestNotLinked.text": "Вопросы предтеста не связаны с темами этого ЭУМК. Обратитесь к преподавателю."
 }

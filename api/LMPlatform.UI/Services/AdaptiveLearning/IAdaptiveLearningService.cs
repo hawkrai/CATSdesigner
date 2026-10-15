@@ -29,5 +29,17 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		[OperationContract]
 		[WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetFirstThema?userId={userId}&subjectId={subjectId}&adaptivityType={adaptivityType}&eumkRootConceptId={eumkRootConceptId}")]
 		AdaptivityViewResult GetFirstThema(int userId, int subjectId, int adaptivityType, int eumkRootConceptId);
+
+		[OperationContract]
+		[WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetTestForThema")]
+		AdaptiveTestViewResult GetTestForThema(int userId, int subjectId, int complexId, int monitoringRes, int adaptivityType, int eumkRootConceptId);
+
+		[OperationContract]
+		[WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetPredTestIdForEumk?subjectId={subjectId}&eumkRootConceptId={eumkRootConceptId}")]
+		int GetPredTestIdForEumk(int subjectId, int eumkRootConceptId);
+
+		[OperationContract]
+		[WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/RestartLearning")]
+		ResultViewData RestartLearning(int subjectId, int eumkRootConceptId);
 	}
 }

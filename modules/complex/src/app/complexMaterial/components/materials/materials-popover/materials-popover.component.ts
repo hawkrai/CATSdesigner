@@ -2,10 +2,12 @@ import { Component, Inject } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { DialogData } from '../../../../models/DialogData'
 import { AdaptivityService } from '../../../../service/adaptivity.service'
-import { TestService } from '../../../../service/test.service'
 import { Adaptivity } from '../../../../models/Adaptivity'
+import { AdaptivityType } from '../../../../models/adaptivity-type.enum'
+import { FileExtension } from '../../../../models/file/file-extension.enum'
 import { LibreOfficeAvailabilityService } from '../../../../service/libre-office-availability.service'
 import { StorageKeys } from '../../../../../../../../container/src/app/core/models/storage-keys.enum'
+import { UserRole } from '../../../../../../../../container/src/app/core/models/user-role.enum'
 
 @Component({
   selector: 'app-materials-popover',
@@ -33,6 +35,8 @@ export class MaterialsPopoverComponent {
   shouldWaitPresettedTime: boolean
   showMaterial: boolean
   isEndLearning: boolean
+  isPredTestNotLinked: boolean = false
+  isLector: boolean
 
   showTimer: boolean
   seconds: number
@@ -41,6 +45,7 @@ export class MaterialsPopoverComponent {
 
   isTest: boolean
   testId: string
+  testTitle: string
   isPredTest: boolean
 
   nextButtonVisible: boolean
@@ -49,13 +54,10 @@ export class MaterialsPopoverComponent {
   toTestButtonEnabled: boolean
   zoomOutButtonVisible: boolean = true
   zoomInButtonVisible: boolean = true
-  endTestButtonVisible: boolean = true
-  monitoringPhaseComplete: boolean = false
 
   constructor(
     public dialogRef: MatDialogRef<MaterialsPopoverComponent>,
     private adaptivityService: AdaptivityService,
-    private testService: TestService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private libreOfficeAvailability: LibreOfficeAvailabilityService
   ) {
@@ -63,6 +65,9 @@ export class MaterialsPopoverComponent {
     this.isAdaptive = data.isAdaptive
     this.materialPathes
     this.countWatchTime()
+
+    const user = JSON.parse(localStorage.getItem(StorageKeys.CurrentUser))
+    this.isLector = !!user && user.role === UserRole.Lector
 
     libreOfficeAvailability.getAvailability().subscribe(available => {
       this.isLibreOfficeMode = available
@@ -92,10 +97,10 @@ export class MaterialsPopoverComponent {
   }
 
   initFieldsByAdaptivity(adaptivity: Adaptivity) {
-    this.monitoringPhaseComplete = false
     this.themaId = adaptivity.nextThemaId
     this.currentPathIndex = 0
     this.materialPathes = adaptivity.nextMaterialPaths
+    this.currentFilePath = this.materialPathes && this.materialPathes.length ? this.materialPathes[0] : ''
     this.needToGetInitialTest = adaptivity.needToDoPredTest
     this.shouldWaitPresettedTime = adaptivity.shouldWaitPresettedTime
     this.isEndLearning = adaptivity.isLearningEnded
@@ -107,7 +112,6 @@ export class MaterialsPopoverComponent {
     )
 
     this.toTestButtonVisible = this.showMaterial
-    this.endTestButtonVisible = true
     this.zoomOutButtonVisible = true
     this.zoomInButtonVisible = true
 
@@ -126,11 +130,7 @@ export class MaterialsPopoverComponent {
     }
   }
 
-  onMonitoringPhaseComplete(): void {
-    this.monitoringPhaseComplete = true
-  }
-
-  onAdaptiveFlowContinue(): void {
+  onLearningFlowContinue(): void {
     this.processsTest()
   }
 
@@ -168,18 +168,22 @@ export class MaterialsPopoverComponent {
         ) {
           this.path = '/api/Upload?fileName=' + res.nextMaterialPaths[0]
         }
+        this.isPredTestNotLinked = res.needToDoPredTest
         this.initFieldsByAdaptivity(res)
+        if (this.isPredTestNotLinked) {
+          this.needToGetInitialTest = false
+        }
       })
   }
 
   goToTests() {
     this.adaptivityService
-      .getTestId(this.themaId, this.studentSeconds, this.adaptivityType)
+      .getThemaTest(this.themaId, this.studentSeconds, this.adaptivityType)
       .subscribe((res) => {
-        this.testId = `${res}`
+        this.testId = `${res.testId}`
+        this.testTitle = res.title
         this.isTest = true
         this.isPredTest = false
-        this.monitoringPhaseComplete = false
 
         this.showMaterial = false
         this.toTestButtonVisible = false
@@ -191,15 +195,16 @@ export class MaterialsPopoverComponent {
   }
 
   goToPredTest() {
-    this.testService.getPredTest().subscribe((res) => {
+    this.adaptivityService.getPredTestId().subscribe((res) => {
       sessionStorage.setItem(
         StorageKeys.AdaptiveLearningAlgorithm,
         String(this.adaptivityType)
       )
       this.testId = `${res}`
+      this.testTitle = null
       this.isTest = true
       this.isPredTest = true
-      this.monitoringPhaseComplete = false
+      this.isPredTestNotLinked = false
 
       this.showMaterial = false
       this.toTestButtonVisible = false
@@ -207,6 +212,19 @@ export class MaterialsPopoverComponent {
       this.nextButtonVisible = false
       this.needToGetInitialTest = false
       this.shouldWaitPresettedTime = false
+    })
+  }
+
+  restartLearning(): void {
+    this.adaptivityService.restartLearning().subscribe(() => {
+      this.adaptivityService
+        .getFirstThema(this.adaptivityType)
+        .subscribe((res) => {
+          this.isTest = false
+          this.isPredTestNotLinked = false
+          this.studentSeconds = 0
+          this.initFieldsByAdaptivity(res)
+        })
     })
   }
 
@@ -264,7 +282,7 @@ export class MaterialsPopoverComponent {
   }
 
   countDown() {
-    if (this.adaptivityType === 2) {
+    if (this.adaptivityType === AdaptivityType.Base) {
       this.seconds = 0
       this.toTestButtonEnabled = true
       this.showTimer = false
@@ -305,10 +323,25 @@ export class MaterialsPopoverComponent {
     this.dialogRef.close(this.studentSeconds)
   }
 
+  get hasCurrentMaterial(): boolean {
+    return !!this.currentViewerFilePath
+  }
+
+  get isBuiltInViewerMode(): boolean {
+    return this.isLibreOfficeMode || this.isPdfFile(this.currentViewerFilePath)
+  }
+
   get googleDocsUrl(): string {
-    const filePath = this.currentFilePath || (this.path ? this.path.replace('/api/Upload?fileName=', '') : '')
-    const publicFileUrl = `${window.location.origin}/api/Upload?fileName=${filePath}`
-    return `https://docs.google.com/gview?url=${publicFileUrl}&embedded=true`
+    const publicFileUrl = `${window.location.origin}/api/Upload?fileName=${this.currentViewerFilePath}`
+    return `https://docs.google.com/gview?url=${encodeURIComponent(publicFileUrl)}&embedded=true`
+  }
+
+  private get currentViewerFilePath(): string {
+    return this.currentFilePath || (this.path ? this.path.replace('/api/Upload?fileName=', '') : '')
+  }
+
+  private isPdfFile(filePath: string): boolean {
+    return !!filePath && filePath.toLowerCase().endsWith(`.${FileExtension.Pdf}`)
   }
 
   zoomIn() {

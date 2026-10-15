@@ -35,9 +35,9 @@
     <div *ngIf="isTest">
       <app-test-execution
         [testId]="testId"
+        [testTitle]="testTitle"
         [isPredTest]="isPredTest"
-        (monitoringPhaseCompleted)="onMonitoringPhaseComplete()"
-        (predTestFlowContinue)="onAdaptiveFlowContinue()"
+        (learningFlowContinue)="onLearningFlowContinue()"
       ></app-test-execution>
     </div>
 
@@ -82,15 +82,6 @@
       (click)="goToTests()"
     >
       {{ 'complex.toTests' | translate: 'К тестам' }}
-    </button>
-    <button
-      id="continueButton"
-      *ngIf="isTest && !isPredTest"
-      mat-raised-button
-      [disabled]="!monitoringPhaseComplete"
-      (click)="processsTest()"
-    >
-      {{ 'common.finishTest' | translate: 'Завершить тест' }}
     </button>
   </div>
 </div>

@@ -12,6 +12,7 @@ import { AdaptivityService } from '../service/adaptivity.service'
 import { ConverterService } from '../service/converter.service'
 import { DialogData } from '../models/DialogData'
 import { Adaptivity } from '../models/Adaptivity'
+import { AdaptivityType } from '../models/adaptivity-type.enum'
 import { MaterialsPopoverComponent } from './components/materials/materials-popover/materials-popover.component'
 import { TestService } from '../service/test.service'
 import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
@@ -36,6 +37,8 @@ export class ComplexMaterialComponent implements OnInit {
   public isAdaptiveLearningDisabled: boolean = true
   public eumkExportInProgress = false
   public libreOfficeAvailable = false
+  public docxExportAvailable = false
+  public readonly AdaptivityType = AdaptivityType
 
   constructor(
     private router: Router,
@@ -80,7 +83,18 @@ export class ComplexMaterialComponent implements OnInit {
         .subscribe((name) => (this.complexName = name))
     }
     this.checkAdaptiveLearningAvailability()
+    this.checkDocxExportAvailability()
     setTimeout(() => this.tryResumeAdaptiveLearningAfterPredTest(), 0)
+  }
+
+  checkDocxExportAvailability(): void {
+    if (!this.isLector || !this.complexID) {
+      return
+    }
+    this.complexService
+      .isDocxExportAvailable(this.complexID)
+      .pipe(catchError(() => of(false)))
+      .subscribe((available) => (this.docxExportAvailable = available))
   }
 
   private tryResumeAdaptiveLearningAfterPredTest(): void {
@@ -127,7 +141,7 @@ export class ComplexMaterialComponent implements OnInit {
 
   checkAdaptiveLearningAvailability(): void {
     forkJoin([
-      this.testService.getPredTest().pipe(catchError(() => of(0))),
+      this.adaptivityService.getPredTestId().pipe(catchError(() => of(0))),
       this.complexService
         .getConceptCascade(this.complexID)
         .pipe(catchError(() => of(null))),

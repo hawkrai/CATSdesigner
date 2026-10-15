@@ -36,12 +36,12 @@
             </button>
           </span>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="openAdaptivityPopup(2)">
+            <button mat-menu-item (click)="openAdaptivityPopup(AdaptivityType.Base)">
               {{
                 'complex.algorithm.base' | translate: 'Базовый алгоритм обучения'
               }}
             </button>
-            <button mat-menu-item (click)="openAdaptivityPopup(1)">
+            <button mat-menu-item (click)="openAdaptivityPopup(AdaptivityType.Advanced)">
               {{
                 'complex.algorithm.advanced'
                   | translate: 'Углубленный алгоритм обучения'
@@ -64,6 +64,7 @@
             color="primary"
             class="eumk-download-trigger"
             [matMenuTriggerFor]="eumkDownloadMenu"
+            (menuOpened)="checkDocxExportAvailability()"
             [matTooltip]="
               'complex.eumk.download.tooltip'
                 | translate
@@ -75,14 +76,33 @@
             <mat-icon>cloud_download</mat-icon>
           </button>
           <mat-menu #eumkDownloadMenu="matMenu">
-            <button mat-menu-item (click)="exportEumk('docx')">
+            <button
+              mat-menu-item
+              class="eumk-download-menu-item"
+              [disabled]="!docxExportAvailable"
+              (click)="exportEumk('docx')"
+            >
               {{
                 'complex.eumk.download.docx'
                   | translate
                     : 'Сохранить как Word (.docx)'
               }}
+              <span
+                *ngIf="!docxExportAvailable"
+                class="eumk-pdf-fallback-hint"
+              >
+                ({{
+                  'complex.eumk.download.docxOnlyWordHint'
+                    | translate
+                    : 'доступно, только если все материалы ЭУМК в формате Word'
+                }})
+              </span>
             </button>
-            <button mat-menu-item (click)="exportEumk('pdf')">
+            <button
+              mat-menu-item
+              class="eumk-download-menu-item"
+              (click)="exportEumk('pdf')"
+            >
               {{
                 'complex.eumk.download.pdf'
                   | translate

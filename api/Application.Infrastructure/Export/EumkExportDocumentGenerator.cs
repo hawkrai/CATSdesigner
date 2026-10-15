@@ -28,6 +28,15 @@ namespace Application.Infrastructure.Export
         };
 
         private static readonly string[] ImageExtensions = { ".png", ".jpg", ".jpeg", ".gif", ".bmp" };
+        private static readonly string[] TextExtensions = { ".docx", ".txt", ".csv", ".md", ".htm", ".html" };
+        private static readonly string[] NotEmbeddableDocumentExtensions = { ".doc", ".rtf" };
+        private static readonly string[] LayoutSensitiveExtensions = { ".pdf", ".doc", ".rtf" };
+        private const string PdfExtension = ".pdf";
+        private const string DocxExtension = ".docx";
+        private const string NotEmbeddableFileNote = "Файл «{0}» не может быть встроен в документ: формат {1} не поддерживается. Сохраните его в формате .docx или .pdf.";
+        private const string UnreadableFileNote = "Не удалось встроить содержимое файла «{0}».";
+
+        private readonly Dictionary<string, List<Attachment>> _attachmentsByContainer = new Dictionary<string, List<Attachment>>();
 
         private const string DocumentFontName = "Arial";
         private const ushort BodyHalfPoints = 22;
@@ -97,12 +106,7 @@ namespace Application.Infrastructure.Export
             ISet<int> hiddenTestIds,
             string testQuestionsHeading)
         {
-            if (node == null)
-            {
-                return;
-            }
-
-            if (node.Test != null && hiddenTestIds != null && hiddenTestIds.Contains(node.Test.Id))
+            if (!HasExportableContent(node, hiddenTestIds))
             {
                 return;
             }
@@ -141,13 +145,9 @@ namespace Application.Infrastructure.Export
 
             AppendSectionHeading(body, node.Name, depth, startsNewPage, SectionHeadingHalfPoints(depth));
 
-            if (!node.IsGroup && !string.IsNullOrEmpty(node.Container))
+            foreach (var a in GetExportableAttachments(node))
             {
-                var attachments = _filesManagementService.GetAttachments(node.Container)?.ToList() ?? new List<Attachment>();
-                foreach (var a in attachments)
-                {
-                    AppendAttachmentContent(body, mainPart, a);
-                }
+                AppendAttachmentContent(body, mainPart, a);
             }
 
             if (node.Children != null && node.Children.Any())
@@ -169,8 +169,14 @@ namespace Application.Infrastructure.Export
 
             var ext = (Path.GetExtension(path) ?? string.Empty).ToLowerInvariant();
 
+            if (NotEmbeddableDocumentExtensions.Contains(ext))
+            {
+                AppendParagraph(body, string.Format(NotEmbeddableFileNote, a.Name, ext), italic: true, fontHalfPoints: BodyHalfPoints);
+                return;
+            }
+
             var sourceDocx = FindRetainedSourceDocx(path);
-            var docxToEmbed = sourceDocx ?? (ext == ".docx" ? path : null);
+            var docxToEmbed = sourceDocx ?? (ext == DocxExtension ? path : null);
             if (docxToEmbed != null)
             {
                 try
@@ -202,7 +208,14 @@ namespace Application.Infrastructure.Export
                 {
                 }
             }
-            foreach (var line in EumkAttachmentTextExtractor.ExtractParagraphLines(path))
+            var lines = EumkAttachmentTextExtractor.ExtractParagraphLines(path).ToList();
+            if (!lines.Any())
+            {
+                AppendParagraph(body, string.Format(UnreadableFileNote, a.Name), italic: true, fontHalfPoints: BodyHalfPoints);
+                return;
+            }
+
+            foreach (var line in lines)
             {
                 AppendParagraph(body, line, fontHalfPoints: BodyHalfPoints, justification: JustificationValues.Both);
             }
@@ -264,62 +277,59 @@ namespace Application.Infrastructure.Export
             string testQuestionsHeading,
             BaseFont baseFont)
         {
-            if (node == null)
+            if (!HasExportableContent(node, hiddenTestIds))
             {
                 return;
             }
 
             if (node.Test != null)
             {
-                if (hiddenTestIds != null && hiddenTestIds.Contains(node.Test.Id))
-                {
-                    return;
-                }
-
                 chunks.Add(BuildTestChunkPdf(node, depth, testQuestionsHeading, baseFont));
                 return;
             }
 
-            var pdfPaths = new List<string>();
+            var pdfChunks = new List<byte[]>();
             var imagePaths = new List<string>();
             var textOnly = new List<Attachment>();
+            var notes = new List<string>();
 
-            if (!node.IsGroup && !string.IsNullOrEmpty(node.Container))
+            foreach (var a in GetExportableAttachments(node))
             {
-                var attachments = _filesManagementService.GetAttachments(node.Container)?.ToList() ?? new List<Attachment>();
-                foreach (var a in attachments)
+                var path = _filesManagementService.GetFullPath(a);
+                if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
                 {
-                    var path = _filesManagementService.GetFullPath(a);
-                    if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    var ext = (Path.GetExtension(path) ?? string.Empty).ToLowerInvariant();
-                    if (ext == ".pdf")
+                var ext = (Path.GetExtension(path) ?? string.Empty).ToLowerInvariant();
+                if (ext == PdfExtension)
+                {
+                    var bytes = SafeReadAllBytes(path);
+                    if (IsReadablePdf(bytes))
                     {
-                        pdfPaths.Add(path);
-                    }
-                    else if (IsImageExtension(ext))
-                    {
-                        imagePaths.Add(path);
+                        pdfChunks.Add(bytes);
                     }
                     else
                     {
-                        textOnly.Add(a);
+                        notes.Add(string.Format(UnreadableFileNote, a.Name));
                     }
+                }
+                else if (NotEmbeddableDocumentExtensions.Contains(ext))
+                {
+                    notes.Add(string.Format(NotEmbeddableFileNote, a.Name, ext));
+                }
+                else if (IsImageExtension(ext))
+                {
+                    imagePaths.Add(path);
+                }
+                else
+                {
+                    textOnly.Add(a);
                 }
             }
 
-            chunks.Add(BuildHeadingChunkPdf(node.Name, depth, imagePaths, textOnly, baseFont));
-            foreach (var pdfPath in pdfPaths)
-            {
-                var bytes = SafeReadAllBytes(pdfPath);
-                if (bytes != null && bytes.Length > 0)
-                {
-                    chunks.Add(bytes);
-                }
-            }
+            chunks.Add(BuildHeadingChunkPdf(node.Name, depth, imagePaths, textOnly, notes, baseFont));
+            chunks.AddRange(pdfChunks);
 
             if (node.Children != null && node.Children.Any())
             {
@@ -359,6 +369,7 @@ namespace Application.Infrastructure.Export
             int depth,
             List<string> imagePaths,
             List<Attachment> textOnly,
+            List<string> notes,
             BaseFont baseFont)
         {
             return RenderPdfChunk(doc =>
@@ -384,10 +395,18 @@ namespace Application.Infrastructure.Export
                     }
                 }
 
+                var fontBody = new Font(baseFont, 11f, Font.NORMAL);
+                var fontNote = new Font(baseFont, 11f, Font.ITALIC);
                 foreach (var a in textOnly)
                 {
-                    var fontBody = new Font(baseFont, 11f, Font.NORMAL);
-                    foreach (var line in GetAttachmentContentLines(a))
+                    var lines = GetAttachmentContentLines(a).ToList();
+                    if (!lines.Any())
+                    {
+                        notes.Add(string.Format(UnreadableFileNote, a.Name));
+                        continue;
+                    }
+
+                    foreach (var line in lines)
                     {
                         doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(line), fontBody)
                         {
@@ -395,6 +414,14 @@ namespace Application.Infrastructure.Export
                             SpacingAfter = 2f,
                         });
                     }
+                }
+
+                foreach (var note in notes)
+                {
+                    doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(note), fontNote)
+                    {
+                        SpacingAfter = 2f,
+                    });
                 }
             });
         }
@@ -637,6 +664,113 @@ namespace Application.Infrastructure.Export
         private static bool IsImageExtension(string ext)
         {
             return !string.IsNullOrEmpty(ext) && ImageExtensions.Contains(ext);
+        }
+
+        public bool IsDocxExportSupported(Concept root)
+        {
+            return EnumerateConcepts(root)
+                .SelectMany(node => GetExportableAttachments(node))
+                .All(a => IsWordCompatibleAttachment(a));
+        }
+
+        private bool IsWordCompatibleAttachment(Attachment a)
+        {
+            var path = _filesManagementService.GetFullPath(a);
+            var ext = (Path.GetExtension(path) ?? string.Empty).ToLowerInvariant();
+            if (!LayoutSensitiveExtensions.Contains(ext))
+            {
+                return true;
+            }
+
+            return ext == PdfExtension && FindRetainedSourceDocx(path) != null;
+        }
+
+        private static IEnumerable<Concept> EnumerateConcepts(Concept node)
+        {
+            if (node == null)
+            {
+                yield break;
+            }
+
+            yield return node;
+
+            foreach (var child in node.Children ?? Enumerable.Empty<Concept>())
+            {
+                foreach (var descendant in EnumerateConcepts(child))
+                {
+                    yield return descendant;
+                }
+            }
+        }
+
+        private bool HasExportableContent(Concept node, ISet<int> hiddenTestIds)
+        {
+            if (node == null)
+            {
+                return false;
+            }
+
+            if (node.Test != null)
+            {
+                return hiddenTestIds == null || !hiddenTestIds.Contains(node.Test.Id);
+            }
+
+            if (GetExportableAttachments(node).Any())
+            {
+                return true;
+            }
+
+            return node.Children != null && node.Children.Any(child => HasExportableContent(child, hiddenTestIds));
+        }
+
+        private List<Attachment> GetExportableAttachments(Concept node)
+        {
+            if (node == null || node.IsGroup || string.IsNullOrEmpty(node.Container))
+            {
+                return new List<Attachment>();
+            }
+
+            if (!_attachmentsByContainer.TryGetValue(node.Container, out var attachments))
+            {
+                attachments = (_filesManagementService.GetAttachments(node.Container) ?? new List<Attachment>())
+                    .Where(a => IsExportableExtension((Path.GetExtension(a.FileName) ?? string.Empty).ToLowerInvariant()))
+                    .ToList();
+                _attachmentsByContainer[node.Container] = attachments;
+            }
+
+            return attachments;
+        }
+
+        private static bool IsExportableExtension(string ext)
+        {
+            return ext == PdfExtension
+                || TextExtensions.Contains(ext)
+                || NotEmbeddableDocumentExtensions.Contains(ext)
+                || IsImageExtension(ext);
+        }
+
+        private static bool IsReadablePdf(byte[] bytes)
+        {
+            if (bytes == null || bytes.Length == 0)
+            {
+                return false;
+            }
+
+            PdfReader.unethicalreading = true;
+            PdfReader reader = null;
+            try
+            {
+                reader = new PdfReader(bytes);
+                return reader.NumberOfPages > 0;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                reader?.Close();
+            }
         }
 
         private static string FindRetainedSourceDocx(string attachmentPath)

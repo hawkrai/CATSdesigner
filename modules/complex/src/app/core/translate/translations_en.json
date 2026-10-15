@@ -122,5 +122,14 @@
   "complex.eumk.export.testQuestions": "Test questions",
   "complex.eumk.export.attachments": "Attached materials",
   "complex.placement.title": "Placement outside sections",
-  "complex.placement.confirm": "No section is selected. The component will be placed outside the main sections of the Educational Complex. Continue?"
+  "complex.placement.confirm": "No section is selected. The component will be placed outside the main sections of the Educational Complex. Continue?",
+  "complex.eumk.download.docxOnlyWordHint": "available only if all materials of the Educational Complex are Word documents",
+  "complex.goToLearning": "Go to learning",
+  "complex.loadingResults": "Loading results...",
+  "complex.learningFinished.congratulations": "Congratulations!!!",
+  "complex.learningFinished.text": "The adaptive learning process is complete.",
+  "complex.learningFinished.repeatHint": "If you would like to repeat the learning process, please contact your lecturer.",
+  "complex.learningFinished.restart": "Restart learning",
+  "complex.predTestNotLinked.title": "Could not determine topics to study",
+  "complex.predTestNotLinked.text": "The pre-test questions are not linked to the topics of this Educational Complex. Please contact your lecturer."
 }

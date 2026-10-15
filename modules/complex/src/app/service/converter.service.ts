@@ -4,6 +4,7 @@ import { ComplexTree, TreeNode } from '../models/ComplexTree'
 import { Group } from '../models/Group'
 import { ConceptMonitoring } from '../models/ConceptMonitoring'
 import { Adaptivity } from '../models/Adaptivity'
+import { AdaptiveTest } from '../models/AdaptiveTest'
 import { ComplexCascade } from '../models/ComplexCascade'
 import { Student } from '../models/student.model'
 import { ConceptMonitoringData } from '../models/ConceptMonitoringData'
@@ -188,5 +189,13 @@ export class ConverterService {
     nextThemaRes.isLearningEnded = themaRes.IsLearningEnded
 
     return nextThemaRes
+  }
+
+  public adaptiveTestConverter(testRes: any): AdaptiveTest {
+    const adaptiveTest = new AdaptiveTest()
+    adaptiveTest.testId = testRes.TestId
+    adaptiveTest.title = testRes.Title
+
+    return adaptiveTest
   }
 }

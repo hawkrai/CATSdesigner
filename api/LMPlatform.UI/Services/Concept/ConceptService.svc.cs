@@ -284,7 +284,7 @@ namespace LMPlatform.UI.Services.Concept
         {
             var tree = GetConceptTreeCascade(conceptId);
 
-            return tree.Select(x => GetFilePath(x.Container)).ToArray();
+            return tree.SelectMany(x => GetFilePaths(x.Container)).ToArray();
         }
 
         public void SaveMonitoringResult(int userId, int conceptId, int timeInSeconds)
@@ -292,11 +292,14 @@ namespace LMPlatform.UI.Services.Concept
             WatchingTimeService.SaveWatchingTime(new WatchingTime(userId, conceptId, timeInSeconds));
         }
 
-        private string GetFilePath(string container)
+        private List<string> GetFilePaths(string container)
         {
-            var attach = FilesManagementService.GetAttachments(container).FirstOrDefault();
-            if (attach == null) return string.Empty;
-            return $"{attach.PathName}//{ attach.FileName}";
+            if (string.IsNullOrEmpty(container))
+            {
+                return new List<string>();
+            }
+
+            return EumkMaterialPaths.GetViewablePaths(FilesManagementService.GetAttachments(container));
         }
 
         private IEnumerable<Models.Concept> GetConceptTreeCascade(int conceptId)
@@ -887,6 +890,13 @@ namespace LMPlatform.UI.Services.Concept
 
                 if (fmt == "docx")
                 {
+                    if (!generator.IsDocxExportSupported(root))
+                    {
+                        throw new WebFaultException<string>(
+                            "Word export is available only when all EUMK materials are Word documents",
+                            HttpStatusCode.BadRequest);
+                    }
+
                     var docxBytes = generator.BuildDocx(root, docTitle, tqh, amh, hiddenTestIds);
                     SetEumkDownloadHeaders(safeBase + ".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
                     return new MemoryStream(docxBytes, writable: false);
@@ -900,12 +910,45 @@ namespace LMPlatform.UI.Services.Concept
             {
                 throw;
             }
+            catch (WebFaultException<string>)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 var innerMsg = ex.InnerException != null ? " | inner: " + ex.InnerException.Message : string.Empty;
                 throw new WebFaultException<string>(
                     "ExportEumk failed: " + ex.Message + innerMsg,
                     HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public EumkExportOptionsResult GetEumkExportOptions(int complexId)
+        {
+            if (!CurrentUserIsLector())
+            {
+                return new EumkExportOptionsResult { Message = "Access denied", Code = "403" };
+            }
+
+            try
+            {
+                var root = ConceptManagementService.GetTreeConceptByElementId(complexId);
+                if (root == null)
+                {
+                    return new EumkExportOptionsResult { Message = "Complex not found", Code = ServerErrorCode };
+                }
+
+                var generator = new EumkExportDocumentGenerator(FilesManagementService, TestsManagementService);
+                return new EumkExportOptionsResult
+                {
+                    IsDocxExportAvailable = generator.IsDocxExportSupported(root),
+                    Message = SuccessMessage,
+                    Code = SuccessCode
+                };
+            }
+            catch (Exception ex)
+            {
+                return new EumkExportOptionsResult { Message = ex.Message, Code = ServerErrorCode };
             }
         }
 
