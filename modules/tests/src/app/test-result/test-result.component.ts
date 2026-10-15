@@ -216,22 +216,40 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
       return
     }
 
+    const { item: eumkItem } = this.menuService.getSubjectInfo(
+      ModuleType.ComplexMaterial
+    )
+
+    const route = `web/viewer/subject/${subject.id}#${eumkItem}`
+    const url = `${window.location.origin}/#${route}`
+
+    const newTab = window.open('about:blank', '_blank')
+
     const openEumk = (rootConceptId: number) => {
       if (rootConceptId && rootConceptId > 0) {
         localStorage.setItem(StorageKeys.SelectedComplex, String(rootConceptId))
       }
 
-      // запоминаем, в какой теме дерева ЭУМК нужно оказаться после загрузки
       sessionStorage.setItem(StorageKeys.ComplexTargetConcept, String(item.id))
 
-      const { item: eumkItem } = this.menuService.getSubjectInfo(
-        ModuleType.ComplexMaterial
-      )
+      if (!newTab) {
+        this.catsService.sendMessage({
+          Type: 'Route',
+          Value: route,
+        })
+        return
+      }
 
-      this.catsService.sendMessage({
-        Type: 'Route',
-        Value: `web/viewer/subject/${subject.id}#${eumkItem}`,
-      })
+      try {
+        newTab.sessionStorage.setItem(
+          StorageKeys.ComplexTargetConcept,
+          String(item.id)
+        )
+      } catch (e) {
+      }
+
+      newTab.location.href = url
+      newTab.focus()
     }
 
     const rootConceptId = this.testMeta?.EumkRootConceptId
