@@ -4,6 +4,7 @@ export enum StorageKeys {
   ComplexTestId = 'complexTestId',
   ComplexRoute = 'complexRoute',
   ComplexId = 'ComplexId',
+  ComplexTargetConcept = 'complexTargetConcept',
   MonitoringComplexId = 'monitoringComplexId', // Для мониторинга студентов в Complex Grid
   AdaptiveLearningResume = 'adaptiveLearningResume',
   AdaptiveLearningAlgorithm = 'adaptiveLearningAlgorithm',

@@ -48,6 +48,7 @@ const VIEWABLE_MATERIAL_EXTENSIONS: FileExtension[] = [
 export class MaterialComponent implements OnInit, OnChanges {
   @Input() complexId: string
   isLecturer: boolean
+  highlightedConceptId: number | null = null
   dropIndicatorNodeId: number | null = null
   dropInsideNodeId: number | null = null
   treeControl = new NestedTreeControl<ComplexCascade>((node) => node.children)
@@ -126,6 +127,7 @@ export class MaterialComponent implements OnInit, OnChanges {
           this.treeControl.dataNodes = filteredData
           this.treeControl.expandAll()
           this.loadTestResults(filteredData)
+          this.applyRequestedTopic()
           if (onComplete) onComplete()
         })
       },
@@ -138,9 +140,40 @@ export class MaterialComponent implements OnInit, OnChanges {
           this.treeControl.dataNodes = filteredData
           this.treeControl.expandAll()
           this.loadTestResults(filteredData)
+          this.applyRequestedTopic()
         })
       }
     )
+  }
+
+  private applyRequestedTopic(): void {
+    const requestedConceptId = sessionStorage.getItem(
+      StorageKeys.ComplexTargetConcept
+    )
+
+    if (!requestedConceptId) {
+      return
+    }
+
+    sessionStorage.removeItem(StorageKeys.ComplexTargetConcept)
+
+    const conceptId = parseInt(requestedConceptId, 10)
+
+    if (isNaN(conceptId) || !this.findNodeById(this.dataSource.data, conceptId)) {
+      return
+    }
+
+    this.highlightedConceptId = conceptId
+
+    setTimeout(() => {
+      const node = document.querySelector(
+        `[data-concept-id="${conceptId}"]`
+      ) as HTMLElement
+
+      if (node) {
+        node.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    })
   }
 
 

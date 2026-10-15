@@ -89,7 +89,15 @@
           <th mat-header-cell *matHeaderCellDef>
             {{ 'text.test.result.nn.theme' | translate: 'Тема' }}
           </th>
-          <td mat-cell *matCellDef="let element">{{ element.theme }}</td>
+          <td mat-cell *matCellDef="let element">
+            <a
+              class="nn__theme-link"
+              *ngIf="element.id"
+              (click)="openEumkTopic(element)"
+              >{{ element.theme }}</a
+            >
+            <span *ngIf="!element.id">{{ element.theme }}</span>
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="status">

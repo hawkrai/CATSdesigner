@@ -12,7 +12,13 @@
     (drop)="onDrop($event, node)"
     (dragend)="onDragEnd($event)"
   >
-    <li class="mat-tree-node">
+    <li
+      class="mat-tree-node"
+      [attr.data-concept-id]="node.Id"
+      [class.topic-highlight]="
+        highlightedConceptId !== null && +node.Id === highlightedConceptId
+      "
+    >
       <button class="invisible" mat-icon-button></button>
       <mat-icon
         class="expandable-external"
@@ -98,7 +104,12 @@
     (dragend)="onDragEnd($event)"
     [class.drop-inside]="dropInsideNodeId === +node.Id"
   >
-    <li>
+    <li
+      [attr.data-concept-id]="node.Id"
+      [class.topic-highlight]="
+        highlightedConceptId !== null && +node.Id === highlightedConceptId
+      "
+    >
       <div class="mat-tree-node">
         <button
           mat-icon-button
