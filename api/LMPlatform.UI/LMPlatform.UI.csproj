@@ -561,6 +561,7 @@
     <Compile Include="Services\Lectures\LecturesService.svc.cs">
       <DependentUpon>LecturesService.svc</DependentUpon>
     </Compile>
+    <Compile Include="Services\Modules\AdaptiveTestViewResult.cs" />
     <Compile Include="Services\Modules\AdaptivityViewResult.cs" />
     <Compile Include="Services\Modules\BTS\ProjectFilesResult.cs" />
     <Compile Include="Services\Modules\BTS\ProjectMatrixRequirementViewData.cs" />
@@ -586,6 +587,8 @@
     <Compile Include="Services\Modules\Concept\ConceptPageTitleData.cs" />
     <Compile Include="Services\Modules\Concept\ConceptResult.cs" />
     <Compile Include="Services\Modules\Concept\ConceptViewData.cs" />
+    <Compile Include="Services\Modules\Concept\EumkExportOptionsResult.cs" />
+    <Compile Include="Services\Modules\Concept\EumkMaterialPaths.cs" />
     <Compile Include="Services\Modules\Concept\HiddenTestsResult.cs" />
     <Compile Include="Services\Modules\Concept\LibreOfficeAvailabilityResult.cs" />
     <Compile Include="Services\Modules\CoreModels\GroupsResult.cs" />
