@@ -53,7 +53,17 @@
         </mat-form-field>
       </div>
     </div>
-    <div class="question-other-test-results" *ngIf="filteredQuestions?.length">
+    <div class="question-other-test-empty" *ngIf="tests && !tests.length">
+      {{
+        'text.test.no.tests.for.migration'
+          | translate: 'Нет других тестов в этом предмете'
+      }}
+    </div>
+    <div
+      class="question-other-test-results"
+      *ngIf="filteredQuestions?.length"
+      cdkScrollable
+    >
       <mat-checkbox
         class="example-margin question-other-test-answers"
         [(ngModel)]="chosenQuestions[question.Id]"
