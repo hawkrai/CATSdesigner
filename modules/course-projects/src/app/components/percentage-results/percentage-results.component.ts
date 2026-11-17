@@ -2,11 +2,13 @@ import {
   Component,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   SimpleChanges,
 } from '@angular/core'
 import { PercentageResultsService } from '../../services/percentage-results.service'
-import { Subscription } from 'rxjs'
+import { interval, Subject, Subscription } from 'rxjs'
+import { filter, takeUntil } from 'rxjs/operators'
 import { StudentPercentageResults } from '../../models/student-percentage-results.model'
 import { PercentageGraph } from '../../models/percentage-graph.model'
 import { PercentageResult } from '../../models/percentage-result.model'
@@ -25,7 +27,8 @@ import { TranslatePipe } from 'educats-translate'
   templateUrl: './percentage-results.component.html',
   styleUrls: ['./percentage-results.component.less'],
 })
-export class PercentageResultsComponent implements OnInit, OnChanges {
+export class PercentageResultsComponent
+  implements OnInit, OnChanges, OnDestroy {
   @Input() selectedGroup: CoreGroup
   @Input() courseUser: CourseUser
   @Input() studentGroup: string | null = null
@@ -41,6 +44,9 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   private subjectId: string
   private searchString = ''
 
+  private readonly POLLING_INTERVAL = 5000
+  private readonly destroy$ = new Subject<void>()
+
   constructor(
     private percentageResultsService: PercentageResultsService,
     public dialog: MatDialog,
@@ -50,10 +56,30 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit() {
-    this.store.pipe(select(getSubjectId)).subscribe((subjectId) => {
-      this.subjectId = subjectId
-      this.retrievePercentageResults()
-    })
+    this.store
+      .pipe(select(getSubjectId), takeUntil(this.destroy$))
+      .subscribe((subjectId) => {
+        this.subjectId = subjectId
+        this.retrievePercentageResults()
+      })
+
+    // Polling: пауза, пока открыт любой диалог
+    interval(this.POLLING_INTERVAL)
+      .pipe(
+        filter(
+          () =>
+            !!this.subjectId &&
+            !!this.selectedGroup &&
+            this.dialog.openDialogs.length === 0
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => this.retrievePercentageResults(true))
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next()
+    this.destroy$.complete()
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -62,8 +88,13 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     }
   }
 
-  retrievePercentageResults() {
-    this.percentageResults = null
+  retrievePercentageResults(silent = false) {
+    if (this.percentageResultsSubscription) {
+      this.percentageResultsSubscription.unsubscribe()
+    }
+    if (!silent) {
+      this.percentageResults = null
+    }
     const groupId: string = this.studentGroup
       ? this.studentGroup
       : this.selectedGroup.GroupId
@@ -187,7 +218,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
               result.showForStudent
             )
             .subscribe(() => {
-              this.ngOnInit()
+              this.retrievePercentageResults()
               this.addFlashMessage(
                 this.translatePipe.transform(
                   'text.course.percentage.result.result.save.success',
@@ -206,7 +237,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
               result.showForStudent
             )
             .subscribe(() => {
-              this.ngOnInit()
+              this.retrievePercentageResults()
               this.addFlashMessage(
                 this.translatePipe.transform(
                   'text.course.percentage.result.result.change.success',
@@ -250,11 +281,11 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         const date = new Date(result.date)
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
         const dateString =
-          (date.getDay() < 10 ? '0' : '') +
-          date.getDay() +
+          (date.getDate() < 10 ? '0' : '') +
+          date.getDate() +
           '.' +
-          (date.getMonth() < 10 ? '0' : '') +
-          date.getMonth() +
+          (date.getMonth() + 1 < 10 ? '0' : '') +
+          (date.getMonth() + 1) +
           '.' +
           date.getFullYear()
         this.percentageResultsService
@@ -267,7 +298,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
             result.showForStudent
           )
           .subscribe(() => {
-            this.ngOnInit()
+            this.retrievePercentageResults()
             this.addFlashMessage(
               this.translatePipe.transform(
                 'text.course.percentage.result.result.mark.save.success',

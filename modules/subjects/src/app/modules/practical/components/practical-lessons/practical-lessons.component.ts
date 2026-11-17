@@ -1,4 +1,5 @@
 import { DialogService } from './../../../../services/dialog.service'
+import { interval } from 'rxjs'
 import {
   Component,
   OnInit,
@@ -24,7 +25,7 @@ import { Practical } from '../../../../models/practical.model'
 import { Attachment } from '../../../../models/file/attachment.model'
 import { DialogData } from '../../../../models/dialog-data.model'
 import { FileDownloadPopoverComponent } from '../../../../shared/file-download-popover/file-download-popover.component'
-import { filter } from 'rxjs/operators'
+import { filter, tap } from 'rxjs/operators'
 import { TranslatePipe } from 'educats-translate'
 
 @Component({
@@ -36,6 +37,9 @@ export class PracticalLessonsComponent
   implements OnInit, OnDestroy, AfterViewChecked
 {
   @ViewChild('table', { static: false }) table: MatTable<Practical>
+  private readonly POLLING_INTERVAL = 5000
+  private dialogOpen = false
+  private pauseUntil = 0
   isTeacher: boolean
   public practicals: Practical[]
   private subs = new SubSink()
@@ -47,7 +51,7 @@ export class PracticalLessonsComponent
     private dialogService: DialogService
   ) {}
 
-  ngOnInit() {
+    ngOnInit() {
     this.practicalPrefix = this.translate.transform('prefix.practical', 'ПЗ')
 
     this.store.dispatch(practicalsActions.loadPracticals())
@@ -60,6 +64,14 @@ export class PracticalLessonsComponent
       this.store.select(subjectSelectors.isTeacher).subscribe((isTeacher) => {
         this.isTeacher = isTeacher
       })
+    )
+
+    this.subs.add(
+      interval(this.POLLING_INTERVAL)
+        .pipe(filter(() => !this.dialogOpen && Date.now() > this.pauseUntil))
+        .subscribe(() =>
+          this.store.dispatch(practicalsActions.loadPracticals())
+        )
     )
   }
 
@@ -96,6 +108,7 @@ export class PracticalLessonsComponent
       buttonText: this.translate.transform('button.save', 'Сохранить'),
       model: newLesson,
     }
+        this.dialogOpen = true
     const dialogRef = this.dialogService.openDialog(
       PracticalLessonPopoverComponent,
       dialogData
@@ -104,7 +117,10 @@ export class PracticalLessonsComponent
     this.subs.add(
       dialogRef
         .afterClosed()
-        .pipe(filter((r) => !!r))
+        .pipe(
+          tap(() => (this.dialogOpen = false)),
+          filter((r) => !!r)
+        )
         .subscribe((result) => {
           result.attachments = JSON.stringify(result.attachments)
           this.store.dispatch(
@@ -127,6 +143,7 @@ export class PracticalLessonsComponent
         .toLowerCase()} "${lesson.Theme}"`,
       buttonText: this.translate.transform('button.delete', 'Удалить'),
     }
+        this.dialogOpen = true
     const dialogRef = this.dialogService.openDialog(
       DeletePopoverComponent,
       dialogData
@@ -135,7 +152,10 @@ export class PracticalLessonsComponent
     this.subs.add(
       dialogRef
         .afterClosed()
-        .pipe(filter((r) => !!r))
+        .pipe(
+          tap(() => (this.dialogOpen = false)),
+          filter((r) => !!r)
+        )
         .subscribe(() => {
           this.store.dispatch(
             practicalsActions.deletePractical({ id: lesson.PracticalId })
@@ -149,6 +169,7 @@ export class PracticalLessonsComponent
       (i) => i.PracticalId == event.item.data.PracticalId
     )
     if (prevIndex !== event.currentIndex) {
+      this.pauseUntil = Date.now() + 10000
       moveItemInArray(event.container.data, prevIndex, event.currentIndex)
       this.store.dispatch(
         practicalsActions.updateOrder({
