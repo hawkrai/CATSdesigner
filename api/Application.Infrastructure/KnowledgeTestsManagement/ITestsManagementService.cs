@@ -15,6 +15,10 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
 		Test SaveTest(Test test, bool withountValidation = false);
 
+		void SetEumkRootConcept(int testId, int rootConceptId);
+
+		IEnumerable<int> GetPretestEumkRootIds(int subjectId, int? excludeTestId);
+
         void DeleteTest(int id);
 
         IPageableList<Test> GetPageableTests(int subjectId, string searchString = null, IPageInfo pageInfo = null, IEnumerable<ISortCriteria> sortCriterias = null);
@@ -27,9 +31,9 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
         
         void UnlockTestForStudent(int testId, int studentId, bool unlocked);
 
-        IEnumerable<Test> GetTestForLector(int currentUserId);
+        IEnumerable<Test> GetTestForLector(int currentUserId, int? subjectId = null, int excludeTestId = 0);
 
-        IEnumerable<Question> GetQuestionsFromAnotherTests(int testId, int currentUserId);
+        IEnumerable<Question> GetQuestionsFromAnotherTests(int testId, int currentUserId, int? subjectId = null);
 
         void CheckForTestIsNotLocked(int testId);
 

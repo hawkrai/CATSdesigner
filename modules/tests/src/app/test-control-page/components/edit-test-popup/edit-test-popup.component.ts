@@ -62,9 +62,10 @@ export class EditTestPopupComponent
 
   public newTest: boolean = true
   public formGroup: FormGroup
-  public eumkRoots: { Id: number; Name: string }[] = []
+  public eumkRoots: { Id: number; Name: string; HasPretest?: boolean }[] = []
   public eumkRootsLoading = false
   public hasQuestions = false
+  public isSaving = false
   private subjectId: number
   private eumkRootsLoaded = false
   private unsubscribeStream$: Subject<void> = new Subject<void>()
@@ -159,6 +160,28 @@ export class EditTestPopupComponent
     return this.hasQuestions && !!eumkId
   }
 
+  public get isPretestType(): boolean {
+    const type = this.formGroup?.get('Type')?.value
+    return type != null && +type === TestType.BeforeEUMK
+  }
+
+  public get hasPretestEumkOptions(): boolean {
+    return (
+      this.isPretestType &&
+      this.eumkRoots.some((eumk) => this.isEumkOptionDisabled(eumk))
+    )
+  }
+
+  public isEumkOptionDisabled(eumk: {
+    Id: number
+    HasPretest?: boolean
+  }): boolean {
+    if (!this.isPretestType || !eumk.HasPretest) {
+      return false
+    }
+    return eumk.Id !== this.formGroup?.get('EumkRootConceptId')?.value
+  }
+
   private onTestTypeChanged(type: number | null): void {
     if (type == null) {
       return
@@ -176,7 +199,7 @@ export class EditTestPopupComponent
     }
     this.eumkRootsLoading = true
     this.testService
-      .getEumkRoots(String(this.subjectId))
+      .getEumkRoots(String(this.subjectId), this.data?.event?.Id)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(
         (roots) => {
@@ -184,8 +207,12 @@ export class EditTestPopupComponent
           this.eumkRootsLoaded = true
           this.eumkRootsLoading = false
           const control = this.formGroup.get('EumkRootConceptId')
-          if (control && !control.value && this.eumkRoots.length === 1) {
-            control.setValue(this.eumkRoots[0].Id)
+          if (control && !control.value) {
+            if (this.eumkRoots.length === 1) {
+              control.setValue(this.eumkRoots[0].Id)
+            } else if (this.eumkRoots.length > 1) {
+              control.markAsTouched()
+            }
           }
         },
         () => {
@@ -284,6 +311,9 @@ export class EditTestPopupComponent
   }
 
   onYesClick() {
+    if (this.isLoading || this.isSaving || !this.formGroup) {
+      return
+    }
     if (this.formGroup.invalid) {
       FormUtils.highlightInvalidControls(this.formGroup)
       this.catsService.showMessage({
@@ -335,11 +365,13 @@ export class EditTestPopupComponent
       }
     }
 
+    this.isSaving = true
     this.testService
       .saveTest(saveTestDto)
       .pipe(
         tap((message) => {
           if (message && message.ErrorMessage) {
+            this.isSaving = false
             this.catsService.showMessage({
               Message: message.ErrorMessage,
               Code: '500',
@@ -362,6 +394,18 @@ export class EditTestPopupComponent
         }),
         takeUntil(this.unsubscribeStream$)
       )
-      .subscribe()
+      .subscribe(
+        () => undefined,
+        () => {
+          this.isSaving = false
+          this.catsService.showMessage({
+            Message: this.translatePipe.transform(
+              'text.test.cant.save',
+              'Не удалось сохранить тест. Попробуйте ещё раз'
+            ),
+            Code: '500',
+          })
+        }
+      )
   }
 }

@@ -365,9 +365,9 @@ namespace LMPlatform.UI.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public JsonResult GetTestForLector()
+        public JsonResult GetTestForLector(int? subjectId = null, int testId = 0)
         {
-            var tests = this.TestsManagementService.GetTestForLector(this.CurrentUserId);
+            var tests = this.TestsManagementService.GetTestForLector(this.CurrentUserId, subjectId, testId);
             var testViewModels = tests.Select(TestViewModel.FromTest).OrderBy(t => t.Title).ToList();
             testViewModels.Add(new TestViewModel
             {
@@ -379,9 +379,9 @@ namespace LMPlatform.UI.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public JsonResult GetQuestionsFromAnotherTests(int testId)
+        public JsonResult GetQuestionsFromAnotherTests(int testId, int? subjectId = null)
         {
-            var questions = this.TestsManagementService.GetQuestionsFromAnotherTests(testId, this.CurrentUserId);
+            var questions = this.TestsManagementService.GetQuestionsFromAnotherTests(testId, this.CurrentUserId, subjectId);
             var questionViewModels = questions.Select(QuestionViewModel.FromQuestion).ToList();
 
             return this.Json(questionViewModels, JsonRequestBehavior.AllowGet);
@@ -464,11 +464,21 @@ namespace LMPlatform.UI.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public JsonResult GetEumkRoots(int subjectId)
+        public JsonResult GetEumkRoots(int subjectId, int? testId = null)
         {
             var concepts = this.ConceptManagementService.GetRootElementsBySubject(subjectId);
+
+            var pretestRootIds = this.TestsManagementService
+                .GetPretestEumkRootIds(subjectId, testId)
+                .ToArray();
+
             return this.Json(
-                concepts.Select(c => new { Id = c.Id, Name = c.Name }),
+                concepts.Select(c => new
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    HasPretest = pretestRootIds.Contains(c.Id)
+                }),
                 JsonRequestBehavior.AllowGet);
         }
 
@@ -518,7 +528,21 @@ namespace LMPlatform.UI.Controllers
                 {
                     if (!test.EumkRootConceptId.HasValue || test.EumkRootConceptId.Value <= 0)
                     {
-                        return Json(new { ErrorMessage = "Для теста не выбран ЭУМК. Укажите ЭУМК в настройках теста." });
+                        if (questionViewModel.ConceptId.HasValue && questionViewModel.ConceptId.Value > 0)
+                        {
+                            var rootConceptId = this.ConceptManagementService
+                                .GetRootConceptId(questionViewModel.ConceptId.Value);
+                            if (rootConceptId.HasValue && rootConceptId.Value > 0)
+                            {
+                                test.EumkRootConceptId = rootConceptId;
+                                this.TestsManagementService.SetEumkRootConcept(test.Id, rootConceptId.Value);
+                            }
+                        }
+
+                        if (!test.EumkRootConceptId.HasValue || test.EumkRootConceptId.Value <= 0)
+                        {
+                            return Json(new { ErrorMessage = "Для теста не выбран ЭУМК. Укажите ЭУМК в настройках теста." });
+                        }
                     }
 
                     if (!questionViewModel.ConceptId.HasValue)
