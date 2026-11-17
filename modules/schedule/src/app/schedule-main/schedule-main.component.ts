@@ -1,5 +1,11 @@
 import { DatePipe } from '@angular/common'
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core'
 import { MatDialog } from '@angular/material'
 import {
   CalendarEvent,
@@ -8,7 +14,8 @@ import {
 } from 'angular-calendar'
 import { NotifierService } from 'angular-notifier'
 import { TranslatePipe } from 'educats-translate'
-import { Subject } from 'rxjs'
+import { forkJoin, interval, Observable, of, Subject, Subscription } from 'rxjs'
+import { catchError, map, switchMap } from 'rxjs/operators'
 import { ModuleCommunicationService } from 'test-mipe-bntu-schedule'
 import { Message } from '../../../../../container/src/app/core/models/message'
 import { ConfirmationComponent } from '../modal/confirmation/confirmation.component'
@@ -43,10 +50,14 @@ export class ScheduleMainComponent implements OnInit {
     private datePipe: DatePipe,
     private translatePipe: TranslatePipe,
     private modulecommunicationservice: ModuleCommunicationService,
-    private notifierService: NotifierService
+    private notifierService: NotifierService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   isLoadActive = false
+  private readonly POLLING_INTERVAL = 5000
+  private pollingSubscription: Subscription
+  private lastSignature: string | null = null
   scheduleWidth = '82%'
   newsWidth = '18%'
   newsLeft = '82%'
@@ -101,7 +112,7 @@ export class ScheduleMainComponent implements OnInit {
     return true
   }
 
-  ngOnInit() {
+    ngOnInit() {
     if (this.isMobile()) {
       this.view = CalendarView.Day
     } else {
@@ -115,8 +126,74 @@ export class ScheduleMainComponent implements OnInit {
     } else {
       this.isStudent = false
     }
+    this.startPolling()
+  }
+  ngOnDestroy() {
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe()
+    }
   }
 
+  // Снимок данных расписания: те же запросы, что в changeDate, но без отрисовки
+  private loadSignature(): Observable<string | null> {
+    const a = new Date(this.viewDate)
+    let day = this.viewDate.getDay()
+    if (day == 0) {
+      day = 7
+    }
+    a.setDate(a.getDate() + (7 - day))
+    const endDate = this.lessonservice.formatDate3(a)
+    a.setDate(a.getDate() - 6)
+    const startDate = this.lessonservice.formatDate3(a)
+
+    return forkJoin([
+      this.lessonservice
+        .getConsultations({ count: 1000, page: 1 })
+        .pipe(catchError(() => of(null))),
+      this.lessonservice
+        .getCourseConsultations({ count: 1000, page: 1 })
+        .pipe(catchError(() => of(null))),
+      this.lessonservice
+        .getLessonsByDates(startDate, endDate)
+        .pipe(catchError(() => of(null))),
+    ]).pipe(
+      map((results) =>
+        results.some((r) => r === null) ? null : JSON.stringify(results)
+      )
+    )
+  }
+
+  private rememberSignature() {
+    this.loadSignature().subscribe((signature) => {
+      if (signature) {
+        this.lastSignature = signature
+      }
+    })
+  }
+
+  private startPolling() {
+    this.pollingSubscription = interval(this.POLLING_INTERVAL)
+      .pipe(
+        // пока открыт любой диалог, не трогаем события (иначе changeLesson не найдёт свой event)
+        switchMap(() =>
+          this.dialog.openDialogs.length ? of(null) : this.loadSignature()
+        )
+      )
+      .subscribe((signature) => {
+        if (!signature || this.dialog.openDialogs.length) {
+          return
+        }
+        if (this.lastSignature === null) {
+          this.lastSignature = signature
+          return
+        }
+        if (signature !== this.lastSignature) {
+          this.lastSignature = signature
+          this.changeDate()
+          this.cdr.markForCheck()
+        }
+      })
+  }
   setView(view: CalendarView) {
     this.view = view
   }
@@ -810,6 +887,7 @@ export class ScheduleMainComponent implements OnInit {
   }
 
   public changeDate(): any {
+    this.rememberSignature()
     const a = new Date(this.viewDate)
     let day = this.viewDate.getDay()
     if (day == 0) {

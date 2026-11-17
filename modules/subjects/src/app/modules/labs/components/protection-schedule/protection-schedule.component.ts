@@ -1,5 +1,4 @@
-import { combineLatest } from 'rxjs'
-import { Observable } from 'rxjs'
+import { combineLatest, interval, Observable } from 'rxjs'
 import { Store } from '@ngrx/store'
 import {
   Component,
@@ -18,7 +17,7 @@ import * as labsSelectors from '../../../../store/selectors/labs.selectors'
 import * as subjectSelectors from '../../../../store/selectors/subject.selector'
 import { VisitDateLabsPopoverComponent } from './visit-date-labs-popover/visit-date-labs-popover.component'
 import { DialogService } from 'src/app/services/dialog.service'
-import { map, tap } from 'rxjs/operators'
+import { filter, map, tap } from 'rxjs/operators'
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model'
 import { TranslatePipe } from 'educats-translate'
 import { SubSink } from 'subsink'
@@ -31,6 +30,9 @@ import { SubGroup } from 'src/app/models/sub-group.model'
 })
 export class ProtectionScheduleComponent implements OnInit, OnDestroy {
   private subs = new SubSink()
+  private readonly POLLING_INTERVAL = 5000
+  private hasGroup = false
+  private dialogOpen = false
   state$: Observable<{
     labs: Lab[]
     scheduleProtectionLabs: ScheduleProtectionLab[]
@@ -63,12 +65,21 @@ export class ProtectionScheduleComponent implements OnInit, OnDestroy {
       }))
     )
 
-    this.subs.add(
+        this.subs.add(
       this.store.select(groupSelectors.getCurrentGroup).subscribe((group) => {
+        this.hasGroup = !!group
         if (group) {
           this.store.dispatch(labsActions.loadLabsSchedule())
         }
       })
+    )
+
+    this.subs.add(
+      interval(this.POLLING_INTERVAL)
+        .pipe(filter(() => this.hasGroup && !this.dialogOpen))
+        .subscribe(() => {
+          this.store.dispatch(labsActions.loadLabsSchedule())
+        })
     )
   }
 
@@ -79,13 +90,23 @@ export class ProtectionScheduleComponent implements OnInit, OnDestroy {
     ]
   }
 
-  settingVisitDate(subGroup: SubGroup) {
+    settingVisitDate(subGroup: SubGroup) {
     const dialogData: DialogData = {
       title: this.translate.transform('text.schedule.dates', 'Даты занятий'),
       buttonText: this.translate.transform('button.add', 'Добавить'),
       body: { subGroupId: subGroup.Id },
     }
 
-    this.dialogService.openDialog(VisitDateLabsPopoverComponent, dialogData)
+    this.dialogOpen = true
+    const dialogRef = this.dialogService.openDialog(
+      VisitDateLabsPopoverComponent,
+      dialogData
+    )
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(() => {
+        this.dialogOpen = false
+        this.store.dispatch(labsActions.loadLabsSchedule())
+      })
+    )
   }
 }

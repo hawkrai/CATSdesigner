@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core'
-import { forkJoin, of, Subject, Subscription } from 'rxjs'
+import { forkJoin, interval, of, Subject, Subscription } from 'rxjs'
 import { CourseUser } from '../../models/course-user.model'
 import { MatDialog } from '@angular/material'
 import { AddProjectDialogComponent } from './add-project-dialog/add-project-dialog.component'
@@ -15,7 +15,7 @@ import { CoreGroup } from 'src/app/models/core-group.model'
 import { GroupService } from '../../services/group.service'
 import { ToastrService } from 'ngx-toastr'
 import { CourseUserService } from '../../services/course-user.service'
-import { delay, switchMap, takeUntil } from 'rxjs/operators'
+import { delay, filter, switchMap, takeUntil } from 'rxjs/operators'
 import { TranslatePipe } from 'educats-translate'
 import { ProjectsListComponent } from './projects-list/projects-list.component'
 import { LanguageService } from '../../services/language.service'
@@ -31,6 +31,9 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   @ViewChild(ProjectsListComponent, { static: false })
   primarySampleComponent: ProjectsListComponent
 
+  private readonly POLLING_INTERVAL = 5000
+  private pollingStarted = false
+  
   private COUNT = 1000000
   private PAGE = 1
 
@@ -86,6 +89,16 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         this.lecturerName = res.Name
       })
+    
+    if (!this.pollingStarted) {
+  this.pollingStarted = true
+  interval(this.POLLING_INTERVAL)
+    .pipe(
+      filter(() => !!this.subjectId && this.dialog.openDialogs.length === 0),
+      takeUntil(this.destroy$)
+    )
+    .subscribe(() => this.retrieveProjects())
+}
   }
 
   ngOnDestroy(): void {

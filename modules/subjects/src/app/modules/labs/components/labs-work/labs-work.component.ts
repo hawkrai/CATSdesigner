@@ -1,4 +1,5 @@
 import { DialogService } from './../../../../services/dialog.service'
+import { interval } from 'rxjs'
 import { MatTable } from '@angular/material'
 import { Store } from '@ngrx/store'
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'
@@ -11,7 +12,7 @@ import {
   AfterViewChecked,
   ViewChild,
 } from '@angular/core'
-import { filter } from 'rxjs/operators'
+import { filter, tap } from 'rxjs/operators'
 
 import { Lab } from '../../../../models/lab.model'
 import { IAppState } from '../../../../store/state/app.state'
@@ -38,7 +39,9 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   private subs = new SubSink()
   public labs: Lab[]
   labPrefix: string
-
+  private readonly POLLING_INTERVAL = 5000
+  private dialogOpen = false
+  private pauseUntil = 0
   constructor(
     private store: Store<IAppState>,
     private dialogService: DialogService,
@@ -58,6 +61,11 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.isTeacher = isTeacher
       })
     )
+    this.subs.add(
+  interval(this.POLLING_INTERVAL)
+    .pipe(filter(() => !this.dialogOpen && Date.now() > this.pauseUntil))
+    .subscribe(() => this.store.dispatch(labsActions.loadLabs()))
+)
   }
 
   getDisplayedColumns(): string[] {
@@ -98,21 +106,26 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       buttonText: this.translate.transform('button.save', 'Сохранить'),
       model: newLab,
     }
+    this.dialogOpen = true
     const dialogRef = this.dialogService.openDialog(
       LabWorkPopoverComponent,
       dialogData
     )
 
     this.subs.add(
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          result.attachments = JSON.stringify(result.attachments)
-          this.store.dispatch(
-            labsActions.saveLab({ lab: result as CreateLessonEntity })
-          )
-        }
-      })
+  dialogRef
+    .afterClosed()
+    .pipe(
+      tap(() => (this.dialogOpen = false)),
+      filter((r) => !!r)
     )
+    .subscribe((result) => {
+      result.attachments = JSON.stringify(result.attachments)
+      this.store.dispatch(
+        labsActions.saveLab({ lab: result as CreateLessonEntity })
+      )
+    })
+)
   }
 
   deleteLab(lab: Lab) {
@@ -126,18 +139,23 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
         .toLowerCase()} "${lab.Theme}"`,
       buttonText: this.translate.transform('button.delete', 'Удалить'),
     }
+    this.dialogOpen = true
     const dialogRef = this.dialogService.openDialog(
       DeletePopoverComponent,
       dialogData
     )
 
     this.subs.add(
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          this.store.dispatch(labsActions.deleteLab({ id: lab.LabId }))
-        }
-      })
+  dialogRef
+    .afterClosed()
+    .pipe(
+      tap(() => (this.dialogOpen = false)),
+      filter((r) => !!r)
     )
+    .subscribe(() => {
+      this.store.dispatch(labsActions.deleteLab({ id: lab.LabId }))
+    })
+)
   }
 
   openFilePopup(attachments: Attachment[]) {
@@ -182,6 +200,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       (i) => i.LabId == event.item.data.LabId
     )
     if (prevIndex !== event.currentIndex) {
+      this.pauseUntil = Date.now() + 10000
       moveItemInArray(event.container.data, prevIndex, event.currentIndex)
       this.store.dispatch(
         labsActions.updateOrder({ prevIndex, currentIndex: event.currentIndex })
