@@ -106,8 +106,8 @@
       *ngIf="!shouldHideFileUpload"
       header="{{
         isFolder
-          ? ('common.pinnedDocFolder' | translate: 'Прикрепленный материал (до 5 файлов, поддерживаются форматы .pdf, .docx, .doc)')
-          : ('common.pinnedDoc' | translate: 'Прикрепленный материал (поддерживаются файлы формата .pdf, .docx или .doc)')
+          ? ('common.pinnedDocFolder' | translate: 'Прикрепленный материал (до 5 файлов, поддерживаются форматы .pdf, .docx)')
+          : ('common.pinnedDoc' | translate: 'Прикрепленный материал (поддерживаются файлы формата .pdf или .docx)')
       }}"
       (delete)="deleteFile($event)"
       [files]="files"

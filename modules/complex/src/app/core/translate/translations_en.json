@@ -14,7 +14,7 @@
   "common.file": "File",
   "common.inputFileName": "Enter the item name",
   "common.fileName": "Enter the item name",
-  "common.pinnedDoc": "Attached material (supported file formats: .pdf, .docx or .doc)",
+  "common.pinnedDoc": "Attached material (supported file formats: .pdf or .docx)",
   "common.pretest": "Pass the pre-test",
   "common.prevDocument": "Previous document",
   "common.nextDocument": "Next document",
@@ -62,7 +62,7 @@
   "complex.addComplexes": "Add educational complex",
   "complex.addComplex": "Add educational complex",
   "complex.editComplexes": "Edit Complexes",
-  "complex.fileUploadError": "You can add only .pdf, .docx or .doc file",
+  "complex.fileUploadError": "You can add only .pdf or .docx file",
   "complex.editComplex": "Edit educational complex",
   "complex.addComponent": "Add component",
   "complex.editComponent": "Edit component",
@@ -146,5 +146,7 @@
   "complex.themaResults.learned": "Learned",
   "complex.themaResults.toLearn": "To learn",
   "complex.learningFinished.learnedThemas": "Learned topics",
-  "complex.themaTestMissing": "No tests were found for this topic. Please contact your lecturer."
+  "complex.themaTestMissing": "No tests were found for this topic. Please contact your lecturer.",
+  "common.pinnedDocFolder": "Attached material (up to 5 files, supported formats: .pdf, .docx)",
+  "complex.eumk.download.pdfNoLoHint": "Word materials will be converted with the built-in converter"
 }
