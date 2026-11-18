@@ -146,6 +146,8 @@
   "complex.themaResults.learned": "Learned",
   "complex.themaResults.toLearn": "To learn",
   "complex.learningFinished.learnedThemas": "Learned topics",
+  "complex.accessDenied.title": "No access to adaptive learning",
+  "complex.accessDenied.text": "To take adaptive learning, ask your lecturer for access.",
   "complex.themaTestMissing": "No tests were found for this topic. Please contact your lecturer.",
   "common.pinnedDocFolder": "Attached material (up to 5 files, supported formats: .pdf, .docx)",
   "complex.eumk.download.pdfNoLoHint": "Word materials will be converted with the built-in converter"

@@ -191,6 +191,8 @@ export class ConverterService {
     nextThemaRes.learnedThemas = this.themaStudyResultsConverter(
       themaRes.LearnedThemas
     )
+    nextThemaRes.isAccessDenied = !!themaRes.IsAccessDenied
+    nextThemaRes.canRestartLearning = !!themaRes.CanRestartLearning
 
     return nextThemaRes
   }

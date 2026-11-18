@@ -145,6 +145,8 @@
   "complex.themaResults.learned": "Изучено",
   "complex.themaResults.toLearn": "Изучить",
   "complex.learningFinished.learnedThemas": "Изученные темы",
+  "complex.accessDenied.title": "Нет доступа к адаптивному обучению",
+  "complex.accessDenied.text": "Чтобы пройти адаптивное обучение, обратитесь к преподавателю за доступом.",
   "complex.themaTestMissing": "Для этой темы не найдено тестов. Обратитесь к преподавателю.",
   "common.pinnedDocFolder": "Прикрепленный материал (до 5 файлов, поддерживаются форматы .pdf, .docx)",
   "complex.eumk.download.pdfNoLoHint": "Word-материалы будут преобразованы встроенным конвертером"

@@ -80,7 +80,6 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 
 			if (currentRes.NextStepSolution == ThemaSolutions.END_PROCCESS)
 			{
-				LockPredTestAfterLearning(subjectId, eumkRootConceptId, userId);
 				return new AdaptivityViewResult
 				{
 					NextThemaId = null,
@@ -88,6 +87,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					NeedToDoPredTest = false,
 					IsLearningEnded = true,
 					LearnedThemas = GetLearnedThemas(allAvailableThemas.Select(x => x.ThemaId)),
+					CanRestartLearning = HasLearningAccess(userId, subjectId, eumkRootConceptId),
 					Code = "200"
 				};
 			}
@@ -141,7 +141,6 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			var nextThema = availableThemas.FirstOrDefault(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN);
 			if (nextThema == null)
 			{
-				LockPredTestAfterLearning(subjectId, eumkRootConceptId, userId);
 				return new AdaptivityViewResult
 				{
 					NextThemaId = null,
@@ -149,6 +148,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					NeedToDoPredTest = false,
 					IsLearningEnded = true,
 					LearnedThemas = GetLearnedThemas(availableThemas.Select(x => x.ThemaId)),
+					CanRestartLearning = HasLearningAccess(userId, subjectId, eumkRootConceptId),
 					Code = "200"
 				};
 			}
@@ -287,7 +287,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 
 		public ResultViewData RestartLearning(int subjectId, int eumkRootConceptId)
 		{
-			if (!CurrentUserIsLector())
+			if (!HasLearningAccess(UserContext.CurrentUserId, subjectId, eumkRootConceptId))
 			{
 				return new ResultViewData { Message = "Access denied", Code = "403" };
 			}
@@ -308,6 +308,18 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			allAvailableThemas = FilterThemasByEumk(allAvailableThemas, eumkRootConceptId);
 			if (allAvailableThemas is null || !allAvailableThemas.Any())
 			{
+				if (!HasLearningAccess(userId, subjectId, eumkRootConceptId) && !HasUnfinishedPredTest(userId, subjectId, eumkRootConceptId))
+				{
+					return new AdaptivityViewResult
+					{
+						NextThemaId = null,
+						NextMaterialPath = null,
+						NeedToDoPredTest = false,
+						IsAccessDenied = true,
+						Code = "403"
+					};
+				}
+
 				return new AdaptivityViewResult
 				{
 					NextThemaId = null,
@@ -316,18 +328,8 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					Code = "500"
 				};
 			}
-			var first = allAvailableThemas.FirstOrDefault(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN);
-			if (first is null && TryRestartLearningByReopenedPredTest(userId, subjectId, eumkRootConceptId))
-			{
-				return new AdaptivityViewResult
-				{
-					NextThemaId = null,
-					NextMaterialPath = null,
-					NeedToDoPredTest = true,
-					Code = "200"
-				};
-			}
 
+			var first = allAvailableThemas.FirstOrDefault(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN);
 			if (first is null)
 			{
 				return new AdaptivityViewResult
@@ -337,6 +339,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					NeedToDoPredTest = false,
 					IsLearningEnded = true,
 					LearnedThemas = GetLearnedThemas(allAvailableThemas.Select(x => x.ThemaId)),
+					CanRestartLearning = HasLearningAccess(userId, subjectId, eumkRootConceptId),
 					Code = "200"
 				};
 			}
@@ -476,47 +479,21 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 				?? candidates.FirstOrDefault();
 		}
 
-		private bool TryRestartLearningByReopenedPredTest(int userId, int subjectId, int eumkRootConceptId)
+		private bool HasLearningAccess(int userId, int subjectId, int eumkRootConceptId)
 		{
 			if (CurrentUserIsLector())
 			{
-				return false;
+				return true;
 			}
 
 			var predTest = GetPredTestForEumk(subjectId, eumkRootConceptId);
-			if (predTest == null || !AdaptiveLearningManagementService.IsTestUnlockedForStudent(predTest.Id, userId))
-			{
-				return false;
-			}
-
-			var eumkConceptIds = GetEumkConceptIds(eumkRootConceptId);
-			if (eumkConceptIds == null)
-			{
-				return false;
-			}
-
-			AdaptiveLearningManagementService.ClearEducationData(userId, subjectId, eumkConceptIds);
-			return true;
+			return predTest != null && AdaptiveLearningManagementService.IsTestUnlockedForStudent(predTest.Id, userId);
 		}
 
-		private void LockPredTestAfterLearning(int subjectId, int eumkRootConceptId, int userId)
+		private bool HasUnfinishedPredTest(int userId, int subjectId, int eumkRootConceptId)
 		{
-			if (CurrentUserIsLector())
-			{
-				return;
-			}
-
-			try
-			{
-				var predTest = GetPredTestForEumk(subjectId, eumkRootConceptId);
-				if (predTest != null)
-				{
-					TestsManagementService.UnlockTestForStudent(predTest.Id, userId, false);
-				}
-			}
-			catch
-			{
-			}
+			var predTest = GetPredTestForEumk(subjectId, eumkRootConceptId);
+			return predTest != null && AdaptiveLearningManagementService.HasUnfinishedTestAttempt(predTest.Id, userId);
 		}
 		
 		private AdaptiveLearningProcessor GetLearningProcessor(int adaptiivtyType)

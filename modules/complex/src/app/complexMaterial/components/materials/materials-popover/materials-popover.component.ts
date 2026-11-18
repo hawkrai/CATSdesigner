@@ -38,6 +38,8 @@ export class MaterialsPopoverComponent {
   isEndLearning: boolean
   learnedThemas: ThemaStudyResult[] = []
   isPredTestNotLinked: boolean = false
+  isAccessDenied: boolean = false
+  canRestartLearning: boolean = false
   isThemaTestMissing: boolean = false
   isLector: boolean
 
@@ -108,11 +110,14 @@ export class MaterialsPopoverComponent {
     this.shouldWaitPresettedTime = adaptivity.shouldWaitPresettedTime
     this.isEndLearning = adaptivity.isLearningEnded
     this.learnedThemas = adaptivity.learnedThemas || []
+    this.isAccessDenied = adaptivity.isAccessDenied
+    this.canRestartLearning = adaptivity.canRestartLearning
 
     this.showMaterial = !(
       this.needToGetInitialTest ||
       this.isTest ||
-      this.isEndLearning
+      this.isEndLearning ||
+      this.isAccessDenied
     )
 
     this.toTestButtonVisible = this.showMaterial

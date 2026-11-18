@@ -29,5 +29,11 @@ namespace LMPlatform.UI.Services.Modules
 
 		[DataMember]
 		public List<ThemaStudyResultViewData> LearnedThemas { get; set; }
+
+		[DataMember]
+		public bool IsAccessDenied { get; set; }
+
+		[DataMember]
+		public bool CanRestartLearning { get; set; }
 	}
 }

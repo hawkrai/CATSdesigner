@@ -24,5 +24,7 @@ namespace Application.Infrastructure.AdaptiveLearning
 		void ClearEducationData(int userId, int subjectId, IEnumerable<int> conceptIds, int? adaptivityId = null);
 		IList<Test> GetSubjectTestsWithQuestions(int subjectId);
 		bool IsTestUnlockedForStudent(int testId, int studentId);
+
+		bool HasUnfinishedTestAttempt(int testId, int userId);
 	}
 }

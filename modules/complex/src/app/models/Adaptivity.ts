@@ -8,4 +8,6 @@ export class Adaptivity {
   timeToWait?: number
   isLearningEnded: boolean
   learnedThemas: ThemaStudyResult[] = []
+  isAccessDenied: boolean
+  canRestartLearning: boolean
 }
