@@ -131,5 +131,18 @@
   "complex.learningFinished.repeatHint": "Если захотите повторить процесс обучения, обратитесь к преподавателю.",
   "complex.learningFinished.restart": "Пройти обучение заново",
   "complex.predTestNotLinked.title": "Не удалось определить темы для обучения",
-  "complex.predTestNotLinked.text": "Вопросы предтеста не связаны с темами этого ЭУМК. Обратитесь к преподавателю."
+  "complex.predTestNotLinked.text": "Вопросы предтеста не связаны с темами этого ЭУМК. Обратитесь к преподавателю.",
+  "complex.testResult.finished": "Тест на тему «{title}» завершен",
+  "complex.testResult.mark": "Ваша оценка: {mark} ({percent}%)",
+  "complex.testResult.date": "Дата прохождения теста: ",
+  "complex.testResult.startTime": "Время начала теста: ",
+  "complex.testResult.endTime": "Время окончания теста: ",
+  "complex.testResult.questionNumber": "Вопрос №{number}",
+  "complex.themaResults.title": "Изученность тем",
+  "complex.themaResults.theme": "Тема",
+  "complex.themaResults.status": "Статус",
+  "complex.themaResults.percent": "Изученность, %",
+  "complex.themaResults.learned": "Изучено",
+  "complex.themaResults.toLearn": "Изучить",
+  "complex.learningFinished.learnedThemas": "Изученные темы"
 }

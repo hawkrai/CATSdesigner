@@ -195,6 +195,15 @@
         }}
       </p>
     </div>
+    <div class="adaptive-info__themas" *ngIf="learnedThemas?.length">
+      <div class="adaptive-info__themas-title">
+        {{ 'complex.learningFinished.learnedThemas' | translate: 'Изученные темы' }}:
+      </div>
+      <app-thema-results
+        [themas]="learnedThemas"
+        [showPercent]="false"
+      ></app-thema-results>
+    </div>
     <div class="adaptive-info__actions" *ngIf="isLector">
       <button
         mat-raised-button

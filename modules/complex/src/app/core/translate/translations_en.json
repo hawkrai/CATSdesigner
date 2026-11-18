@@ -131,5 +131,18 @@
   "complex.learningFinished.repeatHint": "If you would like to repeat the learning process, please contact your lecturer.",
   "complex.learningFinished.restart": "Restart learning",
   "complex.predTestNotLinked.title": "Could not determine topics to study",
-  "complex.predTestNotLinked.text": "The pre-test questions are not linked to the topics of this Educational Complex. Please contact your lecturer."
+  "complex.predTestNotLinked.text": "The pre-test questions are not linked to the topics of this Educational Complex. Please contact your lecturer.",
+  "complex.testResult.finished": "Test for theme «{title}» completed",
+  "complex.testResult.mark": "Your mark is {mark} ({percent}%)",
+  "complex.testResult.date": "Date passing test: ",
+  "complex.testResult.startTime": "Test start time: ",
+  "complex.testResult.endTime": "Test end time: ",
+  "complex.testResult.questionNumber": "Question #{number}",
+  "complex.themaResults.title": "Topics mastery",
+  "complex.themaResults.theme": "Topic",
+  "complex.themaResults.status": "Status",
+  "complex.themaResults.percent": "Mastery, %",
+  "complex.themaResults.learned": "Learned",
+  "complex.themaResults.toLearn": "To learn",
+  "complex.learningFinished.learnedThemas": "Learned topics"
 }

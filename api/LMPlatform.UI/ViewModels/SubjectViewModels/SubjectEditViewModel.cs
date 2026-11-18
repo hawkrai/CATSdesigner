@@ -336,6 +336,13 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
 	        this.SubjectId = sub.Id;
 	        this.CreateOrUpdateSubGroups();
 
+	        if (SelectedGroups != null)
+	        {
+		        this.TestsManagementService.UnlockEumkTestsForGroups(
+			        sub.Id,
+			        SelectedGroups.Where(groupId => !selectedGroupdsOld.Any(old => old.GroupId == groupId)));
+	        }
+
             foreach (var module in sub.SubjectModules)
             {
                 if (module.ModuleId == 9)

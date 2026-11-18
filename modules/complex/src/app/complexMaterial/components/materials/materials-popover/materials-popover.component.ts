@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { DialogData } from '../../../../models/DialogData'
 import { AdaptivityService } from '../../../../service/adaptivity.service'
 import { Adaptivity } from '../../../../models/Adaptivity'
+import { ThemaStudyResult } from '../../../../models/ThemaStudyResult'
 import { AdaptivityType } from '../../../../models/adaptivity-type.enum'
 import { FileExtension } from '../../../../models/file/file-extension.enum'
 import { LibreOfficeAvailabilityService } from '../../../../service/libre-office-availability.service'
@@ -35,6 +36,7 @@ export class MaterialsPopoverComponent {
   shouldWaitPresettedTime: boolean
   showMaterial: boolean
   isEndLearning: boolean
+  learnedThemas: ThemaStudyResult[] = []
   isPredTestNotLinked: boolean = false
   isLector: boolean
 
@@ -104,6 +106,7 @@ export class MaterialsPopoverComponent {
     this.needToGetInitialTest = adaptivity.needToDoPredTest
     this.shouldWaitPresettedTime = adaptivity.shouldWaitPresettedTime
     this.isEndLearning = adaptivity.isLearningEnded
+    this.learnedThemas = adaptivity.learnedThemas || []
 
     this.showMaterial = !(
       this.needToGetInitialTest ||

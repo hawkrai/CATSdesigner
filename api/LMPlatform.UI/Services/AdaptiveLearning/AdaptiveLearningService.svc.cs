@@ -84,6 +84,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					NextMaterialPath = null,
 					NeedToDoPredTest = false,
 					IsLearningEnded = true,
+					LearnedThemas = GetLearnedThemas(allAvailableThemas.Select(x => x.ThemaId)),
 					Code = "200"
 				};
 			}
@@ -144,6 +145,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					NextMaterialPath = null,
 					NeedToDoPredTest = false,
 					IsLearningEnded = true,
+					LearnedThemas = GetLearnedThemas(availableThemas.Select(x => x.ThemaId)),
 					Code = "200"
 				};
 			}
@@ -288,6 +290,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					NextMaterialPath = null,
 					NeedToDoPredTest = false,
 					IsLearningEnded = true,
+					LearnedThemas = GetLearnedThemas(allAvailableThemas.Select(x => x.ThemaId)),
 					Code = "200"
 				};
 			}
@@ -301,6 +304,72 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 				NeedToDoPredTest = false,
 				Code = "200"
 			};
+		}
+
+		public ThemaStudyResultsViewResult GetTestThemasResults(int testId)
+		{
+			try
+			{
+				var userId = UserContext.CurrentUserId;
+				var test = TestsManagementService.GetTest(testId, true);
+				var questions = test?.Questions ?? new List<LMPlatform.Models.KnowledgeTesting.Question>();
+				var answers = TestPassingService.GetAnswersForEndedTest(testId, userId)
+					?? new List<LMPlatform.Models.KnowledgeTesting.AnswerOnTestQuestion>();
+
+				var themas = answers
+					.Select(answer => new
+					{
+						answer.Points,
+						ConceptId = questions.FirstOrDefault(q => q.Id == answer.QuestionId)?.ConceptId
+					})
+					.Where(x => x.ConceptId.HasValue)
+					.GroupBy(x => x.ConceptId.Value)
+					.Select(group => new ThemaStudyResultViewData
+					{
+						ThemaId = group.Key,
+						ThemaName = GetConceptName(group.Key),
+						Percent = (int)Math.Round(100.0 * group.Count(x => x.Points > 0) / group.Count())
+					})
+					.Where(x => x.ThemaName != null)
+					.ToList();
+
+				return new ThemaStudyResultsViewResult { Themas = themas, Code = "200" };
+			}
+			catch (Exception ex)
+			{
+				return new ThemaStudyResultsViewResult { Themas = new List<ThemaStudyResultViewData>(), Message = ex.Message, Code = "500" };
+			}
+		}
+
+		private List<ThemaStudyResultViewData> GetLearnedThemas(IEnumerable<int> themaIds)
+		{
+			if (themaIds == null)
+			{
+				return new List<ThemaStudyResultViewData>();
+			}
+
+			return themaIds
+				.Distinct()
+				.Select(id => new ThemaStudyResultViewData
+				{
+					ThemaId = id,
+					ThemaName = GetConceptName(id),
+					Percent = 100
+				})
+				.Where(x => x.ThemaName != null)
+				.ToList();
+		}
+
+		private string GetConceptName(int conceptId)
+		{
+			try
+			{
+				return ConceptManagementService.GetLiteById(conceptId)?.Name;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
 		private TestsDifficulties GetTestDifficultyByComplexityLevel(int complexityLevel)
