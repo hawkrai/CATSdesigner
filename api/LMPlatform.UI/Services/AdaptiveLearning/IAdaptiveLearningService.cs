@@ -41,5 +41,9 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		[OperationContract]
 		[WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/RestartLearning")]
 		ResultViewData RestartLearning(int subjectId, int eumkRootConceptId);
+
+		[OperationContract]
+		[WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetTestThemasResults?testId={testId}")]
+		ThemaStudyResultsViewResult GetTestThemasResults(int testId);
 	}
 }

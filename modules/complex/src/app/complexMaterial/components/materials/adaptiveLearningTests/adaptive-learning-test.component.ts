@@ -1,20 +1,22 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators'
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core'
+import { catchError, map, switchMap, takeUntil, tap } from 'rxjs/operators'
 import { Observable, of, Subject, timer } from 'rxjs'
 import { Test } from '../../../../models/Test'
 import { TestService } from '../../../../service/test.service'
+import { AdaptivityService } from '../../../../service/adaptivity.service'
 import { TestQuestion } from '../../../../models/question/TestQuestion'
 import { UserAnswer } from '../../../../models/question/UserAnswer'
-import { UserRole } from '../../../../../../../../container/src/app/core/models/user-role.enum'
+import { TestResult } from '../../../../models/TestResult'
+import { ThemaStudyResult } from '../../../../models/ThemaStudyResult'
 import { TimerValue } from '../../../../models/timer-value.enum'
+import { isColorFeedbackTest } from '../../../../models/test-feedback'
 
 @Component({
   selector: 'app-test-execution',
   templateUrl: './adaptive-learning-test.component.html',
   styleUrls: ['./adaptive-learning-test.component.less'],
 })
-export class TestExecutionComponent implements OnInit {
+export class TestExecutionComponent implements OnInit, OnDestroy {
   @Input()
   testId: string
 
@@ -27,7 +29,6 @@ export class TestExecutionComponent implements OnInit {
   @Output()
   learningFlowContinue = new EventEmitter<void>()
 
-  public isLector = false
   public isResultLoading = false
   private isTestFinished = false
   public question: TestQuestion
@@ -38,33 +39,21 @@ export class TestExecutionComponent implements OnInit {
   public trueAnswersArray: number[] = []
   public falseAnswersArray: number[] = []
   public outputArray: UserAnswer[] = []
-  public result: any
+  public testResult: TestResult
+  public themaResults: ThemaStudyResult[] = []
   public counter$: Observable<string>
   public count = 60
   public showTest: boolean
   private unsubscribeStream$: Subject<void> = new Subject<void>()
 
-  public endDate: string
-  public startTime: string
-  public endTime: string
-
   constructor(
     private testService: TestService,
-    private route: ActivatedRoute,
-    private router: Router
+    private adaptivityService: AdaptivityService
   ) {}
 
   ngOnInit() {
     this.questionNumber = '1'
     this.showTest = true
-    try {
-      const user = JSON.parse(localStorage.getItem('currentUser'))
-      this.isLector = user && user.role === UserRole.Lector
-    } catch (_e) {
-      this.isLector = false
-    }
-    const now = new Date()
-    this.startTime = now.toLocaleTimeString()
     this.testService
       .getTestById(this.testId)
       .pipe(
@@ -194,18 +183,36 @@ export class TestExecutionComponent implements OnInit {
     this.isTestFinished = true
     this.showTest = false
     this.isResultLoading = true
-    const answers$ = isClosedOnServer
-      ? this.testService.getEndedTestAnswers(this.testId)
-      : this.testService.closeTestAndGetAnswers(this.testId)
-    answers$.pipe(takeUntil(this.unsubscribeStream$)).subscribe(
-      (answers: UserAnswer[]) => {
-        this.outputArray = answers || []
-        this.isResultLoading = false
-      },
-      () => {
-        this.isResultLoading = false
-      }
-    )
+    const result$ = isClosedOnServer
+      ? this.testService.getEndedTestResult(this.testId)
+      : this.testService.closeTestAndGetResult(this.testId)
+    result$
+      .pipe(
+        tap((result: TestResult) => {
+          this.testResult = result
+          this.outputArray = result.answers
+        }),
+        switchMap(() =>
+          this.adaptivityService
+            .getTestThemasResults(this.testId)
+            .pipe(catchError(() => of([] as ThemaStudyResult[])))
+        ),
+        takeUntil(this.unsubscribeStream$)
+      )
+      .subscribe(
+        (themas: ThemaStudyResult[]) => {
+          this.themaResults = themas
+          this.isResultLoading = false
+        },
+        () => {
+          this.isResultLoading = false
+        }
+      )
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribeStream$.next()
+    this.unsubscribeStream$.complete()
   }
 
   private syncQuestionProgress(questionNumber: number, isTrue: boolean): void {
@@ -227,24 +234,11 @@ export class TestExecutionComponent implements OnInit {
   }
 
   public showColorAnswerFeedback(): boolean {
-    const t = this.test
-    if (!t) {
-      return false
-    }
-    if (t.ForSelfStudy) {
-      return true
-    }
-    return this.isLector && !!(t.BeforeEUMK || t.ForEUMK)
+    return isColorFeedbackTest(this.test)
   }
 
   private shouldExcludeCorrectnessIndicator(test: Test): boolean {
-    if (test.ForSelfStudy) {
-      return false
-    }
-    if (this.isLector && (test.BeforeEUMK || test.ForEUMK)) {
-      return false
-    }
-    return true
+    return !isColorFeedbackTest(test)
   }
 
   private fillQuestionArray(): void {

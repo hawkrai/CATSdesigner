@@ -232,6 +232,7 @@
     <Compile Include="DTO\UserData.cs" />
     <Compile Include="ElasticManagement\ElasticManagementService.cs" />
     <Compile Include="ElasticManagement\IElasticManagementService.cs" />
+    <Compile Include="Export\DocxToPdfRenderer.cs" />
     <Compile Include="Export\EumkAttachmentTextExtractor.cs" />
     <Compile Include="Export\EumkExportDocumentGenerator.cs" />
     <Compile Include="Export\GenerateCPDocument.cs" />

@@ -7,7 +7,7 @@ import { TestService } from '../../../../../../service/test.service'
 import { TestQuestion } from '../../../../../../models/question/TestQuestion'
 import { Test } from '../../../../../../models/Test'
 import { Answer } from '../../../../../../models/question/Answer'
-import { UserRole } from '../../../../../../../../../../container/src/app/core/models/user-role.enum'
+import { isColorFeedbackTest } from '../../../../../../models/test-feedback'
 
 @Component({
   selector: 'app-question',
@@ -46,9 +46,7 @@ export class QuestionComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit() {
-    console.log(this.question)
-  }
+  ngOnInit() {}
 
   public answerQuestion(): void {
     if (
@@ -134,20 +132,7 @@ export class QuestionComponent implements OnInit {
   }
 
   private canShowAnswers(): boolean {
-    if (!this.test) {
-      return false
-    }
-    if (this.test.ForSelfStudy) {
-      return true
-    }
-    let isLector = false
-    try {
-      const u = JSON.parse(localStorage.getItem('currentUser'))
-      isLector = u && u.role === UserRole.Lector
-    } catch (_e) {
-      isLector = false
-    }
-    return isLector && !!(this.test.BeforeEUMK || this.test.ForEUMK)
+    return isColorFeedbackTest(this.test)
   }
 
   private checkSelfStudyAnswer(request): boolean {

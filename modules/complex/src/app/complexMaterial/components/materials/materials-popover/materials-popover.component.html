@@ -1,4 +1,4 @@
-<div mat-dialog-actions *ngIf="!needToGetInitialTest && !isTest && !isEndLearning && !isPredTestNotLinked">
+<div mat-dialog-actions *ngIf="!needToGetInitialTest && !isTest && !isEndLearning && !isPredTestNotLinked && !isAccessDenied">
   <button
     *ngIf="zoomInButtonVisible && isBuiltInViewerMode"
     mat-raised-button
@@ -39,16 +39,15 @@
     {{ 'common.nextTopic' | translate: 'Следующая тема' }}
     <mat-icon>fast_forward</mat-icon>
   </button>
-  <button
+  <a
     *ngIf="toTestButtonVisible"
-    mat-raised-button
-    mat-button
-    class="color-button"
-    [disabled]="!toTestButtonEnabled"
-    (click)="goToTests()"
+    class="to-tests-link main-anchor"
+    [class.to-tests-link--disabled]="!toTestButtonEnabled"
+    (click)="toTestButtonEnabled && goToTests()"
   >
     {{ 'complex.toTests' | translate: 'К тестам' }}
-  </button>
+    <mat-icon class="to-tests-link__icon">arrow_forward</mat-icon>
+  </a>
   <div class="cancel-button">
     <button mat-icon-button (click)="onNoClick()">
       <mat-icon>clear</mat-icon>
@@ -90,6 +89,14 @@
         {{ 'common.pretest' | translate: 'Пройти предтест' }}
       </button>
     </div>
+  </div>
+
+  <div *ngIf="isThemaTestMissing" class="thema-test-missing">
+    {{
+      'complex.themaTestMissing'
+        | translate
+          : 'Для этой темы не найдено тестов. Обратитесь к преподавателю.'
+    }}
   </div>
 
   <span *ngIf="showTimer"
@@ -135,17 +142,35 @@
   </ng-container>
 
   <div *ngIf="isTest">
-    <div class="adaptive-test-close">
-      <button mat-icon-button (click)="onNoClick()">
-        <mat-icon>clear</mat-icon>
-      </button>
-    </div>
     <app-test-execution
       [testId]="testId"
       [testTitle]="testTitle"
       [isPredTest]="isPredTest"
       (learningFlowContinue)="onLearningFlowContinue()"
     ></app-test-execution>
+  </div>
+
+  <div *ngIf="isAccessDenied" class="adaptive-info">
+    <div class="adaptive-info__title">
+      <p>
+        {{
+          'complex.accessDenied.title'
+            | translate: 'Нет доступа к адаптивному обучению'
+        }}
+      </p>
+      <button mat-icon-button (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+    <div class="adaptive-info__text">
+      <p>
+        {{
+          'complex.accessDenied.text'
+            | translate
+              : 'Чтобы пройти адаптивное обучение, обратитесь к преподавателю за доступом.'
+        }}
+      </p>
+    </div>
   </div>
 
   <div *ngIf="isPredTestNotLinked" class="adaptive-info">
@@ -187,7 +212,7 @@
             | translate: 'Процесс адаптивного обучения завершен.'
         }}
       </p>
-      <p *ngIf="!isLector">
+      <p *ngIf="!canRestartLearning">
         {{
           'complex.learningFinished.repeatHint'
             | translate
@@ -195,7 +220,16 @@
         }}
       </p>
     </div>
-    <div class="adaptive-info__actions" *ngIf="isLector">
+    <div class="adaptive-info__themas" *ngIf="learnedThemas?.length">
+      <div class="adaptive-info__themas-title">
+        {{ 'complex.learningFinished.learnedThemas' | translate: 'Изученные темы' }}:
+      </div>
+      <app-thema-results
+        [themas]="learnedThemas"
+        [showPercent]="false"
+      ></app-thema-results>
+    </div>
+    <div class="adaptive-info__actions" *ngIf="canRestartLearning">
       <button
         mat-raised-button
         mat-button

@@ -218,6 +218,16 @@ namespace Application.Infrastructure.AdaptiveLearning
 			}
 		}
 
+		public bool HasUnfinishedTestAttempt(int testId, int userId)
+		{
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				return repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>()
+					.GetAll(new Query<AnswerOnTestQuestion>(answer => answer.TestId == testId && answer.UserId == userId && !answer.TestEnded))
+					.Any();
+			}
+		}
+
 		public void ClearEducationData(int userId, int subjectId, IEnumerable<int> conceptIds, int? adaptivityId = null)
 		{
 			var conceptIdSet = new HashSet<int>(conceptIds ?? Enumerable.Empty<int>());
