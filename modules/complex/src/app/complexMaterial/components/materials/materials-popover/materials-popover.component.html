@@ -39,16 +39,15 @@
     {{ 'common.nextTopic' | translate: 'Следующая тема' }}
     <mat-icon>fast_forward</mat-icon>
   </button>
-  <button
+  <a
     *ngIf="toTestButtonVisible"
-    mat-raised-button
-    mat-button
-    class="color-button"
-    [disabled]="!toTestButtonEnabled"
-    (click)="goToTests()"
+    class="to-tests-link main-anchor"
+    [class.to-tests-link--disabled]="!toTestButtonEnabled"
+    (click)="toTestButtonEnabled && goToTests()"
   >
     {{ 'complex.toTests' | translate: 'К тестам' }}
-  </button>
+    <mat-icon class="to-tests-link__icon">arrow_forward</mat-icon>
+  </a>
   <div class="cancel-button">
     <button mat-icon-button (click)="onNoClick()">
       <mat-icon>clear</mat-icon>
@@ -90,6 +89,14 @@
         {{ 'common.pretest' | translate: 'Пройти предтест' }}
       </button>
     </div>
+  </div>
+
+  <div *ngIf="isThemaTestMissing" class="thema-test-missing">
+    {{
+      'complex.themaTestMissing'
+        | translate
+          : 'Для этой темы не найдено тестов. Обратитесь к преподавателю.'
+    }}
   </div>
 
   <span *ngIf="showTimer"
@@ -135,11 +142,6 @@
   </ng-container>
 
   <div *ngIf="isTest">
-    <div class="adaptive-test-close">
-      <button mat-icon-button (click)="onNoClick()">
-        <mat-icon>clear</mat-icon>
-      </button>
-    </div>
     <app-test-execution
       [testId]="testId"
       [testTitle]="testTitle"

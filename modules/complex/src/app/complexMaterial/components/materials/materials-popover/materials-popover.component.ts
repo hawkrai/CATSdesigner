@@ -38,6 +38,7 @@ export class MaterialsPopoverComponent {
   isEndLearning: boolean
   learnedThemas: ThemaStudyResult[] = []
   isPredTestNotLinked: boolean = false
+  isThemaTestMissing: boolean = false
   isLector: boolean
 
   showTimer: boolean
@@ -183,6 +184,11 @@ export class MaterialsPopoverComponent {
     this.adaptivityService
       .getThemaTest(this.themaId, this.studentSeconds, this.adaptivityType)
       .subscribe((res) => {
+        if (!res.testId || res.testId <= 0) {
+          this.isThemaTestMissing = true
+          return
+        }
+        this.isThemaTestMissing = false
         this.testId = `${res.testId}`
         this.testTitle = res.title
         this.isTest = true

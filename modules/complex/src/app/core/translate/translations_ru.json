@@ -132,6 +132,7 @@
   "complex.learningFinished.restart": "Пройти обучение заново",
   "complex.predTestNotLinked.title": "Не удалось определить темы для обучения",
   "complex.predTestNotLinked.text": "Вопросы предтеста не связаны с темами этого ЭУМК. Обратитесь к преподавателю.",
+  "complex.toTests": "К тестам",
   "complex.testResult.finished": "Тест на тему «{title}» завершен",
   "complex.testResult.mark": "Ваша оценка: {mark} ({percent}%)",
   "complex.testResult.date": "Дата прохождения теста: ",
@@ -144,5 +145,6 @@
   "complex.themaResults.percent": "Изученность, %",
   "complex.themaResults.learned": "Изучено",
   "complex.themaResults.toLearn": "Изучить",
-  "complex.learningFinished.learnedThemas": "Изученные темы"
+  "complex.learningFinished.learnedThemas": "Изученные темы",
+  "complex.themaTestMissing": "Для этой темы не найдено тестов. Обратитесь к преподавателю."
 }

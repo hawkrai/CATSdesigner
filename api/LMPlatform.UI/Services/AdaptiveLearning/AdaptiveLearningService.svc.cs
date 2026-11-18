@@ -73,7 +73,10 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			var currentRes = adaptivityProcessor.GetResultByCurrentThema(currentThemaId, themaResult, allAvailableThemas);
 
 			AdaptiveLearningManagementService.SaveThemaResult(currentRes.ResultByCurrentThema, currentRes.NextStepSolution, currentThemaId, adaptivityType, userId);
-			AdaptiveLearningManagementService.ClearDynamicTestData(testId);
+			if (IsDynamicTest(testId))
+			{
+				AdaptiveLearningManagementService.ClearDynamicTestData(testId);
+			}
 
 			if (currentRes.NextStepSolution == ThemaSolutions.END_PROCCESS)
 			{
@@ -88,8 +91,8 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					Code = "200"
 				};
 			}
-			
-			
+
+
 			return new AdaptivityViewResult
 			{
 				NextThemaId = currentRes.NextThemaId,
@@ -167,18 +170,18 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		public AdaptiveTestViewResult GetTestForThema(int userId, int subjectId, int complexId, int monitoringRes, int adaptivityType, int eumkRootConceptId)
 		{
 			var sourceTest = GetSourceTestForThema(subjectId, complexId, eumkRootConceptId);
+			var isSimpleAdaptivity = ToAdaptivityType(adaptivityType) == AdaptivityType.SIMPLE;
 
-			if (ToAdaptivityType(adaptivityType) == AdaptivityType.SIMPLE)
+			if (isSimpleAdaptivity && sourceTest != null)
 			{
 				return new AdaptiveTestViewResult
 				{
-					TestId = sourceTest?.Id ?? NO_TEST_ID,
-					Title = sourceTest?.Title,
-					Code = sourceTest != null ? "200" : "500"
+					TestId = sourceTest.Id,
+					Title = sourceTest.Title,
+					Code = "200"
 				};
 			}
 
-			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			var allQuestions = QuestionsManagementService
 				.GetQuestionsByConceptId(complexId)
 				.Where(x => x.Test != null && x.Test.ForEUMK)
@@ -187,10 +190,27 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 				.Select(x => new { x.First().Id, x.First().ComlexityLevel, x.First().Test })
 				.ToList();
 
+			var predTest = GetPredTestForEumk(subjectId, eumkRootConceptId);
+			if (!allQuestions.Any() && predTest?.Questions != null)
+			{
+				allQuestions = predTest.Questions
+					.Where(x => x.ConceptId == complexId)
+					.GroupBy(x => x.Title)
+					.Select(x => new { x.First().Id, x.First().ComlexityLevel, Test = predTest })
+					.ToList();
+			}
+
 			if (!allQuestions.Any())
 			{
 				return new AdaptiveTestViewResult { TestId = NO_TEST_ID, Code = "500" };
 			}
+
+			if (isSimpleAdaptivity)
+			{
+				return CreatePredTestBasedThemaTest(subjectId, complexId, predTest, allQuestions.Select(x => x.Id).ToArray());
+			}
+
+			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 
 			var allTestQuestions = allQuestions.Select(x => new TestQuestion
 				{
@@ -230,6 +250,32 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			{
 				TestId = dynamicTestId,
 				Title = testSettingsSource.Title,
+				Code = "200"
+			};
+		}
+
+		private AdaptiveTestViewResult CreatePredTestBasedThemaTest(int subjectId, int themaId,
+			LMPlatform.Models.KnowledgeTesting.Test predTest, int[] questionIds)
+		{
+			var selectedIds = questionIds
+				.Distinct()
+				.Take(NEEDED_QUSTIONS_COUNT)
+				.ToArray();
+			var timeForCompleting = predTest != null && predTest.TimeForCompleting > 0
+				? predTest.TimeForCompleting
+				: DEFAULT_SECONDS_FOR_QUESTION;
+
+			var dynamicTestId = AdaptiveLearningManagementService.CreateDynamicTestForUser(
+				subjectId,
+				selectedIds.Length,
+				timeForCompleting,
+				predTest != null && predTest.TimeForCompleting > 0 && predTest.SetTimeForAllTest);
+			QuestionsManagementService.CopyQuestionsToTest(dynamicTestId, selectedIds);
+
+			return new AdaptiveTestViewResult
+			{
+				TestId = dynamicTestId,
+				Title = GetConceptName(themaId) ?? predTest?.Title,
 				Code = "200"
 			};
 		}
@@ -338,6 +384,18 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			catch (Exception ex)
 			{
 				return new ThemaStudyResultsViewResult { Themas = new List<ThemaStudyResultViewData>(), Message = ex.Message, Code = "500" };
+			}
+		}
+
+		private bool IsDynamicTest(int testId)
+		{
+			try
+			{
+				return TestsManagementService.GetTest(testId)?.Title == AdaptiveConst.AdaptiveTestName;
+			}
+			catch
+			{
+				return false;
 			}
 		}
 

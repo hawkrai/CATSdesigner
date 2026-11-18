@@ -132,6 +132,7 @@
   "complex.learningFinished.restart": "Restart learning",
   "complex.predTestNotLinked.title": "Could not determine topics to study",
   "complex.predTestNotLinked.text": "The pre-test questions are not linked to the topics of this Educational Complex. Please contact your lecturer.",
+  "complex.toTests": "To the tests",
   "complex.testResult.finished": "Test for theme «{title}» completed",
   "complex.testResult.mark": "Your mark is {mark} ({percent}%)",
   "complex.testResult.date": "Date passing test: ",
@@ -144,5 +145,6 @@
   "complex.themaResults.percent": "Mastery, %",
   "complex.themaResults.learned": "Learned",
   "complex.themaResults.toLearn": "To learn",
-  "complex.learningFinished.learnedThemas": "Learned topics"
+  "complex.learningFinished.learnedThemas": "Learned topics",
+  "complex.themaTestMissing": "No tests were found for this topic. Please contact your lecturer."
 }

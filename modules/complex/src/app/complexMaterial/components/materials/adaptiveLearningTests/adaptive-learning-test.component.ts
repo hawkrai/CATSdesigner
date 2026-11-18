@@ -6,10 +6,10 @@ import { TestService } from '../../../../service/test.service'
 import { AdaptivityService } from '../../../../service/adaptivity.service'
 import { TestQuestion } from '../../../../models/question/TestQuestion'
 import { UserAnswer } from '../../../../models/question/UserAnswer'
-import { UserRole } from '../../../../../../../../container/src/app/core/models/user-role.enum'
 import { TestResult } from '../../../../models/TestResult'
 import { ThemaStudyResult } from '../../../../models/ThemaStudyResult'
 import { TimerValue } from '../../../../models/timer-value.enum'
+import { isColorFeedbackTest } from '../../../../models/test-feedback'
 
 @Component({
   selector: 'app-test-execution',
@@ -29,7 +29,6 @@ export class TestExecutionComponent implements OnInit, OnDestroy {
   @Output()
   learningFlowContinue = new EventEmitter<void>()
 
-  public isLector = false
   public isResultLoading = false
   private isTestFinished = false
   public question: TestQuestion
@@ -55,12 +54,6 @@ export class TestExecutionComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.questionNumber = '1'
     this.showTest = true
-    try {
-      const user = JSON.parse(localStorage.getItem('currentUser'))
-      this.isLector = user && user.role === UserRole.Lector
-    } catch (_e) {
-      this.isLector = false
-    }
     this.testService
       .getTestById(this.testId)
       .pipe(
@@ -241,24 +234,11 @@ export class TestExecutionComponent implements OnInit, OnDestroy {
   }
 
   public showColorAnswerFeedback(): boolean {
-    const t = this.test
-    if (!t) {
-      return false
-    }
-    if (t.ForSelfStudy) {
-      return true
-    }
-    return this.isLector && !!(t.BeforeEUMK || t.ForEUMK)
+    return isColorFeedbackTest(this.test)
   }
 
   private shouldExcludeCorrectnessIndicator(test: Test): boolean {
-    if (test.ForSelfStudy) {
-      return false
-    }
-    if (this.isLector && (test.BeforeEUMK || test.ForEUMK)) {
-      return false
-    }
-    return true
+    return !isColorFeedbackTest(test)
   }
 
   private fillQuestionArray(): void {
