@@ -48,23 +48,46 @@
     {{ 'complex.loadingResults' | translate: 'Загрузка результатов...' }}
   </div>
   <div class="test-execution-block-question" *ngIf="!showTest && !isResultLoading">
-    <div
-      class="test-result__backlink main-anchor"
-      (click)="onContinueLearningClick()"
-    >
-      {{
-        'complex.goToLearning' | translate: 'Перейти к обучению'
-      }}
+    <div class="test-result__nav">
+      <a
+        class="test-result__backlink main-anchor"
+        (click)="onContinueLearningClick()"
+      >
+        {{ 'complex.goToLearning' | translate: 'Перейти к обучению' }}
+        <mat-icon class="test-result__backlink-icon">arrow_forward</mat-icon>
+      </a>
     </div>
     <div class="test-result-list">
       <div class="test-result-text__title">
         {{
-          'text.test.theme.finished'
+          'complex.testResult.finished'
             | translate
               : 'Тест на тему «' + test.Title + '» завершен'
               : { title: test.Title }
         }}
       </div>
+      <ng-container *ngIf="testResult">
+        <div class="test-result-text" *ngIf="testResult.mark != null">
+          {{
+            'complex.testResult.mark'
+              | translate
+                : 'Ваша оценка: ' + testResult.mark + ' (' + testResult.percent + '%)'
+                : { mark: testResult.mark + '', percent: testResult.percent + '' }
+          }}
+        </div>
+        <div class="test-result-text" *ngIf="testResult.endTime">
+          {{ 'complex.testResult.date' | translate: 'Дата прохождения теста: ' }}
+          {{ testResult.endTime | date: 'dd.MM.yyyy' }}
+        </div>
+        <div class="test-result-text" *ngIf="testResult.startTime">
+          {{ 'complex.testResult.startTime' | translate: 'Время начала теста: ' }}
+          {{ testResult.startTime | date: 'HH:mm:ss' }}
+        </div>
+        <div class="test-result-text" *ngIf="testResult.endTime">
+          {{ 'complex.testResult.endTime' | translate: 'Время окончания теста: ' }}
+          {{ testResult.endTime | date: 'HH:mm:ss' }}
+        </div>
+      </ng-container>
     </div>
     <div class="test-result__results">
       <div
@@ -74,7 +97,7 @@
         <div class="test-result__results-line-mark">
           <p>
             {{
-              'text.test.question.num'
+              'complex.testResult.questionNumber'
                 | translate
                   : 'Вопрос №' + question.Number
                   : { number: question.Number }
@@ -90,8 +113,11 @@
         ></div>
       </div>
     </div>
-    <!--<div class="test-result__backlink main-anchor" (click)="navigate()">
-      {{ 'text.test.back.to.test' | translate: 'Вернуться в ЭУМК' }}
-    </div>-->
+    <div class="test-result__themas" *ngIf="themaResults?.length">
+      <h4 class="test-result__themas-title">
+        {{ 'complex.themaResults.title' | translate: 'Изученность тем' }}:
+      </h4>
+      <app-thema-results [themas]="themaResults"></app-thema-results>
+    </div>
   </div>
 </div>

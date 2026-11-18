@@ -7,6 +7,7 @@ using Application.Infrastructure.CPManagement;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
 using LMPlatform.Models.KnowledgeTesting;
+using LMPlatform.Models.AdaptivityLearning;
 
 namespace Application.Infrastructure.KnowledgeTestsManagement
 {
@@ -328,6 +329,43 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 				}
 
 				repositoriesContainer.ApplyChanges();
+			}
+		}
+
+		public void UnlockEumkTestsForGroups(int subjectId, IEnumerable<int> groupIds)
+		{
+			var groupIdList = (groupIds ?? Enumerable.Empty<int>()).Distinct().ToList();
+			if (!groupIdList.Any())
+			{
+				return;
+			}
+
+			int[] testIds;
+			int[] studentIds;
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				testIds = repositoriesContainer.TestsRepository
+					.GetAll(new Query<Test>(test => test.SubjectId == subjectId
+						&& (test.BeforeEUMK || test.ForEUMK || test.ForSelfStudy)
+						&& test.Title != AdaptiveConst.AdaptiveTestName))
+					.Select(test => test.Id)
+					.ToArray();
+
+				studentIds = repositoriesContainer.StudentsRepository
+					.GetAll(new Query<Student>(student => groupIdList.Contains(student.GroupId)
+						&& (student.Confirmed == null || student.Confirmed.Value)))
+					.Select(student => student.Id)
+					.ToArray();
+			}
+
+			if (!testIds.Any() || !studentIds.Any())
+			{
+				return;
+			}
+
+			foreach (var testId in testIds)
+			{
+				UnlockTest(studentIds, testId, true);
 			}
 		}
 

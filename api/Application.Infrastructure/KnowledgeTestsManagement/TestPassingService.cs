@@ -849,7 +849,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
                 var test = GetTest(testId);
 
-                if (!(test.ForSelfStudy || test.ForNN) && savedTestUnlock != null)
+                if (!(test.ForSelfStudy || test.ForNN || test.BeforeEUMK) && savedTestUnlock != null)
                 {
                     repositoriesContainer.TestUnlocksRepository.Delete(savedTestUnlock);
                 }
@@ -1073,7 +1073,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 var testObject = repositoriesContainer.TestsRepository.GetBy(new Core.Data.Query<Test>(test => test.Id == testId));
-                if (testObject != null && (testObject.ForSelfStudy || testObject.BeforeEUMK || testObject.ForEUMK))
+                if (testObject != null && !testObject.BeforeEUMK && (testObject.ForSelfStudy || testObject.ForEUMK))
                 {
                     isTestLockedForUser = false;
                 }
@@ -1091,6 +1091,14 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                             .AddFilterClause(testUnlock => testUnlock.StudentId == userId)
                             .AddFilterClause(testUnlock => testUnlock.TestId == testId))
                             .Any();
+
+                        if (isTestLockedForUser && testObject != null && testObject.BeforeEUMK)
+                        {
+                            isTestLockedForUser = !repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>().GetAll(
+                                new Core.Data.Query<AnswerOnTestQuestion>(answer => answer.TestId == testId
+                                    && answer.UserId == userId && !answer.TestEnded))
+                                .Any();
+                        }
                     }
                 }
             }

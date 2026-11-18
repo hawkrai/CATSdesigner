@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { DialogData } from '../../../../models/DialogData'
 import { AdaptivityService } from '../../../../service/adaptivity.service'
 import { Adaptivity } from '../../../../models/Adaptivity'
+import { ThemaStudyResult } from '../../../../models/ThemaStudyResult'
 import { AdaptivityType } from '../../../../models/adaptivity-type.enum'
 import { FileExtension } from '../../../../models/file/file-extension.enum'
 import { LibreOfficeAvailabilityService } from '../../../../service/libre-office-availability.service'
@@ -35,7 +36,11 @@ export class MaterialsPopoverComponent {
   shouldWaitPresettedTime: boolean
   showMaterial: boolean
   isEndLearning: boolean
+  learnedThemas: ThemaStudyResult[] = []
   isPredTestNotLinked: boolean = false
+  isAccessDenied: boolean = false
+  canRestartLearning: boolean = false
+  isThemaTestMissing: boolean = false
   isLector: boolean
 
   showTimer: boolean
@@ -104,11 +109,15 @@ export class MaterialsPopoverComponent {
     this.needToGetInitialTest = adaptivity.needToDoPredTest
     this.shouldWaitPresettedTime = adaptivity.shouldWaitPresettedTime
     this.isEndLearning = adaptivity.isLearningEnded
+    this.learnedThemas = adaptivity.learnedThemas || []
+    this.isAccessDenied = adaptivity.isAccessDenied
+    this.canRestartLearning = adaptivity.canRestartLearning
 
     this.showMaterial = !(
       this.needToGetInitialTest ||
       this.isTest ||
-      this.isEndLearning
+      this.isEndLearning ||
+      this.isAccessDenied
     )
 
     this.toTestButtonVisible = this.showMaterial
@@ -180,6 +189,11 @@ export class MaterialsPopoverComponent {
     this.adaptivityService
       .getThemaTest(this.themaId, this.studentSeconds, this.adaptivityType)
       .subscribe((res) => {
+        if (!res.testId || res.testId <= 0) {
+          this.isThemaTestMissing = true
+          return
+        }
+        this.isThemaTestMissing = false
         this.testId = `${res.testId}`
         this.testTitle = res.title
         this.isTest = true

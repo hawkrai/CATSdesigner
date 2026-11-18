@@ -1,0 +1,29 @@
+<table class="thema-results" *ngIf="themas?.length">
+  <tr class="thema-results__header">
+    <th>{{ 'complex.themaResults.theme' | translate: 'Тема' }}</th>
+    <th *ngIf="showPercent">
+      {{ 'complex.themaResults.status' | translate: 'Статус' }}
+    </th>
+    <th *ngIf="showPercent" class="thema-results__percent">
+      {{ 'complex.themaResults.percent' | translate: 'Изученность, %' }}
+    </th>
+  </tr>
+  <tr
+    class="thema-results__row"
+    *ngFor="let thema of themas"
+    [class.valid]="isLearned(thema)"
+    [class.invalid]="!isLearned(thema)"
+  >
+    <td>{{ thema.themaName }}</td>
+    <td *ngIf="showPercent">
+      {{
+        isLearned(thema)
+          ? ('complex.themaResults.learned' | translate: 'Изучено')
+          : ('complex.themaResults.toLearn' | translate: 'Изучить')
+      }}
+    </td>
+    <td *ngIf="showPercent" class="thema-results__percent">
+      {{ thema.percent }}
+    </td>
+  </tr>
+</table>

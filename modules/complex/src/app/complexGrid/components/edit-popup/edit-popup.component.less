@@ -51,6 +51,18 @@
   justify-content: space-between;
 }
 
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.mat-dialog-content {
+  flex: 1 1 auto;
+  max-height: none;
+}
+
 .mat-dialog-actions {
-  margin-top: clamp(10vh, 40vw, 30vh);
+  margin-top: auto;
+  justify-content: flex-end;
 }

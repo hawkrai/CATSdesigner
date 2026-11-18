@@ -34,5 +34,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
         void CheckForTestIsNotLocked(int testId);
 
 		void UnlockAllTestForGroup(int groupId);
+
+		void UnlockEumkTestsForGroups(int subjectId, IEnumerable<int> groupIds);
 	}
 }

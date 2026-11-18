@@ -4,6 +4,7 @@
     #csvInput
     hidden="true"
     type="file"
+    [accept]="acceptedFiles"
     multiple
     (change)="uploadFile($event.target)"
   />

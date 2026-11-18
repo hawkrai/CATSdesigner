@@ -101,9 +101,32 @@
   background-color: #3f51b5;
 }
 
-.adaptive-test-close {
-  display: flex;
-  justify-content: flex-end;
+.to-tests-link {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+  cursor: pointer;
+  color: #3f51b5;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 20px;
+  text-decoration: none;
+
+  &:hover {
+    color: #aaaaaa;
+  }
+
+  &__icon {
+    margin-left: 4px;
+  }
+
+  &--disabled {
+    color: #c8c8c8;
+    cursor: default;
+
+    &:hover {
+      color: #c8c8c8;
+    }
+  }
 }
 
 .adaptive-info {
@@ -137,6 +160,15 @@
     justify-content: flex-end;
     padding-top: 10px;
   }
+
+  &__themas {
+    padding-top: 10px;
+  }
+
+  &__themas-title {
+    font-size: 18px;
+    padding-bottom: 10px;
+  }
 }
 
 .google-docs-wrapper {
@@ -166,4 +198,11 @@
     border: none;
     display: block;
   }
+}
+
+.thema-test-missing {
+  padding: 10px 0;
+  color: #c62828;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 16px;
 }
