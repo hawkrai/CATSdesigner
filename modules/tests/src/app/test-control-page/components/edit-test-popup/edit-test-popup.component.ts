@@ -165,11 +165,12 @@ export class EditTestPopupComponent
     return type != null && +type === TestType.BeforeEUMK
   }
 
-  public get hasPretestEumkOptions(): boolean {
-    return (
-      this.isPretestType &&
-      this.eumkRoots.some((eumk) => this.isEumkOptionDisabled(eumk))
-    )
+  public get selectedEumkHasPretest(): boolean {
+    if (!this.isPretestType) {
+      return false
+    }
+    const value = this.formGroup?.get('EumkRootConceptId')?.value
+    return this.eumkRoots.some((eumk) => eumk.HasPretest && eumk.Id === value)
   }
 
   public isEumkOptionDisabled(eumk: {
@@ -320,6 +321,17 @@ export class EditTestPopupComponent
         Message: this.translatePipe.transform(
           'text.test.check.data.correctness',
           'Проверьте правильность заполенения данных'
+        ),
+        Code: '500',
+      })
+
+      return
+    }
+    if (this.newTest && this.selectedEumkHasPretest) {
+      this.catsService.showMessage({
+        Message: this.translatePipe.transform(
+          'text.test.eumk.pretest.exists.hint',
+          'На этот ЭУМК уже назначен предтест — выберите другой'
         ),
         Code: '500',
       })

@@ -208,7 +208,7 @@
                     : 'ЭУМК нельзя изменить после добавления вопросов'
               }}
             </mat-hint>
-            <mat-hint *ngIf="!isEumkLocked && hasPretestEumkOptions">
+            <mat-hint *ngIf="!isEumkLocked && selectedEumkHasPretest">
               {{
                 'text.test.eumk.pretest.exists.hint'
                   | translate
