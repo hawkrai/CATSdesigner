@@ -408,7 +408,6 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 			}
 		}
 
-		public IEnumerable<Test> GetTestForLector(int currentUserId)
 		public IEnumerable<Test> GetTestForLector(int currentUserId, int? subjectId = null, int excludeTestId = 0)
 		{
 			IEnumerable<Test> searchResults;
