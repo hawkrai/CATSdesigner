@@ -27,6 +27,7 @@ export class QuestionOtherTestComponent
   public request: Question = new Question()
   myControl = new FormControl()
   filteredOptions: Observable<Test[]>
+  private subjectId: number
   private unsubscribeStream$: Subject<void> = new Subject<void>()
 
   constructor(
@@ -38,8 +39,11 @@ export class QuestionOtherTestComponent
   }
 
   ngOnInit() {
+    this.subjectId = JSON.parse(
+      localStorage.getItem('currentSubject') || '{}'
+    ).id
     this.testService
-      .getTestForLector()
+      .getTestForLector(this.subjectId, Number(this.data.test))
       .pipe(
         tap((tests: Test[]) => {
           tests.forEach((test) => {
@@ -61,7 +65,6 @@ export class QuestionOtherTestComponent
       map((value) => (typeof value === 'string' ? value : value.Title)),
       map((name) => {
         if (name) {
-          console.log(this._filter(name))
           return this._filter(name)
         } else {
           return this.tests.slice()
@@ -92,7 +95,7 @@ export class QuestionOtherTestComponent
 
   public onValueChange(event): void {
     this.testService
-      .getQuestionsFromOtherTest(event.option.value.Id)
+      .getQuestionsFromOtherTest(event.option.value.Id, this.subjectId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((questions) => {
         questions.forEach((question) => {

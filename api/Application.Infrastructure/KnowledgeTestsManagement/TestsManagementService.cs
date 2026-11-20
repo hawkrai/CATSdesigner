@@ -6,7 +6,9 @@ using Application.Infrastructure.ConceptManagement;
 using Application.Infrastructure.CPManagement;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
+using LMPlatform.Models.AdaptivityLearning;
 using LMPlatform.Models.KnowledgeTesting;
+using LMPlatform.Models.AdaptivityLearning;
 
 namespace Application.Infrastructure.KnowledgeTestsManagement
 {
@@ -109,6 +111,44 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                 repositoriesContainer.ApplyChanges();
 
                 return test;
+			}
+		}
+
+		public void SetEumkRootConcept(int testId, int rootConceptId)
+		{
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				var test = repositoriesContainer.TestsRepository.GetBy(new Query<Test>(t => t.Id == testId));
+				if (test == null)
+				{
+					return;
+				}
+
+				test.EumkRootConceptId = rootConceptId;
+				repositoriesContainer.TestsRepository.Save(test);
+				repositoriesContainer.ApplyChanges();
+			}
+		}
+
+		public IEnumerable<int> GetPretestEumkRootIds(int subjectId, int? excludeTestId)
+		{
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				var query = new Query<Test>(test => test.SubjectId == subjectId
+					&& test.BeforeEUMK
+					&& test.EumkRootConceptId.HasValue
+					&& test.EumkRootConceptId.Value > 0
+					&& test.Title != AdaptiveConst.AdaptiveTestName);
+
+				if (excludeTestId.HasValue && excludeTestId.Value > 0)
+				{
+					query.AddFilterClause(test => test.Id != excludeTestId.Value);
+				}
+
+				return repositoriesContainer.TestsRepository
+					.GetAll(query)
+					.Select(test => test.EumkRootConceptId.Value)
+					.ToList();
 			}
 		}
 
@@ -331,7 +371,44 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 			}
 		}
 
-		public IEnumerable<Test> GetTestForLector(int currentUserId)
+		public void UnlockEumkTestsForGroups(int subjectId, IEnumerable<int> groupIds)
+		{
+			var groupIdList = (groupIds ?? Enumerable.Empty<int>()).Distinct().ToList();
+			if (!groupIdList.Any())
+			{
+				return;
+			}
+
+			int[] testIds;
+			int[] studentIds;
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				testIds = repositoriesContainer.TestsRepository
+					.GetAll(new Query<Test>(test => test.SubjectId == subjectId
+						&& (test.BeforeEUMK || test.ForEUMK || test.ForSelfStudy)
+						&& test.Title != AdaptiveConst.AdaptiveTestName))
+					.Select(test => test.Id)
+					.ToArray();
+
+				studentIds = repositoriesContainer.StudentsRepository
+					.GetAll(new Query<Student>(student => groupIdList.Contains(student.GroupId)
+						&& (student.Confirmed == null || student.Confirmed.Value)))
+					.Select(student => student.Id)
+					.ToArray();
+			}
+
+			if (!testIds.Any() || !studentIds.Any())
+			{
+				return;
+			}
+
+			foreach (var testId in testIds)
+			{
+				UnlockTest(studentIds, testId, true);
+			}
+		}
+
+		public IEnumerable<Test> GetTestForLector(int currentUserId, int? subjectId = null, int excludeTestId = 0)
 		{
 			IEnumerable<Test> searchResults;
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
@@ -339,13 +416,25 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 				var query = new Query<Test>();
 				query.AddFilterClause(test => test.Subject.SubjectLecturers.Any(sl => sl.LecturerId == currentUserId));
 
+				if (subjectId.HasValue)
+				{
+					query.AddFilterClause(test => test.SubjectId == subjectId.Value);
+				}
+
+				if (excludeTestId > 0)
+				{
+					query.AddFilterClause(test => test.Id != excludeTestId);
+				}
+
+				query.AddFilterClause(test => test.Title != AdaptiveConst.AdaptiveTestName);
+
 				searchResults = repositoriesContainer.TestsRepository.GetAll(query).ToList();
 			}
 
 			return searchResults;
 		}
 
-		public IEnumerable<Question> GetQuestionsFromAnotherTests(int testId, int currentUserId)
+		public IEnumerable<Question> GetQuestionsFromAnotherTests(int testId, int currentUserId, int? subjectId = null)
 		{
 			IEnumerable<Question> searchResults;
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
@@ -360,6 +449,11 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 				{
 					query.AddFilterClause(
 						question => question.TestId == testId);
+				}
+
+				if (subjectId.HasValue)
+				{
+					query.AddFilterClause(question => question.Test.SubjectId == subjectId.Value);
 				}
 
 				searchResults = repositoriesContainer.QuestionsRepository.GetAll(query).ToList();

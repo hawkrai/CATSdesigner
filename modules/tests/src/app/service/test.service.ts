@@ -23,12 +23,15 @@ export class TestService {
   }
 
   getEumkRoots(
-    subjectId: string
-  ): Observable<{ Id: number; Name: string }[]> {
+    subjectId: string,
+    testId?: number
+  ): Observable<{ Id: number; Name: string; HasPretest?: boolean }[]> {
+    const url =
+      '/Tests/GetEumkRoots?subjectId=' +
+      subjectId +
+      (testId ? '&testId=' + testId : '')
     return this.http
-      .get<{ Id: number; Name: string }[]>(
-        '/Tests/GetEumkRoots?subjectId=' + subjectId
-      )
+      .get<{ Id: number; Name: string; HasPretest?: boolean }[]>(url)
       .pipe(map((res) => res || []))
   }
 
@@ -116,14 +119,29 @@ export class TestService {
     return this.http.post<void>('/Tests/AddQuestionsFromAnotherTest', question)
   }
 
-  getQuestionsFromOtherTest(testId: string): Observable<Question[]> {
+  getQuestionsFromOtherTest(
+    testId: string,
+    subjectId?: number
+  ): Observable<Question[]> {
     return this.http.get<Question[]>(
-      '/Tests/GetQuestionsFromAnotherTests?testId=' + testId
+      '/Tests/GetQuestionsFromAnotherTests?testId=' +
+        testId +
+        (subjectId ? '&subjectId=' + subjectId : '')
     )
   }
 
-  getTestForLector(): Observable<Test[]> {
-    return this.http.get<Test[]>('/Tests/GetTestForLector')
+  getTestForLector(subjectId?: number, testId?: number): Observable<Test[]> {
+    const query: string[] = []
+    if (subjectId) {
+      query.push('subjectId=' + subjectId)
+    }
+    if (testId) {
+      query.push('testId=' + testId)
+    }
+
+    return this.http.get<Test[]>(
+      '/Tests/GetTestForLector' + (query.length ? '?' + query.join('&') : '')
+    )
   }
 
   private getOrCreateDeviceId(): string {

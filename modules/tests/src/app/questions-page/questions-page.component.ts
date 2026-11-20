@@ -119,6 +119,8 @@ export class QuestionsPageComponent
     const dialogRef = this.dialog.open(QuestionOtherTestComponent, {
       data: { event, test: this.testId, name: this.test.Title },
       autoFocus: false,
+      width: '548px',
+      height: '100vh',
     })
 
     dialogRef
@@ -141,19 +143,51 @@ export class QuestionsPageComponent
   }
 
   public addNewQuestion(event): void {
-    if (
+    if (this.isEumkRootMissing()) {
+      const conceptId = this.questions?.find(
+        (question) => question.ConceptId
+      )?.ConceptId
+
+      if (!conceptId) {
+        this.showEumkRequiredError()
+        return
+      }
+
+      this.testService
+        .getConceptRootId(conceptId)
+        .pipe(takeUntil(this.unsubscribeStream$))
+        .subscribe((rootId) => {
+          if (!rootId) {
+            this.showEumkRequiredError()
+            return
+          }
+          this.test.EumkRootConceptId = rootId
+          this.openQuestionDialog(event)
+        })
+      return
+    }
+
+    this.openQuestionDialog(event)
+  }
+
+  private isEumkRootMissing(): boolean {
+    return (
       this.isEUMKTest &&
       (this.test?.BeforeEUMK || this.test?.ForEUMK) &&
       !this.test?.EumkRootConceptId
-    ) {
-      this.toastr.addErrorFlashMessage(
-        this.translatePipe.transform(
-          'text.test.eumk.required',
-          'Выберите ЭУМК для теста'
-        )
+    )
+  }
+
+  private showEumkRequiredError(): void {
+    this.toastr.addErrorFlashMessage(
+      this.translatePipe.transform(
+        'text.test.eumk.required',
+        'Выберите ЭУМК для теста'
       )
-      return
-    }
+    )
+  }
+
+  private openQuestionDialog(event): void {
     const dialogRef = this.dialog.open(QuestionPopupComponent, {
       data: {
         event,

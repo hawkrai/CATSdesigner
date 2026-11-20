@@ -426,10 +426,21 @@ export class QuestionPopupComponent
   }
 
   public isTopicDisabled(item: NavItem): boolean {
+    if (!this.conceptId) {
+      return false
+    }
+    if (!this.containsConcept(this.eumkNavItems, this.conceptId)) {
+      return false
+    }
     return (
-      !!this.conceptId &&
-      this.conceptId !== item.Id &&
-      !this.hasChild(item, this.conceptId)
+      this.conceptId !== item.Id && !this.hasChild(item, this.conceptId)
+    )
+  }
+
+  private containsConcept(items: NavItem[], conceptId: any): boolean {
+    return (items || []).some(
+      (item) =>
+        item.Id === conceptId || this.containsConcept(item.Children, conceptId)
     )
   }
 
