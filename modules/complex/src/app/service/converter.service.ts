@@ -5,6 +5,7 @@ import { Group } from '../models/Group'
 import { ConceptMonitoring } from '../models/ConceptMonitoring'
 import { Adaptivity } from '../models/Adaptivity'
 import { AdaptiveTest } from '../models/AdaptiveTest'
+import { ThemaStudyResult } from '../models/ThemaStudyResult'
 import { ComplexCascade } from '../models/ComplexCascade'
 import { Student } from '../models/student.model'
 import { ConceptMonitoringData } from '../models/ConceptMonitoringData'
@@ -187,8 +188,23 @@ export class ConverterService {
     nextThemaRes.shouldWaitPresettedTime = themaRes.ShouldWaitBeforeTest
     nextThemaRes.timeToWait = themaRes.TimeToWait
     nextThemaRes.isLearningEnded = themaRes.IsLearningEnded
+    nextThemaRes.learnedThemas = this.themaStudyResultsConverter(
+      themaRes.LearnedThemas
+    )
+    nextThemaRes.isAccessDenied = !!themaRes.IsAccessDenied
+    nextThemaRes.canRestartLearning = !!themaRes.CanRestartLearning
 
     return nextThemaRes
+  }
+
+  public themaStudyResultsConverter(themas: any[]): ThemaStudyResult[] {
+    return (themas || []).map((thema) => {
+      const result = new ThemaStudyResult()
+      result.themaId = thema.ThemaId
+      result.themaName = thema.ThemaName
+      result.percent = thema.Percent
+      return result
+    })
   }
 
   public adaptiveTestConverter(testRes: any): AdaptiveTest {

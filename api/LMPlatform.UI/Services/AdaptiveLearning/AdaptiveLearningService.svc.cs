@@ -73,22 +73,26 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			var currentRes = adaptivityProcessor.GetResultByCurrentThema(currentThemaId, themaResult, allAvailableThemas);
 
 			AdaptiveLearningManagementService.SaveThemaResult(currentRes.ResultByCurrentThema, currentRes.NextStepSolution, currentThemaId, adaptivityType, userId);
-			AdaptiveLearningManagementService.ClearDynamicTestData(testId);
+			if (IsDynamicTest(testId))
+			{
+				AdaptiveLearningManagementService.ClearDynamicTestData(testId);
+			}
 
 			if (currentRes.NextStepSolution == ThemaSolutions.END_PROCCESS)
 			{
-				LockPredTestAfterLearning(subjectId, eumkRootConceptId, userId);
 				return new AdaptivityViewResult
 				{
 					NextThemaId = null,
 					NextMaterialPath = null,
 					NeedToDoPredTest = false,
 					IsLearningEnded = true,
+					LearnedThemas = GetLearnedThemas(allAvailableThemas.Select(x => x.ThemaId)),
+					CanRestartLearning = HasLearningAccess(userId, subjectId, eumkRootConceptId),
 					Code = "200"
 				};
 			}
-			
-			
+
+
 			return new AdaptivityViewResult
 			{
 				NextThemaId = currentRes.NextThemaId,
@@ -137,13 +141,14 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			var nextThema = availableThemas.FirstOrDefault(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN);
 			if (nextThema == null)
 			{
-				LockPredTestAfterLearning(subjectId, eumkRootConceptId, userId);
 				return new AdaptivityViewResult
 				{
 					NextThemaId = null,
 					NextMaterialPath = null,
 					NeedToDoPredTest = false,
 					IsLearningEnded = true,
+					LearnedThemas = GetLearnedThemas(availableThemas.Select(x => x.ThemaId)),
+					CanRestartLearning = HasLearningAccess(userId, subjectId, eumkRootConceptId),
 					Code = "200"
 				};
 			}
@@ -165,18 +170,18 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		public AdaptiveTestViewResult GetTestForThema(int userId, int subjectId, int complexId, int monitoringRes, int adaptivityType, int eumkRootConceptId)
 		{
 			var sourceTest = GetSourceTestForThema(subjectId, complexId, eumkRootConceptId);
+			var isSimpleAdaptivity = ToAdaptivityType(adaptivityType) == AdaptivityType.SIMPLE;
 
-			if (ToAdaptivityType(adaptivityType) == AdaptivityType.SIMPLE)
+			if (isSimpleAdaptivity && sourceTest != null)
 			{
 				return new AdaptiveTestViewResult
 				{
-					TestId = sourceTest?.Id ?? NO_TEST_ID,
-					Title = sourceTest?.Title,
-					Code = sourceTest != null ? "200" : "500"
+					TestId = sourceTest.Id,
+					Title = sourceTest.Title,
+					Code = "200"
 				};
 			}
 
-			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			var allQuestions = QuestionsManagementService
 				.GetQuestionsByConceptId(complexId)
 				.Where(x => x.Test != null && x.Test.ForEUMK)
@@ -185,10 +190,27 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 				.Select(x => new { x.First().Id, x.First().ComlexityLevel, x.First().Test })
 				.ToList();
 
+			var predTest = GetPredTestForEumk(subjectId, eumkRootConceptId);
+			if (!allQuestions.Any() && predTest?.Questions != null)
+			{
+				allQuestions = predTest.Questions
+					.Where(x => x.ConceptId == complexId)
+					.GroupBy(x => x.Title)
+					.Select(x => new { x.First().Id, x.First().ComlexityLevel, Test = predTest })
+					.ToList();
+			}
+
 			if (!allQuestions.Any())
 			{
 				return new AdaptiveTestViewResult { TestId = NO_TEST_ID, Code = "500" };
 			}
+
+			if (isSimpleAdaptivity)
+			{
+				return CreatePredTestBasedThemaTest(subjectId, complexId, predTest, allQuestions.Select(x => x.Id).ToArray());
+			}
+
+			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 
 			var allTestQuestions = allQuestions.Select(x => new TestQuestion
 				{
@@ -232,6 +254,32 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			};
 		}
 
+		private AdaptiveTestViewResult CreatePredTestBasedThemaTest(int subjectId, int themaId,
+			LMPlatform.Models.KnowledgeTesting.Test predTest, int[] questionIds)
+		{
+			var selectedIds = questionIds
+				.Distinct()
+				.Take(NEEDED_QUSTIONS_COUNT)
+				.ToArray();
+			var timeForCompleting = predTest != null && predTest.TimeForCompleting > 0
+				? predTest.TimeForCompleting
+				: DEFAULT_SECONDS_FOR_QUESTION;
+
+			var dynamicTestId = AdaptiveLearningManagementService.CreateDynamicTestForUser(
+				subjectId,
+				selectedIds.Length,
+				timeForCompleting,
+				predTest != null && predTest.TimeForCompleting > 0 && predTest.SetTimeForAllTest);
+			QuestionsManagementService.CopyQuestionsToTest(dynamicTestId, selectedIds);
+
+			return new AdaptiveTestViewResult
+			{
+				TestId = dynamicTestId,
+				Title = GetConceptName(themaId) ?? predTest?.Title,
+				Code = "200"
+			};
+		}
+
 		public int GetPredTestIdForEumk(int subjectId, int eumkRootConceptId)
 		{
 			return GetPredTestForEumk(subjectId, eumkRootConceptId)?.Id ?? NO_TEST_ID;
@@ -239,7 +287,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 
 		public ResultViewData RestartLearning(int subjectId, int eumkRootConceptId)
 		{
-			if (!CurrentUserIsLector())
+			if (!HasLearningAccess(UserContext.CurrentUserId, subjectId, eumkRootConceptId))
 			{
 				return new ResultViewData { Message = "Access denied", Code = "403" };
 			}
@@ -260,6 +308,18 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			allAvailableThemas = FilterThemasByEumk(allAvailableThemas, eumkRootConceptId);
 			if (allAvailableThemas is null || !allAvailableThemas.Any())
 			{
+				if (!HasLearningAccess(userId, subjectId, eumkRootConceptId) && !HasUnfinishedPredTest(userId, subjectId, eumkRootConceptId))
+				{
+					return new AdaptivityViewResult
+					{
+						NextThemaId = null,
+						NextMaterialPath = null,
+						NeedToDoPredTest = false,
+						IsAccessDenied = true,
+						Code = "403"
+					};
+				}
+
 				return new AdaptivityViewResult
 				{
 					NextThemaId = null,
@@ -268,18 +328,8 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					Code = "500"
 				};
 			}
-			var first = allAvailableThemas.FirstOrDefault(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN);
-			if (first is null && TryRestartLearningByReopenedPredTest(userId, subjectId, eumkRootConceptId))
-			{
-				return new AdaptivityViewResult
-				{
-					NextThemaId = null,
-					NextMaterialPath = null,
-					NeedToDoPredTest = true,
-					Code = "200"
-				};
-			}
 
+			var first = allAvailableThemas.FirstOrDefault(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN);
 			if (first is null)
 			{
 				return new AdaptivityViewResult
@@ -288,6 +338,8 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					NextMaterialPath = null,
 					NeedToDoPredTest = false,
 					IsLearningEnded = true,
+					LearnedThemas = GetLearnedThemas(allAvailableThemas.Select(x => x.ThemaId)),
+					CanRestartLearning = HasLearningAccess(userId, subjectId, eumkRootConceptId),
 					Code = "200"
 				};
 			}
@@ -301,6 +353,84 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 				NeedToDoPredTest = false,
 				Code = "200"
 			};
+		}
+
+		public ThemaStudyResultsViewResult GetTestThemasResults(int testId)
+		{
+			try
+			{
+				var userId = UserContext.CurrentUserId;
+				var test = TestsManagementService.GetTest(testId, true);
+				var questions = test?.Questions ?? new List<LMPlatform.Models.KnowledgeTesting.Question>();
+				var answers = TestPassingService.GetAnswersForEndedTest(testId, userId)
+					?? new List<LMPlatform.Models.KnowledgeTesting.AnswerOnTestQuestion>();
+
+				var themas = answers
+					.Select(answer => new
+					{
+						answer.Points,
+						ConceptId = questions.FirstOrDefault(q => q.Id == answer.QuestionId)?.ConceptId
+					})
+					.Where(x => x.ConceptId.HasValue)
+					.GroupBy(x => x.ConceptId.Value)
+					.Select(group => new ThemaStudyResultViewData
+					{
+						ThemaId = group.Key,
+						ThemaName = GetConceptName(group.Key),
+						Percent = (int)Math.Round(100.0 * group.Count(x => x.Points > 0) / group.Count())
+					})
+					.Where(x => x.ThemaName != null)
+					.ToList();
+
+				return new ThemaStudyResultsViewResult { Themas = themas, Code = "200" };
+			}
+			catch (Exception ex)
+			{
+				return new ThemaStudyResultsViewResult { Themas = new List<ThemaStudyResultViewData>(), Message = ex.Message, Code = "500" };
+			}
+		}
+
+		private bool IsDynamicTest(int testId)
+		{
+			try
+			{
+				return TestsManagementService.GetTest(testId)?.Title == AdaptiveConst.AdaptiveTestName;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		private List<ThemaStudyResultViewData> GetLearnedThemas(IEnumerable<int> themaIds)
+		{
+			if (themaIds == null)
+			{
+				return new List<ThemaStudyResultViewData>();
+			}
+
+			return themaIds
+				.Distinct()
+				.Select(id => new ThemaStudyResultViewData
+				{
+					ThemaId = id,
+					ThemaName = GetConceptName(id),
+					Percent = 100
+				})
+				.Where(x => x.ThemaName != null)
+				.ToList();
+		}
+
+		private string GetConceptName(int conceptId)
+		{
+			try
+			{
+				return ConceptManagementService.GetLiteById(conceptId)?.Name;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
 		private TestsDifficulties GetTestDifficultyByComplexityLevel(int complexityLevel)
@@ -349,47 +479,21 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 				?? candidates.FirstOrDefault();
 		}
 
-		private bool TryRestartLearningByReopenedPredTest(int userId, int subjectId, int eumkRootConceptId)
+		private bool HasLearningAccess(int userId, int subjectId, int eumkRootConceptId)
 		{
 			if (CurrentUserIsLector())
 			{
-				return false;
+				return true;
 			}
 
 			var predTest = GetPredTestForEumk(subjectId, eumkRootConceptId);
-			if (predTest == null || !AdaptiveLearningManagementService.IsTestUnlockedForStudent(predTest.Id, userId))
-			{
-				return false;
-			}
-
-			var eumkConceptIds = GetEumkConceptIds(eumkRootConceptId);
-			if (eumkConceptIds == null)
-			{
-				return false;
-			}
-
-			AdaptiveLearningManagementService.ClearEducationData(userId, subjectId, eumkConceptIds);
-			return true;
+			return predTest != null && AdaptiveLearningManagementService.IsTestUnlockedForStudent(predTest.Id, userId);
 		}
 
-		private void LockPredTestAfterLearning(int subjectId, int eumkRootConceptId, int userId)
+		private bool HasUnfinishedPredTest(int userId, int subjectId, int eumkRootConceptId)
 		{
-			if (CurrentUserIsLector())
-			{
-				return;
-			}
-
-			try
-			{
-				var predTest = GetPredTestForEumk(subjectId, eumkRootConceptId);
-				if (predTest != null)
-				{
-					TestsManagementService.UnlockTestForStudent(predTest.Id, userId, false);
-				}
-			}
-			catch
-			{
-			}
+			var predTest = GetPredTestForEumk(subjectId, eumkRootConceptId);
+			return predTest != null && AdaptiveLearningManagementService.HasUnfinishedTestAttempt(predTest.Id, userId);
 		}
 		
 		private AdaptiveLearningProcessor GetLearningProcessor(int adaptiivtyType)

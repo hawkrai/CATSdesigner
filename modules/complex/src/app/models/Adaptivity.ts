@@ -1,3 +1,5 @@
+import { ThemaStudyResult } from './ThemaStudyResult'
+
 export class Adaptivity {
   nextThemaId: string
   nextMaterialPaths: string[]
@@ -5,4 +7,7 @@ export class Adaptivity {
   shouldWaitPresettedTime: boolean
   timeToWait?: number
   isLearningEnded: boolean
+  learnedThemas: ThemaStudyResult[] = []
+  isAccessDenied: boolean
+  canRestartLearning: boolean
 }

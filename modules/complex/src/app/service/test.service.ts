@@ -8,6 +8,7 @@ import { DataValue } from '../models/data-value.model'
 import { TestResultDataKey } from '../models/test-result-data-key.enum'
 import { Test } from '../models/Test'
 import { TestQuestion } from '../models/question/TestQuestion'
+import { TestResult } from '../models/TestResult'
 
 @Injectable({
   providedIn: 'root',
@@ -58,32 +59,67 @@ export class TestService {
     )
   }
 
-  closeTestAndGetAnswers(testId: string): Observable<UserAnswer[]> {
+  closeTestAndGetResult(testId: string): Observable<TestResult> {
     return this.http
       .get<{ Data: DataValue[] }>(
         '/TestPassing/CloseTestAndGetResult?testId=' + testId
       )
       .pipe(
-        map((res) =>
-          this.getDataValue<UserAnswer[]>(
-            res && res.Data,
-            TestResultDataKey.Answers
+        map((res) => {
+          const data = res && res.Data
+          const result = new TestResult()
+          result.answers =
+            this.getDataValue<UserAnswer[]>(data, TestResultDataKey.Answers) ||
+            []
+          result.mark = this.getDataValue<number>(data, TestResultDataKey.Mark)
+          result.percent = this.getDataValue<number>(
+            data,
+            TestResultDataKey.Percent
           )
-        )
+          result.startTime = this.parseServerDate(
+            this.getDataValue<string>(data, TestResultDataKey.StartTime)
+          )
+          result.endTime = this.parseServerDate(
+            this.getDataValue<string>(data, TestResultDataKey.EndTime)
+          )
+          return result
+        })
       )
   }
 
-  getEndedTestAnswers(testId: string): Observable<UserAnswer[]> {
+  getEndedTestResult(testId: string): Observable<TestResult> {
     const user = JSON.parse(localStorage.getItem('currentUser'))
     return this.http
       .get<DataValue[]>(
         '/TestPassing/GetUserAnswers?studentId=' + user.id + '&testId=' + testId
       )
       .pipe(
-        map((res) =>
-          this.getDataValue<UserAnswer[]>(res, TestResultDataKey.UserAnswers)
-        )
+        map((res) => {
+          const result = new TestResult()
+          result.answers =
+            this.getDataValue<UserAnswer[]>(
+              res,
+              TestResultDataKey.UserAnswers
+            ) || []
+          const info = this.getDataValue<any>(res, TestResultDataKey.TestInfo)
+          if (info) {
+            result.mark = info.Points
+            result.percent = info.Percent
+            result.startTime = this.parseServerDate(info.StartTime)
+            result.endTime = this.parseServerDate(info.EndTime)
+          }
+          return result
+        })
       )
+  }
+
+  private parseServerDate(value: string): Date {
+    if (!value) {
+      return null
+    }
+    const match = value.match(/\/Date\((-?\d+)\)\//)
+    const date = match ? new Date(parseInt(match[1], 10)) : new Date(value)
+    return isNaN(date.getTime()) || date.getFullYear() <= 1 ? null : date
   }
 
   private getDataValue<T>(data: DataValue[], key: TestResultDataKey): T {

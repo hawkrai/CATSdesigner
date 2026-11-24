@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators'
 import { ConverterService } from './converter.service'
 import { Adaptivity } from '../models/Adaptivity'
 import { AdaptiveTest } from '../models/AdaptiveTest'
+import { ThemaStudyResult } from '../models/ThemaStudyResult'
 import { StorageKeys } from '../../../../../container/src/app/core/models/storage-keys.enum'
 
 @Injectable({
@@ -115,5 +116,15 @@ export class AdaptivityService {
           `GetFirstThema?userId=${user.id}&subjectId=${subject.id}&adaptivityType=${adaptivityType}&eumkRootConceptId=${eumkRoot}`
       )
       .pipe(map((res) => this.converterService.nextThemaResConverter(res)))
+  }
+
+  public getTestThemasResults(testId: string): Observable<ThemaStudyResult[]> {
+    return this.http
+      .get(this.path + `GetTestThemasResults?testId=${testId}`)
+      .pipe(
+        map((res: any) =>
+          this.converterService.themaStudyResultsConverter(res && res.Themas)
+        )
+      )
   }
 }

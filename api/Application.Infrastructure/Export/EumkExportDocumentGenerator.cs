@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Application.Core.PdfConvertor;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using iTextSharp.text.pdf;
@@ -35,6 +37,17 @@ namespace Application.Infrastructure.Export
         private const string DocxExtension = ".docx";
         private const string NotEmbeddableFileNote = "Файл «{0}» не может быть встроен в документ: формат {1} не поддерживается. Сохраните его в формате .docx или .pdf.";
         private const string UnreadableFileNote = "Не удалось встроить содержимое файла «{0}».";
+        private const string RunningHeaderSeparator = " / ";
+        private const string DefaultLibreOfficePath = @"C:\Program Files\LibreOffice\program\soffice.exe";
+        private const float PdfPageMargin = 50f;
+        private const ushort RunningHeaderHalfPoints = 18;
+        private const string RunningHeaderHexColor = "808080";
+        private const uint HeaderFooterDistanceTwips = 500U;
+        private const float RunningHeaderFontSize = 9f;
+        private const float RunningHeaderOffset = 28f;
+        private const float PageNumberFontSize = 9f;
+        private const float PageNumberOffset = 22f;
+        private static readonly iTextSharp.text.BaseColor RunningHeaderColor = new iTextSharp.text.BaseColor(128, 128, 128);
 
         private readonly Dictionary<string, List<Attachment>> _attachmentsByContainer = new Dictionary<string, List<Attachment>>();
 
@@ -75,6 +88,7 @@ namespace Application.Infrastructure.Export
                     mainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document(new Body());
 
                     var body = mainPart.Document.Body;
+                    var sections = new DocxSectionState(AddPageNumberFooter(mainPart));
 
                     AppendTitle(body, string.IsNullOrWhiteSpace(documentTitle) ? root.Name : documentTitle);
                     if (root.Subject != null && !string.IsNullOrWhiteSpace(root.Subject.Name))
@@ -86,12 +100,12 @@ namespace Application.Infrastructure.Export
                     {
                         foreach (var child in SortChildren(root.Children))
                         {
-                            AppendConcept(body, mainPart, child, depth: 1, hiddenTestIds, testQuestionsHeading);
+                            AppendConcept(body, mainPart, child, new List<string>(), hiddenTestIds, testQuestionsHeading, sections);
                         }
                     }
 
                     EnsureUniqueDrawingIds(body);
-                    AppendSectionProperties(body);
+                    body.AppendChild(BuildSectionProperties(sections.CurrentHeaderPartId, sections.CurrentFooterPartId));
                 }
 
                 return ms.ToArray();
@@ -102,20 +116,21 @@ namespace Application.Infrastructure.Export
             Body body,
             MainDocumentPart mainPart,
             Concept node,
-            int depth,
+            List<string> parentPath,
             ISet<int> hiddenTestIds,
-            string testQuestionsHeading)
+            string testQuestionsHeading,
+            DocxSectionState sections)
         {
             if (!HasExportableContent(node, hiddenTestIds))
             {
                 return;
             }
 
-            const bool startsNewPage = true;
+            var path = new List<string>(parentPath) { SanitizeForWord(node.Name) };
 
             if (node.Test != null)
             {
-                AppendSectionHeading(body, node.Name, depth, startsNewPage, TestHeadingHalfPoints(depth));
+                StartSection(body, mainPart, sections, BuildRunningHeader(path));
                 var test = _testsManagementService.GetTestWithAnswers(node.Test.Id);
                 if (test == null)
                 {
@@ -143,20 +158,103 @@ namespace Application.Infrastructure.Export
                 return;
             }
 
-            AppendSectionHeading(body, node.Name, depth, startsNewPage, SectionHeadingHalfPoints(depth));
-
-            foreach (var a in GetExportableAttachments(node))
+            var attachments = GetExportableAttachments(node);
+            if (attachments.Any())
             {
-                AppendAttachmentContent(body, mainPart, a);
+                StartSection(body, mainPart, sections, BuildRunningHeader(path));
+                foreach (var a in attachments)
+                {
+                    AppendAttachmentContent(body, mainPart, a);
+                }
             }
 
             if (node.Children != null && node.Children.Any())
             {
                 foreach (var child in SortChildren(node.Children))
                 {
-                    AppendConcept(body, mainPart, child, depth + 1, hiddenTestIds, testQuestionsHeading);
+                    AppendConcept(body, mainPart, child, path, hiddenTestIds, testQuestionsHeading, sections);
                 }
             }
+        }
+
+        private static void StartSection(Body body, MainDocumentPart mainPart, DocxSectionState sections, string headerText)
+        {
+            body.AppendChild(new Paragraph(new ParagraphProperties(
+                BuildSectionProperties(sections.CurrentHeaderPartId, sections.CurrentFooterPartId))));
+
+            sections.CurrentHeaderPartId = AddRunningHeader(mainPart, headerText);
+            sections.CurrentFooterPartId = sections.PageNumberFooterPartId;
+        }
+
+        private static SectionProperties BuildSectionProperties(string headerPartId, string footerPartId)
+        {
+            var sectionProperties = new SectionProperties();
+            if (!string.IsNullOrEmpty(headerPartId))
+            {
+                sectionProperties.AppendChild(new HeaderReference { Type = HeaderFooterValues.Default, Id = headerPartId });
+            }
+
+            if (!string.IsNullOrEmpty(footerPartId))
+            {
+                sectionProperties.AppendChild(new FooterReference { Type = HeaderFooterValues.Default, Id = footerPartId });
+            }
+
+            sectionProperties.AppendChild(new SectionType { Val = SectionMarkValues.NextPage });
+            sectionProperties.AppendChild(new PageSize { Width = PageWidthTwips, Height = PageHeightTwips });
+            sectionProperties.AppendChild(new PageMargin
+            {
+                Top = (int)PageMarginTwips,
+                Right = PageMarginTwips,
+                Bottom = (int)PageMarginTwips,
+                Left = PageMarginTwips,
+                Header = HeaderFooterDistanceTwips,
+                Footer = HeaderFooterDistanceTwips,
+                Gutter = 0U,
+            });
+            return sectionProperties;
+        }
+
+        private static string AddRunningHeader(MainDocumentPart mainPart, string text)
+        {
+            var headerPart = mainPart.AddNewPart<HeaderPart>();
+            headerPart.Header = new Header(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Left }),
+                new Run(
+                    BuildMutedRunProperties(),
+                    new Text(SanitizeForWord(text)) { Space = SpaceProcessingModeValues.Preserve })));
+            headerPart.Header.Save();
+            return mainPart.GetIdOfPart(headerPart);
+        }
+
+        private static string AddPageNumberFooter(MainDocumentPart mainPart)
+        {
+            var footerPart = mainPart.AddNewPart<FooterPart>();
+            footerPart.Footer = new Footer(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Center }),
+                new SimpleField(new Run(BuildMutedRunProperties(), new Text("1"))) { Instruction = " PAGE " }));
+            footerPart.Footer.Save();
+            return mainPart.GetIdOfPart(footerPart);
+        }
+
+        private static RunProperties BuildMutedRunProperties()
+        {
+            var runProperties = BuildRunProperties(bold: false, italic: false, fontHalfPoints: RunningHeaderHalfPoints);
+            runProperties.InsertBefore(new Color { Val = RunningHeaderHexColor }, runProperties.GetFirstChild<FontSize>());
+            return runProperties;
+        }
+
+        private sealed class DocxSectionState
+        {
+            public DocxSectionState(string pageNumberFooterPartId)
+            {
+                PageNumberFooterPartId = pageNumberFooterPartId;
+            }
+
+            public string PageNumberFooterPartId { get; }
+
+            public string CurrentHeaderPartId { get; set; }
+
+            public string CurrentFooterPartId { get; set; }
         }
 
         private void AppendAttachmentContent(Body body, MainDocumentPart mainPart, Attachment a)
@@ -254,25 +352,26 @@ namespace Application.Infrastructure.Export
             }
 
             var baseFont = TryCreateUnicodeFont();
-            var chunks = new List<byte[]>();
+            var chunks = new List<PdfChunk>();
             var title = string.IsNullOrWhiteSpace(documentTitle) ? root.Name : documentTitle;
-            chunks.Add(BuildCoverChunkPdf(title, root, baseFont));
+            chunks.Add(new PdfChunk(BuildCoverChunkPdf(title, root, baseFont), null));
 
             if (root.Children != null && root.Children.Any())
             {
                 foreach (var child in SortChildren(root.Children))
                 {
-                    CollectPdfChunks(chunks, child, 1, hiddenTestIds, testQuestionsHeading, baseFont);
+                    CollectPdfChunks(chunks, child, new List<string>(), hiddenTestIds, testQuestionsHeading, baseFont);
                 }
             }
 
-            return MergePdfChunks(chunks);
+            var merged = MergePdfChunks(chunks, out var pageHeaders);
+            return StampPageDecorations(merged, pageHeaders, baseFont);
         }
 
         private void CollectPdfChunks(
-            List<byte[]> chunks,
+            List<PdfChunk> chunks,
             Concept node,
-            int depth,
+            List<string> parentPath,
             ISet<int> hiddenTestIds,
             string testQuestionsHeading,
             BaseFont baseFont)
@@ -282,36 +381,63 @@ namespace Application.Infrastructure.Export
                 return;
             }
 
+            var path = new List<string>(parentPath) { SanitizeForWord(node.Name) };
+            var header = BuildRunningHeader(path);
+
             if (node.Test != null)
             {
-                chunks.Add(BuildTestChunkPdf(node, depth, testQuestionsHeading, baseFont));
+                chunks.Add(new PdfChunk(BuildTestChunkPdf(node, testQuestionsHeading, baseFont), header));
                 return;
             }
 
-            var pdfChunks = new List<byte[]>();
             var imagePaths = new List<string>();
             var textOnly = new List<Attachment>();
             var notes = new List<string>();
 
+            void FlushInlineContent()
+            {
+                if (imagePaths.Any() || textOnly.Any() || notes.Any())
+                {
+                    chunks.Add(new PdfChunk(BuildContentChunkPdf(imagePaths, textOnly, notes, baseFont), header));
+                    imagePaths = new List<string>();
+                    textOnly = new List<Attachment>();
+                    notes = new List<string>();
+                }
+            }
+
             foreach (var a in GetExportableAttachments(node))
             {
-                var path = _filesManagementService.GetFullPath(a);
-                if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+                var filePath = _filesManagementService.GetFullPath(a);
+                if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
                 {
                     continue;
                 }
 
-                var ext = (Path.GetExtension(path) ?? string.Empty).ToLowerInvariant();
+                var ext = (Path.GetExtension(filePath) ?? string.Empty).ToLowerInvariant();
                 if (ext == PdfExtension)
                 {
-                    var bytes = SafeReadAllBytes(path);
+                    var bytes = SafeReadAllBytes(filePath);
                     if (IsReadablePdf(bytes))
                     {
-                        pdfChunks.Add(bytes);
+                        FlushInlineContent();
+                        chunks.Add(new PdfChunk(bytes, header));
                     }
                     else
                     {
                         notes.Add(string.Format(UnreadableFileNote, a.Name));
+                    }
+                }
+                else if (ext == DocxExtension)
+                {
+                    var bytes = ConvertDocxToPdf(filePath, baseFont);
+                    if (IsReadablePdf(bytes))
+                    {
+                        FlushInlineContent();
+                        chunks.Add(new PdfChunk(bytes, header));
+                    }
+                    else
+                    {
+                        textOnly.Add(a);
                     }
                 }
                 else if (NotEmbeddableDocumentExtensions.Contains(ext))
@@ -320,7 +446,7 @@ namespace Application.Infrastructure.Export
                 }
                 else if (IsImageExtension(ext))
                 {
-                    imagePaths.Add(path);
+                    imagePaths.Add(filePath);
                 }
                 else
                 {
@@ -328,15 +454,103 @@ namespace Application.Infrastructure.Export
                 }
             }
 
-            chunks.Add(BuildHeadingChunkPdf(node.Name, depth, imagePaths, textOnly, notes, baseFont));
-            chunks.AddRange(pdfChunks);
+            FlushInlineContent();
 
             if (node.Children != null && node.Children.Any())
             {
                 foreach (var child in SortChildren(node.Children))
                 {
-                    CollectPdfChunks(chunks, child, depth + 1, hiddenTestIds, testQuestionsHeading, baseFont);
+                    CollectPdfChunks(chunks, child, path, hiddenTestIds, testQuestionsHeading, baseFont);
                 }
+            }
+        }
+
+        private static string BuildRunningHeader(IEnumerable<string> path)
+        {
+            return string.Join(RunningHeaderSeparator, path.Where(p => !string.IsNullOrWhiteSpace(p)));
+        }
+
+        private static byte[] ConvertDocxToPdf(string docxPath, BaseFont baseFont)
+        {
+            if (IsLibreOfficeAvailable())
+            {
+                string tempDir = null;
+                string convertedPath = null;
+                try
+                {
+                    tempDir = Path.Combine(Path.GetTempPath(), "eumk-export-" + Guid.NewGuid().ToString("N"));
+                    Directory.CreateDirectory(tempDir);
+                    var tempDocx = Path.Combine(tempDir, Guid.NewGuid().ToString("N") + DocxExtension);
+                    File.Copy(docxPath, tempDocx);
+                    var fileName = new WordToPdfConvertor().Convert(tempDocx);
+                    var outputDir = (ConfigurationManager.AppSettings["FileUploadPathTemp"] ?? string.Empty)
+                        .Replace("//", "\\")
+                        .TrimEnd('/', '\\');
+                    convertedPath = Path.Combine(Path.GetFullPath(outputDir), fileName);
+                    var bytes = SafeReadAllBytes(convertedPath);
+                    if (IsReadablePdf(bytes))
+                    {
+                        return bytes;
+                    }
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    TryDeleteFile(convertedPath);
+                    TryDeleteDirectory(tempDir);
+                }
+            }
+
+            try
+            {
+                return new DocxToPdfRenderer(baseFont).Render(docxPath, PdfPageMargin);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static bool IsLibreOfficeAvailable()
+        {
+            try
+            {
+                var path = ConfigurationManager.AppSettings["LibreOfficePath"] ?? DefaultLibreOfficePath;
+                return File.Exists(path);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static void TryDeleteFile(string path)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(path) && File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private static void TryDeleteDirectory(string path)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+            }
+            catch
+            {
             }
         }
 
@@ -364,9 +578,7 @@ namespace Application.Infrastructure.Export
             });
         }
 
-        private byte[] BuildHeadingChunkPdf(
-            string name,
-            int depth,
+        private byte[] BuildContentChunkPdf(
             List<string> imagePaths,
             List<Attachment> textOnly,
             List<string> notes,
@@ -374,13 +586,6 @@ namespace Application.Infrastructure.Export
         {
             return RenderPdfChunk(doc =>
             {
-                var fontHeading = new Font(baseFont, Math.Max(12f, 18f - depth * 1.5f), Font.BOLD);
-                doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(name), fontHeading)
-                {
-                    Alignment = depth == 1 ? iTextSharp.text.Element.ALIGN_CENTER : iTextSharp.text.Element.ALIGN_LEFT,
-                    SpacingAfter = 10f,
-                });
-
                 foreach (var imagePath in imagePaths)
                 {
                     try
@@ -423,20 +628,18 @@ namespace Application.Infrastructure.Export
                         SpacingAfter = 2f,
                     });
                 }
+
+                if (!imagePaths.Any() && !textOnly.Any() && !notes.Any())
+                {
+                    doc.Add(new iTextSharp.text.Chunk(" "));
+                }
             });
         }
 
-        private byte[] BuildTestChunkPdf(Concept node, int depth, string testQuestionsHeading, BaseFont baseFont)
+        private byte[] BuildTestChunkPdf(Concept node, string testQuestionsHeading, BaseFont baseFont)
         {
             return RenderPdfChunk(doc =>
             {
-                var fontHeading = new Font(baseFont, Math.Max(12f, 16f - depth), Font.BOLD);
-                doc.Add(new iTextSharp.text.Paragraph(SanitizeForWord(node.Name), fontHeading)
-                {
-                    Alignment = depth == 1 ? iTextSharp.text.Element.ALIGN_CENTER : iTextSharp.text.Element.ALIGN_LEFT,
-                    SpacingAfter = 6f,
-                });
-
                 var test = _testsManagementService.GetTestWithAnswers(node.Test.Id);
                 if (test == null)
                 {
@@ -497,7 +700,7 @@ namespace Application.Infrastructure.Export
         {
             using (var ms = new MemoryStream())
             {
-                var doc = new PdfDocument(iTextSharp.text.PageSize.A4, 50, 50, 50, 50);
+                var doc = new PdfDocument(iTextSharp.text.PageSize.A4, PdfPageMargin, PdfPageMargin, PdfPageMargin, PdfPageMargin);
                 PdfWriter.GetInstance(doc, ms);
                 doc.Open();
                 fill(doc);
@@ -506,8 +709,9 @@ namespace Application.Infrastructure.Export
             }
         }
 
-        private static byte[] MergePdfChunks(List<byte[]> chunks)
+        private static byte[] MergePdfChunks(List<PdfChunk> chunks, out List<string> pageHeaders)
         {
+            pageHeaders = new List<string>();
             PdfReader.unethicalreading = true;
             using (var ms = new MemoryStream())
             {
@@ -517,7 +721,7 @@ namespace Application.Infrastructure.Export
                     doc.Open();
                     foreach (var chunk in chunks)
                     {
-                        if (chunk == null || chunk.Length == 0)
+                        if (chunk?.Bytes == null || chunk.Bytes.Length == 0)
                         {
                             continue;
                         }
@@ -525,7 +729,7 @@ namespace Application.Infrastructure.Export
                         PdfReader reader = null;
                         try
                         {
-                            reader = new PdfReader(chunk);
+                            reader = new PdfReader(chunk.Bytes);
                         }
                         catch
                         {
@@ -538,6 +742,7 @@ namespace Application.Infrastructure.Export
                             for (var page = 1; page <= pageCount; page++)
                             {
                                 copy.AddPage(copy.GetImportedPage(reader, page));
+                                pageHeaders.Add(chunk.Header);
                             }
                         }
                         catch
@@ -554,6 +759,83 @@ namespace Application.Infrastructure.Export
 
                 return ms.ToArray();
             }
+        }
+
+        private static byte[] StampPageDecorations(byte[] pdf, List<string> pageHeaders, BaseFont baseFont)
+        {
+            if (pdf == null || pdf.Length == 0)
+            {
+                return pdf;
+            }
+
+            PdfReader.unethicalreading = true;
+            var reader = new PdfReader(pdf);
+            try
+            {
+                using (var ms = new MemoryStream())
+                {
+                    using (var stamper = new PdfStamper(reader, ms))
+                    {
+                        var headerFont = new Font(baseFont, RunningHeaderFontSize, Font.NORMAL, RunningHeaderColor);
+                        var footerFont = new Font(baseFont, PageNumberFontSize, Font.NORMAL, RunningHeaderColor);
+
+                        for (var page = 2; page <= reader.NumberOfPages; page++)
+                        {
+                            var size = reader.GetPageSizeWithRotation(page);
+                            var canvas = stamper.GetOverContent(page);
+                            var header = page - 1 < pageHeaders.Count ? pageHeaders[page - 1] : null;
+                            if (!string.IsNullOrWhiteSpace(header))
+                            {
+                                var maxWidth = size.Width - 2 * PdfPageMargin;
+                                var text = FitToWidth(header, baseFont, RunningHeaderFontSize, maxWidth);
+                                ColumnText.ShowTextAligned(canvas, iTextSharp.text.Element.ALIGN_LEFT,
+                                    new iTextSharp.text.Phrase(text, headerFont),
+                                    size.Left + PdfPageMargin, size.Top - RunningHeaderOffset, 0);
+                            }
+
+                            ColumnText.ShowTextAligned(canvas, iTextSharp.text.Element.ALIGN_CENTER,
+                                new iTextSharp.text.Phrase(page.ToString(), footerFont),
+                                size.Left + size.Width / 2f, size.Bottom + PageNumberOffset, 0);
+                        }
+                    }
+
+                    return ms.ToArray();
+                }
+            }
+            finally
+            {
+                reader.Close();
+            }
+        }
+
+        private static string FitToWidth(string text, BaseFont font, float fontSize, float maxWidth)
+        {
+            if (font.GetWidthPoint(text, fontSize) <= maxWidth)
+            {
+                return text;
+            }
+
+            const string ellipsis = "...";
+            var result = text;
+            while (result.Length > 1 && font.GetWidthPoint(ellipsis + result, fontSize) > maxWidth)
+            {
+                result = result.Substring(1);
+            }
+
+            return ellipsis + result.TrimStart();
+        }
+
+        private sealed class PdfChunk
+        {
+            public PdfChunk(byte[] bytes, string header)
+            {
+                Bytes = bytes;
+                Header = header;
+            }
+
+            public byte[] Bytes { get; }
+
+            public string Header { get; }
         }
 
         private static byte[] SafeReadAllBytes(string path)
@@ -866,45 +1148,6 @@ namespace Application.Infrastructure.Export
             body.AppendChild(p);
         }
 
-        private static ushort SectionHeadingHalfPoints(int depth)
-        {
-            return (ushort)Math.Max(24, 36 - depth * 3);
-        }
-
-        private static ushort TestHeadingHalfPoints(int depth)
-        {
-            return (ushort)Math.Max(24, 32 - depth * 2);
-        }
-
-        private static void AppendSectionHeading(
-            Body body,
-            string text,
-            int depth,
-            bool pageBreakBefore,
-            ushort fontHalfPoints)
-        {
-            var jc = depth == 1 ? JustificationValues.Center : JustificationValues.Left;
-
-            var pp = new ParagraphProperties();
-
-            pp.AppendChild(new KeepNext());
-            if (pageBreakBefore)
-            {
-                pp.AppendChild(new PageBreakBefore());
-            }
-
-            pp.AppendChild(new SpacingBetweenLines { Before = depth <= 1 ? "360" : "240", After = "200" });
-            pp.AppendChild(new Justification { Val = jc });
-            pp.AppendChild(new OutlineLevel { Val = Math.Min(depth - 1, 8) });
-
-            var p = new Paragraph(
-                pp,
-                new Run(
-                    BuildRunProperties(bold: true, italic: false, fontHalfPoints: fontHalfPoints),
-                    new Text(SanitizeForWord(text)) { Space = SpaceProcessingModeValues.Preserve }));
-            body.AppendChild(p);
-        }
-
         private static RunProperties BuildRunProperties(bool bold, bool italic, ushort fontHalfPoints)
         {
             var rp = new RunProperties(
@@ -928,22 +1171,6 @@ namespace Application.Infrastructure.Export
             rp.AppendChild(new FontSize { Val = fontHalfPoints.ToString() });
             rp.AppendChild(new FontSizeComplexScript { Val = fontHalfPoints.ToString() });
             return rp;
-        }
-
-        private static void AppendSectionProperties(Body body)
-        {
-            body.AppendChild(new SectionProperties(
-                new PageSize { Width = PageWidthTwips, Height = PageHeightTwips },
-                new PageMargin
-                {
-                    Top = (int)PageMarginTwips,
-                    Right = PageMarginTwips,
-                    Bottom = (int)PageMarginTwips,
-                    Left = PageMarginTwips,
-                    Header = 0U,
-                    Footer = 0U,
-                    Gutter = 0U,
-                }));
         }
 
         private static void AppendParagraph(

@@ -563,6 +563,8 @@
     </Compile>
     <Compile Include="Services\Modules\AdaptiveTestViewResult.cs" />
     <Compile Include="Services\Modules\AdaptivityViewResult.cs" />
+    <Compile Include="Services\Modules\ThemaStudyResultViewData.cs" />
+    <Compile Include="Services\Modules\ThemaStudyResultsViewResult.cs" />
     <Compile Include="Services\Modules\BTS\ProjectFilesResult.cs" />
     <Compile Include="Services\Modules\BTS\ProjectMatrixRequirementViewData.cs" />
     <Compile Include="Services\Modules\BTS\ProjectMatrixViewData.cs" />

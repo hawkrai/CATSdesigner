@@ -242,6 +242,15 @@ namespace LMPlatform.UI.Services.Concept
                 if (!string.IsNullOrEmpty(conceptModel.FileData))
                 {
                     var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(conceptModel.FileData).ToList();
+                    if (attachmentsModel.Any(a => a.Id == 0 && !IsSupportedMaterialFile(a)))
+                    {
+                        return new ConceptResult
+                        {
+                            Message = "Only .pdf and .docx files are supported",
+                            Code = "400"
+                        };
+                    }
+
                     conceptModel.SetAttachments(attachmentsModel);
                 }
 
@@ -962,6 +971,19 @@ namespace LMPlatform.UI.Services.Concept
                 }
             }
             catch{}
+        }
+
+        private static readonly string[] SupportedMaterialExtensions = { ".pdf", ".docx" };
+
+        private static bool IsSupportedMaterialFile(Attachment attachment)
+        {
+            var extension = Path.GetExtension(attachment?.Name ?? string.Empty);
+            if (string.IsNullOrEmpty(extension))
+            {
+                extension = Path.GetExtension(attachment?.FileName ?? string.Empty);
+            }
+
+            return SupportedMaterialExtensions.Contains((extension ?? string.Empty).ToLowerInvariant());
         }
 
         private static bool IsLibreOfficeInstalled()

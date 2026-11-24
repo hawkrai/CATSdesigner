@@ -29,6 +29,7 @@ import { FileComponent } from './components/materials/add-material-popover/compo
 import { FileViewerComponent } from './components/materials/add-material-popover/components/file-viewer/file-viewer.component'
 import { SafeUrlPipe } from '../pipes/safe-url.pipe'
 
+import { ThemaResultsComponent } from './components/materials/thema-results/thema-results.component'
 @NgModule({
   declarations: [
     SafeUrlPipe,
@@ -51,6 +52,7 @@ import { SafeUrlPipe } from '../pipes/safe-url.pipe'
     DeleteConfirmationPopupComponent,
     PlacementConfirmationPopupComponent,
     PopoverDialogComponent,
+    ThemaResultsComponent,
   ],
   imports: [
     MatSnackBarModule,
