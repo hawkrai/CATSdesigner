@@ -11,10 +11,10 @@ import { Store } from '@ngrx/store'
 import { IAppState } from '../../../../store/state/app.state'
 import { DialogData } from '../../../../models/dialog-data.model'
 import { MarkForm } from '../../../../models/mark-form.model'
-import { filter, find, map } from 'rxjs/operators'
+import { filter, map, tap } from 'rxjs/operators'
 import { SubSink } from 'subsink'
 import { StudentMark } from 'src/app/models/student-mark.model'
-import { Observable, combineLatest } from 'rxjs'
+import { Observable, combineLatest, interval } from 'rxjs'
 import * as moment from 'moment'
 
 import * as catsActions from '../../../../store/actions/cats.actions'
@@ -37,6 +37,9 @@ import { TranslatePipe } from 'educats-translate'
   styleUrls: ['./results.component.less'],
 })
 export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
+  private readonly POLLING_INTERVAL = 5000
+  private hasGroup = false
+  private dialogOpen = false
   private subs = new SubSink()
 
   state$: Observable<{
@@ -82,14 +85,25 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     )
 
     this.subs.add(
-      this.store.select(groupsSelectors.getCurrentGroup).subscribe((group) => {
-        if (group) {
-          this.store.dispatch(practicalsActions.loadSchedule())
-          this.store.dispatch(practicalsActions.loadMarks())
-        }
-      })
-    )
+  this.store.select(groupsSelectors.getCurrentGroup).subscribe((group) => {
+    this.hasGroup = !!group
+    if (group) {
+      this.reload()
+    }
+  })
+)
+
+this.subs.add(
+  interval(this.POLLING_INTERVAL)
+    .pipe(filter(() => this.hasGroup && !this.dialogOpen))
+    .subscribe(() => this.reload())
+)
   }
+
+  private reload(): void {
+  this.store.dispatch(practicalsActions.loadSchedule())
+  this.store.dispatch(practicalsActions.loadMarks())
+}
 
   getHeaders(
     practicals: Practical[]
@@ -167,6 +181,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
           additionalInfo$: additionalInfo$
         }
       }
+      this.dialogOpen = true
       const dialogRef = this.dialogService.openDialog(
         MarkPopoverComponent,
         dialogData
@@ -176,6 +191,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
         dialogRef
           .afterClosed()
           .pipe(
+            tap(() => (this.dialogOpen = false)),
             filter((r) => r),
             map((result: MarkForm) => ({
               ...practicalMark,

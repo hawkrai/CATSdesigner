@@ -1,5 +1,6 @@
 import { AfterViewChecked } from '@angular/core'
 import { SubSink } from 'subsink'
+import { interval } from 'rxjs'
 import { MatTable } from '@angular/material'
 import { ChangeDetectorRef, OnDestroy, ViewChild } from '@angular/core'
 import { Component, Input, OnInit } from '@angular/core'
@@ -31,6 +32,9 @@ import { TranslatePipe } from 'educats-translate'
 export class LecturesListComponent
   implements OnInit, OnDestroy, AfterViewChecked
 {
+  private readonly POLLING_INTERVAL = 5000
+  private dialogOpen = false
+  private pauseUntil = 0
   private subs = new SubSink()
   @ViewChild('table', { static: false }) table: MatTable<Lecture>
   isTeacher: boolean
@@ -47,7 +51,7 @@ export class LecturesListComponent
     private mediaMatcher: MediaMatcher
   ) {}
 
-  ngOnInit(): void {
+    ngOnInit(): void {
     this.store.dispatch(lecturesActions.loadLectures())
     this.subs.add(
       this.store.select(lecturesSelectors.getLectures).subscribe((lectures) => {
@@ -57,6 +61,13 @@ export class LecturesListComponent
         this.isTeacher = isTeacher
       })
     )
+
+    this.subs.add(
+      interval(this.POLLING_INTERVAL)
+        .pipe(filter(() => !this.dialogOpen && Date.now() > this.pauseUntil))
+        .subscribe(() => this.store.dispatch(lecturesActions.loadLectures()))
+    )
+
     this.addMediaMatchers()
   }
 
@@ -129,12 +140,14 @@ export class LecturesListComponent
       buttonText: this.translate.transform('button.save', 'Сохранить'),
       model: newLecture,
     }
+        this.dialogOpen = true
     const dialogRef = this.dialogService.openDialog(
       LecturePopoverComponent,
       dialogData
     )
     this.subs.add(
       dialogRef.afterClosed().subscribe((result) => {
+        this.dialogOpen = false
         if (result) {
           result.attachments = JSON.stringify(result.attachments)
           this.store.dispatch(lecturesActions.saveLecture({ lecture: result }))
@@ -158,6 +171,7 @@ export class LecturesListComponent
       buttonText: this.translate.transform('button.delete', 'Удалить'),
       model: lecture.LecturesId,
     }
+        this.dialogOpen = true
     const dialogRef = this.dialogService.openDialog(
       DeletePopoverComponent,
       dialogData
@@ -165,6 +179,7 @@ export class LecturesListComponent
 
     this.subs.add(
       dialogRef.afterClosed().subscribe((result) => {
+        this.dialogOpen = false
         if (result) {
           this.store.dispatch(
             lecturesActions.deleteLecture({ id: lecture.LecturesId })
@@ -190,6 +205,7 @@ export class LecturesListComponent
       (i) => i.LecturesId == event.item.data.LecturesId
     )
     if (prevIndex !== event.currentIndex) {
+      this.pauseUntil = Date.now() + 10000
       moveItemInArray(event.container.data, prevIndex, event.currentIndex)
       this.store.dispatch(
         lecturesActions.updateOrder({

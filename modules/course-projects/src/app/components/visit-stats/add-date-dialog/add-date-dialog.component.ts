@@ -18,6 +18,7 @@ interface DialogData {
   end: any
   date: any
   lecturerId?: string
+  onChanged?: () => void
 }
 
 interface ScheduleResponse {
@@ -105,6 +106,28 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Вызывается родителем, когда пришёл свежий список с сервера
+  setConsultations(list: Consultation[]): void {
+    this.data.consultations = this.sortConsultations(list || [])
+  }
+
+  private notifyChanged(): void {
+    if (this.data.onChanged) {
+      this.data.onChanged()
+    }
+  }
+
+  private sortConsultations(list: Consultation[]): Consultation[] {
+    return [...list].sort(
+      (a, b) =>
+        this.parseDate(a.Day).getTime() - this.parseDate(b.Day).getTime()
+    )
+  }
+
+  trackById(_: number, item: Consultation): string {
+    return item.Id
+  }
+
   onDateChange(date: any) {
     this.data.date = date
   }
@@ -125,12 +148,12 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   onAddClick(): void {
     if (this.data != null) {
       const selectedDate = this.dateControl.value
-      
+
       if (!selectedDate) {
         this.addFlashMessage('Необходимо выбрать дату', 400)
         return
       }
-      
+
       const date = new Date(selectedDate)
       date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
       this.data.start = this.startTimeControl.value
@@ -221,7 +244,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
       Building: this.data.building,
       Audience: this.data.audience,
     }
-    
+
     consultation.Day =
       String(date.getDate()).padStart(2, '0') +
       '.' +
@@ -229,10 +252,13 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
       '.' +
       date.getFullYear()
 
-    this.data.consultations.push(consultation)
-    this.data.consultations = [...this.data.consultations].sort((a, b) =>
-      a.Day > b.Day ? 1 : b.Day > a.Day ? -1 : 0
-    )
+    this.data.consultations = this.sortConsultations([
+      ...this.data.consultations,
+      consultation,
+    ])
+
+    // Родитель сам перезагрузит данные с сервера и достроит таблицу
+    this.notifyChanged()
   }
 
   editPopover(day: any) {
@@ -277,13 +303,10 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
                 'Дата успешно удалена'
               )
             )
-            const index: number = this.data.consultations
-              .map((item) => Number(item.Id))
-              .indexOf(Number(id))
-            if (index !== -1) {
-              this.data.consultations.splice(index, 1)
-              this.data.consultations = [...this.data.consultations]
-            }
+            this.data.consultations = this.data.consultations.filter(
+              (c) => Number(c.Id) !== Number(id)
+            )
+            this.notifyChanged()
           },
           (error) => {
             this.toastr.error(
@@ -299,17 +322,14 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   }
 
   onDataUpdated(updatedDay: any) {
-    const index = this.data.consultations.findIndex(
-      (c) => c.Id == updatedDay.Id
-    )
-    if (index !== -1) {
-      this.data.consultations[index] = updatedDay
-    }
-    this.data.consultations = [...this.data.consultations].sort((a, b) =>
-      a.Day > b.Day ? 1 : -1
+    this.data.consultations = this.sortConsultations(
+      this.data.consultations.map((c) =>
+        c.Id == updatedDay.Id ? updatedDay : c
+      )
     )
     this.isEditing = false
     this.showEditPopover = false
+    this.notifyChanged()
   }
 
   public noWhitespaceValidator(control: FormControl) {

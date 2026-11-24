@@ -1,7 +1,14 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core'
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core'
 import { Store } from '@ngrx/store'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, interval, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
+import { SubSink } from 'subsink'
 import { UserLabFile } from 'src/app/models/user-lab-file.model'
 import { IAppState } from 'src/app/store/state/app.state'
 
@@ -14,8 +21,11 @@ import * as subjectSelectors from '../../../../../store/selectors/subject.select
   templateUrl: './student-job-protection.component.html',
   styleUrls: ['./student-job-protection.component.less'],
 })
-export class StudentJobProtectionComponent implements OnInit {
+export class StudentJobProtectionComponent implements OnInit, OnDestroy {
   selectedLabId: number
+
+  private subs = new SubSink()
+  private readonly POLLING_INTERVAL = 5000
 
   state$: Observable<{
     labFiles: UserLabFile[]
@@ -39,6 +49,16 @@ export class StudentJobProtectionComponent implements OnInit {
       this.store.select(subjectSelectors.getUserId),
       this.store.select(labsSelectors.getStudentLabFiles, {}),
     ]).pipe(map(([userId, labFiles]) => ({ labFiles, userId })))
+
+    this.subs.add(
+      interval(this.POLLING_INTERVAL).subscribe(() =>
+        this.store.dispatch(labsActions.loadStudentLabFiles({}))
+      )
+    )
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
   }
 
   addLab(userId: number, file: UserLabFile): void {

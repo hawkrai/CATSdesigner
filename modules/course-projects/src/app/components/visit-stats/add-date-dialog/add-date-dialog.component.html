@@ -107,7 +107,7 @@
     class="mdc-data-table add-date__table-container mat-elevation-z8"
     *ngIf="data.consultations && data.consultations.length"
   >
-    <ng-container *ngFor="let day of data.consultations">
+    <ng-container *ngFor="let day of data.consultations; trackBy: trackById">
       <app-edit
         *ngIf="showEditPopover && selectedDay === day"
         [day]="day"

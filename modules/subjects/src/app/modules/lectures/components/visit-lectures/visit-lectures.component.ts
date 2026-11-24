@@ -1,6 +1,6 @@
 import { Store } from '@ngrx/store'
-import { combineLatest, Observable } from 'rxjs'
-import { map, tap } from 'rxjs/operators'
+import { combineLatest, interval, Observable } from 'rxjs'
+import { filter, map, tap } from 'rxjs/operators'
 import {
   Component,
   Input,
@@ -46,6 +46,9 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
     lectures: Lecture[]
   }>
   subs = new SubSink()
+  private readonly POLLING_INTERVAL = 5000
+  private hasGroup = false
+  private dialogOpen = false
   constructor(
     private store: Store<IAppState>,
     private dialogService: DialogService,
@@ -70,13 +73,31 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
         lectures: lectures ? lectures : [],
       }))
     )
-    this.subs.add(
+        this.subs.add(
       this.store.select(groupsSelectors.getCurrentGroup).subscribe((group) => {
+        this.hasGroup = !!group
         if (group) {
           this.store.dispatch(lecturesActions.loadGroupsVisiting())
         }
       })
     )
+
+        this.subs.add(
+      interval(this.POLLING_INTERVAL)
+        .pipe(
+          tap(() =>
+            console.log('tick', 'hasGroup=', this.hasGroup, 'dialogOpen=', this.dialogOpen)
+          ),
+          filter(() => this.hasGroup && !this.dialogOpen)
+        )
+        .subscribe(() => this.reload())
+    )
+  }
+
+  private reload(): void {
+    this.store.dispatch(lecturesActions.loadCalendar())
+    this.store.dispatch(lecturesActions.loadLectures())
+    this.store.dispatch(lecturesActions.loadGroupsVisiting())
   }
 
   getHeaders(
@@ -105,12 +126,22 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
     this.store.dispatch(lecturesActions.resetVisiting())
   }
 
-  settingVisitDate() {
+    settingVisitDate() {
     const dialogData: DialogData = {
       title: this.translate.transform('text.schedule.dates', 'Даты занятий'),
       buttonText: this.translate.transform('button.add', 'Добавить'),
     }
-    this.dialogService.openDialog(VisitDateLecturesPopoverComponent, dialogData)
+    this.dialogOpen = true
+    const dialogRef = this.dialogService.openDialog(
+      VisitDateLecturesPopoverComponent,
+      dialogData
+    )
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(() => {
+        this.dialogOpen = false
+        this.reload()
+      })
+    )
   }
 
   deletePopover() {
@@ -160,11 +191,13 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
       buttonText: this.translate.transform('button.save', 'Сохранить'),
       body: visits,
     }
+        this.dialogOpen = true
     const dialogRef = this.dialogService.openDialog(
       VisitingPopoverComponent,
       dialogData
     )
     dialogRef.afterClosed().subscribe((result) => {
+      this.dialogOpen = false
       if (result) {
         this.store.dispatch(
           lecturesActions.setLecturesVisitingDate({
