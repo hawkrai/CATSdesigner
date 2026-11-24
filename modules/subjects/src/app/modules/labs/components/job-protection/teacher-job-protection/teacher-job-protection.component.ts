@@ -1,6 +1,14 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core'
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core'
 import { Store } from '@ngrx/store'
-import { Observable } from 'rxjs'
+import { interval, Observable } from 'rxjs'
+import { filter } from 'rxjs/operators'
+import { SubSink } from 'subsink'
 import { GroupJobProtection } from 'src/app/models/job-protection/group-job-protection.model'
 import { UserLabFile } from 'src/app/models/user-lab-file.model'
 import { IAppState } from 'src/app/store/state/app.state'
@@ -13,11 +21,14 @@ import * as labsSelectors from '../../../../../store/selectors/labs.selectors'
   templateUrl: './teacher-job-protection.component.html',
   styleUrls: ['./teacher-job-protection.component.less'],
 })
-export class TeacherJobProtectionComponent implements OnInit {
+export class TeacherJobProtectionComponent implements OnInit, OnDestroy {
   groupJobProtection$: Observable<GroupJobProtection>
   labFiles$: Observable<UserLabFile[]>
 
   selectedStudentId: number
+
+  private subs = new SubSink()
+  private readonly POLLING_INTERVAL = 5000
 
   @Output() onAddFile = new EventEmitter<{
     userId: number
@@ -33,6 +44,22 @@ export class TeacherJobProtectionComponent implements OnInit {
     this.groupJobProtection$ = this.store.select(
       labsSelectors.getGroupJobProtection
     )
+
+    this.subs.add(
+      interval(this.POLLING_INTERVAL)
+        .pipe(filter(() => !!this.selectedStudentId))
+        .subscribe(() =>
+          this.store.dispatch(
+            labsActions.loadStudentLabFiles({
+              userId: this.selectedStudentId,
+            })
+          )
+        )
+    )
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
   }
 
   addLab(userId: number, labId: number, fileId: number): void {

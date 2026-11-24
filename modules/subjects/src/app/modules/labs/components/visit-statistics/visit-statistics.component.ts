@@ -1,7 +1,6 @@
-import { combineLatest } from 'rxjs'
-import { Observable } from 'rxjs'
+import { combineLatest, interval, Observable } from 'rxjs'
 import { SubSink } from 'subsink'
-import { filter, map } from 'rxjs/operators'
+import { filter, map, tap } from 'rxjs/operators'
 import { Store } from '@ngrx/store'
 import { Component, OnInit, OnDestroy } from '@angular/core'
 import * as moment from 'moment'
@@ -36,6 +35,9 @@ export class VisitStatisticsComponent implements OnInit, OnDestroy {
     isTeacher: boolean
     subGroups: number[]
   }>
+  private readonly POLLING_INTERVAL = 5000
+  private hasGroup = false
+  private dialogOpen = false
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe,
@@ -78,14 +80,25 @@ export class VisitStatisticsComponent implements OnInit, OnDestroy {
     )
 
     this.subs.add(
-      this.store.select(groupsSelectors.getCurrentGroup).subscribe((group) => {
-        if (group) {
-          this.store.dispatch(labsActions.loadLabsSchedule())
-          this.store.dispatch(labsActions.loadLabStudents())
-        }
-      })
-    )
+  this.store.select(groupsSelectors.getCurrentGroup).subscribe((group) => {
+    this.hasGroup = !!group
+    if (group) {
+      this.reload()
+    }
+  })
+)
+
+this.subs.add(
+  interval(this.POLLING_INTERVAL)
+    .pipe(filter(() => this.hasGroup && !this.dialogOpen))
+    .subscribe(() => this.reload())
+)
   }
+
+  private reload(): void {
+  this.store.dispatch(labsActions.loadLabsSchedule())
+  this.store.dispatch(labsActions.loadLabStudents())
+}
 
   getSubGroupDisplayColumns(schedule: ScheduleProtectionLab[]) {
     const defaultColumns = ['position', 'name']
@@ -137,6 +150,7 @@ export class VisitStatisticsComponent implements OnInit, OnDestroy {
       buttonText: this.translate.transform('button.save', 'Сохранить'),
       body: visits,
     }
+    this.dialogOpen = true
     const dialogRef = this.dialogService.openDialog(
       VisitingPopoverComponent,
       dialogData
@@ -146,6 +160,7 @@ export class VisitStatisticsComponent implements OnInit, OnDestroy {
       dialogRef
         .afterClosed()
         .pipe(
+          tap(() => (this.dialogOpen = false)),
           filter((result) => result),
           map((result) =>
             this.getVisitingLabs(

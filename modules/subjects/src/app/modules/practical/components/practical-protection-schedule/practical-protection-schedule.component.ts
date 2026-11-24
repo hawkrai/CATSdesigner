@@ -1,5 +1,4 @@
-import { combineLatest } from 'rxjs'
-import { Observable } from 'rxjs'
+import { combineLatest, interval, Observable } from 'rxjs'
 import { Store } from '@ngrx/store'
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
 
@@ -10,7 +9,7 @@ import * as practicalsSelectors from '../../../../store/selectors/practicals.sel
 import * as practicalsActions from '../../../../store/actions/practicals.actions'
 import * as groupsSelectors from '../../../../store/selectors/groups.selectors'
 import * as subjectSelectors from '../../../../store/selectors/subject.selector'
-import { map } from 'rxjs/operators'
+import { filter, map } from 'rxjs/operators'
 import { DialogService } from 'src/app/services/dialog.service'
 import { DialogData } from 'src/app/models/dialog-data.model'
 import { VisitDatePracticalsPopoverComponent } from './visit-date-practicals-popover/visit-date-practicals-popover.component'
@@ -24,6 +23,9 @@ import { SubSink } from 'subsink'
 })
 export class PracticalProtectionScheduleComponent implements OnInit, OnDestroy {
   public displayedColumns: string[] = ['position', 'theme']
+  private readonly POLLING_INTERVAL = 5000
+  private hasGroup = false
+  private dialogOpen = false
   private subs = new SubSink()
   constructor(
     private store: Store<IAppState>,
@@ -54,12 +56,21 @@ export class PracticalProtectionScheduleComponent implements OnInit, OnDestroy {
       }))
     )
 
-    this.subs.add(
+        this.subs.add(
       this.store.select(groupsSelectors.getCurrentGroup).subscribe((group) => {
+        this.hasGroup = !!group
         if (group) {
           this.store.dispatch(practicalsActions.loadSchedule())
         }
       })
+    )
+
+    this.subs.add(
+      interval(this.POLLING_INTERVAL)
+        .pipe(filter(() => this.hasGroup && !this.dialogOpen))
+        .subscribe(() => {
+          this.store.dispatch(practicalsActions.loadSchedule())
+        })
     )
   }
 
@@ -70,15 +81,22 @@ export class PracticalProtectionScheduleComponent implements OnInit, OnDestroy {
     ]
   }
 
-  settingVisitDate() {
+    settingVisitDate() {
     const dialogData: DialogData = {
       title: this.translate.transform('text.schedule.dates', 'Даты занятий'),
       buttonText: this.translate.transform('button.add', 'Добавить'),
     }
 
-    this.dialogService.openDialog(
+    this.dialogOpen = true
+    const dialogRef = this.dialogService.openDialog(
       VisitDatePracticalsPopoverComponent,
       dialogData
+    )
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(() => {
+        this.dialogOpen = false
+        this.store.dispatch(practicalsActions.loadSchedule())
+      })
     )
   }
 }

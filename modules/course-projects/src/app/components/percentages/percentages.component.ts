@@ -1,4 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, OnDestroy, OnInit } from '@angular/core'
+import { interval, Subject } from 'rxjs'
+import { filter, takeUntil } from 'rxjs/operators'
 import { Percentage } from '../../models/percentage.model'
 import { PercentagesService } from '../../services/percentages.service'
 import { CourseUser } from '../../models/course-user.model'
@@ -16,7 +18,7 @@ import { TranslatePipe } from 'educats-translate'
   templateUrl: './percentages.component.html',
   styleUrls: ['./percentages.component.less'],
 })
-export class PercentagesComponent implements OnInit {
+export class PercentagesComponent implements OnInit, OnDestroy {
   @Input() courseUser: CourseUser
 
   private COUNT = 1000
@@ -25,6 +27,9 @@ export class PercentagesComponent implements OnInit {
   private percentages: Percentage[]
 
   private subjectId: string
+
+  private readonly POLLING_INTERVAL = 5000
+  private readonly destroy$ = new Subject<void>()
 
   constructor(
     private percentagesService: PercentagesService,
@@ -35,10 +40,25 @@ export class PercentagesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.store.pipe(select(getSubjectId)).subscribe((subjectId) => {
-      this.subjectId = subjectId
-      this.retrievePercentages()
-    })
+    this.store
+      .pipe(select(getSubjectId), takeUntil(this.destroy$))
+      .subscribe((subjectId) => {
+        this.subjectId = subjectId
+        this.retrievePercentages()
+      })
+
+    // Polling: пауза, пока открыт любой диалог
+    interval(this.POLLING_INTERVAL)
+      .pipe(
+        filter(() => !!this.subjectId && this.dialog.openDialogs.length === 0),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => this.retrievePercentages())
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next()
+    this.destroy$.complete()
   }
 
   retrievePercentages() {
@@ -83,7 +103,7 @@ export class PercentagesComponent implements OnInit {
               result.percentage
             )
             .subscribe(() => {
-              this.ngOnInit()
+              this.retrievePercentages()
               this.toastr.success(
                 this.translatePipe.transform(
                   'text.course.percentages.dialog.save.success',
@@ -141,7 +161,7 @@ export class PercentagesComponent implements OnInit {
               result.percentage
             )
             .subscribe(() => {
-              this.ngOnInit()
+              this.retrievePercentages()
               this.toastr.success(
                 this.translatePipe.transform(
                   'text.course.percentages.dialog.edit.success',
@@ -185,7 +205,7 @@ export class PercentagesComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result != null && result) {
         this.percentagesService.deleteStage(id).subscribe(() => {
-          this.ngOnInit()
+          this.retrievePercentages()
           this.toastr.success(
             this.translatePipe.transform(
               'text.course.percentages.dialog.delete.success',

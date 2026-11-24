@@ -1,6 +1,6 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core'
-import { filter, map, take } from 'rxjs/operators'
-import { combineLatest, Observable } from 'rxjs'
+import { Component, OnDestroy, OnInit } from '@angular/core'
+import { filter, map, take, tap } from 'rxjs/operators'
+import { combineLatest, interval, Observable } from 'rxjs'
 import { Store } from '@ngrx/store'
 import * as moment from 'moment'
 import * as catsActions from '../../../../store/actions/cats.actions'
@@ -27,6 +27,9 @@ import { SubSink } from 'subsink'
 export class VisitStatisticComponent implements OnInit, OnDestroy {
   private subs = new SubSink()
   private practicalPrefix: string
+  private readonly POLLING_INTERVAL = 5000
+  private hasGroup = false
+  private dialogOpen = false
 
   state$: Observable<{
     practicals: Practical[]
@@ -67,12 +70,24 @@ export class VisitStatisticComponent implements OnInit, OnDestroy {
 
     this.subs.add(
       this.store.select(groupsSelectors.getCurrentGroup).subscribe((group) => {
+        this.hasGroup = !!group
         if (group) {
-          this.store.dispatch(practicalsActions.loadSchedule())
-          this.store.dispatch(practicalsActions.loadMarks())
+          this.reload()
         }
       })
     )
+
+    // Polling: пауза, пока открыт диалог, и пока нет группы
+    this.subs.add(
+      interval(this.POLLING_INTERVAL)
+        .pipe(filter(() => this.hasGroup && !this.dialogOpen))
+        .subscribe(() => this.reload())
+    )
+  }
+
+  private reload(): void {
+    this.store.dispatch(practicalsActions.loadSchedule())
+    this.store.dispatch(practicalsActions.loadMarks())
   }
 
   getDisplayedColumns(schedule: ScheduleProtectionPractical[]): string[] {
@@ -128,29 +143,34 @@ export class VisitStatisticComponent implements OnInit, OnDestroy {
       buttonText: this.translate.transform('button.save', 'Сохранить'),
       body: visits,
     }
+
+    this.dialogOpen = true
     const dialogRef = this.dialogService.openDialog(
       VisitingPopoverComponent,
       dialogData
     )
 
-    dialogRef
-      .afterClosed()
-      .pipe(
-        filter((result) => result),
-        take(1),
-        map((result) =>
-          this.getVisitingPracticals(
-            students,
-            schedule.ScheduleProtectionPracticalId,
-            result.students
+    this.subs.add(
+      dialogRef
+        .afterClosed()
+        .pipe(
+          take(1),
+          tap(() => (this.dialogOpen = false)),
+          filter((result) => !!result),
+          map((result) =>
+            this.getVisitingPracticals(
+              students,
+              schedule.ScheduleProtectionPracticalId,
+              result.students
+            )
           )
         )
-      )
-      .subscribe((visiting) => {
-        this.store.dispatch(
-          practicalsActions.setPracticalsVisitingDate({ visiting })
-        )
-      })
+        .subscribe((visiting) => {
+          this.store.dispatch(
+            practicalsActions.setPracticalsVisitingDate({ visiting })
+          )
+        })
+    )
   }
 
   findVisitingIndex(
@@ -185,7 +205,6 @@ export class VisitStatisticComponent implements OnInit, OnDestroy {
       studentsId: [],
       students,
     }
-    console.log(visits)
     students.forEach((student) => {
       const visitingMark = student.PracticalVisitingMark.find(
         (x) => x.ScheduleProtectionPracticalId === dateId

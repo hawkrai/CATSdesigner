@@ -5,10 +5,10 @@ import { Store } from '@ngrx/store'
 import { IAppState } from '../../../../store/state/app.state'
 import { DialogData } from '../../../../models/dialog-data.model'
 import { Lab } from '../../../../models/lab.model'
-import { filter, map } from 'rxjs/operators'
+import { filter, map, tap } from 'rxjs/operators'
 import { SubSink } from 'subsink'
 import { StudentMark } from 'src/app/models/student-mark.model'
-import { Observable, combineLatest } from 'rxjs'
+import { Observable, combineLatest, interval } from 'rxjs'
 import * as moment from 'moment'
 
 import * as groupsSelectors from '../../../../store/selectors/groups.selectors'
@@ -42,7 +42,9 @@ export class ResultsComponent implements OnInit, OnDestroy {
     subGroups: number[]
     testsCount: number
   }>
-
+  private readonly POLLING_INTERVAL = 5000
+  private hasGroup = false
+  private dialogOpen = false
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe,
@@ -83,15 +85,24 @@ export class ResultsComponent implements OnInit, OnDestroy {
     )
 
     this.subs.add(
-      this.store.select(groupsSelectors.getCurrentGroup).subscribe((group) => {
-        if (group) {
-          this.store.dispatch(labsActions.loadLabsSchedule())
-          this.store.dispatch(labsActions.loadLabStudents())
-        }
-      })
-    )
-  }
+  this.store.select(groupsSelectors.getCurrentGroup).subscribe((group) => {
+    this.hasGroup = !!group
+    if (group) {
+      this.reload()
+    }
+  })
+)
 
+this.subs.add(
+  interval(this.POLLING_INTERVAL)
+    .pipe(filter(() => this.hasGroup && !this.dialogOpen))
+    .subscribe(() => this.reload())
+)
+  }
+  private reload(): void {
+  this.store.dispatch(labsActions.loadLabsSchedule())
+  this.store.dispatch(labsActions.loadLabStudents())
+}
   getHeaders(
     subGroupLabs: Lab[]
   ): { head: string; text: string; tooltip: string }[] {
@@ -164,6 +175,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
           additionalInfo$: additionalInfo$
         },
       }
+      this.dialogOpen = true
       const dialogRef = this.dialogService.openDialog(
         MarkPopoverComponent,
         dialogData
@@ -173,6 +185,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
         dialogRef
           .afterClosed()
           .pipe(
+            tap(() => (this.dialogOpen = false)),
             filter((r) => r),
             map((result) => {
               if (result.delete) {
