@@ -193,7 +193,11 @@
               formControlName="EumkRootConceptId"
               [disabled]="isEumkLocked"
             >
-              <mat-option *ngFor="let eumk of eumkRoots" [value]="eumk.Id">
+              <mat-option
+                *ngFor="let eumk of eumkRoots"
+                [value]="eumk.Id"
+                [disabled]="isEumkOptionDisabled(eumk)"
+              >
                 {{ eumk.Name }}
               </mat-option>
             </mat-select>
@@ -202,6 +206,13 @@
                 'text.test.eumk.locked.hint'
                   | translate
                     : 'ЭУМК нельзя изменить после добавления вопросов'
+              }}
+            </mat-hint>
+            <mat-hint *ngIf="!isEumkLocked && selectedEumkHasPretest">
+              {{
+                'text.test.eumk.pretest.exists.hint'
+                  | translate
+                    : 'На этот ЭУМК уже назначен предтест — выберите другой'
               }}
             </mat-hint>
             <mat-error
@@ -224,7 +235,7 @@
     <button
       mat-raised-button
       color="primary"
-      [disabled]="formGroup && !formGroup.valid"
+      [disabled]="!formGroup || isLoading || isSaving"
       (click)="onYesClick()"
     >
       {{ 'button.save' | translate: 'Сохранить' }}

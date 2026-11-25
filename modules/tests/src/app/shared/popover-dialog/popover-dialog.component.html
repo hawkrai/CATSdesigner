@@ -3,7 +3,7 @@
     <h2 mat-dialog-title class="popover-title">
       <ng-content select="[title]"></ng-content>
     </h2>
-    <div mat-dialog-content #popoverContent>
+    <div mat-dialog-content cdkScrollable #popoverContent>
       <ng-content select="[body]"></ng-content>
     </div>
     <div mat-dialog-actions>
